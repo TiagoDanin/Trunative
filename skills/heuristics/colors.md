@@ -20,7 +20,7 @@ A hex written straight into a component looks like a shortcut and behaves like a
 
 ## `color-derived` The palette that shows up by itself is not a choice
 
-Two of them show up. Indigo through violet under a gradient is the median of everything a model read, Tailwind's default button included. Warm cream with a rust accent is what appears the moment violet is forbidden: round 2 in `training/cases/` took the violet out and got cream in six of ten screens from one tool, the same reflex in a different coat.
+Two of them show up. Indigo through violet under a gradient is the median of everything a model read, Tailwind's default button included. Warm cream with a rust accent is what appears the moment violet is forbidden: take the violet away and it comes back as cream in six screens out of ten, the same reflex in a different coat.
 
 Neither family is banned. What is banned is being unable to say, in terms of this product, why it landed there.
 
@@ -34,7 +34,7 @@ Build the ramp in HSL: hold the hue, walk the lightness. Lightness is the axis c
 
 HSL then fails in two places, both of which matter here:
 
-- **Its S number does not measure colorfulness.** `#F4EFE7` reports 37% saturation and is an off-white. Whether a value counts as neutral is a question for chroma in OKLCH or LCH, or for the plain distance between the channels. Our own reflex detector had to be rebuilt on that basis.
+- **Its S number does not measure colorfulness.** `#F4EFE7` reports 37% saturation and is an off-white. Whether a value counts as neutral is a question for chroma in OKLCH or LCH, or for the plain distance between the channels.
 - **Holding S while L moves breaks both ends.** Bring saturation down as the steps approach white and black, or the extremes drift out of the family.
 
 Where the stack supports OKLCH, work there: lightness moves without dragging colorfulness along. On Android, hand a seed color to the tonal palette generator instead of picking tones one at a time. Restating a palette that already works in a newer notation is not an improvement.
