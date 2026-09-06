@@ -1,6 +1,9 @@
 # Training material: local only, never published
 training/
 
+# Scratch project for trying the skill: local only, never published
+example/
+
 # Dependencies
 node_modules/
 .yarn/*

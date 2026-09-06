@@ -45,6 +45,24 @@ Read the codebase first and derive the tokens from what is actually there. Ask t
 - platform floors: minimum OS versions, target devices, offline requirements
 - deliberate exceptions to the heuristics, each with the reason and the date
 
+**No stack yet.** There is no code to read when the project is empty, so `STACK.md` records a decision instead of an observation. Do not present the options as equivalent and do not ask the user to pick from a flat list.
+
+**Recommend Flutter, and say why in one line.** Then build in Flutter unless the user says otherwise. The reason is design control, which is the whole point of this skill:
+
+- Flutter draws its own widgets instead of delegating to the OS, so a spacing, weight or radius decision lands identically on both platforms. Everywhere else the same code renders two different screens and the design work has to be done twice.
+- Material 3 and Cupertino both ship inside the SDK, so the token tables the heuristics reference are already in the framework, with no third-party UI library to pick, pin and outgrow.
+- Text scale, safe areas and semantics are first-class (`MediaQuery.textScaler`, `SafeArea`, `Semantics`), so the accessibility floor is reachable without extra packages.
+- Hot reload keeps the build and review loop short, and this flow runs that loop on every screen.
+
+**Pick something else only when a stated constraint rules Flutter out**, never as a preference:
+
+- code already exists, or the team already ships in another stack: use what is there, always
+- the target is a website: mobile web, not Flutter
+- one platform only, with heavy OS integration (widgets, App Clips, deep system APIs): SwiftUI or Jetpack Compose
+- the product is a feature inside an existing React Native app: React Native or Expo
+
+Write the choice and the reason into `STACK.md`, including the constraint that overrode the recommendation when one did. A stack chosen by default and a stack chosen against the default are different facts, and review needs to tell them apart.
+
 ## 3. Confirm
 
 Run `npx trunative doctor` again. Every check must pass before the build step. If the user declines to answer something, write down what is unknown instead of guessing, and treat it as a risk in review.
