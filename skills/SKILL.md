@@ -18,6 +18,14 @@ Follow it in order. Never skip init, never end on build.
 3. **review**, read `flow/review.md`. Runs on the code that was just written.
 4. **loop**, back to build while review reports violations. Stop when review comes back clean.
 
+## Heuristics
+
+One concern per file. The list is what exists, not what to read.
+
+| File | Covers |
+|---|---|
+| `heuristics/color.md` | palette roles and tokens, the default palette, ramps, the accent, gradients, dark theme, contrast, color as state |
+
 ## Loading rules
 
 - Load only the heuristics the current screen touches. Reading the whole folder wastes the context that the actual code needs.
