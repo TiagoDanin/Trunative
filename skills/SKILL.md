@@ -24,7 +24,7 @@ One concern per file. The list is what exists, not what to read.
 
 | File | Covers |
 |---|---|
-| `heuristics/color.md` | palette roles and tokens, the default palette, ramps, the accent, gradients, dark theme, contrast, color as state |
+| `heuristics/colors.md` | palette roles and tokens, the default palette, ramps, the accent, gradients, dark theme, contrast, color as state |
 
 ## Loading rules
 
