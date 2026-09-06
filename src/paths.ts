@@ -1,0 +1,30 @@
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+/** Root of the installed trunative package, resolved from this module. */
+export const packageRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
+
+/** The skill as it ships inside the package. */
+export const packagedSkillDir = join(packageRoot, 'skills')
+
+/** Where trunative keeps its own files inside a consumer project. */
+export const CONFIG_DIR = '.trunative'
+
+export const LOCK_FILE = 'skill.lock'
+
+/**
+ * Agent roots we install into. Only the ones that already exist in the project
+ * are used, so we never create a directory for an agent the user does not have.
+ */
+export const AGENT_ROOTS = ['.claude', '.agents', '.antigravity', '.codex', '.opencode']
+
+/** Used when the project has no agent directory at all. */
+export const DEFAULT_AGENT_ROOT = '.claude'
+
+/**
+ * Both places a brief may live, in priority order. The bare filename is
+ * supported so a project can keep the briefs next to its README.
+ */
+export function briefCandidates(cwd: string, file: string): string[] {
+	return [join(cwd, CONFIG_DIR, file), join(cwd, file)]
+}
