@@ -26,6 +26,7 @@ One concern per file. The list is what exists, not what to read.
 |---|---|
 | `heuristics/colors.md` | palette roles and tokens, the default palette, ramps, the accent, gradients, dark theme, contrast, color as state |
 | `heuristics/typography.md` | the platform type scale, roles per screen, weight and its distribution, typeface choice, measure, text scaling, real strings |
+| `heuristics/touch.md` | hit areas and spacing, thumb reach, where destructive actions go, press feedback, gestures and system edges, the keyboard as layout |
 
 ## Loading rules
 
