@@ -1,7 +1,6 @@
 {
   "name": "trunative",
   "version": "1.0.0",
-  "private": true,
   "description": "A mobile-only design skill for AI coding agents",
   "license": "MIT",
   "author": "Tiago Danin",
@@ -10,11 +9,20 @@
     "url": "https://github.com/TiagoDanin/Trunative.git"
   },
   "type": "module",
+  "bin": {
+    "trunative": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "skills"
+  ],
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "yarn build"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

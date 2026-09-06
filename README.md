@@ -21,16 +21,30 @@ Trunative encodes the constraints that mobile actually imposes, such as reach, t
 ## Installation
 
 ```sh
-npx skills add TiagoDanin/Trunative
+npx trunative install
 ```
 
-This installs the skill into your agent's skills directory (`.claude/skills/`, `.agents/skills/`, and others, depending on which agents are present).
+This copies the skill into every agent directory the project already has (`.claude`, `.agents`, `.antigravity`, `.codex`, `.opencode`), and writes `.trunative/skill.lock` so the agent can tell when its copy is out of date.
+
+Then, before the agent starts:
+
+```sh
+npx trunative doctor
+```
+
+It checks that the project has a product brief and a design brief (`.trunative/PRODUCT.md` and `.trunative/DESIGN.md`, or the same names at the root), and that the installed skill matches the current version. It reports and exits 1, it never writes the briefs: that is the agent's job in the init step.
+
+The skills.sh CLI works too, without the lockfile and the version check:
+
+```sh
+npx skills add TiagoDanin/Trunative
+```
 
 To install manually, copy the `skills/` folder into your agent's skills directory:
 
 ```sh
 git clone https://github.com/TiagoDanin/Trunative.git
-cp -r Trunative/skills .claude/skills/mobile-design
+cp -r Trunative/skills .claude/skills/trunative
 ```
 
 ## Usage
@@ -46,7 +60,7 @@ Review this screen does it work one-handed?
 To force it, name it:
 
 ```
-Use the mobile-design skill on src/screens/Checkout.tsx
+Use the trunative skill on src/screens/Checkout.tsx
 ```
 
 The agent then:
