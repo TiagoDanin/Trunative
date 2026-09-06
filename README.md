@@ -26,11 +26,11 @@ npx skills add TiagoDanin/Trunative
 
 This installs the skill into your agent's skills directory (`.claude/skills/`, `.agents/skills/`, and others, depending on which agents are present).
 
-To install manually, copy `skills/mobile-design/` into your agent's skills directory:
+To install manually, copy the `skills/` folder into your agent's skills directory:
 
 ```sh
 git clone https://github.com/TiagoDanin/Trunative.git
-cp -r Trunative/skills/mobile-design .claude/skills/
+cp -r Trunative/skills .claude/skills/mobile-design
 ```
 
 ## Usage

@@ -14,7 +14,6 @@
     "node": ">=20"
   },
   "scripts": {
-    "validate": "tsx src/validate.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
