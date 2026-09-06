@@ -107,6 +107,7 @@ export async function doctor(options: DoctorOptions): Promise<number> {
 	const checks: Check[] = [
 		await checkBrief(cwd, 'PRODUCT.md', 'product brief'),
 		await checkBrief(cwd, 'DESIGN.md', 'design brief'),
+		await checkBrief(cwd, 'STACK.md', 'stack brief'),
 		...(await checkSkill(cwd, version)),
 	]
 

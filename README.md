@@ -32,7 +32,13 @@ Then, before the agent starts:
 npx trunative doctor
 ```
 
-It checks that the project has a product brief and a design brief (`.trunative/PRODUCT.md` and `.trunative/DESIGN.md`, or the same names at the root), and that the installed skill matches the current version. It reports and exits 1, it never writes the briefs: that is the agent's job in the init step.
+It checks that the project has its three briefs, in `.trunative/` or at the root, and that the installed skill matches the current version:
+
+- `PRODUCT.md`, who uses the app and what it is for.
+- `DESIGN.md`, the visual identity, in the [design.md format](https://github.com/google-labs-code/design.md) from Google Labs.
+- `STACK.md`, the codebase itself: UI primitives, navigation, components, accepted exceptions.
+
+The doctor reports and exits 1, it never writes the briefs. Writing them is the agent's job in the init step.
 
 The skills.sh CLI works too, without the lockfile and the version check:
 

@@ -20,7 +20,7 @@ A rule you did not check is a violation. Do not report a rule as passing without
 
 List violations ordered by what hurts the user most, not by how easy they are to fix. For each one, name the fix. Say plainly if the screen is unusable one-handed, loses data on interruption, or has no failure state, and do not bury it under smaller findings.
 
-If a violation is a deliberate exception recorded in `DESIGN.md`, mark it as accepted and move on.
+If a violation is a deliberate exception recorded in `STACK.md`, mark it as accepted and move on.
 
 ## 4. Loop
 

@@ -22,7 +22,7 @@ Follow it in order. Never skip init, never end on build.
 
 - Load only the heuristics the current screen touches. Reading the whole folder wastes the context that the actual code needs.
 - Read `references/` on demand, for one specific number or API. Never as background.
-- `PRODUCT.md` and `DESIGN.md` in the project override nothing in `heuristics/`, but they decide which rules apply and record the exceptions that were accepted on purpose.
+- The project briefs override nothing in `heuristics/`, but they decide which rules apply and record the exceptions accepted on purpose. `PRODUCT.md` is who uses this and for what, `DESIGN.md` is the visual identity in the [design.md format](https://github.com/google-labs-code/design.md), and `STACK.md` is this codebase: primitives, navigation, components, exceptions.
 
 ## Non-negotiable
 

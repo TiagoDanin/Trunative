@@ -14,11 +14,11 @@ If the screen has more than one primary action, it is more than one screen. Spli
 
 ## 2. Load only what applies
 
-Read `DESIGN.md` for the project's primitives and tokens, then load from `heuristics/` only the rules this screen actually touches. Do not read the whole folder. Use `references/` on demand, for a specific number or platform API, never as background reading.
+Read `DESIGN.md` for the tokens and `STACK.md` for the primitives that reach them, then load from `heuristics/` only the rules this screen actually touches. Do not read the whole folder. Use `references/` on demand, for a specific number or platform API, never as background reading.
 
 ## 3. Write it
 
-- Reuse the components and tokens `DESIGN.md` lists. New primitives need a reason.
+- Reuse the tokens `DESIGN.md` defines and the components `STACK.md` lists. A raw value where a token exists is a defect, and a new primitive needs a reason.
 - Apply the heuristics as you write, not as a pass afterwards.
 - Where a heuristic cannot be met, leave the code correct and record the conflict for review. Do not silently drop the rule.
 
