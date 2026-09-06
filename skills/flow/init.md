@@ -2,6 +2,22 @@
 
 Runs once per project, and again whenever `doctor` fails. Nothing else in the flow starts before this passes.
 
+## Asking
+
+This step runs on answers, not on guesses. Every decision below that the code cannot settle is a question for the user, asked one at a time, in the surface your harness gives you.
+
+<if:claude>
+Ask with the AskUserQuestion tool. One decision per question, a short `header`, and the recommended option first in the list with `(recommended)` at the end of its label. Write each option as what it costs the design, not as what it is.
+<if:codex>
+Ask with this harness's question tool when the build exposes one, in the same shape: one decision, recommended option first, labelled as the recommendation. When it does not, ask directly in plain text, ending in a question mark.
+<if:antigravity>
+Ask with this harness's question tool when the build exposes one, in the same shape: one decision, recommended option first, labelled as the recommendation. When it does not, ask directly in plain text, ending in a question mark.
+<else>
+Ask the user directly, in plain text, ending in a question mark. One decision per message, the options listed under the question, the recommended one first and named as the recommendation. Wait for the answer before writing anything.
+<endif>
+
+The user chooses. A recommendation is a default worth stating, not a decision already taken, and an answer that goes against it wins with no argument back.
+
 ## 1. Run the doctor
 
 ```sh
@@ -45,23 +61,23 @@ Read the codebase first and derive the tokens from what is actually there. Ask t
 - platform floors: minimum OS versions, target devices, offline requirements
 - deliberate exceptions to the heuristics, each with the reason and the date
 
-**No stack yet.** There is no code to read when the project is empty, so `STACK.md` records a decision instead of an observation. Do not present the options as equivalent and do not ask the user to pick from a flat list.
+**No stack yet.** There is no code to read when the project is empty, so `STACK.md` records a decision instead of an observation. Ask the user, following `## Asking` above. Never pick the stack silently, and never lay the options out as equivalent: a flat list of frameworks is the absence of a recommendation.
 
-**Recommend Flutter, and say why in one line.** Then build in Flutter unless the user says otherwise. The reason is design control, which is the whole point of this skill:
+**Flutter is the recommended option, and it goes first with the reason in one line.** The reason is design control, which is the whole point of this skill:
 
 - Flutter draws its own widgets instead of delegating to the OS, so a spacing, weight or radius decision lands identically on both platforms. Everywhere else the same code renders two different screens and the design work has to be done twice.
 - Material 3 and Cupertino both ship inside the SDK, so the token tables the heuristics reference are already in the framework, with no third-party UI library to pick, pin and outgrow.
 - Text scale, safe areas and semantics are first-class (`MediaQuery.textScaler`, `SafeArea`, `Semantics`), so the accessibility floor is reachable without extra packages.
 - Hot reload keeps the build and review loop short, and this flow runs that loop on every screen.
 
-**Pick something else only when a stated constraint rules Flutter out**, never as a preference:
+**A stated constraint moves the recommendation off Flutter**, and only a stated one does. Never a preference of yours:
 
-- code already exists, or the team already ships in another stack: use what is there, always
+- code already exists, or the team already ships in another stack: use what is there, and do not ask at all
 - the target is a website: mobile web, not Flutter
 - one platform only, with heavy OS integration (widgets, App Clips, deep system APIs): SwiftUI or Jetpack Compose
 - the product is a feature inside an existing React Native app: React Native or Expo
 
-Write the choice and the reason into `STACK.md`, including the constraint that overrode the recommendation when one did. A stack chosen by default and a stack chosen against the default are different facts, and review needs to tell them apart.
+Write the answer and the reason into `STACK.md`, naming the constraint that moved the recommendation when one did. A stack chosen off the recommendation and a stack chosen against it are different facts, and review needs to tell them apart.
 
 ## 3. Confirm
 

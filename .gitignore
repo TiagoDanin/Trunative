@@ -4,6 +4,9 @@ training/
 # Scratch project for trying the skill: local only, never published
 example/
 
+# Working notes: local only, never published
+todo.md
+
 # Dependencies
 node_modules/
 .yarn/*
