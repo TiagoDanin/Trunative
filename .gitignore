@@ -1,0 +1,23 @@
+# Training material: local only, never published
+training/
+
+# Dependencies
+node_modules/
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+yarn-error.log
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
