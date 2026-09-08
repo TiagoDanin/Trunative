@@ -34,7 +34,14 @@ One concern per file. The list is what exists, not what to read.
 | `heuristics/forms.md` | one column, field count, persistent labels, input type and autofill, when to validate, error recovery, what survives backgrounding, submit |
 | `heuristics/states.md` | the full state set, loading and skeletons, the three empties, error classes and retry, offline and queued work, stale and partial data, permission, interruption |
 
-Lookup material, read on demand for one value and never as background: `references/type-scales.md`, `references/fonts.json`, `references/input-fields.md`, `references/navigation-containers.md`.
+| `heuristics/motion.md` | what earns an animation, the platform's own transitions, springs against durations, choreography, loops, motion that blocks input, cheap properties, reduced motion |
+| `heuristics/permissions.md` | the inventory, asking for less, scope, the rationale before the prompt, purpose strings, the three answers to a prompt, re-checking, coercion, tracking |
+| `heuristics/onboarding.md` | launch and splash, how many screens, explaining in place, what to defer, the order of the asks, looking before signing up, account obligations, the first real action, resuming |
+| `heuristics/localization.md` | no hardcoded strings, direction and what never mirrors, text expansion, locale formats, plurals, script coverage, personal data shapes, collation, per-app language, pseudolocalisation |
+| `heuristics/accessibility.md` | names, roles and values, hidden decoration, focus order, announcements, focus containment, gesture alternatives, alternative input, the system settings, media, how to test it |
+| `heuristics/notifications.md` | what earns an interruption, channels and categories, interruption level, quiet delivery, the lock screen, destination, actions, the shade, badges, the in-app equivalent |
+
+Lookup material, read on demand for one value and never as background: `references/type-scales.md`, `references/fonts.json`, `references/input-fields.md`, `references/navigation-containers.md`, `references/motion-tokens.md`.
 
 ## Loading rules
 
