@@ -70,15 +70,14 @@ A gesture that starts at a screen edge is competing with the OS and will lose. O
 - A gesture nobody discovers is a feature nobody has. Leave a partial reveal at rest, a grabber, or a one-time hint.
 - Give a swipe region real height, and keep two swipeable things from overlapping where their gestures begin.
 
-Edge-to-edge is now the default on recent Android targets, so content runs underneath the system bars. A control pinned to the bottom edge without inset handling ends up beneath the gesture bar: visible, and not tappable.
+Content runs underneath the system bars on current Android targets, so a control pinned to the bottom edge without inset handling ends up beneath the gesture strip: visible, and not tappable. The inset geometry itself is `layout-insets`.
 
 ## `touch-keyboard` Half the screen, arriving without warning
 
 The keyboard is not an overlay that happens to the screen, it is part of the screen for as long as someone is typing, and it deserves the same design attention as anything else that takes up that much room.
 
 - The focused field stays visible when it opens. Test the last field of a form, not the first: the first one always passes.
-- Set the keyboard type per field: email, phone, number, decimal, URL. A phone number field showing a full QWERTY is a defect, not a detail.
-- Give the return key its job: next, done, search, go.
+- Which keyboard opens, and what its return key does, is decided per field rather than globally. `form-input` covers that in full.
 - A fixed bottom action either rises with the keyboard or is reachable above it. Leaving it underneath means the user types and then cannot submit.
 
 ## Check
