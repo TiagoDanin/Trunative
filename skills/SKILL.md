@@ -28,6 +28,13 @@ One concern per file. The list is what exists, not what to read.
 | `heuristics/typography.md` | the platform type scale, roles per screen, weight and its distribution, typeface choice, measure, text scaling, real strings |
 | `heuristics/touch.md` | hit areas and spacing, thumb reach, where destructive actions go, press feedback, gestures and system edges, the keyboard as layout |
 | `heuristics/buttons.md` | one primary per screen, the emphasis ladder, labels, button states, the FAB, chips, tabs and segmented controls |
+| `heuristics/layout.md` | insets and safe areas, the spacing scale, grouping and density, one column, the width range, fixed chrome and overlays, the first screenful, orientation |
+| `heuristics/navigation.md` | how deep the hierarchy goes, choosing between screen, tab, modal and sheet, back and up, deep links, per-destination stacks, search, state after interruption |
+| `heuristics/lists.md` | virtualisation, row density and the row as a target, separators, swipe actions, images, sections, the end of the list, refresh, selection |
+| `heuristics/forms.md` | one column, field count, persistent labels, input type and autofill, when to validate, error recovery, what survives backgrounding, submit |
+| `heuristics/states.md` | the full state set, loading and skeletons, the three empties, error classes and retry, offline and queued work, stale and partial data, permission, interruption |
+
+Lookup material, read on demand for one value and never as background: `references/type-scales.md`, `references/fonts.json`, `references/input-fields.md`, `references/navigation-containers.md`.
 
 ## Loading rules
 
