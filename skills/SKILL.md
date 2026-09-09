@@ -18,6 +18,8 @@ Follow it in order. Never skip init, never end on build.
 3. **review**, read `flow/review.md`. Runs on the code that was just written.
 4. **loop**, back to build while review reports violations. Stop when review comes back clean.
 
+Outside the loop, on request: **design review**, read `flow/design-review.md`. It grades a finished screen rule by rule and writes a score that the next run is compared against. It runs on a screen, never on a diff, and it is the only step that produces a number. Review stays the gate.
+
 ## Heuristics
 
 One concern per file. The list is what exists, not what to read.

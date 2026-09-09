@@ -28,3 +28,9 @@ If a violation is a deliberate exception recorded in `STACK.md`, mark it as acce
 - No violations: stop. Report what was built, which rules were checked, and which exceptions were accepted.
 
 Two consecutive reviews finding the same violation means the fix is not working. Say so and ask the user, instead of looping a third time.
+
+## Not this step's job
+
+Review is the gate and it does not grade. It never prints a score, a total or a trend, and it does not compare this run against the last one. The graded audit is `flow/design-review.md`, it runs on a finished screen rather than on a diff, and it is the only place a number is produced.
+
+The two use the same rule ids and the same `Check` lines, so their verdicts are locked together: a violation here is a 1 or a 2 there, a pass here is a 3 or above. When the audit grades below 3 something this step passed, the audit wins, because this step read a file and the audit watched the screen.
