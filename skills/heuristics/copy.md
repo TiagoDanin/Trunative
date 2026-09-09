@@ -4,7 +4,7 @@ Most of what an app says, it says in fewer than ten words, to someone reading at
 
 This file owns wording. Whether a message exists at all belongs to the file that owns the surface it lands on. Everything here is a string in the catalogue rather than a literal in a component (`l10n-strings`), which is also what makes most of these rules searchable.
 
-## `copy-budget` Decide the count before writing the sentence
+## <Rule id="copy-budget" evidence="device" description="Decide the count before writing the sentence" />
 
 Length is a decision taken before the wording, and it is a count.
 
@@ -17,7 +17,7 @@ Each fact appears once across the group. A title that names the situation and a 
 
 Count the source string, because that is the shortest form it will ever take: translation lengthens it (`l10n-expansion`) and the reader's text size stretches it again (`type-scaling`). Going under the meaning is a different defect, not a stricter version of this one. The test is whether the reader can still act after the cut.
 
-## `copy-first-word` The first two words decide whether the rest is read
+## <Rule id="copy-first-word" description="The first two words decide whether the rest is read" />
 
 A list row, a settings label, a section header and a notification line are all read inside a column of neighbours that begin the same way. Scanning stops at the first two words.
 
@@ -26,7 +26,7 @@ A list row, a settings label, a section header and a notification line are all r
 - A row that is a destination never opens with a generic verb: Set, Change, Edit, Modify, Manage, Use, Select, Choose. The row leads somewhere, so the verb spends both scanned words saying nothing. A menu or action sheet row is the opposite case, since there the verb is the whole content, and `button-label` governs it.
 - Neutral beats negated. Block, not Don't allow.
 
-## `copy-voice` Second person, present tense, active, and nobody is "the user"
+## <Rule id="copy-voice" description="Second person, present tense, active, and nobody is 'the user'" />
 
 - The reader is you. Not the user, not I or my. A possessive is usually dead weight, since Favourites says what Your favourites says in one word instead of two.
 - A control that names a thing is a noun: Notifications, not Notify me. Keep sentences for where the app is genuinely speaking to the reader.
@@ -36,7 +36,7 @@ A list row, a settings label, a section header and a notification line are all r
 - Humour is weighed rather than banned, and it costs more than it looks: it travels badly between cultures and lands on a stranger reading one line off a locked screen. Keep it out of errors, permission asks, money and destructive confirmations entirely.
 - No gendered reference the sentence does not need. Write the plural or the role, because a language that inflects for gender has to resolve one the source string invented for no reason. A disability never stands in for a fault or a weakness.
 
-## `copy-tells` The string nobody decided the wording of
+## <Rule id="copy-tells" description="The string nobody decided the wording of" />
 
 A string whose wording was filled in rather than chosen has a shape, and it is the same shape across every app that shipped one. All of it is searchable in the catalogue, which is what makes it a rule instead of a taste.
 
@@ -46,7 +46,7 @@ A string whose wording was filled in rather than chosen has a shape, and it is t
 - **Chat leftovers**: Great question, I hope this helps, Let me know if, Here is what you need to know. They arrive in apps whose strings were drafted in a chat window, and again in any feature that renders model output as interface.
 - **Not X but Y**, where the negative half names something nobody claimed. "Not just a list, but a workspace" spends a line of a narrow screen arguing with a reader who was not arguing.
 
-## `copy-error` Name the failure, rule on the retry, end on the fix
+## <Rule id="copy-error" description="Name the failure, rule on the retry, end on the fix" />
 
 Three answers in at most two sentences, and they are owed wherever an operation the app ran has failed: a request, a write, a sync. A field rejecting what was just typed is a single instruction instead, and `form-error` owns it. `state-error` sorts the failure classes and forbids naming a cause the app did not verify, and `fb-place` decides where the message lands. This rule is the sentence itself.
 
@@ -58,7 +58,7 @@ Three answers in at most two sentences, and they are owed wherever an operation 
 - No code inside the sentence. An identifier that support will ask for is a secondary line the reader can copy.
 - Never spell out a settings path. Name the one thing to turn on and let the control beside it open the page (`state-permission`). A written path is wrong the moment the OS renames a screen, and its segments are the system's strings rather than the app's, so nothing translates them.
 
-## `copy-jargon` The codebase does not get to speak
+## <Rule id="copy-jargon" description="The codebase does not get to speak" />
 
 All of this is greppable in the string catalogue, which is why it is a rule rather than an opinion.
 
@@ -66,7 +66,7 @@ All of this is greppable in the string catalogue, which is why it is a rule rath
 - Vocabulary carried in from the code that nobody wants on a screen: blacklist, whitelist, kill, sanity check, master and slave, dummy. Every one has a plain replacement that is also shorter.
 - An acronym stays only where the audience in `PRODUCT.md` already uses it. Anything else is spelled out at its first appearance on that surface, because the phone offers nowhere to look it up.
 
-## `copy-terms` One name per thing, and it is the reader's name for it
+## <Rule id="copy-terms" evidence="device" description="One name per thing, and it is the reader's name for it" />
 
 The same object gets named in a tab, a screen title, a notification and a confirmation, and no two of those are ever on screen together. The drift is invisible to whoever writes it and obvious to whoever uses the app.
 
@@ -76,7 +76,7 @@ The same object gets named in a tab, a screen title, a notification and a confir
 - A confirmation repeats the verb of the control that raised it, so the reader is not matching two words to one action.
 - The accessible name agrees with the visible label (`a11y-alt-input`).
 
-## `copy-case` Case is picked per element type, once, and the platform overrules it in four places
+## <Rule id="copy-case" description="Case is picked per element type, once, and the platform overrules it in four places" />
 
 iOS fixes four of them, and they are not the app's to choose: a button title is title case with no ending punctuation; an alert message is a complete sentence in sentence case with a full stop; a usage description is the same; an alert title takes sentence case and a full stop when it is a sentence, title case and no punctuation when it is a fragment.
 
@@ -86,7 +86,7 @@ Material's own convention is sentence case for titles, headings, labels and menu
 
 Material leaves a trap underneath that. The legacy Material 2 button text appearance sets `android:textAllCaps` to true and uppercases whatever string was authored, while every Material 3 typescale sets it to false. Resolve whether the theme uppercases the label before concluding that it renders as written. Capitals are for a short label at most (`type-strings`), and a theme that uppercases is applying them to translations nobody has looked at.
 
-## `copy-absence` Text standing where content is not
+## <Rule id="copy-absence" description="Text standing where content is not" />
 
 Three strings do a different job from the sentences around them, and each has a shape of its own.
 
@@ -94,7 +94,7 @@ Three strings do a different job from the sentences around them, and each has a 
 - **A line where content is missing names its cause and ends on a verb.** `state-empty` separates the three empties; the two that have a next move end on the verb of the control that takes it (`search-zero`, `list-end`).
 - **A waiting line says which operation is running**, and moves a determinate bar only where the app holds a real figure to move it with. `state-loading` owns when that line appears and what a long wait owes on top of it.
 
-## `copy-numbers` The figure, not the word
+## <Rule id="copy-numbers" description="The figure, not the word" />
 
 A digit is scanned and a spelled-out number is read, and scanning is all a phone gets.
 
@@ -103,7 +103,7 @@ A digit is scanned and a spelled-out number is read, and scanning is all a phone
 - The locale formats it and pluralises it (`l10n-format`, `l10n-plurals`), and `data-precision` rules how many digits a figure carries and where the rounding lives.
 - The unit travels with the figure and is not dropped to save width. Figures stacked in a column line up on tabular figures instead (`type-strings`); this rule is the figure inside a sentence.
 
-## `copy-claims` A number that describes the product is derived, not typed
+## <Rule id="copy-claims" description="A number that describes the product is derived, not typed" />
 
 Copy that states how much the product gives (how many items, how much storage, how many devices, how long the trial runs, what the limit is) is a promise, and it is checkable against the code. Typed into the view as part of the sentence, it is correct exactly once: on the day it was written.
 
@@ -118,7 +118,7 @@ What it looks like in a real codebase: the same quantity living as a literal ins
 
 Grep the view layer for digits inside display strings. Each hit is a claim, and each claim has an owner in the code or it is a defect.
 
-## `copy-rationale` The permission sentence has a punctuation rule, and one place where longer wins
+## <Rule id="copy-rationale" description="The permission sentence has a punctuation rule, and one place where longer wins" />
 
 `perm-rationale` owns the screen and `perm-purpose-string` owns what the sentence claims. Three things sit on top of those.
 

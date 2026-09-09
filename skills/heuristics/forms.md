@@ -6,7 +6,7 @@ The keyboard, its type per field and its return key belong to `touch-keyboard`. 
 
 Per-field keyboard types, return keys and autofill names for each stack are in `references/input-fields.md`, to be opened for one lookup.
 
-## `form-column` One field per row, at the full width of the column
+## <Rule id="form-column" description="One field per row, at the full width of the column" />
 
 Fields stack in a single column. Two fields side by side cost the reader on three counts, all of them mechanical: the eye leaves the vertical line it was following, each field loses half an already narrow width, and the label over a half-width field is the first thing to wrap once text scales up, per `type-scaling`.
 
@@ -14,7 +14,7 @@ One exception, and it is a test rather than a list. Two controls may share a row
 
 Width carries no meaning here. On a wide form a short box hints at a short answer; in a single phone column every field is the same width, so the hint has to come from the keyboard, the mask and the maximum length instead.
 
-## `form-count` Every field is a keyboard round trip
+## <Rule id="form-count" description="Every field is a keyboard round trip" />
 
 An average checkout asks for eleven fields and can be answered in six to eight. Removing one field is worth more than styling all of them.
 
@@ -24,7 +24,7 @@ An average checkout asks for eleven fields and can be answered in six to eight. 
 - Prefill anything already known, and leave it editable.
 - Every hardcoded default is named in the code alongside the reason it is the default. A wrong default is worse than an empty field, because a filled field looks answered and gets scrolled past, and a default nobody can justify is an answer the user never reads.
 
-## `form-label` The label stays on screen while the field is being filled
+## <Rule id="form-label" description="The label stays on screen while the field is being filled" />
 
 A placeholder is not a label. It leaves on the first keystroke, which is exactly when someone looks back to check what they are answering, and on a phone the field and the keyboard are often the whole screen, so there is nothing above to look back at. It also reads as an answer to anyone scanning, and it is the weakest thing a screen reader can be handed. Apple's guidance allows a placeholder to stand in for the label where it is sufficient; on a form it is not, for the reasons above, and this rule overrides it.
 
@@ -34,13 +34,13 @@ A placeholder is not a label. It leaves on the first keystroke, which is exactly
 - Where a placeholder remains, it shows an example of the value and is visibly lighter than entered text.
 - Format rules, eligibility and the reason for a sensitive question go in helper text under the field, under 100 characters, and stay visible while the field is being typed into. Format hidden in a placeholder is gone at the moment it is needed.
 
-## `form-required` Mark the minority, and mark it with a word
+## <Rule id="form-required" description="Mark the minority, and mark it with a word" />
 
 If most fields are required, mark the optional ones. If most are optional, mark the required ones. Marking every row costs the reader the scan and tells them nothing.
 
 Use the word "Optional" rather than an asterisk alone. A phone form is read one field at a time, and the legend that explains the asterisk has scrolled off the top by the second question, so the mark has to carry its meaning where it stands. An asterisk is also announced as a star. The mark goes in the label, never in the placeholder, where it disappears with everything else.
 
-## `form-input` Configure the field before the finger arrives
+## <Rule id="form-input" description="Configure the field before the finger arrives" />
 
 Each field declares what it holds, and the rest follows from that declaration. The keyboard type and the return key it produces are `touch-keyboard`; what the field does with what arrives is here.
 
@@ -51,7 +51,7 @@ Each field declares what it holds, and the rest follows from that declaration. T
 - Focus a field on open only when the screen exists for that one field, such as search or a code. Anywhere else the keyboard covers the form before it has been read.
 - On mobile web the field's own text size is a layout decision. Safari on iOS zooms the page into any field it is about to focus whose text is under 16px, and it does not zoom back out, so the user finishes the form on a page wider than the screen with the submit button off to one side. Set 16px or larger on the field itself. The viewport is the wrong lever for this: Safari has ignored `user-scalable`, `minimum-scale` and `maximum-scale` on a web page since iOS 10, precisely so that a page cannot take zoom away from the user, and where those values do still apply, which is a web view embedded in an app, what they buy is a page nobody can enlarge.
 
-## `form-autofill` The fastest field is the one the platform fills
+## <Rule id="form-autofill" evidence="device" description="The fastest field is the one the platform fills" />
 
 Both platforms will fill a whole form from the password manager, the contact card, the wallet and an arriving SMS, and none of it happens unless each field declares its content type. This is the highest value line in a form and it is the line generated code leaves out.
 
@@ -62,7 +62,7 @@ Both platforms will fill a whole form from the password manager, the contact car
 - A new password field declares itself as new, so the manager offers to generate and store one instead of watching someone invent it.
 - Paste is never blocked on a password, a one time code or a card field, and no field strips or reformats a pasted value on arrival. Blocking paste defeats the manager every content type above was declared for.
 
-## `form-validate` Not while they are still typing
+## <Rule id="form-validate" description="Not while they are still typing" />
 
 Per-keystroke validation reports an error on every value on its way to being right: an email address is invalid until its final character. Validate when the field loses focus, or after 500 to 1000ms without typing.
 
@@ -72,7 +72,7 @@ Per-keystroke validation reports an error on every value on its way to being rig
 - A field that cannot hold an invalid value needs no validation at all, which is why the mask and the picker in `form-input` are the cheaper fix.
 - Never clear a field because it failed. Retyping a value on a phone is a punishment for a typo.
 
-## `form-error` The message sits with the field it is about
+## <Rule id="form-error" description="The message sits with the field it is about" />
 
 The message goes under its field, on screen at the same time as the field, with the first failing field scrolled into view and focused when a submit fails. A summary above the form is allowed in addition to those messages and never in place of them: on its own it is a list the user has to scroll away from before they can act on it.
 
@@ -80,7 +80,7 @@ The message goes under its field, on screen at the same time as the field, with 
 - The error is not a color. It carries an icon or the message itself, per `color-not-alone`, and the label stays readable rather than being repainted red.
 - One message per field, replacing the helper text rather than stacking above it, so the row does not grow and push the submit control off screen.
 
-## `form-persist` The form outlives the process
+## <Rule id="form-persist" evidence="device" description="The form outlives the process" />
 
 A phone form is interrupted by definition: the code arrives in another app, a call lands, the OS reclaims the process while the user is in their password manager. Returning to an empty form is the most expensive failure in this file.
 
@@ -88,7 +88,7 @@ A phone form is interrupted by definition: the code arrives in another app, a ca
 - The field that had focus comes back too, so the keyboard reopens on the question that was being answered.
 - A form of six or more questions writes a draft it offers back on the next visit, or `STACK.md` records the decision not to. Losing it silently is neither.
 
-## `form-steps` A step is a screen, and back moves one step
+## <Rule id="form-steps" description="A step is a screen, and back moves one step" />
 
 Splitting a long form into steps only helps if moving back through them works the way the phone already works.
 
@@ -97,7 +97,7 @@ Splitting a long form into steps only helps if moving back through them works th
 - A step re-entered still shows what was typed into it, forwards as well as back.
 - The last step names what submitting will do, so nobody presses it to find out.
 
-## `form-submit` One action, and the input survives its failure
+## <Rule id="form-submit" description="One action, and the input survives its failure" />
 
 One submit per form, with its emphasis from `button-one-primary` and its in-flight state from `button-state`.
 

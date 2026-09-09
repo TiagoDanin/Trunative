@@ -6,7 +6,7 @@ Colors already written into `DESIGN.md` are settled. This file covers how they a
 
 When the screen already exists, work out three things before touching a value: which colors someone chose on purpose, which are placeholders nobody ever defended, and whether the request is a color change or an identity change. The last one is an edit to `DESIGN.md` and needs the user, not a quiet rewrite inside a component. A screen built entirely from neutrals with one blue button is usually not restraint: it is hierarchy and state that never got assigned a color.
 
-## `color-roles` Reach color through the role, not the value
+## <Rule id="color-roles" description="Reach color through the role, not the value" />
 
 Decide what the screen needs a color for before deciding which color: the base surface and the ones raised above it, the text that sits on each of those at both levels of emphasis, the interactive color, focus and selection, dividers and outlines, the four status meanings, and any series or scale the screen plots.
 
@@ -18,7 +18,7 @@ Every stack already names those:
 
 A hex written straight into a component looks like a shortcut and behaves like a bug. It stays put when the system switches to dark, it ignores Increase Contrast on iOS and high contrast text on Android, and nothing can reach it when the theme is retuned later. Retheming should touch the role table and nothing else.
 
-## `color-derived` The palette that shows up by itself is not a choice
+## <Rule id="color-derived" description="The palette that shows up by itself is not a choice" />
 
 Two of them show up. Indigo through violet under a gradient is the median of everything a model read, Tailwind's default button included. Warm cream with a rust accent is what appears the moment violet is forbidden: take the violet away and it comes back as cream in six screens out of ten, the same reflex in a different coat.
 
@@ -28,7 +28,7 @@ Neither family is banned. What is banned is being unable to say, in terms of thi
 - Write the one sentence that says what the palette follows from. If it would fit another app just as well, that is decoration talking.
 - Look at the neutrals alone before handing off. Greys that all lean toward the accent were generated from the accent instead of chosen.
 
-## `color-ramp-hsl` Move one axis at a time
+## <Rule id="color-ramp-hsl" description="Move one axis at a time" />
 
 Build the ramp in HSL: hold the hue, walk the lightness. Lightness is the axis contrast lives on, so every step becomes something you can defend. Surfaces go up, text and borders go down, and the family stays recognisable because H never moved.
 
@@ -39,7 +39,7 @@ HSL then fails in two places, both of which matter here:
 
 Where the stack supports OKLCH, work there: lightness moves without dragging colorfulness along. On Android, hand a seed color to the tonal palette generator instead of picking tones one at a time. Restating a palette that already works in a newer notation is not an improvement.
 
-## `color-one-accent` One color means touchable
+## <Rule id="color-one-accent" description="One color means touchable" />
 
 An accent works by being scarce. iOS gives the app a single tint and expects everything interactive to wear it; Material puts the action on `primary` and keeps `tertiary` for occasional contrast. Under both, the user learns one color and stops scanning for buttons.
 
@@ -48,7 +48,7 @@ An accent works by being scarce. iOS gives the app a single tint and expects eve
 - Secondary text on a colored surface comes from that surface's own hue, or from opacity over it. Grey dropped onto a color reads as a rendering fault.
 - Status colors keep their jobs. Error red used for branding spends the one color a user reads without thinking.
 
-## `color-gradient` A gradient has to be doing a job
+## <Rule id="color-gradient" description="A gradient has to be doing a job" />
 
 Three qualify on mobile:
 
@@ -64,7 +64,7 @@ A gradient that stays brings three constraints with it:
 - A long ramp bands on an 8-bit panel, which is what a phone becomes once brightness drops.
 - Translucency stacked on translucency leaves the final ratio at the mercy of whatever happens to scroll past. Opaque values can be checked; these cannot.
 
-## `color-dark-composed` Dark is a second design, not a switch
+## <Rule id="color-dark-composed" evidence="device" description="Dark is a second design, not a switch" />
 
 This is the part that gets done last and shows it.
 
@@ -76,7 +76,7 @@ This is the part that gets done last and shows it.
 
 Light-only ships broken, and the system setting is what the app follows by default.
 
-## `color-contrast` Measure the pair, do not eyeball it
+## <Rule id="color-contrast" evidence="device" description="Measure the pair, do not eyeball it" />
 
 | What | Minimum |
 |---|---|
@@ -88,13 +88,13 @@ These are floors rather than targets because of where phones get used. Sunlight 
 
 Measure the pressed, selected, disabled and placeholder states as well, plus text sitting over an image, in both themes. The 14pt row is a weight rule as much as a size rule: drop that text to regular and it owes 4.5:1, without a single color having changed.
 
-## `color-not-alone` Color never carries a meaning by itself
+## <Rule id="color-not-alone" evidence="device" description="Color never carries a meaning by itself" />
 
 Red against green is the pair that fails, and roughly one man in twelve sees them differently. Grayscale and wind-down modes take hue away from everyone else, and glare eats hue before it eats lightness.
 
 So every status, state and series gets a second carrier: an icon, a word, a shape, a position, or a lightness gap wide enough to survive desaturation. Run a protanopia, deuteranopia and tritanopia pass over the rendered screen. The pairs that collapse are rarely the ones the token names predicted.
 
-## `color-dynamic` Dynamic Color, where the platform hands it over
+## <Rule id="color-dynamic" evidence="device" description="Dynamic Color, where the platform hands it over" />
 
 On Android 12 and up, Material You builds the scheme from the user's wallpaper. Take it where it fits, keep a static scheme for older releases and for users who turn it off, and open the app under a few wallpapers to see whether it still reads as this product. A brand that only exists at its own hex value does not survive the feature.
 

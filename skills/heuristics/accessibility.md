@@ -6,7 +6,7 @@ A phone sharpens every part of it. There is no width for labels, so controls bec
 
 Four neighbours carry pieces of this and are not repeated here: `color-not-alone`, `touch-floor`, `touch-spacing` and `type-scaling`. `list-a11y` is a fifth of a different kind: it is these rules applied to a list row, so the two are read together.
 
-## `a11y-name` Every control carries a name, a role and a value
+## <Rule id="a11y-name" description="Every control carries a name, a role and a value" />
 
 Three separate things, and the last two are the ones that go missing.
 
@@ -22,13 +22,13 @@ The **value** is the current state, and it changes while the name does not: `sta
 
 Anything drawn onto a canvas (a chart, a custom picker, a signature field) has no child elements and is a single blank node until semantics are written for it by hand, with `ExploreByTouchHelper` on Android views or a semantics tree in the declarative kits.
 
-## `a11y-hidden` Decoration is hidden, not described
+## <Rule id="a11y-hidden" description="Decoration is hidden, not described" />
 
 Every node in the tree is a stop the user has to step through. An icon sitting beside the label it duplicates, a divider, a background image, a chevron that only says the row opens: hide each one rather than naming it. `contentDescription = null` in Compose, `.accessibilityHidden(true)` in SwiftUI, `ExcludeSemantics` in Flutter. What matters is the outcome: a node that produces no semantics of its own, a spacer, a divider drawn as a background, already costs nothing and needs no declaration written over it.
 
 The opposite failure is just as common and reads worse: decoration given a description of its own picture, so the reader says "grey rounded rectangle with a blue circle". Text needs nothing, because it announces itself. And a loading placeholder is decoration until real content replaces it, so the shimmer blocks are hidden and the arrival is announced once (`state-loading`, `a11y-announce`).
 
-## `a11y-order` Reading order is the order, and grouping decides how many stops
+## <Rule id="a11y-order" evidence="device" description="Reading order is the order, and grouping decides how many stops" />
 
 Traversal order comes from the layout tree, walked in the reading direction of the content. It breaks wherever drawing order and layout order disagree: an absolutely positioned element, a bar drawn after the content it sits above, a floating button declared last in the file, an overlay stacked on top of the screen it belongs to.
 
@@ -38,13 +38,13 @@ Grouping is the other half of the same rule. A card holding an image, a title, t
 
 The screen title is announced first on arrival, so a screen whose title exists only inside a custom header view arrives in silence. Give it a title the system knows about: the navigation title where the stack has one, and `paneTitle` in Compose on a screen whose header is a composable of your own. Headings are what a reader jumps between instead of walking every element, and the trait that makes one is `list-a11y`.
 
-## `a11y-collection` A collection says how long it is and where in it you are
+## <Rule id="a11y-collection" evidence="device" description="A collection says how long it is and where in it you are" />
 
 A phone has no scrollbar, and a recycling list keeps roughly a screenful of nodes alive at a time (`list-virtualise`). So a reader user walking it is told neither how many items exist nor which one this is, and there is nothing on screen to answer either question.
 
 A list, a grid or a carousel declares itself as a collection and each child declares its position in it, so the reader announces item three of two hundred. The platform list primitives do it on their own; anything assembled by hand does it explicitly, with `collectionInfo = CollectionInfo(rowCount, columnCount)` on the container and `collectionItemInfo = CollectionItemInfo(...)` on each child in Compose, and `IndexedSemantics` in Flutter. The total is how many items the data holds, not how many rows are realised: a count that follows the recycler tells the user the list is shrinking while they walk it.
 
-## `a11y-announce` Content that changes without a navigation has to say so
+## <Rule id="a11y-announce" evidence="device" description="Content that changes without a navigation has to say so" />
 
 Almost nothing on a phone is a page load. A filter narrows the list in place, a total recalculates, a field turns red, a banner slides in at the top. A sighted user catches all of it in peripheral vision. A reader user is three stops away and is told nothing at all.
 
@@ -54,14 +54,14 @@ Almost nothing on a phone is a page load. A filter narrows the list in place, a 
 - The announcement is the same sentence the screen shows, which means it is a translated string (`l10n-strings`) and, for a failed field, the message `form-error` already placed beside it.
 - An announcement is heard once, and the field keeps failing after it. So the field declares the failure on its own node, in those same words, and somebody who reaches it a minute later hears why instead of hearing the label alone: `error("...")` in the Compose semantics, the value and the traits on iOS.
 
-## `a11y-focus` Focus moves where the screen moved, and comes back
+## <Rule id="a11y-focus" evidence="device" description="Focus moves where the screen moved, and comes back" />
 
 - When a sheet, dialog or cover opens, focus moves into it and cannot leave. On a phone the new surface covers the whole screen, so a reader that can still walk the layer beneath is reading a screen the user cannot see. The platform primitives settle it by presenting in their own context or window: `.sheet` and `.fullScreenCover` in SwiftUI, `Dialog` and `ModalBottomSheet` in Compose. An overlay stacked by hand inside a `ZStack` or a `Box` does not, so there the layer beneath is made inert by hand: `.accessibilityHidden(true)` in SwiftUI, `Modifier.clearAndSetSemantics {}` in Compose, `ExcludeSemantics` in Flutter, `accessibilityViewIsModal` on iOS with `importantForAccessibility="no-hide-descendants"` on Android in React Native.
 - On dismissal, focus returns to the control that opened it. Dropping the user at the top of the screen makes them traverse the whole thing again to get back to where they were.
 - The way out has to be reachable from inside the surface, which is `nav-modal` stated for a user who cannot perform the dismissing gesture.
 - Focus never moves unless the user asked it to. Taking it on load talks over the screen title, and taking it on every state change makes the screen impossible to read. Two moves are asked for and stay: onto the single field a screen exists for, such as search or a code (`form-input`), and onto the first failing field after a submit (`form-error`).
 
-## `a11y-gesture` A gesture is never the only route
+## <Rule id="a11y-gesture" description="A gesture is never the only route" />
 
 A swipe, a long press, a drag to reorder, a pinch, anything with two fingers: none of these can be performed by someone using a reader, a switch, or a keyboard. Each one needs a named route to the same result, and where that route comes from depends on what drew the gesture.
 
@@ -70,7 +70,7 @@ A swipe, a long press, a drag to reorder, a pinch, anything with two fingers: no
 - A value that is dragged (a slider, a reorder handle, a rating) gets the adjustable action instead, so it moves one step at a time.
 - Custom multi-finger gestures have no route at all. Use the simplest gesture that works, and keep the visible equivalent that `list-swipe` and `list-refresh` already require.
 
-## `a11y-alt-input` Switch and voice reach the app through names and targets
+## <Rule id="a11y-alt-input" description="Switch and voice reach the app through names and targets" />
 
 A switch moves one highlight through everything focusable, in order, one press per step. Voice control acts on whatever the user can read out loud off the screen.
 
@@ -80,7 +80,7 @@ A switch moves one highlight through everything focusable, in order, one press p
 - Every action is reachable by stepping, in a finite number of steps. A control that only appears mid-drag, or only under a long press with no custom action, does not exist for this user.
 - Nothing that carries the only copy of something dismisses itself on a timer: a toast holding an error message, a snackbar holding the only undo, a code that expires while the highlight is still walking toward the field. Stepping across a screen takes several times as long as tapping it. Prefer an explicit dismissal.
 
-## `a11y-settings` The system settings are people, not options
+## <Rule id="a11y-settings" description="The system settings are people, not options" />
 
 Larger text, bold text, increased contrast, reduced motion, reduced transparency. Each one is switched on by a user who needed it, and each one is already on before the app launches.
 
@@ -90,7 +90,7 @@ Larger text, bold text, increased contrast, reduced motion, reduced transparency
 - Reduced transparency is an iOS setting with no Android counterpart, so an Android-only build answers it as not applicable. On iOS it is honoured by the platform's own material and ignored by a blur rebuilt by hand, which is one more reason `color-gradient` sends you to the system one.
 - All of these are live values, not launch-time facts. Somebody will change one while the app is open, from the accessibility shortcut, and the screen has to follow: `addContrastChangeListener` on Android, the matching change notification on iOS.
 
-## `a11y-media` Nothing is carried by audio alone
+## <Rule id="a11y-media" description="Nothing is carried by audio alone" />
 
 Phones are used muted, in public, and by people who cannot hear them.
 
@@ -99,7 +99,7 @@ Phones are used muted, in public, and by people who cannot hear them.
 - Sound is never the only signal. A success chime, an error beep, a haptic with no visible change: pair every one with something the screen shows (`touch-feedback`).
 - Audio that starts on its own is gated by `motion-autoplay` and `sound-unasked`, and the control to stop it is reachable in one step.
 
-## `a11y-test` Drive one whole flow with the reader on
+## <Rule id="a11y-test" evidence="device" description="Drive one whole flow with the reader on" />
 
 - Run the platform scanner first, on every screen that changed. It catches the missing name, the small target and the low contrast, and it catches none of the four things above it: wrong order, wrong name, missing announcement, missing route.
 - Then use the app without looking at it. One complete flow, start to finish, stepping forward through every element with the screen reader on. Count the stops on the busiest screen: a card or a row costs one stop plus one for each separately tappable control it carries, which `list-row` caps at two. Above that, the merge `a11y-order` and `list-a11y` ask for did not happen.

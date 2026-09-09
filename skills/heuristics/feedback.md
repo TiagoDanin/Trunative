@@ -6,7 +6,7 @@ The ladder runs from nothing at all up to a dialog that stops everything, and th
 
 One structural fact decides half of this. Android ships a transient actionable message as a component, with a host that positions it and decides what becomes of the next one. Apple ships none: it has alerts, action sheets and inline status, and nothing that slides in and leaves. Anything transient on iOS is a component somebody in this codebase has to build and maintain, which is a cost worth knowing before the design assumes one.
 
-## `fb-ladder` Four rungs, and the first one is nothing
+## <Rule id="fb-ladder" description="Four rungs, and the first one is nothing" />
 
 - **Nothing.** The result is already on the screen. The row disappeared, the toggle moved, the total changed.
 - **Inline.** A line inside the region it is about, which stays until it stops being true.
@@ -17,13 +17,13 @@ Take the quietest rung that still does the job, and climb only with a reason. Ev
 
 Count the blocking dialogs one flow can raise. More than one is a design problem rather than a messaging problem, and splitting the flow is what fixes it where rewording never will.
 
-## `fb-silent-success` The screen showing the result is the confirmation
+## <Rule id="fb-silent-success" description="The screen showing the result is the confirmation" />
 
 People expect what they did to work, so the outcome worth reporting is failure. A message reading "Saved" over a screen that already shows the saved value is decoration that lands across the bottom of the screen, which is exactly where the next tap was going.
 
 Confirm explicitly only what the screen cannot show: money moved, something went to another person, a file left the device, an item was removed from a list the user is no longer looking at. Anything irreversible or financial takes the confirmation `state-queued` already specifies, which no transient rung can be.
 
-## `fb-confirm-test` Uncommon and irreversible, both at once
+## <Rule id="fb-confirm-test" description="Uncommon and irreversible, both at once" />
 
 Destructive is not the test. Both halves have to be true before an alert stops the user: the user does this rarely, and nothing brings it back. Deleting one photo out of ten thousand is destructive, common and recoverable, so it happens and offers undo. Deleting the account is rare and final, so it interrupts.
 
@@ -31,7 +31,7 @@ A common action that cannot be undone is not exempt, it is a different surface: 
 
 On a phone the accidental destruction arrives through a fat tap or a swipe rather than through a menu, so recovery matters more than the extra question, and `touch-destructive` already puts distance between the destructive control and the frequent one. Where the destruction is what the user deliberately chose, the button carrying it out is not styled as the destructive one: it is performing their intent, and the escape beside it is what needs the emphasis.
 
-## `fb-undo` Either the work waits inside a real window, or it lands somewhere it can be fetched back from
+## <Rule id="fb-undo" description="Either the work waits inside a real window, or it lands somewhere it can be fetched back from" />
 
 Two shapes are honest and there is no third. Either the work has not committed yet and the window is the delay before it does, or it commits at once into a place the user can reach and take it back from, a trash, an archive or a recently deleted, where the restore is guaranteed to work. What is banned is the commit with nothing behind it: fire the delete, keep the Undo on screen, and undo becomes a re-create against a server that has already forgotten, which fails differently and sometimes silently.
 
@@ -40,13 +40,13 @@ Two shapes are honest and there is no third. Either the work has not committed y
 - A system gesture is not the only route. Shake and the three-finger swipe are invisible and undiscoverable, so undo is also reachable without one: the action on the message, a button in the bar or toolbar, or a named custom action on the affected node, which is what `a11y-gesture` asks for. The system gestures keep working alongside it, and nothing here redefines them.
 - A screen where the user makes many small edits owes an undo stack, not one slot that the second edit overwrites.
 
-## `fb-place` The message lands on the smallest thing that contains it
+## <Rule id="fb-place" description="The message lands on the smallest thing that contains it" />
 
 `state-error` sets this scope for failures and `form-error` for fields. What this rule adds is that everything else obeys it too: a confirmation, a limit reached, a setting that took effect, all land on the smallest surface that contains the cause, and a fact about a single control never takes the whole screen. Anything that could be said next to the control is not a dialog, and a dialog raised for a fact is a dialog raised for nothing.
 
 The transient rung is the one that cannot obey. Its surface is fixed at the bottom edge, so it answers a control in the top bar from as far away as the screen allows, and it answers the bottom bar from under the thumb that just left. `layout-overlays` owns where it stacks and `touch-feedback` keeps the result off the touch point; what is left here is the choice of rung. A message that has to name its cause to make sense is inline, not transient.
 
-## `fb-duration` The host owns the duration, and where there is no host the component declares one
+## <Rule id="fb-duration" description="The host owns the duration, and where there is no host the component declares one" />
 
 Hosts come in two shapes and the rule differs by shape. A named host takes short, long or indefinite and nothing between, which is Compose Material3: ask it by name, and accept that an exact number cannot be expressed through it at all. A numeric host takes a duration, which is the Flutter snackbar and the Android view snackbar, the latter also accepting its two names. Even the names disagree across hosts in one design system: the view snackbar runs 1500ms and 2750ms where Compose starts at 4000ms and 10000ms. So a duration never comes from the screen. It is the host's name, or it is one number written in `STACK.md` and read from there by every call that needs one.
 
@@ -57,13 +57,13 @@ Where none exists, which is every hand-built bar and every transient message on 
 - Every transient message is dismissible by the user. On the Android view system swipe to dismiss only exists when the host is a `CoordinatorLayout`, so outside one, and in anything built here, there is a close affordance or there is no way out.
 - Nothing exists only inside it: retry, undo and the detail behind the message all keep a permanent home, which `a11y-alt-input` already requires of anything that dismisses itself on a timer. What the phone adds is the rotation, after which the bar is gone for good and the user who was mid-step never sees it again.
 
-## `fb-reach` A message that is only drawn, or only felt, was not delivered
+## <Rule id="fb-reach" description="A message that is only drawn, or only felt, was not delivered" />
 
 The route differs by platform and both count as delivery. Where there are live regions, on Android views, Compose and Flutter, the region carrying the message is marked live, and on Android that is the only route left now that `announceForAccessibility` and the `TYPE_ANNOUNCEMENT` event are deprecated. iOS has no live region, so the message is posted as an announcement instead. `a11y-announce` holds the mechanics and the polite versus assertive call. A platform snackbar host speaks its own text. A bar built by hand out of a positioned view is drawn and never announced: its words sit in the tree, reachable by exploring for them, and nowhere in the user's ear until it takes whichever of those two routes its platform has.
 
 Haptics accompany a message and never carry it. `touch-feedback` owns the vocabulary and `sense-haptic` the hardware and the switches under it, so the rule here is only the pairing: a success or error pattern fires alongside something visible, never instead of it, because the phone is as often on a table as in a hand. Color follows `color-not-alone`.
 
-## `fb-queue` Coalesce by cause, and drop the backlog rather than replaying it
+## <Rule id="fb-queue" description="Coalesce by cause, and drop the backlog rather than replaying it" />
 
 Three requests in flight on a slow radio come back as three failures within a second of each other. How many may be on screen is `layout-overlays`, and iOS asks that two alerts are never up at once, so the design question here is not the visible message, it is the other two.
 
@@ -71,13 +71,13 @@ Three requests in flight on a slow radio come back as three failures within a se
 - Drop what has gone stale. A message about a screen the user has already left never shows, and a backlog that plays back after they move on describes a past they cannot act on.
 - Stacking above the bottom bar, the floating button and the inset is `layout-overlays`.
 
-## `fb-survives` A confirmation the user never saw did not happen
+## <Rule id="fb-survives" description="A confirmation the user never saw did not happen" />
 
 Rotation rebuilds the screen, the system reclaims the process while it is in the background, and both are ordinary on a phone. A message fired as a side effect during a build or a composition either vanishes on the rotation or fires again on every one, and both versions ship.
 
 Hold the message as state with a consumed flag, so it survives the rebuild once and only once. A blocking dialog is state under the same rule, including whatever action it is holding: an alert reconstructed after a process death with its callback gone is a dialog whose buttons do nothing. Where the screen itself comes back is `nav-restore`, and what the app admits it lost is `state-interrupt`.
 
-## `fb-blocking-shape` If it has to block, it is small, finite and escapable
+## <Rule id="fb-blocking-shape" description="If it has to block, it is small, finite and escapable" />
 
 - Pick the surface before the wording. A yes or no about one irreversible thing is an alert. Anything offering choices about an action the user deliberately started is not: that is an action sheet (`confirmationDialog` in SwiftUI), whose stack puts the destructive choice at the top and the escape at the bottom, or, on Android, a dialog or a bottom sheet, where the choices are a row of roles rather than a stack: the confirming action, the dismissive one beside it, and a third only where a real third answer exists. Building every confirmation as an alert spends the loudest surface on the ordinary case.
 - At most 3 buttons. On Android the builder settles it: one positive, one negative, one neutral, and no fourth slot to fill. Nothing on iOS enforces the ceiling, so there it is a rule the code keeps by itself. A fourth choice on either platform means the surface is a sheet or a screen.
@@ -86,7 +86,7 @@ Hold the message as state with a consumed flag, so it survives the rebuild once 
 - Buttons are named by their result, which is `button-label`. A dialog whose answers are yes and no makes the user reread the question to find out what they agreed to.
 - No blocking progress. Android deprecated its progress dialog for the reason that decides this whole file, that it stopped the user touching anything while the work ran. Nothing about the other platform makes one better there. Waiting is `state-loading`, and a dialog over a dialog is `nav-modal`.
 
-## `fb-unprompted` An interruption the user did not cause starts at the bottom of the ladder
+## <Rule id="fb-unprompted" description="An interruption the user did not cause starts at the bottom of the ladder" />
 
 Every rung above answers something the user just did. A promotion, a paywall raised mid-session, a what's new sheet, a survey, a full-screen ad: nobody asked for any of it, so none of it gets the rung a real answer would.
 
@@ -95,7 +95,7 @@ Every rung above answers something the user just did. A promotion, a paywall rai
 - One tap closes it, the close is the plain one and not a trick, and the dismissal is remembered for a period written in `STACK.md` rather than asked again on the next screen.
 - It never borrows the shape of a system message. An app promotion drawn as a permission prompt or a system alert is asking for a tap the user did not agree to give.
 
-## `fb-review-prompt` The ask for a rating is the loudest thing the app does
+## <Rule id="fb-review-prompt" description="The ask for a rating is the loudest thing the app does" />
 
 Use the system prompt and nothing else. The system rate limits it, at most 3 per app per 365 days on iOS and an unpublished quota on Play, so the app does not get to know whether anything appeared.
 

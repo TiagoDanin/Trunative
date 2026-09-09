@@ -6,7 +6,7 @@ Both fail the same way: the set was assembled rather than chosen, and the box wa
 
 Sizes, axis ranges, density buckets and asset paths are in `references/icon-and-image-assets.md`. This file is the rules.
 
-## `icon-one-set` An icon set is a set, not a collection
+## <Rule id="icon-one-set" description="An icon set is a set, not a collection" />
 
 One set for the whole app, at one weight and one style. Two sets on one screen is the defect that reads from across the room: it takes no interaction to find and no expertise to name, and it is what a screen assembled out of search results looks like.
 
@@ -17,7 +17,7 @@ One set for the whole app, at one weight and one style. Two sets on one screen i
 - Icons live in the theme, reached by name, so the whole set can be swapped at once. Twenty asset paths typed at twenty call sites is twenty places the next set will not reach.
 - Count the icon dependencies. The answer is one, or one plus a stated reason.
 
-## `icon-weight` The icon is sized against the label, not against the box
+## <Rule id="icon-weight" evidence="device" description="The icon is sized against the label, not against the box" />
 
 An icon next to text is part of that line, and every property it has is borrowed from the text.
 
@@ -30,7 +30,7 @@ An icon next to text is part of that line, and every property it has is borrowed
 
 An icon rarely carries a verb on its own, so what is written next to it is `button-label` and what is spoken instead of it is `a11y-name`. Meaningful icons owe the same contrast as any other non-text mark: `color-contrast`. And the glyph is only the drawing: the target around it is a separate object with its own floor, which is `touch-floor`.
 
-## `icon-no-emoji` An emoji is content, never an icon
+## <Rule id="icon-no-emoji" description="An emoji is content, never an icon" />
 
 Emoji inside a message, a reaction, or a name somebody typed is content and stays. Emoji standing in for an icon is the most reliable tell of a generated screen, and it is not a shortcut, because none of the four things an icon does survives it.
 
@@ -41,14 +41,14 @@ Emoji inside a message, a reaction, or a name somebody typed is content and stay
 
 The same applies to a glyph pulled out of a typeface drawn for prose. A check mark, an arrow or a bullet borrowed from the body face is the emoji defect in a quieter coat. An icon font that ships as an icon set is the opposite case and is exactly what to use.
 
-## `icon-vector` Vector where the artwork allows, densities where it does not
+## <Rule id="icon-vector" description="Vector where the artwork allows, densities where it does not" />
 
 - Flat artwork, meaning icons, marks, line illustrations and anything built from paths, ships as vector. One file covers every density and every size, and nothing has to be regenerated when a size changes.
 - A tintable vector is authored in one solid colour so the theme's tint lands on it cleanly. An icon with its colours baked in cannot follow a role and cannot follow dark.
 - Photographs stay raster. A raster used as an interface asset is authored at every density the platform asks for, which is not the same as carrying all of them in the binary: what each device downloads is `perf-size`. Authored at one density only, it is soft on a 3x screen or lands more decoded pixels in the box than the box has, which is `perf-decode`.
 - Vector is not free at every size: a large or heavily pathed drawable costs more to draw than the bitmap it replaced, which is why Android recommends keeping an in-app vector drawable at 200 by 200 dp or under. iOS publishes no equivalent limit. The launch surface icon is outside that ceiling: it is a vector at the size the platform fixes for it, which is `splash-contents`.
 
-## `icon-reserve` The box exists before the bytes do
+## <Rule id="icon-reserve" description="The box exists before the bytes do" />
 
 Every image whose source is a URL gets its dimensions from the layout, decided before the request is made, and those dimensions are also what it decodes to: `perf-decode`. Row images are `list-images`; this is everything else, the header, the hero, the card, the article body, the avatar.
 
@@ -57,7 +57,7 @@ Every image whose source is a URL gets its dimensions from the layout, decided b
 - Some stacks give a bundled image its size and give a remote one nothing. In React Native a `uri` source has no intrinsic dimensions, so it needs an explicit width and height, and the fast link on the development machine hides what a slow one does.
 - The image that never arrives is a designed state at the same dimensions, not a gap: `state-error`.
 
-## `icon-crop` The surface decides the ratio, the photo does not
+## <Rule id="icon-crop" description="The surface decides the ratio, the photo does not" />
 
 Fix one aspect ratio per surface, once, then crop everything entering it to fill. A surface may instead offer a short fixed list of ratios and let each item pick from it, which is how a feed of user photographs works. What it may not do is take an arbitrary ratio out of the bytes, because in one column the shape of the image is the shape of the screen, and that hands the layout to whatever the last user uploaded.
 
@@ -66,7 +66,7 @@ Fix one aspect ratio per surface, once, then crop everything entering it to fill
 - Fit-inside is right where the whole image is the point: a logo, a scanned document, a diagram. There the frame keeps its own background instead of leaving transparent bars.
 - Where a crop is destructive to the user's own content, the frame is a preview and the full image is one tap away.
 
-## `icon-alt` A picture is content or it is decoration, and it says which
+## <Rule id="icon-alt" description="A picture is content or it is decoration, and it says which" />
 
 Content describes what it shows. Decoration is hidden instead of described, which is `a11y-hidden`. Nothing sits between the two, both answers compile, and a screen where every image says nothing looks identical to one where every image is right.
 
@@ -75,7 +75,7 @@ Content describes what it shows. Decoration is hidden instead of described, whic
 - A chart, a diagram, or the illustration holding an empty state's meaning owes the sentence it is making rather than an inventory of its parts.
 - An icon that is the only label on a control is not this rule. What is spoken there is the action, which is `a11y-name`.
 
-## `icon-dark` Artwork that cannot be tinted needs a second asset
+## <Rule id="icon-dark" evidence="device" description="Artwork that cannot be tinted needs a second asset" />
 
 A single-colour glyph needs no dark variant, because it is tinted from a theme role and follows it. Everything else does.
 
@@ -84,7 +84,7 @@ A single-colour glyph needs no dark variant, because it is tinted from a theme r
 - An inverted copy is not a dark variant. Inverting artwork shifts every hue in it, and inverting a photograph is simply wrong: `color-dark-composed`.
 - Screenshots of the product inside the product are recaptured in dark, or they are not shown in dark.
 
-## `icon-avatar` The fallback is the common case
+## <Rule id="icon-avatar" evidence="device" description="The fallback is the common case" />
 
 Most accounts have no photo, so the fallback is the state to design first and the one that will be on screen most.
 
@@ -94,7 +94,7 @@ Most accounts have no photo, so the fallback is the state to design first and th
 - Initials come from the display name as the locale orders it, one or two characters, and they are measured against their generated background like any other text: `l10n-personal`, `color-contrast`.
 - The missing name is a case too. Deleted accounts, invited users who never joined, and system actors all arrive at the same component.
 
-## `icon-app` One asset, no words, no fine detail
+## <Rule id="icon-app" evidence="device" description="One asset, no words, no fine detail" />
 
 The app icon is drawn at about the size of a fingertip, beside twenty others, inside a mask the launcher picks and at whatever smaller sizes the system generates for search and settings.
 

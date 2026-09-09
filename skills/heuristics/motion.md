@@ -6,7 +6,7 @@ Generated screens fail this in a recognisable way: motion appears everywhere exc
 
 Press feedback timing is `touch-feedback`. Loading and skeleton behaviour is `state-loading`. The predictive back gesture is `touch-gestures`. Token values and per-stack API names are in `references/motion-tokens.md`.
 
-## `motion-job` Every animation answers a question, and there are three questions
+## <Rule id="motion-job" description="Every animation answers a question, and there are three questions" />
 
 Continuity: this came from that, or it went there. Latency: work is happening and here is the shape of it. Acknowledgement: your touch landed. Point at an animation and name which of the three it serves. If the answer is that the screen felt static, delete it.
 
@@ -14,13 +14,13 @@ The frequent interactions are already animated, and the two platforms want diffe
 
 The count is per screen, and at rest means no work outstanding, no gesture in progress and no media playing. In that condition nothing moves, with one exception: an indicator saying work is still happening, which is `state-loading`.
 
-## `motion-platform` The transition between screens is not yours to write
+## <Rule id="motion-platform" description="The transition between screens is not yours to write" />
 
 Push, sheet, cover and dismissal come with motion attached. Where the container ends through a gesture, which is the interactive pop, the sheet drag and predictive back, that motion is interruptible and driven by the finger rather than played at it. A custom route transition replaces it with a fixed animation that runs to the end, and one that never reads the gesture's progress leaves the system drawing a back preview the transition itself ignores. Driving it from that progress instead is `touch-gestures`.
 
 Custom transition code between screens (`PageRouteBuilder` with a hand-written `transitionsBuilder`, `enterTransition`, `exitTransition`, `popEnterTransition` or `popExitTransition` overriding a `composable()` destination's preset, a `UIViewControllerAnimatedTransitioning` for an ordinary push) needs a reason written next to it. Which container is right in the first place is `nav-container`.
 
-## `motion-model` Name the platform's model, never a literal value
+## <Rule id="motion-model" description="Name the platform's model, never a literal value" />
 
 Two motion systems, and using the wrong one is what makes a build feel foreign.
 
@@ -34,19 +34,19 @@ The rule the two systems share is that no motion value is invented at the call s
 - **Android** has one, so use it: `MaterialTheme.motionScheme` on Compose, the `?attr/motionSpring*` and duration attributes in Views.
 - **iOS** ships no motion theme, so the app is the one that has to hold the set. Put the named `Animation` constants in a single file and refer to them by name from every call site.
 
-## `motion-duration` Where duration applies, it is latency, and it scales with distance
+## <Rule id="motion-duration" description="Where duration applies, it is latency, and it scales with distance" />
 
 Press feedback has its own deadline, which is `touch-feedback`. What this rule owns is everything after it: a routine transition finishes inside 300ms, and past 400ms the animation stops being motion and becomes a wait, one the user pays on every navigation for the life of the app.
 
 Duration rises with the area covered: a chip changing tint and a full screen cover arriving do not share a number. In Material terms the short tokens (50 to 200ms) carry small in-place changes and the medium tokens (250 to 400ms) carry a transition, with a full screen change at the top of that band and nothing above it. The long and extra-long tokens start at 450ms, so they belong only to motion no interaction is waiting on.
 
-## `motion-choreo` One thing leads
+## <Rule id="motion-choreo" description="One thing leads" />
 
 When several elements move at once, the eye needs one anchor. Give the change a single subject, either an element that persists across the transition (`SharedTransitionLayout` on Compose, `.navigationTransition(.zoom(sourceID:in:))` on iOS 18, `Hero` on Flutter) or one region that moves while the rest holds still. Four independent animations at four different durations is not choreography, it is four animations.
 
 Stagger only where the content genuinely arrives as a list, only on first appearance, and only within a budget: at most 30ms of step between rows and at most 200ms of added delay across the visible ones, so the last row is not waiting on the first. A stagger that replays on every scroll, every refresh or every filter change turns the list into a slot machine, and it re-runs on recycled rows, so it fires for rows that were already on screen.
 
-## `motion-loop` Nothing loops next to something being read
+## <Rule id="motion-loop" description="Nothing loops next to something being read" />
 
 An animation that repeats without end has no question to answer: the tap already landed, the content already arrived. Beside text, it takes the reading away from everyone and makes it impossible for some.
 
@@ -56,7 +56,7 @@ An animation that repeats without end has no question to answer: the tap already
 - Every animation ends when its reason ends. One still running after its cause is gone is a bug with an animation on it.
 - A parallax or collapsing header tracks the finger and never plays by itself. What is banned outright is an element pulsing to attract attention and an entrance animation on the first screenful (`layout-fold`). Content the user opened the app for is already the reason they are looking; fading it in delays it and says nothing.
 
-## `motion-autoplay` Video and animated images start because the user started them
+## <Rule id="motion-autoplay" description="Video and animated images start because the user started them" />
 
 The longest-running motion in a real app is usually not an animation anyone wrote: it is a video preview, a looping clip or an animated image in a feed. Nothing above governs it, and muted autoplay is still motion beside the thing being read. Where the platform publishes a preference, it is read rather than assumed: on iOS `UIAccessibility.isVideoAutoplayEnabled` carries the Auto-Play Video Previews switch, and the animated images setting sits beside it.
 
@@ -65,13 +65,13 @@ The longest-running motion in a real app is usually not an animation anyone wrot
 - A looping asset stops when its screen goes away, rather than playing on behind whatever came next.
 - The sound half is `a11y-media`, and stopping autoplay on a metered or power-saving device is `state-offline`.
 
-## `motion-blocks` Motion never holds the user still
+## <Rule id="motion-blocks" evidence="device" description="Motion never holds the user still" />
 
 Nothing waits for an animation to finish. A second tap during a transition does not queue a second transition, the back gesture interrupts whatever is playing, and no input is gated on a completion callback. This matters more the more often the animation runs: a sequence that charms once is an obstacle by the fiftieth launch.
 
 Anything the user cannot skip and did not ask for is the failure case: a splash sequence played out before the content is reachable, a success animation held for a beat after the work is done, a modal that cannot be dismissed until its entrance completes.
 
-## `motion-cheap` Hand-written animation moves transform and opacity, not layout
+## <Rule id="motion-cheap" evidence="device" description="Hand-written animation moves transform and opacity, not layout" />
 
 The test is who owns the animation, not which property moves. The framework's own layout animations are tuned and batched, so a shared element or container transform, `AnimatedVisibility`, `Modifier.animateContentSize`, `Modifier.animateItem` and Flutter's implicit `Animated*` widgets are all correct, including where they animate bounds. What this rule bans is the hand-written kind: a value driven per frame on the main thread into width, height, margin, padding or a static offset, which re-runs measurement every frame and is how a smooth-looking animation becomes the dropped-frame complaint. The frame budget it has to fit inside is `perf-frame`, and a 120Hz panel halves it.
 
@@ -82,7 +82,7 @@ The test is who owns the animation, not which property moves. The framework's ow
 
 Blur, shadow and shader work stay bounded to a region, and the count of things animating at once is small enough to name.
 
-## `motion-reduced` The reduced build still communicates, it just does not move
+## <Rule id="motion-reduced" evidence="device" description="The reduced build still communicates, it just does not move" />
 
 Reduce Motion on iOS and Remove animations on Android are settings real people turn on because motion makes them ill. Neither is answered by setting duration to zero and calling it done, and the two ask for different things, which is why one implementation cannot serve both.
 

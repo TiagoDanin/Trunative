@@ -6,7 +6,7 @@ Two failures produce most of the damage. The first is precision the data does no
 
 Neither platform will stop either one. Android ships no chart component and no data table component, in Material or in androidx, and iOS publishes no guidance for a sortable multicolumn table on a phone. Every grid and every chart on a phone is something someone decided to build from nothing.
 
-## `data-precision` Never show more digits than the value carries
+## <Rule id="data-precision" evidence="device" description="Never show more digits than the value carries" />
 
 Decide the digits from the measurement, not from the type. A step count is an integer, a body weight is one decimal, a currency is the minor units its code declares, and a ratio computed from two small integers is not a four decimal percentage no matter what the division returns. The column is narrow enough that a digit spent is a digit not spent on the label beside it.
 
@@ -17,7 +17,7 @@ Decide the digits from the measurement, not from the type. A step count is an in
 - A derived figure inherits the worst input's precision. Converting, averaging or summing does not create digits, which is also `data-units`.
 - `copy-numbers` rules the figure inside a sentence, and `l10n-format` produces the separators and the symbol.
 
-## `data-table-shape` A table that does not fit becomes a different shape, not a sideways scroll
+## <Rule id="data-table-shape" description="A table that does not fit becomes a different shape, not a sideways scroll" />
 
 A horizontal scroll inside a vertical list moves the columns it hides off screen with nothing on the glass saying they are there, so the value the user came for is unreachable by anyone who does not already know to drag. That missing edge is `scroll-affordance`. There are three honest answers instead:
 
@@ -27,13 +27,13 @@ A horizontal scroll inside a vertical list moves the columns it hides off screen
 
 Column headings are nouns or short noun phrases, and a single column of figures still needs a label saying what it counts; `data-units` rules the unit that sits over a column. Figures sit at the trailing edge of their column with the decimal point in one place, `l10n-direction` deciding which edge that is and `type-strings` supplying the tabular figures that hold it there. Where a genuine grid is the product, editable or read only, it is its own screen with a leading identifier column pinned, a visible cut at the trailing edge so the row is seen to continue, and its own selection model, and `STACK.md` records it as an exception rather than a component reused elsewhere.
 
-## `data-chart-earns-it` A chart shows a relationship, or it is a number wearing a costume
+## <Rule id="data-chart-earns-it" description="A chart shows a relationship, or it is a number wearing a costume" />
 
 If the user needs the values themselves, a list beats a chart: the figures are exact and the reader can move through them. A chart is for a trend over time, a comparison across categories, or a part against a whole. One value inside a known range is a labelled number or a gauge, and a gauge states its current value and both endpoints.
 
 Use bar, line and point marks, which need no explanation. A chart shape the reader has to learn arrives with the sentence that teaches it, or it does not ship. Where several charts show the same data, keep one type, one set of colors and one layout across them, because a changed encoding reads as changed data.
 
-## `data-chart-scale` The chart carries its own axis, units and baseline
+## <Rule id="data-chart-scale" description="The chart carries its own axis, units and baseline" />
 
 A phone chart is read without a legend and without a caption, so the plot area gets the full width of the column and everything else earns its space.
 
@@ -46,7 +46,7 @@ A phone chart is read without a legend and without a caption, so the plot area g
 - Chart text scales with the user's setting like every other string on the screen. A plot drawn by hand takes its label sizes in fixed units and ignores the setting entirely, so labels stay small while everything around them grows. Where a label cannot reflow, the chart drops it rather than shrinking it, and the chart and any column of figures get looked at again at the largest accessibility step, which is `type-scaling`.
 - A missing sample is a gap in the line, not a zero and not an interpolation across it, which is `data-empty-null-zero`.
 
-## `data-chart-reach` The point of the chart is legible before anyone touches it
+## <Rule id="data-chart-reach" description="The point of the chart is legible before anyone touches it" />
 
 Interaction is a way to get more, never the only way to get the essential. Put the headline figure in text above or beside the plot, so a glance answers the question and the chart explains it.
 
@@ -55,7 +55,7 @@ Interaction is a way to get more, never the only way to get the essential. Put t
 - Decide per chart whether every mark is a stop or whether groups of marks are, then write each label with the value and the context that makes it mean something, such as its date or its category. Actual values, not "rapidly" or "almost", and no ambiguous abbreviation: "June 6" and "60 minutes" rather than "6/6" and "60m". Naming a control is `a11y-name`; this is naming the data inside it.
 - Once the marks carry those labels, hide the visible axis and tick labels from assistive technology so the same numbers are not read twice.
 
-## `data-time-relative` Relative time ages while it is on screen, and it has a written crossover
+## <Rule id="data-time-relative" evidence="device" description="Relative time ages while it is on screen, and it has a written crossover" />
 
 Take the string whole from the platform's relative formatter and place it on its own. Those strings are built as standalone phrases, and embedding one in a sentence is not reliably grammatical.
 
@@ -67,7 +67,7 @@ Take the string whole from the platform's relative formatter and place it on its
 - Where the exact moment matters, a transaction or a message, the absolute time is one tap or one long press away.
 - Cached content saying how old it is is `state-stale`, and this rule is how that sentence is produced.
 
-## `data-time-instant` Stored as an instant, displayed in the reader's zone and clock
+## <Rule id="data-time-instant" description="Stored as an instant, displayed in the reader's zone and clock" />
 
 Persist an instant, plus the event's own zone where the zone is part of the fact, such as a flight or a booked appointment. Format it at the moment of display against the device's current zone, never at the moment it was fetched.
 
@@ -76,7 +76,7 @@ Persist an instant, plus the event's own zone where the zone is part of the fact
 - The locale data behind the formatters is pinned per OS release, so the same locale produces different output on different versions. Never compare, parse or assert against a formatted string, and never route one back into storage.
 - `l10n-format` owns the formatter and the calendar; this rule is what gets handed to it.
 
-## `data-units` One system per screen, converted once, at the edge
+## <Rule id="data-units" description="One system per screen, converted once, at the edge" />
 
 Store the canonical unit and convert only where the value is drawn. iOS ships a measurement formatter that carries the conversion, the style and the locale together; on Android the conversion is the app's own and the formatter renders only the number and its symbol. Two units from different systems on one screen is the failure that gets noticed: kilometres in the summary and miles in the row beneath it, or Celsius on the card and Fahrenheit in its detail.
 
@@ -85,7 +85,7 @@ Store the canonical unit and convert only where the value is drawn. iOS ships a 
 - The unit stays with the figure, or once in the heading of a column where every value shares it, and is never dropped to reclaim width. If the width is the problem, the layout is the problem. `copy-numbers` rules the same figure inside a sentence.
 - Spell out anything a screen reader would mangle, and never reverse the digits inside a number when the layout mirrors.
 
-## `data-date-entry` Match the control to the distance, not to the field type
+## <Rule id="data-date-entry" description="Match the control to the distance, not to the field type" />
 
 Near dates go in the platform picker: a compact field or inline calendar on iOS, a docked or modal date picker on Android. Far dates get typed. A birthdate entered on a wheel is hundreds of flicks, and both platforms offer a keyboard input mode for exactly that.
 
@@ -96,7 +96,7 @@ Near dates go in the platform picker: a compact field or inline calendar on iOS,
 - Do not open a new screen just to show a picker, and do not build a calendar grid by hand: it will miss the locale's first day of week, its week numbering and its non Gregorian calendars.
 - `form-input` rules that a closed value set gets a picker at all. This rule is which picker, and in which direction the entry is going.
 
-## `data-empty-null-zero` Zero, unknown and not applicable are three values
+## <Rule id="data-empty-null-zero" evidence="device" description="Zero, unknown and not applicable are three values" />
 
 They are three different facts and they must not render as the same glyph. Zero is a measurement. Unknown is the absence of one. Not applicable means the question does not apply to this row. In a column this narrow there is no neighbouring cell to compare against and nothing to hover for an explanation, so the glyph is the entire answer the reader gets.
 

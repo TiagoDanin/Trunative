@@ -6,7 +6,7 @@ Values already written into `DESIGN.md`, the spacing scale and the screen margin
 
 Neighbouring rules own the parts that are not geometry: thumb zones are `touch-reach`, the system gesture strips are `touch-gestures`, the keyboard is `touch-keyboard`, and long collections belong to `heuristics/lists.md`.
 
-## `layout-insets` The safe area is geometry, not padding added at the end
+## <Rule id="layout-insets" evidence="device" description="The safe area is geometry, not padding added at the end" />
 
 Read the inset at runtime and lay the screen out inside it. A constant copied off one device (34, 44, 48) is right on that phone and wrong on the next, and it is wrong on the same phone the moment a call banner or an expanded status bar changes the number.
 
@@ -22,7 +22,7 @@ A pinned bar carries the inset inside itself: its own height for the controls, p
 
 Four edges, not one. The top holds the status bar and the cutout or Dynamic Island. The bottom holds the home indicator or the navigation bar. The side insets are zero in portrait and stop being zero once the phone is turned, where they are applied to both sides and the cutout is on one of them. Scrolling content may pass under any of them and often should, because the content ending in a hard line above the bar wastes the screen. Anything read or tapped may not, and that includes the last row of a list, the buttons inside a sheet, and a snackbar.
 
-## `layout-grid` One spacing scale, and every gap sits on it
+## <Rule id="layout-grid" description="One spacing scale, and every gap sits on it" />
 
 Every value is a multiple of 4, and a multiple of 8 once it is above 16: 4, 8, 12, 16, then 24, 32, 40, 48, 56, 64. A 22 or a 35 landing between those steps is not a fine adjustment, it is a value that came from nudging one component until it looked right, and the next person has nothing to reuse.
 
@@ -32,7 +32,7 @@ Spacing carries more weight on a phone than anywhere else: in a column around 36
 
 This is countable. List the distinct vertical gaps on the screen. Four or five is a rhythm. Eleven of them is a screen assembled one component at a time.
 
-## `layout-grouping` Space groups content, a border only draws around it
+## <Rule id="layout-grouping" description="Space groups content, a border only draws around it" />
 
 Set proximity first and reach for a container only when space alone cannot carry the relationship. Related rows tighten, unrelated blocks separate, and a heading takes more space above it than below so it belongs to what follows it.
 
@@ -40,13 +40,13 @@ Every container costs width the phone does not have. A card padded 16 inside a s
 
 Density follows the situation in `PRODUCT.md`: an app used while walking wants fewer things per screen and larger intervals, a tool someone works in seated can hold more. Fix it as numbers rather than as an intention. One row height and one section gap per kind of screen, written once and identical everywhere that kind appears, so a screen that is generous at the top and cramped at the bottom shows up as two different gaps instead of as a feeling.
 
-## `layout-column` One column, one scrolling axis
+## <Rule id="layout-column" description="One column, one scrolling axis" />
 
 There is no second column to escape into, and that changes what happens when something does not fit. Two halves side by side on a 320 wide screen leave each about 140 after the margins and the gap, and at the largest text step the same pair becomes two words per line. Whatever wants a second column is a row that should stack, a table that should be a list, or content that deserves its own screen. The exception is a pair of short fields whose format fixes their length in advance, expiry beside CVC being the one everybody ships: those fit at 140 and go on fitting at the largest step. Two fields on one line is otherwise the version of this that ships most often, and `form-column` owns it.
 
 The screen scrolls in one place and along one axis. Put a vertical scroll inside another vertical scroll and the drag has two possible owners, so the inner one, holding the content the finger was aiming at, sits still while the page moves instead. Nesting on the same axis is only ever safe under the platform contract that `scroll-nest` owns. A horizontal strip inside a vertical page needs none of that, precisely because the axes differ. Virtualising what is inside the scroll is `list-virtualise`.
 
-## `layout-width` The narrow device is the one that breaks
+## <Rule id="layout-width" evidence="device" description="The narrow device is the one that breaks" />
 
 Design against a range. Supported iPhones run about 375 to 440pt wide, the narrow end being installed base rather than anything still on sale, and Android compact devices report from about 320dp upward. The small end is where a layout fails first, and it is on far fewer desks than it is in hands.
 
@@ -55,7 +55,7 @@ Design against a range. Supported iPhones run about 375 to 440pt wide, the narro
 - A fixed height is the same defect turned ninety degrees. A container sized to hold two lines holds one and a half as soon as the string is translated or the text scale moves, so heights follow content and only maximums are pinned.
 - Width and text size fail together. Recheck the narrow device at the largest accessibility step, which is `type-scaling`.
 
-## `layout-chrome` Anything pinned covers the content underneath it
+## <Rule id="layout-chrome" description="Anything pinned covers the content underneath it" />
 
 A bar sitting in the platform's own bar slot is already handled: a Compose `Scaffold` reports the padding its top and bottom bars take, for the content to apply, and a SwiftUI `TabView` or `safeAreaInset(edge:)` extends the scroll view's safe area itself. Use the slot and there is no number to invent.
 
@@ -65,7 +65,7 @@ The padding is derived, not typed. Measure the bar, add the inset, and let the s
 
 Chrome is rationed as well as cleared. Besides the system bars, a phone screen carries at most two persistent bars, and each one earns its height by doing something on every screen it appears on. A third is the sign that navigation, a banner and a player are all claiming the same edge, and the one to cut is the one that does nothing on the screen currently in front of the user.
 
-## `layout-overlays` A transient surface stacks above the pinned ones
+## <Rule id="layout-overlays" description="A transient surface stacks above the pinned ones" />
 
 A snackbar, a toast or an undo bar arrives over a screen that already has a bottom bar, a floating button, and an inset under both. The stacking order is the whole rule: the transient surface sits above every pinned bar and above the bottom inset, and it pushes the floating button up rather than covering it.
 
@@ -73,7 +73,7 @@ Take it from the platform's host, because that is where the displacement is alre
 
 One at a time, and never behind something else. Two messages stacked, a toast drawn behind an open sheet, and a snackbar left under a keyboard that has just opened are the same defect: a surface positioned by hand into a stack whose heights it does not know.
 
-## `layout-fold` The first screenful answers what this is and what to do
+## <Rule id="layout-fold" evidence="device" description="The first screenful answers what this is and what to do" />
 
 At the narrow end, at default text size, with nothing scrolled, three things are visible: what the screen is, the beginning of its real content, and the primary action. That action has two acceptable places and no third. Either it sits inside the first screenful, or it lives in a bar pinned above the bottom inset and is visible at rest, before anything has been scrolled.
 
@@ -81,13 +81,13 @@ Scrolling costs more here than the wheel costs on a desk, because it takes the h
 
 Where content continues below, saying so is `scroll-affordance`. Everything past that line is a decision the user has to earn, so order the screen by what the job needs first, not by what the API returned first.
 
-## `layout-short` Content that does not fill the height still has a bottom
+## <Rule id="layout-short" description="Content that does not fill the height still has a bottom" />
 
 Every rule above assumes the screen scrolls. The other case, a three-field form, an empty state, a detail screen holding two rows, is where a bottom action drifts: centred into the empty middle at one content length, and scrolled out of sight as soon as one more field arrives. There is no viewport height to fall back on the way a page has one.
 
 Both lengths run the same code. The scaffold's bottom bar slot pins it outright. Where the action belongs to the scrolling content instead, give the scroll a fill-height frame and a spacer that pushes the action down, so short content holds it against the bottom edge and long content lets it scroll away with the rest.
 
-## `layout-orientation` Turned sideways the screen loses height, not width
+## <Rule id="layout-orientation" description="Turned sideways the screen loses height, not width" />
 
 A large phone held horizontally keeps a wide line and takes its portrait width as its height, about 390 to 440pt, most of which the keyboard takes when a field has focus. Two outcomes are acceptable and nothing between them: the screen locks to portrait for a reason recorded in `STACK.md`, or it reflows.
 
