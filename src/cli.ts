@@ -5,6 +5,7 @@ import { parseArgs } from 'node:util'
 
 import { doctor } from './commands/doctor.js'
 import { install } from './commands/install.js'
+import { rubric } from './commands/rubric.js'
 import { packageRoot } from './paths.js'
 
 const USAGE = `trunative, a mobile-only design skill for AI coding agents
@@ -12,11 +13,15 @@ const USAGE = `trunative, a mobile-only design skill for AI coding agents
 Usage
   npx trunative doctor            check the project before the agent starts
   npx trunative install [--dir]   copy the skill into the agent directories
+  npx trunative rubric [--only]   print the design review worksheet
 
 Options
   --dir <path>   install into this directory instead of the detected ones
                  (repeatable)
   --cwd <path>   run against this project instead of the current directory
+  --only <name>  limit the rubric to a heuristics file ("touch"), a rule
+                 prefix ("touch-") or one rule id (repeatable)
+  --format <f>   rubric output: markdown (default), json, ids
   -v, --version  print the version
   -h, --help     print this help
 
@@ -39,6 +44,8 @@ async function main(): Promise<number> {
 		allowPositionals: true,
 		options: {
 			dir: { type: 'string', multiple: true },
+			only: { type: 'string', multiple: true },
+			format: { type: 'string' },
 			cwd: { type: 'string' },
 			version: { type: 'boolean', short: 'v' },
 			help: { type: 'boolean', short: 'h' },
@@ -66,6 +73,8 @@ async function main(): Promise<number> {
 			return doctor({ cwd, version })
 		case 'install':
 			return install({ cwd, version, dirs: values.dir })
+		case 'rubric':
+			return rubric({ version, only: values.only, format: values.format })
 		default:
 			console.error(`unknown command "${command}"\n`)
 			console.error(USAGE)
