@@ -4,17 +4,7 @@ Runs once per project, and again whenever `doctor` fails. Nothing else in the fl
 
 ## Asking
 
-This step runs on answers, not on guesses. Every decision below that the code cannot settle is a question for the user, asked one at a time, in the surface your harness gives you.
-
-<if:claude>
-Ask with the AskUserQuestion tool. One decision per question, a short `header`, and the recommended option first in the list with `(recommended)` at the end of its label. Write each option as what it costs the design, not as what it is.
-<if:codex>
-Ask with this harness's question tool when the build exposes one, in the same shape: one decision, recommended option first, labelled as the recommendation. When it does not, ask directly in plain text, ending in a question mark.
-<if:antigravity>
-Ask with this harness's question tool when the build exposes one, in the same shape: one decision, recommended option first, labelled as the recommendation. When it does not, ask directly in plain text, ending in a question mark.
-<else>
-Ask the user directly, in plain text, ending in a question mark. One decision per message, the options listed under the question, the recommended one first and named as the recommendation. Wait for the answer before writing anything.
-<endif>
+This step runs on answers, not on guesses. Every decision below that the code cannot settle is a question for the user, asked one at a time. A question is written as an `<Ask>` block: one decision, the options in order, the recommended one first and marked, each option phrased as what it costs the design. How a block reaches the user depends on the harness and is written once, in `references/annotations.md`.
 
 The user chooses. A recommendation is a default worth stating, not a decision already taken, and an answer that goes against it wins with no argument back.
 
@@ -61,7 +51,7 @@ Read the codebase first and derive the tokens from what is actually there. Ask t
 - platform floors: minimum OS versions, target devices, offline requirements
 - deliberate exceptions to the heuristics, each with the reason and the date
 
-**No stack yet.** There is no code to read when the project is empty, so `STACK.md` records a decision instead of an observation. Ask the user, following `## Asking` above. Never pick the stack silently, and never lay the options out as equivalent: a flat list of frameworks is the absence of a recommendation.
+**No stack yet.** There is no code to read when the project is empty, so `STACK.md` records a decision instead of an observation. Never pick the stack silently, and never lay the options out as equivalent: a flat list of frameworks is the absence of a recommendation.
 
 **Flutter is the recommended option, and it goes first with the reason in one line.** The reason is design control, which is the whole point of this skill:
 
@@ -70,14 +60,29 @@ Read the codebase first and derive the tokens from what is actually there. Ask t
 - Text scale, safe areas and semantics are first-class (`MediaQuery.textScaler`, `SafeArea`, `Semantics`), so the accessibility floor is reachable without extra packages.
 - Hot reload keeps the build and review loop short, and this flow runs that loop on every screen.
 
-**A stated constraint moves the recommendation off Flutter**, and only a stated one does. Never a preference of yours:
+**A stated constraint moves the recommendation off Flutter**, and only a stated one does. Never a preference of yours. When code already exists, or the team already ships in another stack, use what is there and do not ask at all. Otherwise:
 
-- code already exists, or the team already ships in another stack: use what is there, and do not ask at all
-- the target is a website: mobile web, not Flutter
-- one platform only, with heavy OS integration (widgets, App Clips, deep system APIs): SwiftUI or Jetpack Compose
-- the product is a feature inside an existing React Native app: React Native or Expo
+<Ask header="Stack">
+There is no code to read yet, so the stack is a decision rather than an observation. Which one?
 
-Write the answer and the reason into `STACK.md`, naming the constraint that moved the recommendation when one did. A stack chosen off the recommendation and a stack chosen against it are different facts, and review needs to tell them apart.
+<Option recommended>
+**Flutter.** One rendering engine, so every spacing, weight and radius decision lands identically on both platforms and the design work is done once.
+</Option>
+
+<Option>
+**React Native or Expo.** Right when the product is a feature inside an app that already ships in it. Two renderers, so every design decision is verified twice.
+</Option>
+
+<Option>
+**SwiftUI or Jetpack Compose.** One platform only, with integration no cross-platform layer reaches: widgets, App Clips, deep system APIs. The other platform is a second product.
+</Option>
+
+<Option>
+**Mobile web.** The target is a website. The browser owns gestures, insets and the keyboard, and the heuristics apply to what it leaves.
+</Option>
+</Ask>
+
+Write the answer into `STACK.md` as its first line, `Stack:` followed by one of the values `references/annotations.md` lists (an Expo project writes `expo`, a bare React Native one writes `react-native`), because every `<If stack>` block in this skill is answered from that line. Under it, the reason, naming the constraint that moved the recommendation when one did. A stack chosen off the recommendation and a stack chosen against it are different facts, and review needs to tell them apart.
 
 ## 3. Check the project is not wearing another app's identity
 

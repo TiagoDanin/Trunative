@@ -14,9 +14,11 @@ If the screen has more than one primary action, it is more than one screen. Spli
 
 ## 2. Load only what applies
 
-Read `DESIGN.md` for the tokens and `STACK.md` for the primitives that reach them, then load from `heuristics/` only the rules this screen actually touches. Do not read the whole folder. Use `references/` on demand, for a specific number or platform API, never as background reading.
+Read `DESIGN.md` for the tokens and `STACK.md` for the primitives that reach them. Then open every file under **Base** in `SKILL.md`, and from **Extra** only the files this screen actually touches. Do not read the whole folder. Use `references/` on demand, for a specific number or platform API, never as background reading.
 
-The nine rules under **Always in scope** in `SKILL.md` are not part of this choice. They apply to a splash screen and to a chart alike, so deciding a screen does not touch type, insets, contrast, motion or accessibility is not a decision this step gets to make.
+Base is not part of this choice. Colour, text, targets, layout, states, actions, words and motion are on a splash screen and on a chart alike, so deciding a screen does not touch one of them is not a decision this step gets to make.
+
+When the screen touches Firebase, in any of auth, Firestore, Storage, Messaging, Remote Config or Crashlytics, read `flow/firebase.md` as well. It is loaded here the way a heuristic is, and it is not a step.
 
 ## 3. Write it
 

@@ -30,13 +30,13 @@ After a build that is the diff. On request it is the screen: the widget, view or
 
 ## 2. Scope and checklist
 
-The scope is the heuristics files the code touches, chosen the way `flow/build.md` chooses them, plus the nine always-in-scope rules, which apply to a splash screen and to a chart alike. Write the scope down before grading. A scope chosen once the scores are in is a scope chosen to flatter them.
+The scope is every base file plus the extra files the code touches, chosen the way `flow/build.md` chooses them. The nine always-in-scope rules sit inside the base files and are never `n/a`. Write the scope down before grading. A scope chosen once the scores are in is a scope chosen to flatter them.
 
 ```sh
-npx trunative rubric --only touch --only forms --only states
+npx trunative rubric --only forms --only search
 ```
 
-`--only` takes a heuristics file stem, a rule prefix such as `touch-`, or a single rule id, and repeats. The nine always-in-scope rules are added whatever the scope is. `--format=ids` prints the ids alone, which is what a diff against the previous run reads to catch a rename.
+Base is in every rubric. `--only` adds extras, by file stem, by rule prefix such as `form-`, or by a single rule id, and repeats. `--format=ids` prints the ids alone, which is what a diff against the previous run reads to catch a rename.
 
 The checklist is generated, never written by hand:
 
@@ -44,7 +44,7 @@ The checklist is generated, never written by hand:
 - Do not delete a row. A rule that does not apply is `n/a` with a reason, which is a different fact from a rule nobody looked at.
 - Do not grade a rule that is not on the checklist. An id that is not there was renamed or removed, and a score for it is a score for nothing.
 
-Each row carries the rule's own Check line, which is the criterion. Grade against that sentence, not against a memory of the heuristic.
+Each row carries the rule's own Check line, which is the criterion. Grade against that sentence, not against a memory of the heuristic. A row marked `[device]` is a rule the file cannot settle from the source, which decides the evidence in step 3.
 
 ## 3. Grade
 
@@ -54,9 +54,7 @@ Every row gets a score, one line of finding, and its evidence:
 - `device`: the screen was driven. The claim is about the app.
 - `source+device`: both, and they agreed. Where they disagree the device wins, and the disagreement is a finding.
 
-Where a heuristics file closes its Check section by saying what a diff cannot settle, the checklist prints that paragraph under the group as `Not from a diff`. A rule it puts on a device may not take `source`: the file has already said a diff cannot settle it, so a number from the source alone is a guess wearing a score. Those rules are `device`, `source+device`, or `unrun`.
-
-Some of those paragraphs name the ids and some point at the lines instead, as the last three or the last five. Count them against the group in the checklist, which is in the file's own order. A file that closes without such a paragraph exempts nothing.
+A rule its file marks `<Rule evidence="device" />` may not take `source`: the file has already said a diff cannot settle it, so a number from the source alone is a guess wearing a score. The checklist prints `[device]` on those rows, and the paragraph the file closes its Check section with, printed under the group as `Not from a diff`, says why. Those rules are `device`, `source+device`, or `unrun`. A rule without the mark can be graded from the source, and is still worth seeing on a device.
 
 When the app is running on a device, split the work in two and keep the halves apart, because a grader who has already read the measurements grades the measurements:
 
@@ -64,11 +62,15 @@ When the app is running on a device, split the work in two and keep the halves a
 
 **Measuring.** Produces numbers and captures, no scores at all, each keyed to a rule id: both appearances on the narrowest and widest device class, the largest accessibility text step on the narrowest, hit area bounds read from the inspector rather than estimated from a screenshot, the primary flow completed with the screen reader on, the screen with the network off and after a process kill the system would have made itself, and real records rather than seed data, meaning a null, a zero, a long string, an old timestamp and an empty list.
 
-<if:claude>
-Run the two as sub-agents, spawned in one message so they work at the same time and neither reads the other's output.
-<else>
-Run the two as sub-agents when this harness has them, spawned so that neither reads the other's output. When it does not, finish the judging pass and record it, then measure.
-<endif>
+How the two are kept apart depends on the harness you are running in:
+
+<If agent="claude">
+Run them as sub-agents, spawned in one message so they work at the same time and neither reads the other's output.
+</If>
+
+<If agent="other">
+Run them as sub-agents when this harness has them, spawned so that neither reads the other's output. When it does not, finish the judging pass and record it, then measure.
+</If>
 
 Then reconcile: the judged score stands unless a measurement contradicts it, and every score a measurement moved is printed with both numbers. The report is one table, not one pass after the other. When they could not be kept apart, the report says so on its first line.
 
