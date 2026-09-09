@@ -93,10 +93,10 @@ Larger text, bold text, increased contrast, reduced motion, reduced transparency
 
 Phones are used muted, in public, and by people who cannot hear them.
 
-- Two of these the system already answers, which is the half a diff can be checked against: `isClosedCaptioningEnabled` on iOS and `CaptioningManager.isEnabled()` on Android say captions are wanted, `isVideoAutoplayEnabled` on iOS says video may start by itself. Read both at launch and on their change notifications, and start the player the way they say.
+- One of these the system already answers, which is the half a diff can be checked against: `isClosedCaptioningEnabled` on iOS and `CaptioningManager.isEnabled()` on Android say captions are wanted. Read it at launch and on its change notification, and start the player the way it says. Whether video may start by itself is `motion-autoplay`.
 - The rest is designed rather than read. Video carrying speech or meaningful sound carries captions, with the control to turn them on inside the player rather than buried in settings.
 - Sound is never the only signal. A success chime, an error beep, a haptic with no visible change: pair every one with something the screen shows (`touch-feedback`).
-- Audio that plays on its own does not play with sound, and it has a control to stop it that is reachable in one step.
+- Audio that starts on its own is gated by `motion-autoplay` and `sound-unasked`, and the control to stop it is reachable in one step.
 
 ## `a11y-test` Drive one whole flow with the reader on
 
@@ -117,7 +117,7 @@ Review answers each of these against the code, pointing at the line:
 - Every swipe, long press, drag and multi-finger gesture reaches the same result through a named action: the primitive's own label where it projects one, a custom action where nothing does. `a11y-gesture`
 - Spoken names match visible labels, nothing decorative takes the highlight, every action is reachable by stepping, and nothing holding the only copy of something dismisses on a timer. `a11y-alt-input`
 - Increased contrast is read and honoured on each platform it exists on, reduced transparency on iOS is left to the system material, and every setting is read live rather than cached at launch. `a11y-settings`
-- The system captions and autoplay preferences are read, video with speech has captions, no signal is audio or haptic only, and nothing autoplays with sound. `a11y-media`
+- The system captions preference is read, video with speech has captions, no signal is audio or haptic only, and anything that starts on its own can be stopped in one step. `a11y-media`
 - The scanner was run on the changed screens and one full flow was completed with the screen reader on. `a11y-test`
 
 The last line is not answerable from a diff. `a11y-order`, `a11y-collection`, `a11y-announce` and `a11y-focus` are only half answerable from one: the tree they describe exists at runtime, so a file can show the intent and only a running screen shows the result.

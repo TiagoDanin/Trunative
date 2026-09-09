@@ -69,7 +69,7 @@ iOS: a second appearance inside the asset catalog entry, resolved by the system.
 | Platform | Canvas | Structure |
 |---|---|---|
 | iOS | 1024 by 1024 px, square, no transparency, no rounded corners | Layered: one background plus one or more foreground layers, assembled in Icon Composer. Prefer SVG or PDF layers; PNG only for mesh gradients and raster art. Ship layers unmasked |
-| Android adaptive | 108 by 108 dp layers | `<adaptive-icon>` in `res/mipmap-anydpi-v26/ic_launcher.xml` with `<background>`, `<foreground>` and `<monochrome>`. Referenced from the manifest as `android:icon` |
+| Android adaptive | 108 by 108 dp layers | `<adaptive-icon>` in `res/mipmap-anydpi-v26/ic_launcher.xml` with `<background>`, `<foreground>` and `<monochrome>`. Referenced from the manifest as `android:icon`, with `android:roundIcon` alongside it for the launchers that ask for a round variant |
 | Play listing | 512 by 512 px, 32-bit PNG with alpha, 1024 KB maximum | Feature graphic 1024 by 500 px, JPEG or 24-bit PNG, no alpha |
 
 Adaptive icon geometry: a 72 dp masked viewport out of the 108 dp canvas, with the outer 18 dp on each side reserved for masking and for parallax or pulse effects. Keep the mark inside the 66 dp safe box and at least 48 dp across. Layers carry no mask and no outline shadow, and vectors are preferred over bitmaps.

@@ -6,7 +6,7 @@ Loading, empty, error, offline and stale belong to `heuristics/states.md`. This 
 
 ## `list-virtualise` Rows recycle, or the list breaks on real data
 
-Ten rows in a mockup and two thousand in production run the same code. A scrolling container wrapped around a mapped array constructs every row up front, keeps all of them alive, and misses the frame budget on the way, which is 16.6ms at 60Hz and 8.3ms on a 120Hz panel. This is the single most reliable performance defect in generated mobile code.
+Ten rows in a mockup and two thousand in production run the same code. A scrolling container wrapped around a mapped array constructs every row up front, keeps all of them alive, and misses the frame budget on the way, which `perf-frame` states. This is the single most reliable performance defect in generated mobile code.
 
 Reach for the recycling primitive every time, including on a list that looks short today:
 
@@ -18,7 +18,7 @@ Reach for the recycling primitive every time, including on a list that looks sho
 
 Three things the recycler needs before it delivers anything. A key taken from the item's own identity, never from its position, because a positional key hands one row's state to a different item as soon as the data reorders. A size hint where rows are uniform (`itemExtent`, `getItemLayout`, `contain-intrinsic-size`), so scroll geometry stops being measured row by row, on the stacks that still take one: FlashList v2 measures for itself and rejects the estimate its first version required. And a row that does not rebuild on every scroll frame, which means the work inside it is memoised and the callbacks it takes are stable.
 
-Putting a windowed list inside another scroller running the same direction cancels the windowing outright: the outer scroller asks for the full height, so every row is built and kept, and the primitive costs more than the plain column it replaced. The gesture half of that mistake is `layout-column`.
+Putting a windowed list inside another scroller running the same direction cancels the windowing outright: the outer scroller asks for the full height, so every row is built and kept, and the primitive costs more than the plain column it replaced. The gesture half of that mistake is `scroll-nest`.
 
 ## `list-density` A wall of identical rows is a missing hierarchy, not consistency
 
@@ -59,9 +59,9 @@ Images reach a row late, out of order, and at whatever resolution the server hol
 
 - **The container has fixed dimensions.** Row height comes from the layout, never from the bytes. An image that sizes itself on arrival reflows the list under a thumb already in motion, and the row somebody was about to tap slides out from under it.
 - **The placeholder occupies the exact final box.** A neutral fill or a skeleton at that size. Not a spinner, and not a zero-height box that expands later.
-- **The decode is scaled to the box on screen.** A 2000px asset painted into a 48dp avatar holds full-size memory, forty of them exhaust what a mid-range device grants the process, and the work lands on a thread that owes the next frame.
+- **The decode is scaled to the box on screen**, which is `perf-decode`.
 
-Fixed dimensions is not the same as one aspect ratio for every list. Choose the ratio per list and crop to it, so a single portrait photo cannot restructure the row it arrives in.
+Fixed dimensions is not the same as one aspect ratio for every list, and choosing the ratio and the crop is `icon-crop`.
 
 ## `list-sections` Sections tell the user where they are
 
@@ -119,7 +119,7 @@ Review answers each of these against the code, pointing at the line:
 - Rows are separated by one device rather than three, and hand-drawn dividers are inset to the text with none after the last row. `list-separator`
 - At most two controls sit inside a row, each with its own hit area and its own clearance, and a chevron is not counted as one. `list-row`
 - Every swipe action has a visible equivalent, at most two per edge, destructive swipes end in undo, and the gesture commits past a distance threshold rather than on drift. `list-swipe`
-- Image containers carry fixed dimensions with a placeholder at the same size, and every image is decoded to the size it is drawn at. `list-images`
+- Image containers carry fixed dimensions with a placeholder at the same size. `list-images`
 - Section headers are headings rather than rows, grouping goes one level deep, and a sticky header stays legible over the content moving under it. `list-sections`
 - The list loads continuously or offers a load-more control and never numbered pages, and a list that pages states where the data ends and turns a failed page into a retry at the bottom. `list-end`
 - Pull to refresh uses the platform control, and the same refresh is reachable without the gesture. `list-refresh`

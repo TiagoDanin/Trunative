@@ -36,6 +36,16 @@ A list row, a settings label, a section header and a notification line are all r
 - Humour is weighed rather than banned, and it costs more than it looks: it travels badly between cultures and lands on a stranger reading one line off a locked screen. Keep it out of errors, permission asks, money and destructive confirmations entirely.
 - No gendered reference the sentence does not need. Write the plural or the role, because a language that inflects for gender has to resolve one the source string invented for no reason. A disability never stands in for a fault or a weakness.
 
+## `copy-tells` The string nobody decided the wording of
+
+A string whose wording was filled in rather than chosen has a shape, and it is the same shape across every app that shipped one. All of it is searchable in the catalogue, which is what makes it a rule instead of a taste.
+
+- **No dash.** The em and en dash are what gets reached for instead of choosing between a full stop, a comma, a colon and a pair of brackets, and a four word title has no clause to join in the first place. Neither character is on the phone keyboard, both widen a line in a column with nothing to spare, and screen readers disagree on whether to announce them at all. Rewrite the sentence rather than substituting a shorter dash: split it in two, or use the punctuation it actually wanted. The hyphen inside a compound word is a different character and stays.
+- **Vocabulary that sells instead of saying**: seamless, effortless, unlock, elevate, supercharge, robust, powerful, leverage, empower, journey, delve, revolutionary. It clusters in empty states, paywalls and onboarding, which are precisely the screens where the reader is deciding whether to continue.
+- **Significance the screen has not earned.** A settings row is not a milestone and a first upload is not a journey. Say what happened.
+- **Chat leftovers**: Great question, I hope this helps, Let me know if, Here is what you need to know. They arrive in apps whose strings were drafted in a chat window, and again in any feature that renders model output as interface.
+- **Not X but Y**, where the negative half names something nobody claimed. "Not just a list, but a workspace" spends a line of a narrow screen arguing with a reader who was not arguing.
+
 ## `copy-error` Name the failure, rule on the retry, end on the fix
 
 Three answers in at most two sentences, and they are owed wherever an operation the app ran has failed: a request, a write, a sync. A field rejecting what was just typed is a single instruction instead, and `form-error` owns it. `state-error` sorts the failure classes and forbids naming a cause the app did not verify, and `fb-place` decides where the message lands. This rule is the sentence itself.
@@ -108,6 +118,7 @@ Review answers each of these against the code, pointing at the string:
 - No title wraps past 2 lines, no body runs past 1 sentence without a new fact in it, and no alert answer exceeds 2 words. `copy-budget`
 - 0 destination rows open with a generic verb, and 0 strings in a scannable column repeat their header or lead with a negated term. `copy-first-word`
 - 0 occurrences of "the user", "I", "my", "please", "sorry", "oops" and "!" in user-facing strings, "we" only where the sentence is about the company, and 0 gendered references the sentence does not need. `copy-voice`
+- 0 em dashes and 0 en dashes in the string catalogue, 0 sales vocabulary on the empty, paywall and onboarding screens, and 0 chat leftovers. `copy-tells`
 - Every string reporting a failed operation carries all 3 answers, the distinct failure sentences match the distinct moves rather than the 4 classes, and 0 of them lead with a code, blame the reader or spell out a settings path. `copy-error`
 - 0 mechanism words, exception names or HTTP numbers in the string catalogue, sync, cache and queue only where the reader uses the word too, and every acronym either known to the audience or spelled out once. `copy-jargon`
 - 1 term per concept across the catalogue, listed in `STACK.md`, with 0 uses of "click" and 0 confirmations whose verb differs from the control that raised them. `copy-terms`

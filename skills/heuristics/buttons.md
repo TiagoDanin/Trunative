@@ -47,7 +47,6 @@ The whole control is tappable, not the text inside it. A full-width primary at t
 
 Write the verb of the action and the object it acts on: Send, Pay 42, Delete photo. OK, Submit and Yes describe nothing, and Yes in particular forces the user back up to reread the question.
 
-- Capitalisation follows the platform: Material uses sentence case, iOS titles its buttons.
 - No trailing period, and never "click" on a device with no cursor.
 - Keep it short enough to survive translation and a 200% text size, and decide now what a long label does: wrap, or shrink the container, never quietly truncate the verb.
 - An icon-only button carries an accessibility label saying the action, not the picture. On Android, navigation destinations always carry a visible text label as well.
@@ -93,7 +92,7 @@ Review answers each of these against the code, pointing at the line:
 - Exactly one primary action is visible on the screen, counting the bottom bar, the top bar, the content and the FAB together, and any sheet or dialog carries its own single primary. `button-one-primary`
 - Emphasis comes from the platform's ladder, one style per rank, styled in the theme rather than per call site, and the same action looks the same across screens. `button-ladder`
 - Every button's touch area reaches the platform floor even where the drawn height is smaller. `button-target`
-- Labels name the action and its object, follow the platform's capitalisation, and survive the longest translation at the largest text size. `button-label`
+- Labels name the action and its object, are capitalised as `copy-case` requires, and survive the longest translation at the largest text size. `button-label`
 - Disabled states explain themselves, and every button that starts work becomes unpressable and shows it, without resizing. `button-state`
 - At most one FAB, holding the screen's defining action, absent on iOS, with the list underneath padded to clear it. `button-fab`
 - Chip selection is visible without color, chip rows scroll instead of wrapping, and no chip is doing a tab's job. `button-chips`

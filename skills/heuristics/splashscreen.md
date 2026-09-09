@@ -27,7 +27,7 @@ Where a routing activity has to stay, hold the system surface across it rather t
 Two element sets, one per platform. One asset shipped to both is wrong on one of them.
 
 - **iOS:** only what is already on the first real screen. A background color, and the empty navigation, tab or tool bars if that screen has them. No text of any kind, no logo, no illustration, unless it is a fixed part of the first screen. If the first screen is a solid color, the launch screen is that solid color and nothing else.
-- **Android:** a single opaque window background color, the app icon as a vector, and optionally a circle behind it. One third of the icon foreground is masked, so anything drawn in the outer third is gone. The branding image slot at the bottom stays empty. Every size the icon and that slot have to hit is in `references/launch-surface.md`.
+- **Android:** a single opaque window background color, the app icon as a vector, and optionally a circle behind it. One third of the icon foreground is masked, so anything drawn in the outer third is gone. The window background carries no transparency, and the centre icon is not guaranteed: the platform decides whether it appears unless the app opts in through `windowSplashScreenBehavior`. The branding image slot at the bottom stays empty. Every size the icon and that slot have to hit is in `references/launch-surface.md`.
 
 Neither platform gets a tagline, a version string, a copyright line or a loading message.
 

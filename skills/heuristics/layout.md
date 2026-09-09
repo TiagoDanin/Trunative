@@ -44,7 +44,7 @@ Density follows the situation in `PRODUCT.md`: an app used while walking wants f
 
 There is no second column to escape into, and that changes what happens when something does not fit. Two halves side by side on a 320 wide screen leave each about 140 after the margins and the gap, and at the largest text step the same pair becomes two words per line. Whatever wants a second column is a row that should stack, a table that should be a list, or content that deserves its own screen. The exception is a pair of short fields whose format fixes their length in advance, expiry beside CVC being the one everybody ships: those fit at 140 and go on fitting at the largest step. Two fields on one line is otherwise the version of this that ships most often, and `form-column` owns it.
 
-The screen scrolls in one place and along one axis. Put a vertical scroll inside another vertical scroll and the drag has two possible owners, so the inner one, holding the content the finger was aiming at, sits still while the page moves instead. What settles it is whether the two are connected: nest on the same axis only where the platform's nested-scroll contract is in place, which is `NestedScrollConnection` on Android and a sheet detent with a scrolling body on iOS. The scrollable bottom sheet over a map is that case, and it works because the handoff is wired, not because two scrollers were placed inside each other. A horizontal strip inside a vertical page needs none of that, precisely because the axes differ. Virtualising what is inside the scroll is `list-virtualise`.
+The screen scrolls in one place and along one axis. Put a vertical scroll inside another vertical scroll and the drag has two possible owners, so the inner one, holding the content the finger was aiming at, sits still while the page moves instead. Nesting on the same axis is only ever safe under the platform contract that `scroll-nest` owns. A horizontal strip inside a vertical page needs none of that, precisely because the axes differ. Virtualising what is inside the scroll is `list-virtualise`.
 
 ## `layout-width` The narrow device is the one that breaks
 
@@ -79,7 +79,7 @@ At the narrow end, at default text size, with nothing scrolled, three things are
 
 Scrolling costs more here than the wheel costs on a desk, because it takes the hand that is holding the phone, so the first screenful is the one thing the user gets without paying for it. A header that spends it on promotion or decoration, an illustration, a stack of marketing cards, a brand banner, has pushed the first row of real content past the edge for nothing. Where the media is the subject, a photo detail screen, a listing, an artist page, a full-bleed onboarding screen, the hero is both the subject and the start of the content, and the rule is already met.
 
-Where content continues below, let a row be cut by the edge instead of landing flush against it, so the screen says there is more without a hint that has to be designed. Everything past that line is a decision the user has to earn, so order the screen by what the job needs first, not by what the API returned first.
+Where content continues below, saying so is `scroll-affordance`. Everything past that line is a decision the user has to earn, so order the screen by what the job needs first, not by what the API returned first.
 
 ## `layout-short` Content that does not fill the height still has a bottom
 
@@ -100,7 +100,7 @@ Review answers each of these against the code, pointing at the line:
 - The screen takes its insets from the framework's inset source rather than from a constant, and nothing readable or tappable sits outside them. `layout-insets`
 - Every gap is a multiple of 4, and of 8 above 16, the text column starts at the same margin on every screen outside full-bleed content and the platform list containers, and the screen uses about five distinct vertical gaps rather than a new one per component. `layout-grid`
 - Grouping comes from space before containers, no container is nested inside another that already groups the same content, and the row height and section gap are the numbers this kind of screen uses everywhere else. `layout-grouping`
-- One column, no same-axis nesting without the platform's nested-scroll contract, and nothing side by side that would leave either half under about 140 wide apart from short fixed-format fields. `layout-column`
+- One column, no same-axis nesting outside what `scroll-nest` permits, and nothing side by side that would leave either half under about 140 wide apart from short fixed-format fields. `layout-column`
 - No content container carries a fixed width, and the screen was checked at 320dp with nothing clipped or overflowing. `layout-width`
 - Bars sit in the platform's bar slot, hand-placed chrome derives its padding from the measured bar plus the inset instead of a typed number, and no more than two persistent bars stand besides the system ones. `layout-chrome`
 - The snackbar comes from the platform's host slot rather than a hand-placed overlay, it clears the bottom bar and the inset, it moves the floating button rather than covering it, and one is on screen at a time. `layout-overlays`

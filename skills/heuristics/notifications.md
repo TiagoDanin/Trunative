@@ -25,7 +25,7 @@ Android has required every notification to carry a channel since API 26: post on
 - Count the kinds of thing the app sends and create that many channels, named for what the user will recognise (Order updates, Mentions, Delivery status) rather than for the system that emits them.
 - The importance, sound and vibration are fixed at creation and belong to the user afterwards. Nothing in the app can change them again; only the user can, from system settings. A channel created at the wrong importance is permanent for everyone who already installed, and correcting it means creating a different channel.
 - iOS has no system-side equivalent. Categories, registered through `setNotificationCategories(_:)`, carry the actions in `notify-actions` and the hidden-preview text, and give the user no per-kind sound, importance or on switch at all. So on iOS the per-kind control lives on a settings screen inside the app, and the app requests `providesAppNotificationSettings` so the system offers a button straight to it.
-- Do not rebuild the Android channel toggles in the app's own settings. Link to the system page for the channel, for the reason `state-permission` gives. A product-level preference is a different thing and stays in the app: which kinds this account wants at all, and the promotional opt-in `notify-earns-it` requires.
+- Do not rebuild the Android channel toggles in the app's own settings. Link to the system page for the channel, for the reason `set-system-owned` gives. A product-level preference is a different thing and stays in the app: which kinds this account wants at all, and the promotional opt-in `notify-earns-it` requires.
 
 ## `notify-level` Pick the quietest level that still does the job
 
@@ -58,7 +58,7 @@ Write it to stand alone: what happened, and who or what it concerns. There is no
 ## `notify-destination` The tap lands on the thing the notification named
 
 - The payload carries the destination and the identifier of its subject, so routing needs no second network call. On Android that arrives through the `PendingIntent` given to `setContentIntent()`, which every notification needs to respond to a tap at all. A push that says "new message" and opens the inbox threw away what it already knew.
-- The handler reads that payload before the app renders its default destination, on the cold path as well as the warm one. Building the stack above the destination, the cold-start test and what happens when the subject is gone all belong to `nav-deeplink`; this rule owns the payload and the tap.
+- The handler reads that payload before the app renders its default destination on the warm path, and the cold one is `splash-entry`. Building the stack above the destination, the cold-start test and what happens when the subject is gone all belong to `nav-deeplink`; this rule owns the payload and the tap.
 - Tapping it removes it: `setAutoCancel(true)` on Android, and on iOS the system removes a delivered notification on tap by itself. Whatever the tap resolves settles the badge with it.
 
 ## `notify-actions` Design for two actions, because two is what fits

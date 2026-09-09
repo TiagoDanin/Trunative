@@ -4,19 +4,7 @@ The first run is the only session where the user has no reason to stay. The app 
 
 So the first run is designed as a sequence and measured as one: what the system draws before the app exists, what gets explained, what gets deferred, when identity is asked for, and what the user is finally standing on when it ends.
 
-The shape of a permission request is `perm-rationale`. The screen a new account lands on is `state-empty`.
-
-## `onboard-launch` The launch screen is the first screen with its content missing
-
-Both platforms draw something before the app has run a line of its own code. Its only job is to make the open feel finished, and it is not an advertisement.
-
-- On iOS it is nearly identical to the first real screen: same background, same bars, same shape of content. Anything that differs between the two shows up as a flash.
-- It follows the device appearance. A light asset in front of a dark first screen flashes on every open in dark mode, so the launch background is a color set with a dark variant on iOS and carries a night qualifier on Android.
-- No text on it. It is a static asset the system draws, so it is never translated and never scales with the text setting.
-- No artificial minimum. An app that is ready in 200 ms shows it for 200 ms.
-- From Android 12 the system owns this and the app sets two things: the window background, which is the first screen's background color, and the icon. The icon is a vector, 240x240 dp inside a 160 dp circle when it has a background, 288x288 dp inside a 192 dp circle when it does not. An animated one runs for at most 1000 ms, with at most 166 ms before it starts, and the branding image slot at the bottom is 200x80 dp with the guidance to leave it empty. A custom launch activity is a screen the system now draws over.
-- That system splash is not a first-run event. It appears on every cold and warm start for the life of the install, and never on a hot one, so it is designed as something the user sees daily rather than once.
-- Hold it open only for work that finishes inside its own animation. Past that, dismiss it and let the real screen do the waiting with a placeholder, which is `state-loading`. A spinner on top of a splash means it was held too long.
+The shape of a permission request is `perm-rationale`. The screen a new account lands on is `state-empty`. The surface the system draws before any of this runs is `heuristics/splashscreen.md`.
 
 ## `onboard-splash` A branded moment goes inside the app, never in front of it
 
@@ -48,7 +36,7 @@ Nobody remembers a slideshow about an interface they have not used yet, and a ph
 
 Sort the setup into two lists: what the app cannot start without, and what can be defaulted now or answered later. The second list is longer than it first looks, and everything on it that stays in the flow is a screen paying rent it does not earn. These screens are read one at a time on a device where the exit is a home swipe, and anything the first run downloads arrives on whatever data the user is standing in.
 
-- Ship a working default instead of asking. Theme, units, reminder times and notification style all have a right answer for most people, and the few who care will go and change it.
+- Ship a working default instead of asking, which is `set-default-first`.
 - No rating prompt and no purchase ask before the user has seen the product work.
 - The first run does not wait on a download. Content packs, models and offline data arrive in the background while the app is already usable.
 - Terms and licensing are not one of the three panels. Where consent is legally required it is one line with a link at the point it applies, not a wall to scroll to the bottom of.
@@ -59,7 +47,7 @@ Both platforms want the ask attached to the feature, and the system gives the ap
 
 - Count the system dialogs raised between the app icon and the first real screen. The answer is zero, unless the resource is required for the app to function, in which case it is one, with its explanation in front of it.
 - The notification prompt is not that dialog. It attaches to the moment the user makes something worth being told about, which is after the first real screen by definition: `perm-notify-ask`.
-- The one explanation screen this rule puts in front of a first-run dialog has a single button, titled Continue or Next so it is obvious what it opens, and no exit that skips the alert. A decline control sitting there is a rehearsal for dismissing the system alert behind it.
+- The one explanation screen this rule puts in front of a first-run dialog has a single button, worded under `copy-rationale`, and no exit that skips the alert. A decline control sitting there is a rehearsal for dismissing the system alert behind it.
 - A refusal reaches the reduced app that `state-permission` defines, not a wall and not a retry: `perm-no-coercion`.
 
 ## `onboard-look-first` Let them look before they sign up
@@ -102,7 +90,6 @@ The system reclaims backgrounded apps without asking, and a setup flow is exactl
 
 Review answers each of these against the code, pointing at the line:
 
-- The launch screen carries no text, has no minimum duration, has a dark variant behind the system appearance, is nearly identical to the first real screen on iOS and carries the first screen's background color on Android 12 and up, and nothing waits behind it that a placeholder should be waiting for. `onboard-launch`
 - Any branded frame sits after launching, is brief, blocks nothing, and does not run on later launches. `onboard-splash`
 - Three or fewer explanation panels, each showing the real product, with skip on every one, skip permanent, progress shown wherever there is more than one step, and the flow findable afterwards. `onboard-screens`
 - Teaching happens at the control it applies to, one tip at a time, dismissible, never blocking, and nothing explains the phone. `onboard-in-place`
@@ -113,4 +100,4 @@ Review answers each of these against the code, pointing at the line:
 - The first run ends on the product's own action rather than a blank screen, with any legal gate named as one. `onboard-first-action`
 - The step is persisted as it completes and the done flag is read before the first draw, so a process kill resumes the step and a second launch shows nothing. `onboard-resume`
 
-`onboard-launch`, `onboard-splash`, `onboard-first-action` and `onboard-resume` are answered from a clean install on a device, in both appearances, with the process killed mid flow the way the system would kill it. None of them can be settled by reading the router, because a flow that is correct in the file is exactly the one that starts over from panel one.
+`onboard-splash`, `onboard-first-action` and `onboard-resume` are answered from a clean install on a device, in both appearances, with the process killed mid flow the way the system would kill it. None of them can be settled by reading the router, because a flow that is correct in the file is exactly the one that starts over from panel one.

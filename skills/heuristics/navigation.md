@@ -87,15 +87,13 @@ Material allows the modal drawer at a phone's width, and this skill overrules th
 
 There is no sidebar to park a filter tree in, and scanning by thumb gives out long before a list does. The trigger is what the collection is for: once people arrive at it to find one specific item rather than to browse, it needs search. Roughly 50 items is this skill's working number for where that flips, and an app whose content makes it lower or higher sets its own in `STACK.md`.
 
-- Search that narrows what is already on screen is a field on that screen, and the results replace the list in place.
-- Search that spans the app is a top-level destination with its own stack, so a result is pushed and back returns to the query with the typed text still there.
-- The query survives leaving and returning: `nav-restore`.
+- Search that spans the app is a top-level destination with its own stack, not a screen pushed onto whatever happened to be open. Which surface it becomes, and everything inside it, is `search-surface`.
 
 ## `nav-restore` The process will be killed, and nobody asked for that
 
 Backgrounded apps get reclaimed, on both platforms, without warning. Coming back to a different screen than the one that was left is a bug even when the process died in between.
 
-What comes back is the place: the selected destination, its stack, the scroll offset and selection on the screen that was left, the filters that were applied, and the sheet that was open. The values in an unfinished form are `form-persist`. Saving at the moment the system says to save, and admitting anything that did not survive, is `state-interrupt`.
+What comes back is the place: the selected destination, its stack, the selection on the screen that was left, the filters that were applied, and the sheet that was open. Where in a collection the screen resumes is `scroll-restore`. The values in an unfinished form are `form-persist`. Saving at the moment the system says to save, and admitting anything that did not survive, is `state-interrupt`.
 
 The cutoff is a decision rather than a default. Restore the exact place when the app was left within about the last day, and open at the root of its top-level destination beyond that, so nobody resumes into week-old content they have to work out. Record the number in `STACK.md`. Content refreshes on the way in; only the place is restored.
 

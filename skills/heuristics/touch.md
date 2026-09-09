@@ -46,7 +46,7 @@ Since the grip changes mid-task, the design has to survive the change rather tha
 
 Delete, unsubscribe, cancel the order and send the payment do not belong in the easy region, and never beside something used often. The whole point of the hard region is that reaching it takes a deliberate second movement.
 
-Prefer undo over a confirmation dialog. Undo is faster for the person who meant it, recoverable for the person who did not, and it does not train users to dismiss dialogs without reading them. Keep the dialog for the cases where nothing can be undone, and say what will happen rather than asking whether they are sure.
+Prefer undo over a confirmation dialog. Undo is faster for the person who meant it, recoverable for the person who did not, and it does not train users to dismiss dialogs without reading them. When a dialog is the right vehicle instead is `fb-confirm-test`.
 
 ## `touch-feedback` If it happened under the finger, it did not happen
 
@@ -87,7 +87,7 @@ Review answers each of these against the code, pointing at the line:
 - Every interactive element measures at least 44pt or 48dp in its hit area, and list rows are tappable across their full width. `touch-floor`
 - Adjacent targets are separated by at least 8dp of dead space. `touch-spacing`
 - Primary action and primary navigation sit in the bottom third, and the layout was checked mirrored for a left thumb. `touch-reach`
-- Destructive actions sit outside the easy region and offer undo rather than a dialog wherever the action can be reversed. `touch-destructive`
+- Destructive actions sit outside the easy region, and the vehicle carrying the confirmation is the one `fb-confirm-test` selects. `touch-destructive`
 - Pressed state is visible under a covering finger, feedback lands within about 100ms outside the occluded area, and nothing depends on hover. `touch-feedback`
 - Back works on every screen including sheets, no custom gesture starts in a system edge zone, and every gesture has a visible alternative. `touch-gestures`
 - With the keyboard open, the focused field is visible and the primary action is reachable. `touch-keyboard`

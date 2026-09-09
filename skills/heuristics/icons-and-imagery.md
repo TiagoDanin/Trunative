@@ -101,7 +101,7 @@ The app icon is drawn at about the size of a fingertip, beside twenty others, in
 - No text in it. Words in an app icon are never translated and never read out, and at the drawn size they are texture.
 - No screenshot of the interface, no hairline strokes, no small detail. Each of them survives the 1024px master and none survives the home screen.
 - Ship the layers unmasked and square, with no shadow, bevel, glow or highlight painted in. The system applies its own, dynamically, and a pre-lit or pre-masked layer fights it and produces jagged edges.
-- Respect the launcher's geometry. On Android the outer band of the canvas belongs to the mask and to the parallax effect, so the mark sits inside the safe centre box, not against the edge.
+- Respect the launcher's geometry, which fails at both ends. On Android the outer band of the canvas belongs to the mask and to the parallax effect, so a mark drawn to the edge loses its edge to whatever shape that launcher applies; a mark drawn too small floats in the middle of a canvas everyone else fills. The safe box has a floor as well as a ceiling, and both are in the reference.
 - Ship the monochrome layer on Android, and the dark and tinted appearances on iOS. Both systems generate any variant that is not supplied, so the choice is not whether the app has one, it is whether anybody drew it. An alternate app icon needs its own full set.
 - The mark is the product's own. System symbols may not be used in an app icon or a logo, and platform hardware may not be drawn inside one.
 

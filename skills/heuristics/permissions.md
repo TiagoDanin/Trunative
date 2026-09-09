@@ -91,7 +91,7 @@ The screen that assumes otherwise crashes, or shows an empty list where the cont
 - No re-ask while the status is denied, and no ask the user did not trigger. On Android a prompt after a refusal spends the last chance the app had. A status of not determined at the next launch, including one an expired one-time grant left behind, is a first ask and belongs to `perm-rationale`.
 - Nothing is held hostage. Content, a paid feature or a reward cannot be priced at a permission, and an unrelated feature is never gated on an unrelated permission. The App Store rules name notifications, location and tracking specifically; Play states the same prohibition generally and adds that the app must accommodate the user who says no.
 - The note about what is missing sits where that feature's results would have been and names only the feature affected.
-- Consent is withdrawn where it was given. Every permission the app holds is reachable from inside the app, as a link to the system page for it rather than a second switch, and any consent the app stores itself, a tracking flag or an analytics opt-in, is turned off in the same place it was turned on. Where the user has turned tracking off in Settings, a shortcut back there is allowed.
+- Consent is withdrawn where it was given. Every permission the app holds is reachable from inside the app, as a link to the system page for it rather than a second switch, which is `set-system-owned`, and any consent the app stores itself, a tracking flag or an analytics opt-in, is turned off where `set-account-exit` puts it. Where the user has turned tracking off in Settings, a shortcut back there is allowed.
 
 ## `perm-notify-ask` The notification prompt comes after the user makes something worth being told about
 
@@ -114,7 +114,7 @@ Review answers each of these against the code, pointing at the line:
 - Every entry in the merged manifest and in the built app's `Info.plist` names the feature that uses it, and every runtime one names a feature the user can point at. `perm-inventory`
 - No permission is requested for something a system picker or access button already returns without one, a partial grant is widened in place rather than re-asked, and the automatic limited-access alert is suppressed and replaced. `perm-ask-less`
 - Each request asks for the weakest usable level, location goes out as the paired request, and always, precise and background are separate later asks. `perm-scope`
-- Each request is preceded by an app-owned screen stating use and benefit, gated on the current status, with a decline that continues, and one screen per feature rather than a queue. `perm-rationale`
+- Each request is preceded by an app-owned screen stating use and benefit, gated on the current status, with a decline that continues except on the first-run required-resource screen `onboard-ask-order` defines, and one screen per feature rather than a queue. `perm-rationale`
 - Every usage description is an active sentence naming the feature and the use rather than restating the button. `perm-purpose-string`
 - The code branches on permanent denial and on partial grants, not on a granted boolean. `perm-answers`
 - Permission status is read at the point of access, never cached from launch. `perm-recheck`
