@@ -40,13 +40,13 @@ It checks that the project has its three briefs, in `.trunative/` or at the root
 
 The doctor reports and exits 1, it never writes the briefs. Writing them is the agent's job in the init step.
 
-The agent also has a generator for the graded audit:
+The agent also has a generator for the review checklist:
 
 ```sh
 npx trunative rubric --only touch --only forms
 ```
 
-It prints one row per rule id, with that rule's own checklist line as the criterion, so the audit's checklist comes out of the heuristics instead of being written by hand. A rule added today shows up in the next audit with no second edit.
+It prints one row per rule id, with that rule's own checklist line as the criterion, so the checklist comes out of the heuristics instead of being written by hand. A rule added today shows up in the next review with no second edit.
 
 The skills.sh CLI works too, without the lockfile and the version check:
 
@@ -83,13 +83,15 @@ The agent then:
 2. **Applies the design principles** below while writing the code.
 3. **Audits the result** against the checklist and reports what it could not satisfy, instead of silently shipping it.
 
-That audit is a gate: pass, violation, or not applicable. For a screen that already exists there is a heavier pass, asked for by name:
+That audit scores every rule that applies from 1 to 5, and a 1 or a 2 sends the agent back to fix it before the work is handed over.
+
+The same review runs heavier on a screen that already exists, asked for by name:
 
 ```
-Run a design review on the checkout screen
+Review the checkout screen
 ```
 
-It grades every rule that applies from 1 to 5, separates what was read in the source from what was seen on a device, writes the result into `.trunative/design-review/`, and prints the score against the last run's.
+It drives the app instead of reading the diff, separates what was read in the source from what was seen on a device, writes the result into `.trunative/review/`, and prints the score against the last run's.
 
 ## Design Principles
 

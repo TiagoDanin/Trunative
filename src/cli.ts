@@ -13,7 +13,7 @@ const USAGE = `trunative, a mobile-only design skill for AI coding agents
 Usage
   npx trunative doctor            check the project before the agent starts
   npx trunative install [--dir]   copy the skill into the agent directories
-  npx trunative rubric [--only]   print the design review worksheet
+  npx trunative rubric [--only]   print the review checklist, one row per rule
 
 Options
   --dir <path>   install into this directory instead of the detected ones

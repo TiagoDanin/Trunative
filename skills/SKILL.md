@@ -15,10 +15,8 @@ Follow it in order. Never skip init, never end on build.
 
 1. **init**, read `flow/init.md`. Once per project, and again whenever `npx trunative doctor` fails.
 2. **build**, read `flow/build.md`. One screen, one component, or one flow at a time.
-3. **review**, read `flow/review.md`. Runs on the code that was just written.
+3. **review**, read `flow/review.md`. Runs on the code that was just written, and again on request over a finished screen. It scores every rule in scope from 1 to 5, and a 1 or a 2 is a violation.
 4. **loop**, back to build while review reports violations. Stop when review comes back clean.
-
-Outside the loop, on request: **design review**, read `flow/design-review.md`. It grades a finished screen rule by rule and writes a score that the next run is compared against. It runs on a screen, never on a diff, and it is the only step that produces a number. Review stays the gate.
 
 ## Heuristics
 

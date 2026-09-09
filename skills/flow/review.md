@@ -1,36 +1,146 @@
 # Review
 
-Runs after every build, on the code that was just written. Reviewing your own output is the point: the build step optimizes for getting the screen working, and this step optimizes for finding where it fails in a hand.
+Runs after every build, on the code that was just written, and again on request over a finished screen. Reviewing your own output is the point: the build step optimizes for getting the screen working, and this step optimizes for finding where it fails in a hand.
 
-## 1. Re-read the diff
+One grader, one scale, one set of rule ids. What changes between a run on a diff and a run on a screen is not the standard, it is how much of the screen was actually seen, and the report says so.
+
+## The scale
+
+Every rule in scope gets a number from 1 to 5. The same words on every rule, on every run, because a rule that invents its own wording for a 3 makes two runs incomparable.
+
+- **1**: broken. What the rule exists to prevent is on the screen and the person using the app meets it.
+- **3**: met on the ordinary path, and nothing beyond it was asked.
+- **5**: met on the ordinary path and on the edges the rule itself names, with the evidence to say so.
+- **2** and **4** are the gaps. A 2 is something in place that does not hold: met on one screen and dropped on the next, or met for the default case while the rule's own case is the exception. A 4 is a 5 with one thing outstanding.
+
+A **violation** is a 1 or a 2, and that is the whole of the gate: the build loop continues while any rule is at 1 or 2. Nothing at 3 or above blocks a build, which does not make it finished.
+
+Two answers that are not scores:
+
+- **`n/a`**, with the reason in the row: the feature does not exist here, the platform does not have it, or `STACK.md` records the exception. Not available for the nine rules under **Always in scope** in `SKILL.md`.
+- **`unrun`**: the rule applied, nothing was checked, and the run knows it. A rule you did not check is never a pass.
+
+Anchors are not a curve. Most rules on a screen built with this skill land at 3 and 4, a 5 is earned by evidence rather than by the absence of a complaint, and a screen with no 1s and no 2s is a screen that ships, which is a lower bar than a good screen.
+
+## 1. Re-read the code
 
 Review the actual code, not your memory of writing it. Open the files that changed.
 
-## 2. Audit against the heuristics
+After a build that is the diff. On request it is the screen: the widget, view or composable that renders it plus whatever it pushes and presents, opened on a device or a simulator.
 
-Start with the nine rules under **Always in scope** in `SKILL.md`. They get a verdict on every review, on every screen, and `not applicable` is not available for them. Then go through every other heuristics file that applies to the changed code, including the ones the build step did not load. For each rule, one of three verdicts:
+## 2. Scope and checklist
 
-- **pass**, with the line that satisfies it
-- **violation**, with file, line, and what the user would experience
-- **not applicable**, with why
+The scope is the heuristics files the code touches, chosen the way `flow/build.md` chooses them, plus the nine always-in-scope rules, which apply to a splash screen and to a chart alike. Write the scope down before grading. A scope chosen once the scores are in is a scope chosen to flatter them.
 
-A rule you did not check is a violation. Do not report a rule as passing without pointing at the code.
+```sh
+npx trunative rubric --only touch --only forms --only states
+```
 
-## 3. Report
+`--only` takes a heuristics file stem, a rule prefix such as `touch-`, or a single rule id, and repeats. The nine always-in-scope rules are added whatever the scope is. `--format=ids` prints the ids alone, which is what a diff against the previous run reads to catch a rename.
 
-List violations ordered by what hurts the user most, not by how easy they are to fix. For each one, name the fix. Say plainly if the screen is unusable one-handed, loses data on interruption, or has no failure state, and do not bury it under smaller findings.
+The checklist is generated, never written by hand:
 
-If a violation is a deliberate exception recorded in `STACK.md`, mark it as accepted and move on.
+- Do not add a row. A rule that should exist belongs in `heuristics/`, and the next run picks it up with no second edit.
+- Do not delete a row. A rule that does not apply is `n/a` with a reason, which is a different fact from a rule nobody looked at.
+- Do not grade a rule that is not on the checklist. An id that is not there was renamed or removed, and a score for it is a score for nothing.
 
-## 4. Loop
+Each row carries the rule's own Check line, which is the criterion. Grade against that sentence, not against a memory of the heuristic.
 
-- Violations found: go back to `flow/build.md` with this report and fix them, then review again.
-- No violations: stop. Report what was built, which rules were checked, and which exceptions were accepted.
+## 3. Grade
+
+Every row gets a score, one line of finding, and its evidence:
+
+- `source`: the code was read. The claim is about intent.
+- `device`: the screen was driven. The claim is about the app.
+- `source+device`: both, and they agreed. Where they disagree the device wins, and the disagreement is a finding.
+
+Where a heuristics file closes its Check section by saying what a diff cannot settle, the checklist prints that paragraph under the group as `Not from a diff`. A rule it puts on a device may not take `source`: the file has already said a diff cannot settle it, so a number from the source alone is a guess wearing a score. Those rules are `device`, `source+device`, or `unrun`.
+
+Some of those paragraphs name the ids and some point at the lines instead, as the last three or the last five. Count them against the group in the checklist, which is in the file's own order. A file that closes without such a paragraph exempts nothing.
+
+When the app is running on a device, split the work in two and keep the halves apart, because a grader who has already read the measurements grades the measurements:
+
+**Judging.** Reads the source, drives the screen, and fills in every row.
+
+**Measuring.** Produces numbers and captures, no scores at all, each keyed to a rule id: both appearances on the narrowest and widest device class, the largest accessibility text step on the narrowest, hit area bounds read from the inspector rather than estimated from a screenshot, the primary flow completed with the screen reader on, the screen with the network off and after a process kill the system would have made itself, and real records rather than seed data, meaning a null, a zero, a long string, an old timestamp and an empty list.
+
+<if:claude>
+Run the two as sub-agents, spawned in one message so they work at the same time and neither reads the other's output.
+<else>
+Run the two as sub-agents when this harness has them, spawned so that neither reads the other's output. When it does not, finish the judging pass and record it, then measure.
+<endif>
+
+Then reconcile: the judged score stands unless a measurement contradicts it, and every score a measurement moved is printed with both numbers. The report is one table, not one pass after the other. When they could not be kept apart, the report says so on its first line.
+
+## 4. The numbers
+
+The maximum is 5 times the number of rules actually scored from 1 to 5. Nothing else is in it.
+
+- The denominator is never the size of the scope. A scope of 74 rules with 9 `n/a` and 5 `unrun` scores out of 300, not out of 440.
+- Report coverage beside the total: scored, `n/a` and `unrun`, out of the scope. A run that skipped the device work does not come out ahead of one that did it.
+- Record which ids were `n/a` and which were `unrun`. A later comparison against a run that hid them is a comparison of two different measurements.
+
+Bands read off the percentage, since the maximum moves with the scope:
+
+| Percentage | Band |
+|---|---|
+| 90 and above | Nothing structural left. |
+| 75 to 89 | Solid, with named gaps. |
+| 60 to 74 | It works, and the edges do not. |
+| 40 to 59 | Structural work before polish. |
+| Under 40 | Not designed for a phone yet. |
+
+## 5. Report
+
+The report goes in the response, in this order:
+
+1. **Header.** What was reviewed, the scope, the total, the percentage, the band and the coverage.
+2. **The table.** Columns: rule, score, evidence, finding. Print every rule at 4 or below and every one of the always-in-scope nine, then one line per file for the rest: file, rules scored, average, lowest.
+3. **Violations.** Every rule at 1 or 2, ordered by what it costs the person using the app and not by how easy it is to fix. Each names the rule id, the file and line, what the user meets, and the fix. Say plainly when the screen is unusable one-handed, loses work on interruption, or has no failure state, and do not bury it under smaller findings.
+4. **What moved.** Scores a measurement changed, with both numbers.
+
+If a violation is a deliberate exception recorded in `STACK.md`, it is `n/a` with that exception as the reason, not a 1 defended in prose.
+
+Name the element, say what it costs, give the fix. Nothing in the report is an invitation to look into something later.
+
+## 6. Record
+
+A run with nothing `unrun` is a complete measurement and gets archived. A run that left rules unchecked prints its table and stops here, naming the rules that blocked the archive, because a partial run in the history makes every later comparison lie.
+
+Write the report to `.trunative/review/<slug>-<YYYY-MM-DD-HHmm>.md`, one file per run, kept in version control. The slug comes from the primary file's project-relative path: lowercase it, replace every run of characters that is not a letter or a digit with a single hyphen, and drop a leading and trailing one, so `lib/screens/checkout_screen.dart` becomes `lib-screens-checkout-screen-dart`. It is computed the same way on every run and never invented, because the trend reads it.
+
+Frontmatter, machine readable:
+
+```yaml
+---
+target: lib/screens/checkout_screen.dart
+slug: lib-screens-checkout-screen-dart
+date: 2026-09-08T14:22
+skill: sha256:6f0a...
+scope: [touch, forms, states, layout, typography, colors, motion, accessibility]
+total: 236
+max: 300
+percent: 79
+scored: 60
+na: [pay-restore: no purchases on this screen, ads-report: no Android build]
+---
+```
+
+`skill` is the hash in `.trunative/skill.lock`. It says which set of rules produced the numbers, which is how a later run knows the rulebook moved under it.
+
+Then read the newest five archived runs with the same slug and print one line:
+
+> Trend for `lib-screens-checkout-screen-dart`: 61%, 74%, 79% (236/300 this run).
+
+The comparison is only honest when the measurement is the same, so name any of these that changed since the previous run, on the same line: the skill hash moved, so some of the difference is rules rather than the screen; the scope changed, and which files joined or left; or the `n/a` set changed, since a rule that was excused last time and scored now moved the total on its own. The scope may grow between runs and may not silently shrink: a later run covering fewer files is not a better run.
+
+First run: there is nothing to compare against. Say so in one line, name it the baseline, and name the file the next run will read.
+
+## 7. Loop
+
+- Any rule at 1 or 2: go back to `flow/build.md` with this report and fix them, then review again.
+- Nothing below 3: stop. Report what was built, what was checked, what was excused and what was not seen.
 
 Two consecutive reviews finding the same violation means the fix is not working. Say so and ask the user, instead of looping a third time.
 
-## Not this step's job
-
-Review is the gate and it does not grade. It never prints a score, a total or a trend, and it does not compare this run against the last one. The graded audit is `flow/design-review.md`, it runs on a finished screen rather than on a diff, and it is the only place a number is produced.
-
-The two use the same rule ids and the same `Check` lines, so their verdicts are locked together: a violation here is a 1 or a 2 there, a pass here is a 3 or above. When the audit grades below 3 something this step passed, the audit wins, because this step read a file and the audit watched the screen.
+Do not fix and grade in the same pass. A grader that edits the code it just graded has no second opinion left for the next run.
