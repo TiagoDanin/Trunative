@@ -76,6 +76,7 @@ A switch moves one highlight through everything focusable, in order, one press p
 
 - The spoken name matches the visible words. A button reading "Send" whose name is "Submit your message" cannot be spoken to. Where the two genuinely have to differ, the visible words are added rather than swapped in: `accessibilityInputLabels(_:)` is the iOS hook, and on Android there is no separate field, so the visible words go inside the description itself.
 - Anything that takes the highlight is something the user can act on. Decoration left in the tree (`a11y-hidden`) turns a five-step screen into a twenty-step one, and each of those steps is a physical press.
+- The highlight has to be visible, and it is the one piece of this that gets deleted on purpose. `outline: none` on mobile web, and any focus style suppressed because it looked wrong under a finger, leaves the switch and keyboard user pressing forward with nothing on screen saying where they are. Replace the default indicator with a better one; never remove it and leave nothing.
 - Every action is reachable by stepping, in a finite number of steps. A control that only appears mid-drag, or only under a long press with no custom action, does not exist for this user.
 - Nothing that carries the only copy of something dismisses itself on a timer: a toast holding an error message, a snackbar holding the only undo, a code that expires while the highlight is still walking toward the field. Stepping across a screen takes several times as long as tapping it. Prefer an explicit dismissal.
 
@@ -115,7 +116,7 @@ Review answers each of these against the code, pointing at the line:
 - Every in-place content change has a live region or an announcement, polite unless it stops the user, none fires per keystroke, per frame, per row or per tick, and a failed field declares the failure on its own node. `a11y-announce`
 - Modals contain focus and return it to the opening control on dismissal, a hand-built overlay makes the layer beneath inert, and focus moves nowhere else except onto a single-field screen or the first failure after a submit. `a11y-focus`
 - Every swipe, long press, drag and multi-finger gesture reaches the same result through a named action: the primitive's own label where it projects one, a custom action where nothing does. `a11y-gesture`
-- Spoken names match visible labels, nothing decorative takes the highlight, every action is reachable by stepping, and nothing holding the only copy of something dismisses on a timer. `a11y-alt-input`
+- Spoken names match visible labels, nothing decorative takes the highlight, the focus indicator is visible and was never merely removed, every action is reachable by stepping, and nothing holding the only copy of something dismisses on a timer. `a11y-alt-input`
 - Increased contrast is read and honoured on each platform it exists on, reduced transparency on iOS is left to the system material, and every setting is read live rather than cached at launch. `a11y-settings`
 - The system captions preference is read, video with speech has captions, no signal is audio or haptic only, and anything that starts on its own can be stopped in one step. `a11y-media`
 - The scanner was run on the changed screens and one full flow was completed with the screen reader on. `a11y-test`

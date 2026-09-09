@@ -91,6 +91,19 @@ Third-party creative is content nobody on the team wrote and nobody can relabel,
 - The container announces itself as an ad, and the creative under it is one stop rather than a walk through every element inside it.
 - Drive one interstitial and one banner with the reader on before shipping, as `a11y-test` requires of any flow.
 
+## `ads-entitlement` Someone who paid to remove ads has to stop seeing them everywhere
+
+An app that sells any removal of advertising (a one-off unlock, a paid tier, a subscription, or a bundle that happens to include it) carries an entitlement, and every ad call site reads it before requesting anything. Not before showing: before requesting, so nothing is fetched, no impression is counted and no data leaves the device.
+
+One missed call site is the whole feature failing, because the user only has to see one ad to know they were charged for nothing. That is a refund, a one-star review naming the exact screen, and the store's own complaint route.
+
+- The check lives with the ad request, in one place both the banner and the interstitial paths go through, not repeated per screen where a new screen forgets it.
+- The entitlement resolves before the first ad opportunity, including on a cold start with no network. Unknown is not treated as unentitled: a paying user offline is still a paying user, and the last known state is what the app acts on until the store answers.
+- It survives reinstall and a new device through restore, which is `pay-restore`. An entitlement that only lives in local storage is lost with the app.
+- Removing ads removes the space too. A paid user does not get the reserved slot from `ads-reserve` as a blank rectangle, and the layout closes up.
+- Anything the paid tier still shows, a house promo or a cross-sell for another app of yours, is still an ad under `ads-labelled`, and selling their removal and then showing them is the pattern users report.
+- Apple's Developer Code of Conduct, guideline 5.6, names charging for features or content that are not delivered as conduct that terminates the developer account. An ad shown to someone who paid to remove ads is that sentence, with the receipt attached.
+
 ## `ads-cost` The ad stack is paid for in launch time, memory and the user's data
 
 - Initialising an ad SDK is not launch work. Keep it off the path to the first frame, `perf-cold-start`.
@@ -120,6 +133,7 @@ Review answers each of these against the code, pointing at the line:
 - The consent state is read at request time, the non-personalised request is the default path, `NSUserTrackingUsageDescription` is in the property list and `com.google.android.gms.permission.AD_ID` is declared where the build targets Android 13 or above, and no health, classroom or child data reaches a request. `ads-consent`
 - Targeting information and an ad report route are both reachable without leaving the app, and the unit carries a content rating ceiling matching the app's own age rating; a codebase that ships only to Android answers this not applicable. `ads-report`
 - The close control has a name, the ad contains focus and returns it on dismissal, and the creative is a single stop for the reader. `ads-a11y`
+- Where any purchase removes advertising, one entitlement check guards every ad request rather than each display, resolves before the first opportunity, treats unknown as the last known state, survives restore, and collapses the reserved slot. `ads-entitlement`
 - Ad SDK initialisation is off the cold start path, the preload pool is one, and video is not prefetched on a metered connection. `ads-cost`
 - Where the app is submitted to the Kids Category or declares a child target audience, the ad configuration is per store and written into `STACK.md`. `ads-children`
 

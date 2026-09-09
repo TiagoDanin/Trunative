@@ -84,6 +84,20 @@ Licensing: system symbols may not be used in an app icon, a logo or any other tr
 
 Expo keys: `icon`; `ios.icon` taking either a path to a `.icon` directory (SDK 54 and later) or an object of `light`, `dark` and `tinted` PNGs; `android.icon`; `android.adaptiveIcon.foregroundImage`, `.backgroundColor`, `.backgroundImage` and `.monochromeImage`.
 
+## Generating the icon set
+
+Every stack has a generator that takes one master image and writes every density, catalog entry and adaptive layer. Five things about them cost an afternoon each, and none of them surfaces as an error.
+
+**The dedicated config file wins over the manifest block.** Where a generator reads configuration from two places, a file of its own at the project root and a block inside the dependency manifest, the file is tried first and the manifest block is only the fallback. `flutter_launcher_icons` loads `flutter_launcher_icons.yaml` and drops to the `pubspec.yaml` block only when that returns nothing, with no message either way. A project forked from another app carries that file with the *other app's* artwork paths, so the generator runs, reports success, and produces the wrong app's icon. Look for the dedicated file before writing any configuration, and when finished leave one of the two, not both.
+
+**The generator applies its own inset, so the safe zone gets applied twice.** It wraps the foreground in an `<inset>` inside the adaptive icon XML, expressed as a percentage: `flutter_launcher_icons` writes `android:inset="16%"` unless `adaptive_icon_foreground_inset` says otherwise, which already accounts for most of the 108/72/66 dp geometry. Artwork pre-shrunk to the 66 dp safe box before handing it over comes out visibly small inside the mask. Either hand over full-bleed artwork and let the inset do the work, or raise the artwork's radius so that radius times the remaining fraction lands inside the safe box. The inset is configurable; editing the generated XML by hand is not, because the next run overwrites it.
+
+**Measure the output, do not infer it.** Open the generated foreground, measure the bounding box of the non-transparent pixels, and compare its radius against the safe box. This is the only check that catches the double inset, and it takes one command.
+
+**Rasterisers drop what the design tool shows.** Blend modes, filters and effects are commonly ignored when an SVG is converted to PNG, so the raster differs from the artboard. Open the generated file and look at it. When judging a transparent foreground, composite it over the real background colour first: white artwork on the viewer's white backdrop reads as an empty file, and the natural conclusion, that the conversion lost the shape, is wrong.
+
+**Generators overwrite what they still produce and orphan the rest.** Switching an adaptive background from image to colour leaves the old background bitmap in every density bucket; dropping a platform leaves its whole directory. Nothing reports it, the files ship inside the binary, and the stale artwork resurfaces later. After changing artwork or configuration, delete the generated directories and regenerate, rather than generating over the top, then scan the output for the old palette to prove nothing survived.
+
 ## Loading APIs
 
 Android decodes at the size drawn: `BitmapFactory.Options.inJustDecodeBounds` reads `outWidth` and `outHeight` without allocating, then `inSampleSize` decodes down. In practice a library does this: Glide, Coil (`AsyncImage`), Picasso or Fresco. Compose loads bundled assets with `painterResource`, which handles PNG, JPEG, WEBP, vector drawables and animated vector drawables. SwiftUI has `AsyncImage` for network images and `Image(decorative:)` for an unlabelled one.

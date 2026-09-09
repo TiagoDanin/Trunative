@@ -50,7 +50,7 @@ One concern per file. The list is what exists, not what to read.
 | `heuristics/auth.md` | `auth-` | the methods and their order, provider buttons, web flows, last used, code screens, biometrics over a session, expiry, re-auth, the active account, sign out, deletion |
 | `heuristics/settings.md` | `set-` | a better default before a switch, settings in context, what the system owns, shape and status, controls, effect, what syncs, destructive rows, search, the account exit, diagnostics |
 | `heuristics/media.md` | `media-` | the system player, controls and scrubbing, unasked sound, audio focus, becoming noisy, background audio, remote controls, picture in picture, fullscreen, keeping awake, quality, live |
-| `heuristics/copy.md` | `copy-` | the word budget, the first word, voice, error wording, jargon, one term per thing, capitalisation, what absence says, numbers, rationale text |
+| `heuristics/copy.md` | `copy-` | the word budget, the first word, voice, error wording, jargon, one term per thing, capitalisation, what absence says, numbers, figures that describe the product, rationale text |
 | `heuristics/background-work.md` | `bg-` | what may run at all, now or later, periodic work, visible and stoppable, the foreground service last, declared types, location, durability, exact time, push wake-ups, restriction, exemption, failing while away |
 | `heuristics/privacy-ui.md` | `priv-` | the stranger beside the user, masked values, the app switcher snapshot, blocking capture and merely detecting it, the second gate, what gets instrumented, deleting data, the declaration matching the code |
 | `heuristics/sharing.md` | `share-` | the system sheet and nothing hand-rolled, the payload and its preview, a link rather than a screenshot, readiness, file access, the outcome, what the app accepts and how it arrives, clipboard and paste, invites |
@@ -58,14 +58,27 @@ One concern per file. The list is what exists, not what to read.
 | `heuristics/scrolling.md` | `scroll-` | nesting on one axis, the affordance that says there is more, collapsing chrome, anchoring, restoration, return to top, programmatic scrolls, overscroll, scrolling with the keyboard up |
 | `heuristics/data-display.md` | `data-` | precision that does not lie, the shape of a table that does not fit, when a chart earns its place, scale and reach, relative against absolute time, units, entering a date, empty against null against zero |
 | `heuristics/sound.md` | `sound-` | the inventory, being silenced by the switch and the ringer, mixing with other audio, system sounds, never sound alone, unasked sound, the off switch |
-| `heuristics/payments.md` | `pay-` | which rail the item legally takes, linking out by storefront, the wallet first, the system sheet, the total, subscription terms, cancelling, restore, card entry, leaving and returning, pending and idempotency, the honest paywall |
-| `heuristics/ads.md` | `ads-` | labelled as advertising, the close control, placement, frequency, reserved space, adjacency to a real action, rewarded and consent flows, reporting, accessibility, cost, children |
+| `heuristics/payments.md` | `pay-` | which rail the item legally takes, linking out by storefront, the wallet first, the system sheet, the total, where the price comes from, subscription terms, cancelling, restore, card entry, leaving and returning, pending and idempotency, the honest paywall |
+| `heuristics/ads.md` | `ads-` | labelled as advertising, the close control, placement, frequency, reserved space, adjacency to a real action, rewarded and consent flows, reporting, accessibility, the paid-to-remove entitlement, cost, children |
 
 Lookup material, read on demand for one value and never as background: `references/type-scales.md`, `references/fonts.json`, `references/input-fields.md`, `references/navigation-containers.md`, `references/motion-tokens.md`, `references/capability-checks.md`, `references/launch-surface.md`, `references/icon-and-image-assets.md`, `references/search-controls.md`.
 
+## Always in scope
+
+Nine rules hold on every screen, whatever the screen is for, and the filter below does not reach them. They are the ones a screen ships without, because nobody decided it touched that file:
+
+- `type-scale`, `type-scaling`: text arrives through a style with no literal size, and the screen still holds at the largest accessibility step.
+- `layout-insets`: the safe area read at runtime, on all four edges.
+- `touch-floor`, `touch-feedback`: the hit area meets the platform floor, and the press answers under the finger.
+- `color-contrast`, `color-dark-composed`: contrast measured, and both appearances actually built.
+- `a11y-name`: every control carries a name, a role and a value.
+- `motion-reduced`: anything that animates reads the system setting first.
+
+A splash screen, a settings list and a chart all answer these. Open the file that owns one when the answer is not obvious, and leave the rest of the folder closed.
+
 ## Loading rules
 
-- Load only the heuristics the current screen touches. Reading the whole folder wastes the context that the actual code needs.
+- Beyond the nine above, load only the heuristics the current screen touches. Reading the whole folder wastes the context that the actual code needs.
 - Read `references/` on demand, for one specific number or API. Never as background.
 - The project briefs override nothing in `heuristics/`, but they decide which rules apply and record the exceptions accepted on purpose. `PRODUCT.md` is who uses this and for what, `DESIGN.md` is the visual identity in the [design.md format](https://github.com/google-labs-code/design.md), and `STACK.md` is this codebase: primitives, navigation, components, exceptions.
 

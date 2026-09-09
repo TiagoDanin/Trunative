@@ -45,6 +45,22 @@ State the full amount to be billed for anything on offer, of any type. On a phon
 - Rounding never flatters: `data-precision` owns what a displayed number is allowed to imply.
 - The price is not smaller than the button next to it, and it does not need a scroll to reach.
 
+## `pay-price-source` The price is read from the store, never written in the app
+
+Every price on screen comes from the product object the store returns for that user, already formatted for their storefront. Not a constant, not a config file, not a string in the component.
+
+A price typed into the code is wrong in every currency but one, and it is wrong in that one too the moment the price changes, a regional price is set, a sale runs, or tax is included differently. What the user reads and what the system sheet charges then disagree, which is a rejection, a refund, and a support thread.
+
+It is the easiest defect to introduce and the hardest to see in review, because a hardcoded price renders perfectly on the reviewer's device.
+
+- The amount, the currency and the formatting are the store's, taken from the product query. The app does not build the string, convert a currency, or append a symbol.
+- A struck-through "was" price is only the store's own reference or introductory price. Inventing one to show a discount is promoting a false price, which guideline 2.3.1(a) makes grounds for removing the app and terminating the account, and `pay-honest-paywall` owns the rest of that shape.
+- The product query is a network call that is slow, fails, and returns fewer products than asked for. The screen needs a loading state and a failure state under `state-loading`, and neither of them is a placeholder amount.
+- A product the store did not return is not for sale on this device, and it does not render as a disabled row with a price beside it. Separate that from a query that failed: Play reports each product it could not fetch with a reason for the failure, and a transient one is `state-error` on the paywall rather than an item silently vanishing from it.
+- The same rule holds for anything derived from the price, including the per-period figure on an annual plan and any "save 30%" badge.
+
+Search for a currency symbol in the view layer. Every hit is either this defect or a comment.
+
 ## `pay-subscription-terms` A subscription screen has required contents
 
 Before anyone can subscribe, the screen carries the subscription name, the period, what the money buys during each period, and the billing amount localised for the storefront being sold to. Also on that screen, not one level deeper, a way for an existing subscriber to sign in or restore.
@@ -110,6 +126,7 @@ Review answers each of these against the code, pointing at the line:
 - The wallet button is the primary payment option where credentials exist, drawn by the platform API, no smaller than the alternatives and visible without scrolling, with all purchase options settled before the sheet. `pay-wallet-first`
 - No screen imitates, wraps or precedes the system purchase sheet with a lookalike. `pay-sheet`
 - The full billed amount, including shipping, tax and fees, is on the screen where the user commits, formatted for the locale. `pay-total`
+- Every displayed price, and everything derived from one, comes from the store's product object, with a loading and a failure state instead of a placeholder amount and no invented reference price. No currency symbol appears in the view layer. `pay-price-source`
 - The subscription screen carries name, period, what is included, the localised price, restore or sign-in, and the automatic charge at the end of any trial. `pay-subscription-terms`
 - A link to the system cancellation page is reachable from the account area rather than buried. `pay-cancel`
 - A labelled restore control exists, is reachable from the paywall, and reports its result. `pay-restore`

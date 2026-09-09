@@ -79,6 +79,27 @@ Read the codebase first and derive the tokens from what is actually there. Ask t
 
 Write the answer and the reason into `STACK.md`, naming the constraint that moved the recommendation when one did. A stack chosen off the recommendation and a stack chosen against it are different facts, and review needs to tell them apart.
 
-## 3. Confirm
+## 3. Check the project is not wearing another app's identity
+
+Apps are routinely started from a fork, a template, or a sibling product in the same account, and the copy keeps everything the original had. This matters here because step 2 derives the briefs **from the code**, so anything inherited gets recorded as a deliberate decision and then defended in every later review.
+
+The tell is that none of it fails. The app builds, runs and looks finished while pointing at another product's identity and another product's services.
+
+Ask the user what the app is, then check the code against the answer:
+
+- **Identity**: the display name, the bundle or package identifier, and the copyright line.
+- **Launch artwork**: the icon and the launch surface, plus the config files their generators read. A generator config carried over from the original names the original's artwork paths, and the tool then succeeds while producing the wrong app's icon.
+- **Third-party project targets**: analytics, crash reporting, push, feature flags, ads. These are identifiers in a config file, and an identifier from the source project is the worst case, because it works: the new app quietly reports into the old app's dashboards.
+- **Brand tokens**: colours, typography and the launch background, which is where the previous product's palette survives longest.
+- **Written-down URLs**: support, marketing, privacy and terms.
+
+Two rules for what you find:
+
+- **Report, do not silently fix.** Some of it is intentional: a shared account, a deliberately shared analytics project, a house palette. The user knows which; you do not.
+- **Never assume the value in the code is the intent.** In a derived project the code is evidence of where it came from, not of what it is meant to be. Where the code and the user disagree, the user decides, and `STACK.md` records that it was inherited rather than chosen.
+
+An app with no ancestor answers this in one line and moves on.
+
+## 4. Confirm
 
 Run `npx trunative doctor` again. Every check must pass before the build step. If the user declines to answer something, write down what is unknown instead of guessing, and treat it as a risk in review.

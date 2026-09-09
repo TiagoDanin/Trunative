@@ -8,7 +8,7 @@ Review the actual code, not your memory of writing it. Open the files that chang
 
 ## 2. Audit against the heuristics
 
-Go through every heuristics file that applies to the changed code, including the ones the build step did not load. For each rule, one of three verdicts:
+Start with the nine rules under **Always in scope** in `SKILL.md`. They get a verdict on every review, on every screen, and `not applicable` is not available for them. Then go through every other heuristics file that applies to the changed code, including the ones the build step did not load. For each rule, one of three verdicts:
 
 - **pass**, with the line that satisfies it
 - **violation**, with file, line, and what the user would experience

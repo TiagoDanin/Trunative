@@ -103,6 +103,21 @@ A digit is scanned and a spelled-out number is read, and scanning is all a phone
 - The locale formats it and pluralises it (`l10n-format`, `l10n-plurals`), and `data-precision` rules how many digits a figure carries and where the rounding lives.
 - The unit travels with the figure and is not dropped to save width. Figures stacked in a column line up on tabular figures instead (`type-strings`); this rule is the figure inside a sentence.
 
+## `copy-claims` A number that describes the product is derived, not typed
+
+Copy that states how much the product gives (how many items, how much storage, how many devices, how long the trial runs, what the limit is) is a promise, and it is checkable against the code. Typed into the view as part of the sentence, it is correct exactly once: on the day it was written.
+
+The failure is quiet and it compounds. The constant changes, the string does not, and now the screen advertises a figure the app no longer delivers. Worse, the same figure was copied into the store listing, the marketing site and the onboarding, and none of those is read again when the constant moves.
+
+What it looks like in a real codebase: the same quantity living as a literal inside the screen's text, as a constant in the view model, and as a different constant in the layer that actually computes it. Three values, all reachable, none agreeing, and the one the user reads is the one nobody owns.
+
+- The figure comes from the same constant the behaviour uses, interpolated into the string, so a change moves both together. Pluralisation still goes through `l10n-plurals`.
+- Where it genuinely cannot be derived, it lives in one named place that the domain code also reads, never inline in a component.
+- A cap the product enforces is stated as the cap, not as the theoretical maximum. Advertising a ceiling that a limit elsewhere prevents anyone from reaching is a false claim, and it is the version that reaches a store reviewer.
+- Store listing text, screenshots and onboarding repeat these figures. When one changes, they are part of the change.
+
+Grep the view layer for digits inside display strings. Each hit is a claim, and each claim has an owner in the code or it is a defect.
+
 ## `copy-rationale` The permission sentence has a punctuation rule, and one place where longer wins
 
 `perm-rationale` owns the screen and `perm-purpose-string` owns what the sentence claims. Three things sit on top of those.
@@ -125,6 +140,7 @@ Review answers each of these against the code, pointing at the string:
 - 1 case style per element type across every screen, the 4 iOS-fixed cases correct, whether the theme uppercases the label answered before the authored string is trusted (on Android Views that is `android:textAllCaps`), and 0 strings longer than a short label authored in capitals. `copy-case`
 - Field hints show a format, each line standing in for missing content names its cause and the 2 empties with a next move end on the verb of the control that takes it, and 0 waiting lines claim unmeasured progress. `copy-absence`
 - Numbers are numerals, destructive strings state the exact count and object, and formatting and plurals come from the locale. `copy-numbers`
+- Every figure that describes what the product delivers is interpolated from the constant the behaviour uses, or lives in one named place the domain also reads, and no advertised ceiling is unreachable because of a limit elsewhere. `copy-claims`
 - Every usage description is 1 sentence-case sentence ending in a full stop, the control that opens the system dialog reads Continue or Next, and any data disclosure says why, what and how before the dialog with nothing unrelated bundled into it. `copy-rationale`
 
 Read the strings in the running app, not in the catalogue. Terminology drift only shows up when the screens are walked in the order the user walks them, and a string that is correct in the file can still be the wrong length once the device's text size is applied to it.

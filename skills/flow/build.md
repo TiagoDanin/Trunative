@@ -16,6 +16,8 @@ If the screen has more than one primary action, it is more than one screen. Spli
 
 Read `DESIGN.md` for the tokens and `STACK.md` for the primitives that reach them, then load from `heuristics/` only the rules this screen actually touches. Do not read the whole folder. Use `references/` on demand, for a specific number or platform API, never as background reading.
 
+The nine rules under **Always in scope** in `SKILL.md` are not part of this choice. They apply to a splash screen and to a chart alike, so deciding a screen does not touch type, insets, contrast, motion or accessibility is not a decision this step gets to make.
+
 ## 3. Write it
 
 - Reuse the tokens `DESIGN.md` defines and the components `STACK.md` lists. A raw value where a token exists is a defect, and a new primitive needs a reason.

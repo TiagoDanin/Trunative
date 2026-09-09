@@ -49,6 +49,7 @@ Each field declares what it holds, and the rest follows from that declaration. T
 - Mask and format as they type, so spaces in a card number and separators in a phone number are the field's job rather than a rejection afterwards.
 - Where the value set is closed, use a picker, a date picker or a segmented control. A closed set typed by hand is an error being manufactured for later.
 - Focus a field on open only when the screen exists for that one field, such as search or a code. Anywhere else the keyboard covers the form before it has been read.
+- On mobile web the field's own text size is a layout decision. Safari on iOS zooms the page into any field it is about to focus whose text is under 16px, and it does not zoom back out, so the user finishes the form on a page wider than the screen with the submit button off to one side. Set 16px or larger on the field itself. The viewport is the wrong lever for this: Safari has ignored `user-scalable`, `minimum-scale` and `maximum-scale` on a web page since iOS 10, precisely so that a page cannot take zoom away from the user, and where those values do still apply, which is a web view embedded in an app, what they buy is a page nobody can enlarge.
 
 ## `form-autofill` The fastest field is the one the platform fills
 
@@ -112,7 +113,7 @@ Review answers each of these against the code, pointing at the line:
 - The visible fields were counted, none asks for the same value twice, six or more questions are grouped or stepped, what is known is prefilled, and every default carries the reason it is one. `form-count`
 - Every field has a label that stays visible, bound to it in code and positioned per platform, no placeholder is doing a label's job, and helper text stays under 100 characters. `form-label`
 - Required or optional is marked on the minority only, as a word, in the label. `form-required`
-- Capitalisation, autocorrect and any mask are set per field, closed value sets use a picker rather than free text, and nothing takes focus on open except a single-field screen. `form-input`
+- Capitalisation, autocorrect and any mask are set per field, closed value sets use a picker rather than free text, nothing takes focus on open except a single-field screen, and on mobile web no field's text sits under 16px. `form-input`
 - Every field declares its autofill content type, credential fields are grouped and committed on submit, the one time code is a single field, and paste is blocked nowhere. `form-autofill`
 - Nothing validates per keystroke or on focus, blur or a 500 to 1000ms pause triggers it, and accepted formats are normalised rather than rejected. `form-validate`
 - Each message sits under its own field, names the fix in its first few words, does not depend on color, no summary stands in for those messages, and the first failure is scrolled to and focused. `form-error`
