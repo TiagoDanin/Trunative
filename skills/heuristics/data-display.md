@@ -106,19 +106,19 @@ They are three different facts and they must not render as the same glyph. Zero 
 - A total or an average over an incomplete set says how many values it covers. Silently treating unknown as zero moves the average, and nothing on screen says it moved.
 - Zero as a whole screen is a different thing again, and `state-empty` rules it.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="data-precision">No figure reaches a view through a raw float or a default string conversion, each quantity's rounding lives in one named place, and anything rounded that could be acted on says so and offers a route to the exact value.</Verify>
+<Verify rule="data-table-shape">No tabular data scrolls sideways: it is cut to two or three labelled columns, opened as a detail, or reshaped; figures align on the trailing edge; and any genuine grid is its own screen with a pinned leading column and a recorded exception.</Verify>
+<Verify rule="data-chart-earns-it">Every chart shows a trend, a comparison or a part to whole; a single value in a range is a labelled number or a gauge; and any unfamiliar chart shape ships with the sentence that explains it.</Verify>
+<Verify rule="data-chart-scale">Units appear once, ticks follow a recognisable sequence, the axis lower bound is a stated decision, series are labelled on the plot and separable without hue, and the chart still reads at the largest text step.</Verify>
+<Verify rule="data-chart-reach">The headline figure is in text without interaction, the scrub target is the plot area at the touch floor, and the marks carry accessibility labels with values and context in a tree that was actually built.</Verify>
+<Verify rule="data-time-relative">Relative strings come whole from the platform formatter, the crossover to absolute and the floor are named constants, on-screen labels are recomputed, and no span is measured against a constant year.</Verify>
+<Verify rule="data-time-instant">Instants are stored with a zone where the zone is a fact, calendar dates are never zone converted, the clock setting is read on Android, and no formatted string is parsed or asserted against.</Verify>
+<Verify rule="data-units">One measurement system per screen, converted at the display edge without gaining precision, and no figure reaches the screen without its unit on it or over its column.</Verify>
+<Verify rule="data-date-entry">Near dates use the platform picker and far dates a keyboard entry mode, ranges use a range picker, minute intervals divide into sixty, durations never use a time of day picker, the time picker takes the system clock setting, and no calendar grid is hand built.</Verify>
+<Verify rule="data-empty-null-zero">Zero, unknown and not applicable render as three different things with the dash reserved for the last of them, unknown says why where it matters, and aggregates over incomplete sets declare their coverage.</Verify>
 
-- No figure reaches a view through a raw float or a default string conversion, each quantity's rounding lives in one named place, and anything rounded that could be acted on says so and offers a route to the exact value. `data-precision`
-- No tabular data scrolls sideways: it is cut to two or three labelled columns, opened as a detail, or reshaped; figures align on the trailing edge; and any genuine grid is its own screen with a pinned leading column and a recorded exception. `data-table-shape`
-- Every chart shows a trend, a comparison or a part to whole; a single value in a range is a labelled number or a gauge; and any unfamiliar chart shape ships with the sentence that explains it. `data-chart-earns-it`
-- Units appear once, ticks follow a recognisable sequence, the axis lower bound is a stated decision, series are labelled on the plot and separable without hue, and the chart still reads at the largest text step. `data-chart-scale`
-- The headline figure is in text without interaction, the scrub target is the plot area at the touch floor, and the marks carry accessibility labels with values and context in a tree that was actually built. `data-chart-reach`
-- Relative strings come whole from the platform formatter, the crossover to absolute and the floor are named constants, on-screen labels are recomputed, and no span is measured against a constant year. `data-time-relative`
-- Instants are stored with a zone where the zone is a fact, calendar dates are never zone converted, the clock setting is read on Android, and no formatted string is parsed or asserted against. `data-time-instant`
-- One measurement system per screen, converted at the display edge without gaining precision, and no figure reaches the screen without its unit on it or over its column. `data-units`
-- Near dates use the platform picker and far dates a keyboard entry mode, ranges use a range picker, minute intervals divide into sixty, durations never use a time of day picker, the time picker takes the system clock setting, and no calendar grid is hand built. `data-date-entry`
-- Zero, unknown and not applicable render as three different things with the dash reserved for the last of them, unknown says why where it matters, and aggregates over incomplete sets declare their coverage. `data-empty-null-zero`
+<Device>Run `data-precision`, `data-time-relative` and `data-empty-null-zero` against real records rather than the mock ones. Seeded data has no nulls, no zeros, no thirteen digit floats and no timestamps from last year, which is exactly why the screen looks finished.</Device>
 
-Run `data-precision`, `data-time-relative` and `data-empty-null-zero` against real records rather than the mock ones. Seeded data has no nulls, no zeros, no thirteen digit floats and no timestamps from last year, which is exactly why the screen looks finished.
+</Check>

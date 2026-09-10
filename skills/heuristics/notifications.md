@@ -102,20 +102,20 @@ Notifications are off by default for new installs on Android 13 and above, and i
 - A notification arriving while the app is open is not a banner. The user is already looking, so it lands where the content lives, quietly, without taking the screen away from the task in hand. On iOS that means returning no banner or sound option from `willPresent`, which is also what happens with no delegate at all; on Android a heads-up does appear over the app's own foreground, so it is suppressed or routed into the screen instead.
 - Check `areNotificationsEnabled()` on Android, and `getNotificationSettings` with its `authorizationStatus` on iOS, before treating a send as delivered.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="notify-earns-it">Every call that posts a notification names its triggering event, that event happened to the user or was scheduled by the user, and anything promotional sits behind its own in-app opt-in.</Verify>
+<Verify rule="notify-channels">Each kind the app sends has its own Android channel, named for the user rather than the sender and not duplicated as an in-app toggle, and on iOS the per-kind switches live in the app with `providesAppNotificationSettings` requested.</Verify>
+<Verify rule="notify-level">Each channel and each payload states its importance or interruption level, none uses `IMPORTANCE_MAX`, and the foreground service's channel is created at `IMPORTANCE_LOW` or higher.</Verify>
+<Verify rule="notify-quiet">Nothing escalates to get past Focus or Do Not Disturb, full-screen intent use is checked at runtime, and locally scheduled sends use the device's time zone while the token registration carries one.</Verify>
+<Verify rule="notify-lockscreen">Every notification's first line names the event without the app name, and anything private sets an explicit visibility with a `setPublicVersion()` or a `hiddenPreviewsBodyPlaceholder` behind it.</Verify>
+<Verify rule="notify-destination">The payload carries a destination and a subject id reached through `setContentIntent()`, the routing runs on a cold launch from a killed process, and the tap clears the notification.</Verify>
+<Verify rule="notify-actions">No more than two actions are relied on and none exceeds the platform's ceiling, the first is non-destructive, conversations use `MessagingStyle` with direct reply, and completing an action from the shade updates the notification and the badge.</Verify>
+<Verify rule="notify-shade">Related notifications share a group or thread with a summary, children alert with `GROUP_ALERT_SUMMARY`, repeat events update in place, and anything handled elsewhere or no longer true is cancelled or times out.</Verify>
+<Verify rule="notify-ongoing">Anything persistent is a real ongoing event, the app keeps working when the user dismisses it, and a Live Activity carries a stale date and an explicit end.</Verify>
+<Verify rule="notify-badge">The badge counts something the user can act on, matches what the app shows, and reaches zero through normal use.</Verify>
+<Verify rule="notify-inapp">Every notification the app sends has an in-app equivalent that works with notifications denied, and a foreground arrival lands in the content instead of presenting as a banner.</Verify>
 
-- Every call that posts a notification names its triggering event, that event happened to the user or was scheduled by the user, and anything promotional sits behind its own in-app opt-in. `notify-earns-it`
-- Each kind the app sends has its own Android channel, named for the user rather than the sender and not duplicated as an in-app toggle, and on iOS the per-kind switches live in the app with `providesAppNotificationSettings` requested. `notify-channels`
-- Each channel and each payload states its importance or interruption level, none uses `IMPORTANCE_MAX`, and the foreground service's channel is created at `IMPORTANCE_LOW` or higher. `notify-level`
-- Nothing escalates to get past Focus or Do Not Disturb, full-screen intent use is checked at runtime, and locally scheduled sends use the device's time zone while the token registration carries one. `notify-quiet`
-- Every notification's first line names the event without the app name, and anything private sets an explicit visibility with a `setPublicVersion()` or a `hiddenPreviewsBodyPlaceholder` behind it. `notify-lockscreen`
-- The payload carries a destination and a subject id reached through `setContentIntent()`, the routing runs on a cold launch from a killed process, and the tap clears the notification. `notify-destination`
-- No more than two actions are relied on and none exceeds the platform's ceiling, the first is non-destructive, conversations use `MessagingStyle` with direct reply, and completing an action from the shade updates the notification and the badge. `notify-actions`
-- Related notifications share a group or thread with a summary, children alert with `GROUP_ALERT_SUMMARY`, repeat events update in place, and anything handled elsewhere or no longer true is cancelled or times out. `notify-shade`
-- Anything persistent is a real ongoing event, the app keeps working when the user dismisses it, and a Live Activity carries a stale date and an explicit end. `notify-ongoing`
-- The badge counts something the user can act on, matches what the app shows, and reaches zero through normal use. `notify-badge`
-- Every notification the app sends has an in-app equivalent that works with notifications denied, and a foreground arrival lands in the content instead of presenting as a banner. `notify-inapp`
+<Device>`notify-destination`, `notify-lockscreen`, `notify-shade` and `notify-ongoing` are answered on a device with the app force stopped and the screen locked, not by reading the payload builder.</Device>
 
-`notify-destination`, `notify-lockscreen`, `notify-shade` and `notify-ongoing` are answered on a device with the app force stopped and the screen locked, not by reading the payload builder.
+</Check>

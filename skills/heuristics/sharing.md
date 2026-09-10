@@ -82,21 +82,21 @@ Android 12 (API 31) and later shows the user a toast naming your app when it cal
 
 Where the sign-in is to a specific social network, the App Store requires access without it or through some other mechanism, and it names inviting friends and sharing to a social network as things that do not count as core functionality. A referral programme is not what makes such a sign-in core, and social network credentials and tokens are never stored off the device. Where the gate is your own account and the app has no significant account-based features behind it, the guideline is softer but points the same way: let people in and ask later. The screen someone reaches from an invite shows what they were invited to before it asks for anything (`onboard-look-first`), and it is not the cold-launch home screen: the link named a thing and that thing is what opens (`nav-deeplink`). Attribution comes from the referrer the platform hands you, not from the clipboard (`share-paste`).
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="share-sheet-only">Sharing goes through the platform's own sheet, no component draws a list of service targets, and Android calls `createChooser()`.</Verify>
+<Verify rule="share-payload">The payload declares a concrete MIME type, never a wildcard, and cannot be assembled empty.</Verify>
+<Verify rule="share-link-not-shot">What is shared is a link that opens for a stranger and is verified from `/.well-known/`, not a screenshot and not a custom scheme.</Verify>
+<Verify rule="share-preview">Title, thumbnail and type are supplied to the sheet rather than left for the destination to fetch.</Verify>
+<Verify rule="share-ready">Payload construction happens off the drawing thread and completes before the sheet is opened, with no `await` between the tap and a web share.</Verify>
+<Verify rule="share-file-uri">Files are shared as granted content URIs, never as filesystem paths, and are resized before they leave.</Verify>
+<Verify rule="share-outcome">No UI names the destination of a share, and nothing is rewarded or unlocked on a share completing.</Verify>
+<Verify rule="share-payload-clean">The outgoing payload carries no EXIF or device metadata, session token or internal id.</Verify>
+<Verify rule="share-accepts">Declared incoming types match what the app actually handles, and every incoming item is validated and decoded off the UI thread.</Verify>
+<Verify rule="share-arrives">The receiving entry point states its launch mode, task behaviour or dismissal path, and the work the share interrupted is still there afterwards.</Verify>
+<Verify rule="share-targets">No custom chooser targets or initial intents on Android, any iOS custom activity acts on the content instead of duplicating a destination, and conversations the app owns are published as system share shortcuts with stale ones removed.</Verify>
+<Verify rule="share-copy">Copy feedback follows the platform: no app toast where the system already confirms, and sensitive copies are flagged.</Verify>
+<Verify rule="share-paste">The clipboard is read only from a user action, never at launch.</Verify>
+<Verify rule="share-invite">Invites and referrals are reachable without an account, and their link opens the thing it named.</Verify>
 
-- Sharing goes through the platform's own sheet, no component draws a list of service targets, and Android calls `createChooser()`. `share-sheet-only`
-- The payload declares a concrete MIME type, never a wildcard, and cannot be assembled empty. `share-payload`
-- What is shared is a link that opens for a stranger and is verified from `/.well-known/`, not a screenshot and not a custom scheme. `share-link-not-shot`
-- Title, thumbnail and type are supplied to the sheet rather than left for the destination to fetch. `share-preview`
-- Payload construction happens off the drawing thread and completes before the sheet is opened, with no `await` between the tap and a web share. `share-ready`
-- Files are shared as granted content URIs, never as filesystem paths, and are resized before they leave. `share-file-uri`
-- No UI names the destination of a share, and nothing is rewarded or unlocked on a share completing. `share-outcome`
-- The outgoing payload carries no EXIF or device metadata, session token or internal id. `share-payload-clean`
-- Declared incoming types match what the app actually handles, and every incoming item is validated and decoded off the UI thread. `share-accepts`
-- The receiving entry point states its launch mode, task behaviour or dismissal path, and the work the share interrupted is still there afterwards. `share-arrives`
-- No custom chooser targets or initial intents on Android, any iOS custom activity acts on the content instead of duplicating a destination, and conversations the app owns are published as system share shortcuts with stale ones removed. `share-targets`
-- Copy feedback follows the platform: no app toast where the system already confirms, and sensitive copies are flagged. `share-copy`
-- The clipboard is read only from a user action, never at launch. `share-paste`
-- Invites and referrals are reachable without an account, and their link opens the thing it named. `share-invite`
+</Check>

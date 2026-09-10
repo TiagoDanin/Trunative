@@ -126,21 +126,21 @@ Grep the view layer for digits inside display strings. Each hit is a claim, and 
 - On the app's own screen in front of the system dialog, the control that opens that dialog reads Continue or Next. What else stands on that screen is `perm-rationale`'s call. A word resembling the dialog's own accept trains the finger to answer before the eye has read the alert, which lands one second later on the same piece of glass.
 - A disclosure about data being collected is the one string where clarity outranks the budget: why it is wanted, what is taken and how it is used, on the app's screen before the dialog rather than behind a link to a policy. It stands on its own, with nothing unrelated to that collection folded in beside it, and a thirteen year old is the reading level it aims at.
 
-## Check
+<Check against="string">
 
-Review answers each of these against the code, pointing at the string:
+<Verify rule="copy-budget">No title wraps past 2 lines, no body runs past 1 sentence without a new fact in it, and no alert answer exceeds 2 words.</Verify>
+<Verify rule="copy-first-word">0 destination rows open with a generic verb, and 0 strings in a scannable column repeat their header or lead with a negated term.</Verify>
+<Verify rule="copy-voice">0 occurrences of "the user", "I", "my", "please", "sorry", "oops" and "!" in user-facing strings, "we" only where the sentence is about the company, and 0 gendered references the sentence does not need.</Verify>
+<Verify rule="copy-tells">0 em dashes and 0 en dashes in the string catalogue, 0 sales vocabulary on the empty, paywall and onboarding screens, and 0 chat leftovers.</Verify>
+<Verify rule="copy-error">Every string reporting a failed operation carries all 3 answers, the distinct failure sentences match the distinct moves rather than the 4 classes, and 0 of them lead with a code, blame the reader or spell out a settings path.</Verify>
+<Verify rule="copy-jargon">0 mechanism words, exception names or HTTP numbers in the string catalogue, sync, cache and queue only where the reader uses the word too, and every acronym either known to the audience or spelled out once.</Verify>
+<Verify rule="copy-terms">1 term per concept across the catalogue, listed in `STACK.md`, with 0 uses of "click" and 0 confirmations whose verb differs from the control that raised them.</Verify>
+<Verify rule="copy-case">1 case style per element type across every screen, the 4 iOS-fixed cases correct, whether the theme uppercases the label answered before the authored string is trusted (on Android Views that is `android:textAllCaps`), and 0 strings longer than a short label authored in capitals.</Verify>
+<Verify rule="copy-absence">Field hints show a format, each line standing in for missing content names its cause and the 2 empties with a next move end on the verb of the control that takes it, and 0 waiting lines claim unmeasured progress.</Verify>
+<Verify rule="copy-numbers">Numbers are numerals, destructive strings state the exact count and object, and formatting and plurals come from the locale.</Verify>
+<Verify rule="copy-claims">Every figure that describes what the product delivers is interpolated from the constant the behaviour uses, or lives in one named place the domain also reads, and no advertised ceiling is unreachable because of a limit elsewhere.</Verify>
+<Verify rule="copy-rationale">Every usage description is 1 sentence-case sentence ending in a full stop, the control that opens the system dialog reads Continue or Next, and any data disclosure says why, what and how before the dialog with nothing unrelated bundled into it.</Verify>
 
-- No title wraps past 2 lines, no body runs past 1 sentence without a new fact in it, and no alert answer exceeds 2 words. `copy-budget`
-- 0 destination rows open with a generic verb, and 0 strings in a scannable column repeat their header or lead with a negated term. `copy-first-word`
-- 0 occurrences of "the user", "I", "my", "please", "sorry", "oops" and "!" in user-facing strings, "we" only where the sentence is about the company, and 0 gendered references the sentence does not need. `copy-voice`
-- 0 em dashes and 0 en dashes in the string catalogue, 0 sales vocabulary on the empty, paywall and onboarding screens, and 0 chat leftovers. `copy-tells`
-- Every string reporting a failed operation carries all 3 answers, the distinct failure sentences match the distinct moves rather than the 4 classes, and 0 of them lead with a code, blame the reader or spell out a settings path. `copy-error`
-- 0 mechanism words, exception names or HTTP numbers in the string catalogue, sync, cache and queue only where the reader uses the word too, and every acronym either known to the audience or spelled out once. `copy-jargon`
-- 1 term per concept across the catalogue, listed in `STACK.md`, with 0 uses of "click" and 0 confirmations whose verb differs from the control that raised them. `copy-terms`
-- 1 case style per element type across every screen, the 4 iOS-fixed cases correct, whether the theme uppercases the label answered before the authored string is trusted (on Android Views that is `android:textAllCaps`), and 0 strings longer than a short label authored in capitals. `copy-case`
-- Field hints show a format, each line standing in for missing content names its cause and the 2 empties with a next move end on the verb of the control that takes it, and 0 waiting lines claim unmeasured progress. `copy-absence`
-- Numbers are numerals, destructive strings state the exact count and object, and formatting and plurals come from the locale. `copy-numbers`
-- Every figure that describes what the product delivers is interpolated from the constant the behaviour uses, or lives in one named place the domain also reads, and no advertised ceiling is unreachable because of a limit elsewhere. `copy-claims`
-- Every usage description is 1 sentence-case sentence ending in a full stop, the control that opens the system dialog reads Continue or Next, and any data disclosure says why, what and how before the dialog with nothing unrelated bundled into it. `copy-rationale`
+<Device>Read the strings in the running app, not in the catalogue. Terminology drift only shows up when the screens are walked in the order the user walks them, and a string that is correct in the file can still be the wrong length once the device's text size is applied to it.</Device>
 
-Read the strings in the running app, not in the catalogue. Terminology drift only shows up when the screens are walked in the order the user walks them, and a string that is correct in the file can still be the wrong length once the device's text size is applied to it.
+</Check>

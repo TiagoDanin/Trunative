@@ -97,20 +97,20 @@ What comes back is the place: the selected destination, its stack, the selection
 
 The cutoff is a decision rather than a default. Restore the exact place when the app was left within about the last day, and open at the root of its top-level destination beyond that, so nobody resumes into week-old content they have to work out. Record the number in `STACK.md`. Content refreshes on the way in; only the place is restored.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="nav-depth">Hierarchy runs at most three levels below a top-level destination, or the fourth is recorded in `STACK.md` with its reason, and the app's main job is within two taps of one.</Verify>
+<Verify rule="nav-container">Nothing that is a place in the app is presented modally: a surface a deep link resolves to, or one that appears in the destination list, belongs in a pushed screen or a destination.</Verify>
+<Verify rule="nav-modal">Every modal names both exits, turns interactive dismissal off only where work would be lost and asks there, and no modal opens over another.</Verify>
+<Verify rule="nav-back">Back pops the surface on top, is not bound to a sideways or forward move, resolves every interception, and does not exit the app from a destination that is not the start destination.</Verify>
+<Verify rule="nav-back-control">No screen hides or replaces the system back control without restoring the interactive pop gesture alongside it.</Verify>
+<Verify rule="nav-location">Every route builder sets a title, and a back control with more than one origin names where it returns to.</Verify>
+<Verify rule="nav-deeplink">Every deep link target opens from a killed process with a full stack above it, survives a sign in, and fails onto a real screen.</Verify>
+<Verify rule="nav-tab-stack">Each top-level destination keeps its own stack across a switch, and re-selecting the current one pops it to its root.</Verify>
+<Verify rule="nav-drawer">Primary destinations are visible without a tap, and every job named in `PRODUCT.md` is reachable without opening a drawer.</Verify>
+<Verify rule="nav-search">A collection people come to search rather than browse either carries a search field on its own screen or is covered by an app-wide search destination that keeps its query.</Verify>
+<Verify rule="nav-restore">The destination, its stack, scroll, selection, filters and the open sheet come back after the process is killed, and the restore cutoff is a set number rather than forever.</Verify>
 
-- Hierarchy runs at most three levels below a top-level destination, or the fourth is recorded in `STACK.md` with its reason, and the app's main job is within two taps of one. `nav-depth`
-- Nothing that is a place in the app is presented modally: a surface a deep link resolves to, or one that appears in the destination list, belongs in a pushed screen or a destination. `nav-container`
-- Every modal names both exits, turns interactive dismissal off only where work would be lost and asks there, and no modal opens over another. `nav-modal`
-- Back pops the surface on top, is not bound to a sideways or forward move, resolves every interception, and does not exit the app from a destination that is not the start destination. `nav-back`
-- No screen hides or replaces the system back control without restoring the interactive pop gesture alongside it. `nav-back-control`
-- Every route builder sets a title, and a back control with more than one origin names where it returns to. `nav-location`
-- Every deep link target opens from a killed process with a full stack above it, survives a sign in, and fails onto a real screen. `nav-deeplink`
-- Each top-level destination keeps its own stack across a switch, and re-selecting the current one pops it to its root. `nav-tab-stack`
-- Primary destinations are visible without a tap, and every job named in `PRODUCT.md` is reachable without opening a drawer. `nav-drawer`
-- A collection people come to search rather than browse either carries a search field on its own screen or is covered by an app-wide search destination that keeps its query. `nav-search`
-- The destination, its stack, scroll, selection, filters and the open sheet come back after the process is killed, and the restore cutoff is a set number rather than forever. `nav-restore`
+<Device>`nav-deeplink` and `nav-restore` are answered by killing the process and launching from a link, not by reading the router. A graph that looks correct in the file is exactly the one that loses the stack on a cold link.</Device>
 
-`nav-deeplink` and `nav-restore` are answered by killing the process and launching from a link, not by reading the router. A graph that looks correct in the file is exactly the one that loses the stack on a cold link.
+</Check>

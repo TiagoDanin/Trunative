@@ -108,21 +108,21 @@ Most of this is findable without a translator, on a device, before any string is
 - Android's Force RTL layout direction switch in Developer Options mirrors the layout and nothing else. It is a quick look, not the pseudolocale pass.
 - Take the pass on the device and at the text step `layout-width` and `type-scaling` already name, which is where a translated string and a scaled one fail on top of each other.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="l10n-strings">Zero user-facing literals in the diff, the usage descriptions and channel names included, whole sentences rather than concatenations, every key carries a comment, and the backend is told which language to answer in.</Verify>
+<Verify rule="l10n-direction">No `left` or `right` in any positioning, padding, margin or alignment except on the absolute-direction cases `l10n-no-mirror` names, RTL is enabled where the platform requires it, and inserted values are wrapped for bidirectional text.</Verify>
+<Verify rule="l10n-no-mirror">Transport controls, clocks, notation, chart axes and artwork are pinned against mirroring, directional arrows mirror, and phone numbers stay left to right.</Verify>
+<Verify rule="l10n-expansion">Every short label has a decided behaviour for the length it will arrive at, wrapping, a step down the scale or a stacked layout, and none of them truncates the verb.</Verify>
+<Verify rule="l10n-format">Every date, number, currency, percentage, unit and duration goes through a locale formatter carrying the locale's own calendar, with no format pattern and no concatenated symbol anywhere, and a typed value is parsed back through the same locale.</Verify>
+<Verify rule="l10n-plurals">Every counted string reads from a plural resource, with no count compared to 1 in app code.</Verify>
+<Verify rule="l10n-script">The typeface covers every shipped script with a fallback chain, and the leading is a ratio rather than a point value.</Verify>
+<Verify rule="l10n-personal">One full-name field unless an outside format demands the split and `STACK.md` names it, address fields chosen after the country, and no single mask applied to every phone number.</Verify>
+<Verify rule="l10n-collate">Lists sort and section through a locale collator, and search ignores case and accents.</Verify>
+<Verify rule="l10n-per-app">The shipped locales are declared to the system, resources sit at the widest correct dialect, and no language picker bypasses the platform API.</Verify>
+<Verify rule="l10n-change">No locale is cached at launch, a language change keeps what was on the screen, and everything told the locale once is told it again.</Verify>
+<Verify rule="l10n-pseudo">Both passes were taken, the expanding one and the mirrored one, by whichever mechanism the stack provides, and the screen was seen under each.</Verify>
 
-- Zero user-facing literals in the diff, the usage descriptions and channel names included, whole sentences rather than concatenations, every key carries a comment, and the backend is told which language to answer in. `l10n-strings`
-- No `left` or `right` in any positioning, padding, margin or alignment except on the absolute-direction cases `l10n-no-mirror` names, RTL is enabled where the platform requires it, and inserted values are wrapped for bidirectional text. `l10n-direction`
-- Transport controls, clocks, notation, chart axes and artwork are pinned against mirroring, directional arrows mirror, and phone numbers stay left to right. `l10n-no-mirror`
-- Every short label has a decided behaviour for the length it will arrive at, wrapping, a step down the scale or a stacked layout, and none of them truncates the verb. `l10n-expansion`
-- Every date, number, currency, percentage, unit and duration goes through a locale formatter carrying the locale's own calendar, with no format pattern and no concatenated symbol anywhere, and a typed value is parsed back through the same locale. `l10n-format`
-- Every counted string reads from a plural resource, with no count compared to 1 in app code. `l10n-plurals`
-- The typeface covers every shipped script with a fallback chain, and the leading is a ratio rather than a point value. `l10n-script`
-- One full-name field unless an outside format demands the split and `STACK.md` names it, address fields chosen after the country, and no single mask applied to every phone number. `l10n-personal`
-- Lists sort and section through a locale collator, and search ignores case and accents. `l10n-collate`
-- The shipped locales are declared to the system, resources sit at the widest correct dialect, and no language picker bypasses the platform API. `l10n-per-app`
-- No locale is cached at launch, a language change keeps what was on the screen, and everything told the locale once is told it again. `l10n-change`
-- Both passes were taken, the expanding one and the mirrored one, by whichever mechanism the stack provides, and the screen was seen under each. `l10n-pseudo`
+<Device>`l10n-direction`, `l10n-no-mirror`, `l10n-expansion`, `l10n-script` and `l10n-pseudo` are answered on a rendered screen rather than in the resource files. A catalogue can be complete, a formatter correct and a plural resource well formed while the screen itself still clips, mirrors the wrong element, or falls back to a face that has no glyphs.</Device>
 
-`l10n-direction`, `l10n-no-mirror`, `l10n-expansion`, `l10n-script` and `l10n-pseudo` are answered on a rendered screen rather than in the resource files. A catalogue can be complete, a formatter correct and a plural resource well formed while the screen itself still clips, mirrors the wrong element, or falls back to a face that has no glyphs.
+</Check>

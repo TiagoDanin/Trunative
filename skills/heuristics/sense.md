@@ -109,20 +109,20 @@ Bluetooth and NFC split the way the camera splits in `sense-off-system`: the per
 - Paired, in range and connected are three states rather than one flag, and losing the peripheral is ordinary rather than exceptional. The surface says it is gone, keeps working on everything that does not need it, and reconnects without making the user start the task again. Nothing draws a dropped connection as live.
 - A nearby interaction is never the only route to its task. Distance and direction degrade behind a body, a bag or a wall, and direction disappears entirely once the phone is not roughly pointed at the other device, so there is always a way to finish without it.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="sense-states">Every capability that returns a value over time branches on absent, off at the system level, running, imprecise and failing, or names which of the five it folded and why.</Verify>
+<Verify rule="sense-absent">Presence is queried at runtime before the entry point is drawn, absence removes the surface rather than disabling it, and no hardware feature is declared as required unless the app cannot run without it.</Verify>
+<Verify rule="sense-off-system">Permission status and service availability are two separate reads, each with its own sentence, the ones that have a system page are deep linked to it, and neither resolves into a retry loop.</Verify>
+<Verify rule="sense-running">The capturing surface shows its own running state with a stop, draws nothing inside the platform indicator's bounds, imitates no indicator, and ends with its screen unless it carries an ongoing notification or Live Activity.</Verify>
+<Verify rule="sense-interrupted">A capture the system stops says so on the surface as it happens, keeps and names what was already captured, and re-establishes the session on return rather than leaving a dead one.</Verify>
+<Verify rule="sense-accuracy">The accuracy radius is read, checked for validity and rendered, no accuracy threshold is shared across platforms, and a reduced fix runs the feature in a stated form.</Verify>
+<Verify rule="sense-preview">The preview's fit is set deliberately, keeps the sensor aspect ratio, has an inert shutter until the session is live, holds the screen awake while it aims or records (`perf-power`), and any scanner has a target, a time bound and a route that does not use the camera.</Verify>
+<Verify rule="sense-biometric">The platform prompt is used unmodified, named for the method the device reports, with an enrolment path and a non-biometric route in the same session.</Verify>
+<Verify rule="sense-haptic">Haptics use each platform's named feedback with a plain fallback where support is unknown, iOS carries an in-app switch for them, none fires while a reading is in flight, and none carries a meaning alone.</Verify>
+<Verify rule="sense-motion">The motion sensors drive the view only where the reading is the content, no gesture stands in for a control, and a heading has a calibration state.</Verify>
+<Verify rule="sense-radio">An adapter switched off is answered separately from a denied permission, pairing, range and disconnection each have a state, and no nearby interaction is the only route to its task.</Verify>
 
-- Every capability that returns a value over time branches on absent, off at the system level, running, imprecise and failing, or names which of the five it folded and why. `sense-states`
-- Presence is queried at runtime before the entry point is drawn, absence removes the surface rather than disabling it, and no hardware feature is declared as required unless the app cannot run without it. `sense-absent`
-- Permission status and service availability are two separate reads, each with its own sentence, the ones that have a system page are deep linked to it, and neither resolves into a retry loop. `sense-off-system`
-- The capturing surface shows its own running state with a stop, draws nothing inside the platform indicator's bounds, imitates no indicator, and ends with its screen unless it carries an ongoing notification or Live Activity. `sense-running`
-- A capture the system stops says so on the surface as it happens, keeps and names what was already captured, and re-establishes the session on return rather than leaving a dead one. `sense-interrupted`
-- The accuracy radius is read, checked for validity and rendered, no accuracy threshold is shared across platforms, and a reduced fix runs the feature in a stated form. `sense-accuracy`
-- The preview's fit is set deliberately, keeps the sensor aspect ratio, has an inert shutter until the session is live, holds the screen awake while it aims or records (`perf-power`), and any scanner has a target, a time bound and a route that does not use the camera. `sense-preview`
-- The platform prompt is used unmodified, named for the method the device reports, with an enrolment path and a non-biometric route in the same session. `sense-biometric`
-- Haptics use each platform's named feedback with a plain fallback where support is unknown, iOS carries an in-app switch for them, none fires while a reading is in flight, and none carries a meaning alone. `sense-haptic`
-- The motion sensors drive the view only where the reading is the content, no gesture stands in for a control, and a heading has a calibration state. `sense-motion`
-- An adapter switched off is answered separately from a denied permission, pairing, range and disconnection each have a state, and no nearby interaction is the only route to its task. `sense-radio`
+<Device>Run these on a device that is missing something on purpose: location services off, the system camera toggle off, no biometric enrolled, Bluetooth off, a call placed mid recording. Each of those states passes on a fully equipped device with everything granted, which is the only device the code was written against.</Device>
 
-Run these on a device that is missing something on purpose: location services off, the system camera toggle off, no biometric enrolled, Bluetooth off, a call placed mid recording. Each of those states passes on a fully equipped device with everything granted, which is the only device the code was written against.
+</Check>

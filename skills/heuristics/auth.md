@@ -110,21 +110,21 @@ The stores do not ask for the same shape and an app has to satisfy both: an in-a
 - A subscription bought through a store keeps billing until it is cancelled there, and the deletion screen says so rather than letting the person discover it next month.
 - The confirmation is a re-authentication under `auth-reauth`, not a checkbox.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="auth-methods">Every route on the sign-in screen resolves to one account identifier through one call site, the platform credential entry point is one of them with a persistent control to reopen it on Android, both domain association files are configured for the passkey route, and the order is fixed rather than computed per visit.</Verify>
+<Verify rule="auth-provider-button">Apple's button is the platform component wherever the stack can reach one and matches the published specification where it cannot, Google's is built to its specification with the mark unmodified, and both keep their hit area at the touch floor while the artwork keeps its own minimum and clear space.</Verify>
+<Verify rule="auth-web-flow">Every provider sign-in that leaves the app opens in the system authentication session rather than a browsing surface or an app-owned web view, and returns through that session's own callback to the screen it started from.</Verify>
+<Verify rule="auth-magic-link">The sign-in link is a claimed link that opens the app rather than a mail web view, the waiting screen is restored and finishes there, and the link is spent on the person's action rather than on a fetch.</Verify>
+<Verify rule="auth-last-used">The last successful method is stored per device and marked on return, naming the method and not the account.</Verify>
+<Verify rule="auth-code-screen">The code screen names the destination, restores itself after a trip to another app, and gates resend behind a visible countdown.</Verify>
+<Verify rule="auth-biometric-session">No prompt result is treated as a sign-in or as a factor, any check gating money or credentials requires the strong class, and the device credential path is guarded on API level 29 and below.</Verify>
+<Verify rule="auth-expiry">Expiry produces one interruption over the current screen, the typed values and the scroll position survive it, and the lifetime is recorded once.</Verify>
+<Verify rule="auth-reauth">Each sensitive action calls re-authentication, all of them read the same recorded window, no surface imitates the system prompt, and a refusal leaves the session intact.</Verify>
+<Verify rule="auth-active-account">Every screen that acts under an identity displays that identity, and a switch clears the previous account's content, badges and queue.</Verify>
+<Verify rule="auth-signout">Sign out happens only on the user's request, states what it clears, drains unsent work first, and sits away from deletion.</Verify>
+<Verify rule="auth-delete">Account deletion is reachable in-app, the web route's address is held as a recorded constant rather than a literal, and the screen states scope and timing and confirms through re-authentication.</Verify>
 
-- Every route on the sign-in screen resolves to one account identifier through one call site, the platform credential entry point is one of them with a persistent control to reopen it on Android, both domain association files are configured for the passkey route, and the order is fixed rather than computed per visit. `auth-methods`
-- Apple's button is the platform component wherever the stack can reach one and matches the published specification where it cannot, Google's is built to its specification with the mark unmodified, and both keep their hit area at the touch floor while the artwork keeps its own minimum and clear space. `auth-provider-button`
-- Every provider sign-in that leaves the app opens in the system authentication session rather than a browsing surface or an app-owned web view, and returns through that session's own callback to the screen it started from. `auth-web-flow`
-- The sign-in link is a claimed link that opens the app rather than a mail web view, the waiting screen is restored and finishes there, and the link is spent on the person's action rather than on a fetch. `auth-magic-link`
-- The last successful method is stored per device and marked on return, naming the method and not the account. `auth-last-used`
-- The code screen names the destination, restores itself after a trip to another app, and gates resend behind a visible countdown. `auth-code-screen`
-- No prompt result is treated as a sign-in or as a factor, any check gating money or credentials requires the strong class, and the device credential path is guarded on API level 29 and below. `auth-biometric-session`
-- Expiry produces one interruption over the current screen, the typed values and the scroll position survive it, and the lifetime is recorded once. `auth-expiry`
-- Each sensitive action calls re-authentication, all of them read the same recorded window, no surface imitates the system prompt, and a refusal leaves the session intact. `auth-reauth`
-- Every screen that acts under an identity displays that identity, and a switch clears the previous account's content, badges and queue. `auth-active-account`
-- Sign out happens only on the user's request, states what it clears, drains unsent work first, and sits away from deletion. `auth-signout`
-- Account deletion is reachable in-app, the web route's address is held as a recorded constant rather than a literal, and the screen states scope and timing and confirms through re-authentication. `auth-delete`
+<Device>Five of these do not come out of a diff. Open the sign-in screen at the largest text size to see what is actually reachable without scrolling, background the code screen and come back to it, force a token to expire with a form half typed, read on a device which biometric class the prompt was granted rather than which constant was passed to it, and check in the Play console that the deletion URL declared there is the one the app ships.</Device>
 
-Five of these do not come out of a diff. Open the sign-in screen at the largest text size to see what is actually reachable without scrolling, background the code screen and come back to it, force a token to expire with a form half typed, read on a device which biometric class the prompt was granted rather than which constant was passed to it, and check in the Play console that the deletion URL declared there is the one the app ships.
+</Check>

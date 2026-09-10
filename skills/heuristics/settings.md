@@ -108,22 +108,22 @@ Whatever else it holds, this is the screen somebody opens to stop paying, stop b
 
 The version and build are the first thing a support reply asks for, and somebody has to be able to read them out loud off a phone they are holding at arm's length. They go on an About subscreen with the licences, one level down, rather than taking a row at the top from something adjustable. Beside them sits one route to support that attaches the version, the device and the locale by itself: a report typed with a thumb will not carry them, and without them it cannot be answered.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="set-default-first">Every setting has a line in `STACK.md` naming its default and why that default could not settle the row, nothing is asked for that the app can detect, and the total row count across the tree is reported.</Verify>
+<Verify rule="set-in-context">No frequently changed option, filter or sort lives in settings instead of on the screen it changes.</Verify>
+<Verify rule="set-system-owned">No app-wide row duplicates a system setting, no language preference is stored outside the platform API, every row the app cannot fulfil itself is a deep link resolved before it is drawn and aimed at the app's own page, including one in-app place to change the notification answer, and any appearance row offers three values with Match system as the default and applies the stored one before the first frame.</Verify>
+<Verify rule="set-shape">No screen holds more than ten rows, groups carry headings, order runs by frequency, any Advanced section hides at least three rows behind one line of subtext, and a feature that can be switched off entirely has one main switch above dependent rows that stay visible and disabled.</Verify>
+<Verify rule="set-status">Every row shows its current value, and no subscreen has to be opened to find out what the app is set to.</Verify>
+<Verify rule="set-controls">On and off is a switch, one of several is a subscreen or sheet rather than a dropdown, and every slider or text field shows its value.</Verify>
+<Verify rule="set-effect">The screen is instant or saved, stated by what it shows, with no instant control on a screen that has a commit action.</Verify>
+<Verify rule="set-wired">Every control writes to the preference store, every key is read somewhere outside the settings screen, every read declares a default, and the values survive killing the process.</Verify>
+<Verify rule="set-sync">Every preference is marked device-local or account-level, the screen says which, an account-level row waits for its stored value instead of offering a guess, and the collision rule for two devices is written down.</Verify>
+<Verify rule="set-destructive">Destructive rows are grouped away from frequent ones, each names what it removes and how much, and sign out is not adjacent to delete.</Verify>
+<Verify rule="set-search">No row sits three levels below the root without a search field on the root, counting depth the shape rules did not create, and the tree's row count is reported as a finding alongside it.</Verify>
+<Verify rule="set-account-exit">The signed-in account, a subscription route that works on both stores, the policy links, the consent withdrawal and the entry points for sign out and deletion are all present and reachable in one screen.</Verify>
+<Verify rule="set-diagnostics">Version and build are on an About subscreen, and the support route carries version, device and locale without the user typing them.</Verify>
 
-- Every setting has a line in `STACK.md` naming its default and why that default could not settle the row, nothing is asked for that the app can detect, and the total row count across the tree is reported. `set-default-first`
-- No frequently changed option, filter or sort lives in settings instead of on the screen it changes. `set-in-context`
-- No app-wide row duplicates a system setting, no language preference is stored outside the platform API, every row the app cannot fulfil itself is a deep link resolved before it is drawn and aimed at the app's own page, including one in-app place to change the notification answer, and any appearance row offers three values with Match system as the default and applies the stored one before the first frame. `set-system-owned`
-- No screen holds more than ten rows, groups carry headings, order runs by frequency, any Advanced section hides at least three rows behind one line of subtext, and a feature that can be switched off entirely has one main switch above dependent rows that stay visible and disabled. `set-shape`
-- Every row shows its current value, and no subscreen has to be opened to find out what the app is set to. `set-status`
-- On and off is a switch, one of several is a subscreen or sheet rather than a dropdown, and every slider or text field shows its value. `set-controls`
-- The screen is instant or saved, stated by what it shows, with no instant control on a screen that has a commit action. `set-effect`
-- Every control writes to the preference store, every key is read somewhere outside the settings screen, every read declares a default, and the values survive killing the process. `set-wired`
-- Every preference is marked device-local or account-level, the screen says which, an account-level row waits for its stored value instead of offering a guess, and the collision rule for two devices is written down. `set-sync`
-- Destructive rows are grouped away from frequent ones, each names what it removes and how much, and sign out is not adjacent to delete. `set-destructive`
-- No row sits three levels below the root without a search field on the root, counting depth the shape rules did not create, and the tree's row count is reported as a finding alongside it. `set-search`
-- The signed-in account, a subscription route that works on both stores, the policy links, the consent withdrawal and the entry points for sign out and deletion are all present and reachable in one screen. `set-account-exit`
-- Version and build are on an About subscreen, and the support route carries version, device and locale without the user typing them. `set-diagnostics`
+<Device>Three of these are not in the diff. Kill the process from outside the app, with Don't keep activities or `adb shell am kill`, then reopen the screen to find out which of `set-wired`'s values were really stored. The frequency judgements in `set-in-context` and `set-shape` are answered by which controls the app's own screens change often, which is a question for the product rather than for the settings file.</Device>
 
-Three of these are not in the diff. Kill the process from outside the app, with Don't keep activities or `adb shell am kill`, then reopen the screen to find out which of `set-wired`'s values were really stored. The frequency judgements in `set-in-context` and `set-shape` are answered by which controls the app's own screens change often, which is a question for the product rather than for the settings file.
+</Check>

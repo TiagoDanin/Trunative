@@ -108,23 +108,23 @@ Within one second of the tap, either audio is playing or something on screen say
 - Live is labelled as live, and the label does not rely on color (`color-not-alone`). No total-duration text and no percentage on a stream with no end, and where seeking back exists, a control returns to the edge and says how far behind the user currently sits.
 - A live video surface the user has navigated away from inside the app, with nothing left playing it, stops rather than spending bytes on something nobody is watching. A recording is paused and kept where it stopped; a live edge cannot be. An app that has done `media-background` properly, with a session and a service behind it, is playing in the background on purpose and this does not touch it. A stall recovers by jumping to the edge rather than replaying what was missed.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="media-system-player">Playback runs through the platform's player component, and any custom control exists for a command the system does not offer.</Verify>
+<Verify rule="media-controls">A tap on the video surface reveals the controls, they stay up while buffering and do not retreat on a timer under a screen reader, they sit inside the safe area, and no in-app volume control competes with the hardware buttons.</Verify>
+<Verify rule="media-scrub">The scrub hit area reaches the touch floor, elapsed and total are both text, and every skip control prints its increment.</Verify>
+<Verify rule="media-unasked-sound">The audio session is activated and focus requested on the play path rather than at startup, the category matches the use, and an auto-started surface starts muted with the mute state held above the item.</Verify>
+<Verify rule="media-focus">Focus is requested at start and abandoned at stop, all three losses have a branch, the refused request has one too, and resuming afterwards is an explicit decision per content type.</Verify>
+<Verify rule="media-noisy">Playback pauses when the output becomes noisy, with the Android default flipped rather than assumed.</Verify>
+<Verify rule="media-background">Background audio declares the capability, the service type and the permissions, starts the service from the foreground, and releases the player on every exit path.</Verify>
+<Verify rule="media-remote">Title, artwork and duration reach the system controls, only supported commands are registered, the Android collapsed view is designed for its first 3 actions, and the tap returns to the playing item.</Verify>
+<Verify rule="media-resume">The position is stored per item as it plays and restored on return, a player that returns paused says so, and the Android resumption callback is answered.</Verify>
+<Verify rule="media-pip">The picture in picture affordance is behind a support check, the window keeps the same player instance, the Android action count is read from the platform with play and pause among them, and playback that continues inside the app keeps a docked bar leading back to the player.</Verify>
+<Verify rule="media-away">Video with no picture in picture and no background capability pauses when the app leaves the foreground and resumes at the same frame, while audio the user chose keeps playing.</Verify>
+<Verify rule="media-fullscreen">One player instance survives rotation and the full-screen transition, no bars are baked into the asset, and any custom transport picks its fit mode from the aspect ratio.</Verify>
+<Verify rule="media-awake">The screen-on flag is set for video only, on the player's own screen, and cleared on pause, stop, exit and error.</Verify>
+<Verify rule="media-start">Sound or a preparing indicator arrives within one second of the tap, and a rebuffer leaves the controls and the position alone.</Verify>
+<Verify rule="media-quality">A metered connection has a written bitrate cap, a manual quality choice persists, and downloads wait for unmetered.</Verify>
+<Verify rule="media-live">A live stream is labelled without relying on color, shows no total duration, offers a return to the edge, and stops once its surface is left with nothing playing it.</Verify>
 
-- Playback runs through the platform's player component, and any custom control exists for a command the system does not offer. `media-system-player`
-- A tap on the video surface reveals the controls, they stay up while buffering and do not retreat on a timer under a screen reader, they sit inside the safe area, and no in-app volume control competes with the hardware buttons. `media-controls`
-- The scrub hit area reaches the touch floor, elapsed and total are both text, and every skip control prints its increment. `media-scrub`
-- The audio session is activated and focus requested on the play path rather than at startup, the category matches the use, and an auto-started surface starts muted with the mute state held above the item. `media-unasked-sound`
-- Focus is requested at start and abandoned at stop, all three losses have a branch, the refused request has one too, and resuming afterwards is an explicit decision per content type. `media-focus`
-- Playback pauses when the output becomes noisy, with the Android default flipped rather than assumed. `media-noisy`
-- Background audio declares the capability, the service type and the permissions, starts the service from the foreground, and releases the player on every exit path. `media-background`
-- Title, artwork and duration reach the system controls, only supported commands are registered, the Android collapsed view is designed for its first 3 actions, and the tap returns to the playing item. `media-remote`
-- The position is stored per item as it plays and restored on return, a player that returns paused says so, and the Android resumption callback is answered. `media-resume`
-- The picture in picture affordance is behind a support check, the window keeps the same player instance, the Android action count is read from the platform with play and pause among them, and playback that continues inside the app keeps a docked bar leading back to the player. `media-pip`
-- Video with no picture in picture and no background capability pauses when the app leaves the foreground and resumes at the same frame, while audio the user chose keeps playing. `media-away`
-- One player instance survives rotation and the full-screen transition, no bars are baked into the asset, and any custom transport picks its fit mode from the aspect ratio. `media-fullscreen`
-- The screen-on flag is set for video only, on the player's own screen, and cleared on pause, stop, exit and error. `media-awake`
-- Sound or a preparing indicator arrives within one second of the tap, and a rebuffer leaves the controls and the position alone. `media-start`
-- A metered connection has a written bitrate cap, a manual quality choice persists, and downloads wait for unmetered. `media-quality`
-- A live stream is labelled without relying on color, shows no total duration, offers a return to the edge, and stops once its surface is left with nothing playing it. `media-live`
+</Check>

@@ -95,19 +95,19 @@ Read the flag per stack, which is the trap: on Flutter, `MediaQuery.disableAnima
 
 Motion is also never the only carrier of a change. Anything that says its piece by moving says nothing to the person who turned movement off, and nothing to a screen reader either.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="motion-job">Every animation on the screen serves continuity, latency or acknowledgement; and separately, with no work outstanding, no gesture in progress and no media playing, the only thing still moving is a latency indicator.</Verify>
+<Verify rule="motion-platform">No custom transition replaces a platform push, sheet, cover or dismissal without a written reason.</Verify>
+<Verify rule="motion-model">iOS motion is expressed as springs reached from one named set, Android motion through the scheme or the tokens, and no duration, curve or stiffness is a literal at a call site.</Verify>
+<Verify rule="motion-duration">Routine transitions finish under 300ms, nothing an interaction waits on exceeds 400ms, and larger movements take longer than smaller ones.</Verify>
+<Verify rule="motion-choreo">One element or region leads each transition, and any stagger runs on first appearance only, stepping at most 30ms per row and adding at most 200ms overall.</Verify>
+<Verify rule="motion-loop">Self-starting motion beside other content has a pause control past 5 seconds, auto-updating figures have one at any duration, nothing flashes more than 3 times a second, and every animation ends when its reason ends.</Verify>
+<Verify rule="motion-autoplay">Autoplay is gated on the platform setting, anything that autoplays has a visible stop, and a looping asset stops with its screen.</Verify>
+<Verify rule="motion-blocks">No input, dismissal or back gesture is blocked by an animation, and a repeated tap does not queue a second one.</Verify>
+<Verify rule="motion-cheap">Layout properties are animated only by the framework's own layout animations, hand-written animation stays on transform and opacity, and the React Native animations declare the native driver.</Verify>
+<Verify rule="motion-reduced">The reduced-motion flag is read on every platform the app ships to, iOS substitutes rather than deletes, and the Android screen still reads with nothing animating.</Verify>
 
-- Every animation on the screen serves continuity, latency or acknowledgement; and separately, with no work outstanding, no gesture in progress and no media playing, the only thing still moving is a latency indicator. `motion-job`
-- No custom transition replaces a platform push, sheet, cover or dismissal without a written reason. `motion-platform`
-- iOS motion is expressed as springs reached from one named set, Android motion through the scheme or the tokens, and no duration, curve or stiffness is a literal at a call site. `motion-model`
-- Routine transitions finish under 300ms, nothing an interaction waits on exceeds 400ms, and larger movements take longer than smaller ones. `motion-duration`
-- One element or region leads each transition, and any stagger runs on first appearance only, stepping at most 30ms per row and adding at most 200ms overall. `motion-choreo`
-- Self-starting motion beside other content has a pause control past 5 seconds, auto-updating figures have one at any duration, nothing flashes more than 3 times a second, and every animation ends when its reason ends. `motion-loop`
-- Autoplay is gated on the platform setting, anything that autoplays has a visible stop, and a looping asset stops with its screen. `motion-autoplay`
-- No input, dismissal or back gesture is blocked by an animation, and a repeated tap does not queue a second one. `motion-blocks`
-- Layout properties are animated only by the framework's own layout animations, hand-written animation stays on transform and opacity, and the React Native animations declare the native driver. `motion-cheap`
-- The reduced-motion flag is read on every platform the app ships to, iOS substitutes rather than deletes, and the Android screen still reads with nothing animating. `motion-reduced`
+<Device>Three of these are not answered from the file. `motion-reduced` is answered on a device with the setting turned on, because a reduced-motion path that was written and never wired to the flag reads exactly like one that works. `motion-cheap` is answered half in the source, where the native driver and the animated properties are visible, and half in the frame profiler, which is the only place a dropped frame exists. `motion-blocks` is answered by tapping through a transition and pressing back during one.</Device>
 
-Three of these are not answered from the file. `motion-reduced` is answered on a device with the setting turned on, because a reduced-motion path that was written and never wired to the flag reads exactly like one that works. `motion-cheap` is answered half in the source, where the native driver and the animated properties are visible, and half in the frame profiler, which is the only place a dropped frame exists. `motion-blocks` is answered by tapping through a transition and pressing back during one.
+</Check>

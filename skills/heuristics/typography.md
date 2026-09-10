@@ -83,17 +83,17 @@ Pale text on a dark ground bleeds into it, so an identical face at an identical 
 
 Where a screen carries real reading, compensate in the dark theme only: one step of weight if the face has it, a little more tracking, a little more line height. None of this shows up in the token values, so it gets judged on a rendered screen or not at all.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="type-scale">Text styles trace back to the platform scale or to a written-down extension of it, no component carries a literal size, and Android text is in `sp`.</Verify>
+<Verify rule="type-roles">The screen works from a small set of named roles, and a role that repeats across screens is identical every time.</Verify>
+<Verify rule="type-weight">Nothing below 400, no weight hardcoded outside a theme style, and every weight step jumps a grade. Weight is distributed across the screen, with most text on the regular cut and the heavy cut spent on a few elements.</Verify>
+<Verify rule="type-face">The typeface choice can be stated as a reason, a brand face stays in the display roles, and any custom face scales.</Verify>
+<Verify rule="type-measure">Body copy runs 40 to 60 characters per line.</Verify>
+<Verify rule="type-scaling">The screen was rendered at the largest accessibility step, and nothing clips, overlaps or truncates into ambiguity.</Verify>
+<Verify rule="type-strings">The longest localized string fits, numeric columns are tabular, and every truncation point was chosen deliberately.</Verify>
+<Verify rule="type-dark">Dark theme text was judged on a rendered screen.</Verify>
 
-- Text styles trace back to the platform scale or to a written-down extension of it, no component carries a literal size, and Android text is in `sp`. `type-scale`
-- The screen works from a small set of named roles, and a role that repeats across screens is identical every time. `type-roles`
-- Nothing below 400, no weight hardcoded outside a theme style, and every weight step jumps a grade. Weight is distributed across the screen, with most text on the regular cut and the heavy cut spent on a few elements. `type-weight`
-- The typeface choice can be stated as a reason, a brand face stays in the display roles, and any custom face scales. `type-face`
-- Body copy runs 40 to 60 characters per line. `type-measure`
-- The screen was rendered at the largest accessibility step, and nothing clips, overlaps or truncates into ambiguity. `type-scaling`
-- The longest localized string fits, numeric columns are tabular, and every truncation point was chosen deliberately. `type-strings`
-- Dark theme text was judged on a rendered screen. `type-dark`
+<Device>`type-scaling` and `type-dark` are answered with a rendered screen or they are not answered at all. Everything else gets a file and a line number.</Device>
 
-`type-scaling` and `type-dark` are answered with a rendered screen or they are not answered at all. Everything else gets a file and a line number.
+</Check>

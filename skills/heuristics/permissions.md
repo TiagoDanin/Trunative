@@ -107,19 +107,19 @@ From iOS 14.5, linking this app's data to data other companies collected, or pas
 
 An analytics or advertising SDK that pools users across other developers' apps counts even when the app never asks it to, so the dependency list decides this, not intent. No tracking means no prompt and no key. Tracking means the app still works whole when the answer is no: nothing withheld, nothing asked twice.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="perm-inventory">Every entry in the merged manifest and in the built app's `Info.plist` names the feature that uses it, and every runtime one names a feature the user can point at.</Verify>
+<Verify rule="perm-ask-less">No permission is requested for something a system picker or access button already returns without one, a partial grant is widened in place rather than re-asked, and the automatic limited-access alert is suppressed and replaced.</Verify>
+<Verify rule="perm-scope">Each request asks for the weakest usable level, location goes out as the paired request, and always, precise and background are separate later asks.</Verify>
+<Verify rule="perm-rationale">Each request is preceded by an app-owned screen stating use and benefit, gated on the current status, with a decline that continues except on the first-run required-resource screen `onboard-ask-order` defines, and one screen per feature rather than a queue.</Verify>
+<Verify rule="perm-purpose-string">Every usage description is an active sentence naming the feature and the use rather than restating the button.</Verify>
+<Verify rule="perm-answers">The code branches on permanent denial and on partial grants, not on a granted boolean.</Verify>
+<Verify rule="perm-recheck">Permission status is read at the point of access, never cached from launch.</Verify>
+<Verify rule="perm-no-coercion">No re-prompt while the status is denied, no feature or content gated on an unrelated grant, and every permission and stored consent the app holds is reversible from inside it.</Verify>
+<Verify rule="perm-notify-ask">The notification request follows a user action that creates something to notify about, not app start.</Verify>
+<Verify rule="perm-tracking">On iOS a tracking prompt exists if and only if a dependency tracks, and denial changes no feature; a codebase that ships only to Android answers this not applicable.</Verify>
 
-- Every entry in the merged manifest and in the built app's `Info.plist` names the feature that uses it, and every runtime one names a feature the user can point at. `perm-inventory`
-- No permission is requested for something a system picker or access button already returns without one, a partial grant is widened in place rather than re-asked, and the automatic limited-access alert is suppressed and replaced. `perm-ask-less`
-- Each request asks for the weakest usable level, location goes out as the paired request, and always, precise and background are separate later asks. `perm-scope`
-- Each request is preceded by an app-owned screen stating use and benefit, gated on the current status, with a decline that continues except on the first-run required-resource screen `onboard-ask-order` defines, and one screen per feature rather than a queue. `perm-rationale`
-- Every usage description is an active sentence naming the feature and the use rather than restating the button. `perm-purpose-string`
-- The code branches on permanent denial and on partial grants, not on a granted boolean. `perm-answers`
-- Permission status is read at the point of access, never cached from launch. `perm-recheck`
-- No re-prompt while the status is denied, no feature or content gated on an unrelated grant, and every permission and stored consent the app holds is reversible from inside it. `perm-no-coercion`
-- The notification request follows a user action that creates something to notify about, not app start. `perm-notify-ask`
-- On iOS a tracking prompt exists if and only if a dependency tracks, and denial changes no feature; a codebase that ships only to Android answers this not applicable. `perm-tracking`
+<Device>Run the last five with the permission revoked and the app cold started, because every one of them passes on a device where the grant is already in place. Reach each state on purpose rather than waiting to meet it: on Android, `adb shell dumpsys package PACKAGE_NAME` reports the flags per permission, where `USER_SET` is one denial and `USER_FIXED` is the permanent one, and `adb shell pm clear-permission-flags PACKAGE_NAME PERMISSION_NAME user-set user-fixed` resets between runs; on iOS, Reset Location & Privacy returns every permission to not determined. A state nobody can enter deliberately gets answered from the granted device every time, which is the same as not running the check.</Device>
 
-Run the last five with the permission revoked and the app cold started, because every one of them passes on a device where the grant is already in place. Reach each state on purpose rather than waiting to meet it: on Android, `adb shell dumpsys package PACKAGE_NAME` reports the flags per permission, where `USER_SET` is one denial and `USER_FIXED` is the permanent one, and `adb shell pm clear-permission-flags PACKAGE_NAME PERMISSION_NAME user-set user-fixed` resets between runs; on iOS, Reset Location & Privacy returns every permission to not determined. A state nobody can enter deliberately gets answered from the granted device every time, which is the same as not running the check.
+</Check>

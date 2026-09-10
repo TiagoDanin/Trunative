@@ -107,21 +107,21 @@ Opening a result pushes a screen, and back returns to the query, the scope, the 
 - The same state survives the process being killed (`nav-restore`).
 - Cancel is a different move from back: it closes the search surface and returns the user to the screen they opened it from, with that screen as they left it.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="search-surface">Each search field is declared as one of the two surfaces, the expanded one takes the full screen rather than a dropdown, and focus on open answers per platform: the Android search view keeps its default while an inline filter switches it off, and no iOS surface is focused that was not opened in order to type.</Verify>
+<Verify rule="search-stock-field">The field is the platform's own search control, with exactly one clear control that appears only when there is text, a search return key, the screen behind out of the reader's path while search is open, and any voice entry point inside the field rather than beside it.</Verify>
+<Verify rule="search-placement">Search sits in the top app bar on Android and in one of the three sanctioned iOS entry points on iOS, and a single codebase either forks at runtime or records in `STACK.md` which one arrangement it ships.</Verify>
+<Verify rule="search-typing">No more than one search request is in flight, the debounce is a single named constant, and retries are backed off rather than per keystroke.</Verify>
+<Verify rule="search-suggest">Every suggestion row shows whether it completes the query or opens a result, suggestions come from real content, and the list recycles.</Verify>
+<Verify rule="search-recent">Recent searches re-run on tap and any surface showing them carries one control that clears the whole history, with an app that shows none recording why in `STACK.md`.</Verify>
+<Verify rule="search-scope">The corpus being searched is named by the placeholder, the title or a scope statement in the form that platform actually has, the default scope is the widest one, and switching scope keeps the query.</Verify>
+<Verify rule="search-filters">Applied filters are visible with the results, each removable in one tap, with Clear all permitted rather than required, and the query-to-filter behaviour recorded.</Verify>
+<Verify rule="search-pending">Results already on screen survive the next query, the in-flight marker sits at the field rather than over the rows, and the loading placeholder is used for the first search only.</Verify>
+<Verify rule="search-result">The result row carries the matched text, marks the match by something other than color, groups a mixed set by kind, and the count is announced once the results settle rather than per keystroke.</Verify>
+<Verify rule="search-zero">Zero results renders its own screen, keeps the query and filters visible, offers at least one next move, and is never the error screen.</Verify>
+<Verify rule="search-return">Back from a result restores the query, scope, filters, results and scroll position, and cancel returns to the originating screen unchanged.</Verify>
 
-- Each search field is declared as one of the two surfaces, the expanded one takes the full screen rather than a dropdown, and focus on open answers per platform: the Android search view keeps its default while an inline filter switches it off, and no iOS surface is focused that was not opened in order to type. `search-surface`
-- The field is the platform's own search control, with exactly one clear control that appears only when there is text, a search return key, the screen behind out of the reader's path while search is open, and any voice entry point inside the field rather than beside it. `search-stock-field`
-- Search sits in the top app bar on Android and in one of the three sanctioned iOS entry points on iOS, and a single codebase either forks at runtime or records in `STACK.md` which one arrangement it ships. `search-placement`
-- No more than one search request is in flight, the debounce is a single named constant, and retries are backed off rather than per keystroke. `search-typing`
-- Every suggestion row shows whether it completes the query or opens a result, suggestions come from real content, and the list recycles. `search-suggest`
-- Recent searches re-run on tap and any surface showing them carries one control that clears the whole history, with an app that shows none recording why in `STACK.md`. `search-recent`
-- The corpus being searched is named by the placeholder, the title or a scope statement in the form that platform actually has, the default scope is the widest one, and switching scope keeps the query. `search-scope`
-- Applied filters are visible with the results, each removable in one tap, with Clear all permitted rather than required, and the query-to-filter behaviour recorded. `search-filters`
-- Results already on screen survive the next query, the in-flight marker sits at the field rather than over the rows, and the loading placeholder is used for the first search only. `search-pending`
-- The result row carries the matched text, marks the match by something other than color, groups a mixed set by kind, and the count is announced once the results settle rather than per keystroke. `search-result`
-- Zero results renders its own screen, keeps the query and filters visible, offers at least one next move, and is never the error screen. `search-zero`
-- Back from a result restores the query, scope, filters, results and scroll position, and cancel returns to the originating screen unchanged. `search-return`
+<Device>The last one is answered by running it, not by reading the diff: leave the search, come back, and check that nothing had to be typed again.</Device>
 
-The last one is answered by running it, not by reading the diff: leave the search, come back, and check that nothing had to be typed again.
+</Check>

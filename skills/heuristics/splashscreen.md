@@ -91,21 +91,21 @@ The handoff is invisible only if what replaces the surface is the screen and not
 
 A blank screen, a centered spinner or a second background color after the launch surface means the surface covered nothing and the wait simply moved.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="splash-system">The launch surface is configured through the platform mechanism, and no route, activity or component draws a second one on the launch path; a first run branded frame is `onboard-splash` and is not this surface.</Verify>
+<Verify rule="splash-double">Exactly one surface sits between the launch and the first real screen.</Verify>
+<Verify rule="splash-contents">The surface holds only the elements its platform allows, and the iOS and Android assets are not the same file.</Verify>
+<Verify rule="splash-match">Its background is the first screen's background token at the same value, declared through the splash screen attributes rather than `android:windowBackground`, and its orientation matches what the app supports (`layout-orientation`).</Verify>
+<Verify rule="splash-no-progress">Zero spinners, progress bars, percentages and status lines on it.</Verify>
+<Verify rule="splash-hold">Everything the hold condition waits on is local and bounded, and each one has a named path that releases it on failure.</Verify>
+<Verify rule="splash-no-floor">The dismissal path contains no duration other than the platform fade.</Verify>
+<Verify rule="splash-appearance">A dark resource and a light resource both exist, and the surface carries zero strings.</Verify>
+<Verify rule="splash-animation">Any icon animation stays within 1000 ms, starts within 166 ms, and loops rather than running longer, and a custom exit removes the surface on every path.</Verify>
+<Verify rule="splash-daily">Nothing on the surface is first run content, and nothing draws it on a hot resume.</Verify>
+<Verify rule="splash-entry">Every cold entry point the app declares resolves its destination before the first draw, so the frame after the surface is the target rather than the home screen.</Verify>
+<Verify rule="splash-first-frame">The first frame after it carries the chrome, the insets and placeholder content, not a spinner.</Verify>
 
-- The launch surface is configured through the platform mechanism, and no route, activity or component draws a second one on the launch path; a first run branded frame is `onboard-splash` and is not this surface. `splash-system`
-- Exactly one surface sits between the launch and the first real screen. `splash-double`
-- The surface holds only the elements its platform allows, and the iOS and Android assets are not the same file. `splash-contents`
-- Its background is the first screen's background token at the same value, declared through the splash screen attributes rather than `android:windowBackground`, and its orientation matches what the app supports (`layout-orientation`). `splash-match`
-- Zero spinners, progress bars, percentages and status lines on it. `splash-no-progress`
-- Everything the hold condition waits on is local and bounded, and each one has a named path that releases it on failure. `splash-hold`
-- The dismissal path contains no duration other than the platform fade. `splash-no-floor`
-- A dark resource and a light resource both exist, and the surface carries zero strings. `splash-appearance`
-- Any icon animation stays within 1000 ms, starts within 166 ms, and loops rather than running longer, and a custom exit removes the surface on every path. `splash-animation`
-- Nothing on the surface is first run content, and nothing draws it on a hot resume. `splash-daily`
-- Every cold entry point the app declares resolves its destination before the first draw, so the frame after the surface is the target rather than the home screen. `splash-entry`
-- The first frame after it carries the chrome, the insets and placeholder content, not a spinner. `splash-first-frame`
+<Device>Check `splash-match`, `splash-appearance` and `splash-first-frame` by opening the app cold in both appearances and watching the handoff, rather than by reading the config. A mismatch of one step is invisible in a token table and obvious as a flash.</Device>
 
-Check `splash-match`, `splash-appearance` and `splash-first-frame` by opening the app cold in both appearances and watching the handoff, rather than by reading the config. A mismatch of one step is invisible in a token table and obvious as a flash.
+</Check>

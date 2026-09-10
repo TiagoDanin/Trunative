@@ -86,18 +86,18 @@ The system reclaims backgrounded apps without asking, and a setup flow is exactl
 - Where the user lands is `nav-restore`, what they typed is `form-persist`, and the save points are `state-interrupt`. What this rule owns is the step index and the flag.
 - A notification or a link can arrive before the first run has ever happened. That path opens its destination without replaying the flow: `nav-deeplink`.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="onboard-splash">Any branded frame sits after launching, is brief, blocks nothing, and does not run on later launches.</Verify>
+<Verify rule="onboard-screens">Three or fewer explanation panels, each showing the real product, with skip on every one, skip permanent, progress shown wherever there is more than one step, and the flow findable afterwards.</Verify>
+<Verify rule="onboard-in-place">Teaching happens at the control it applies to, one tip at a time, dismissible, never blocking, and nothing explains the phone.</Verify>
+<Verify rule="onboard-defer">Every setup step left in the flow is one the app cannot start without; the rest have defaults, and no rating, purchase, download or licensing wall sits in the path.</Verify>
+<Verify rule="onboard-ask-order">Zero system permission dialogs before the first real screen, or exactly one for a resource the app cannot function without, behind a single-button explanation screen, with a refusal reaching the reduced app.</Verify>
+<Verify rule="onboard-look-first">The app can be used before an account exists, the sign-in attaches to the feature that needs it, work made beforehand survives it, and the screen says why.</Verify>
+<Verify rule="onboard-account">Account deletion and social disconnection are both reachable in the app, any social login has an equivalent beside it or falls under a named exemption, credentials go through the platform's own UI, a new device restores the session, and only required data is collected at creation.</Verify>
+<Verify rule="onboard-first-action">The first run ends on the product's own action rather than a blank screen, with any legal gate named as one.</Verify>
+<Verify rule="onboard-resume">The step is persisted as it completes and the done flag is read before the first draw, so a process kill resumes the step and a second launch shows nothing.</Verify>
 
-- Any branded frame sits after launching, is brief, blocks nothing, and does not run on later launches. `onboard-splash`
-- Three or fewer explanation panels, each showing the real product, with skip on every one, skip permanent, progress shown wherever there is more than one step, and the flow findable afterwards. `onboard-screens`
-- Teaching happens at the control it applies to, one tip at a time, dismissible, never blocking, and nothing explains the phone. `onboard-in-place`
-- Every setup step left in the flow is one the app cannot start without; the rest have defaults, and no rating, purchase, download or licensing wall sits in the path. `onboard-defer`
-- Zero system permission dialogs before the first real screen, or exactly one for a resource the app cannot function without, behind a single-button explanation screen, with a refusal reaching the reduced app. `onboard-ask-order`
-- The app can be used before an account exists, the sign-in attaches to the feature that needs it, work made beforehand survives it, and the screen says why. `onboard-look-first`
-- Account deletion and social disconnection are both reachable in the app, any social login has an equivalent beside it or falls under a named exemption, credentials go through the platform's own UI, a new device restores the session, and only required data is collected at creation. `onboard-account`
-- The first run ends on the product's own action rather than a blank screen, with any legal gate named as one. `onboard-first-action`
-- The step is persisted as it completes and the done flag is read before the first draw, so a process kill resumes the step and a second launch shows nothing. `onboard-resume`
+<Device>`onboard-splash`, `onboard-first-action` and `onboard-resume` are answered from a clean install on a device, in both appearances, with the process killed mid flow the way the system would kill it. None of them can be settled by reading the router, because a flow that is correct in the file is exactly the one that starts over from panel one.</Device>
 
-`onboard-splash`, `onboard-first-action` and `onboard-resume` are answered from a clean install on a device, in both appearances, with the process killed mid flow the way the system would kill it. None of them can be settled by reading the router, because a flow that is correct in the file is exactly the one that starts over from panel one.
+</Check>

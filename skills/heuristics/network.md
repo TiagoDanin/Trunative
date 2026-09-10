@@ -99,20 +99,20 @@ Then:
 - The transfer does not survive everything, and the interface must not imply it does. Swiping the app out of the switcher cancels iOS background transfers until the person opens the app again.
 - Progress is real bytes moved over bytes total, emitted by the transfer rather than estimated from elapsed time. How that number is drawn, whether pause stands beside cancel, and what the user is told cancelling costs are all `state-loading`.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="net-timeout">Every class of request has a total deadline on the whole call, held as a named constant, and background transfers take the resource timeout rather than the request one.</Verify>
+<Verify rule="net-backoff">Automatic retry randomises its delays, counts attempts against a constant, retries only transient failures, 5xx and one deduplicated token refresh on a 401, and repeats a write under the same client key.</Verify>
+<Verify rule="net-cancel">No request runs on a detached scope, and a response to a question the user has left cannot write state, whether by a latest-wins operator or by an explicit generation check.</Verify>
+<Verify rule="net-dedupe">Reads in flight are keyed and shared, a refresh gesture preempts the request already running rather than joining it, and no write is collapsed by its shape.</Verify>
+<Verify rule="net-fanout">The number of calls a screen makes to render is fixed and written down, does not scale with row count, and independent calls do not run in a chain.</Verify>
+<Verify rule="net-payload">Image requests carry the drawn size, responses carry only rendered fields, pages are cursor-based at a size derived from the viewport, and nothing sets `Accept-Encoding` by hand.</Verify>
+<Verify rule="net-conditional">A refresh of a stored record sends the validator it was stored with, and a 304 updates its freshness mark without touching the content on screen.</Verify>
+<Verify rule="net-metered">The metered and Low Data Mode flags are read from the platform rather than inferred from the transport, and no user-initiated request is blocked or questioned because one is set.</Verify>
+<Verify rule="net-reachability">No connectivity check stands between a committed tap and the request it sends, and the app subscribes to path changes rather than polling them.</Verify>
+<Verify rule="net-prefetch">Prefetch has a written budget and trigger, and runs neither during launch nor on a metered connection.</Verify>
+<Verify rule="net-upload">Long transfers run on the platform service matching their shape, carry a durable resume handle, and report progress from real byte counts.</Verify>
 
-- Every class of request has a total deadline on the whole call, held as a named constant, and background transfers take the resource timeout rather than the request one. `net-timeout`
-- Automatic retry randomises its delays, counts attempts against a constant, retries only transient failures, 5xx and one deduplicated token refresh on a 401, and repeats a write under the same client key. `net-backoff`
-- No request runs on a detached scope, and a response to a question the user has left cannot write state, whether by a latest-wins operator or by an explicit generation check. `net-cancel`
-- Reads in flight are keyed and shared, a refresh gesture preempts the request already running rather than joining it, and no write is collapsed by its shape. `net-dedupe`
-- The number of calls a screen makes to render is fixed and written down, does not scale with row count, and independent calls do not run in a chain. `net-fanout`
-- Image requests carry the drawn size, responses carry only rendered fields, pages are cursor-based at a size derived from the viewport, and nothing sets `Accept-Encoding` by hand. `net-payload`
-- A refresh of a stored record sends the validator it was stored with, and a 304 updates its freshness mark without touching the content on screen. `net-conditional`
-- The metered and Low Data Mode flags are read from the platform rather than inferred from the transport, and no user-initiated request is blocked or questioned because one is set. `net-metered`
-- No connectivity check stands between a committed tap and the request it sends, and the app subscribes to path changes rather than polling them. `net-reachability`
-- Prefetch has a written budget and trigger, and runs neither during launch nor on a metered connection. `net-prefetch`
-- Long transfers run on the platform service matching their shape, carry a durable resume handle, and report progress from real byte counts. `net-upload`
+<Device>Answer `net-timeout`, `net-backoff` and `net-cancel` on a throttled connection rather than on a fast one, because every one of them passes by accident when the response arrives in 40ms. `net-fanout` is answered by counting the calls on a proxy while one screen opens, not by reading the repository.</Device>
 
-Answer `net-timeout`, `net-backoff` and `net-cancel` on a throttled connection rather than on a fast one, because every one of them passes by accident when the response arrives in 40ms. `net-fanout` is answered by counting the calls on a proxy while one screen opens, not by reading the repository.
+</Check>

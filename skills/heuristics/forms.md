@@ -105,20 +105,20 @@ One submit per form, with its emphasis from `button-one-primary` and its in-flig
 - Failure keeps everything, and what a retry returns to is `state-retry`. A network error that empties the form is worse than the network error.
 - Success says what happened and where the person now is, in place or on the screen they land on.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="form-column">Every field has its own row at the full content width, and any shared row produces one answer whose halves still fit their labels at the largest text size.</Verify>
+<Verify rule="form-count">The visible fields were counted, none asks for the same value twice, six or more questions are grouped or stepped, what is known is prefilled, and every default carries the reason it is one.</Verify>
+<Verify rule="form-label">Every field has a label that stays visible, bound to it in code and positioned per platform, no placeholder is doing a label's job, and helper text stays under 100 characters.</Verify>
+<Verify rule="form-required">Required or optional is marked on the minority only, as a word, in the label.</Verify>
+<Verify rule="form-input">Capitalisation, autocorrect and any mask are set per field, closed value sets use a picker rather than free text, nothing takes focus on open except a single-field screen, and on mobile web no field's text sits under 16px.</Verify>
+<Verify rule="form-autofill">Every field declares its autofill content type, credential fields are grouped and committed on submit, the one time code is a single field, and paste is blocked nowhere.</Verify>
+<Verify rule="form-validate">Nothing validates per keystroke or on focus, blur or a 500 to 1000ms pause triggers it, and accepted formats are normalised rather than rejected.</Verify>
+<Verify rule="form-error">Each message sits under its own field, names the fix in its first few words, does not depend on color, no summary stands in for those messages, and the first failure is scrolled to and focused.</Verify>
+<Verify rule="form-persist">Values, scroll and the focused field come back after backgrounding and process death, and a form of six or more questions either drafts or records that it does not.</Verify>
+<Verify rule="form-steps">A stepped form shows the step and the total, system back moves one step rather than out, answers survive going back, and the last step names what submitting does.</Verify>
+<Verify rule="form-submit">One submit control, no reset outside a filter sheet, and nothing lost on failure.</Verify>
 
-- Every field has its own row at the full content width, and any shared row produces one answer whose halves still fit their labels at the largest text size. `form-column`
-- The visible fields were counted, none asks for the same value twice, six or more questions are grouped or stepped, what is known is prefilled, and every default carries the reason it is one. `form-count`
-- Every field has a label that stays visible, bound to it in code and positioned per platform, no placeholder is doing a label's job, and helper text stays under 100 characters. `form-label`
-- Required or optional is marked on the minority only, as a word, in the label. `form-required`
-- Capitalisation, autocorrect and any mask are set per field, closed value sets use a picker rather than free text, nothing takes focus on open except a single-field screen, and on mobile web no field's text sits under 16px. `form-input`
-- Every field declares its autofill content type, credential fields are grouped and committed on submit, the one time code is a single field, and paste is blocked nowhere. `form-autofill`
-- Nothing validates per keystroke or on focus, blur or a 500 to 1000ms pause triggers it, and accepted formats are normalised rather than rejected. `form-validate`
-- Each message sits under its own field, names the fix in its first few words, does not depend on color, no summary stands in for those messages, and the first failure is scrolled to and focused. `form-error`
-- Values, scroll and the focused field come back after backgrounding and process death, and a form of six or more questions either drafts or records that it does not. `form-persist`
-- A stepped form shows the step and the total, system back moves one step rather than out, answers survive going back, and the last step names what submitting does. `form-steps`
-- One submit control, no reset outside a filter sheet, and nothing lost on failure. `form-submit`
+<Device>`form-persist` is answered by backgrounding the app with the form half filled and coming back, not by reading the state code. `form-autofill` is answered by triggering the platform's own fill on a device, because a content type spelled wrong fails silently and looks exactly like one spelled right.</Device>
 
-`form-persist` is answered by backgrounding the app with the form half filled and coming back, not by reading the state code. `form-autofill` is answered by triggering the platform's own fill on a device, because a content type spelled wrong fails silently and looks exactly like one spelled right.
+</Check>

@@ -110,20 +110,20 @@ The sync that failed at 3am is a state the screen shows at 8am, not a log line. 
 
 Silent failure is worse here than anywhere else in the app, because the user had no way to see it happen and every reason to believe it worked.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="bg-not-running">No timer, interval or polling loop is the mechanism for work expected to happen while the app is away, and every such unit is handed to a platform-owned mechanism instead: the scheduler, a transfer session, a drained queue, a push, a location trigger or a declared service.</Verify>
+<Verify rule="bg-now-or-later">Every deferrable job declares at least one system constraint where the platform offers them, no job encodes a wall clock time the app chose, and every unit carries an id generated before the first attempt that makes a retry recognisable as the same request.</Verify>
+<Verify rule="bg-leaving">Work in flight when the app is backgrounded takes the platform's short assertion, and the expiration hands what is left to the queue or the scheduler rather than dropping it.</Verify>
+<Verify rule="bg-periodic">Count the recurring jobs the app schedules: each one has its reason written in `STACK.md`, and none assumes its interval is a schedule.</Verify>
+<Verify rule="bg-visible-stoppable">Every long-running background unit reports real progress through the platform's visible surface and carries a stop that cancels the work itself.</Verify>
+<Verify rule="bg-service-last">Each foreground service names a declared type with its matching permission, calls `startForeground` within 5 seconds of the service being created wherever the start came from, and was chosen only after the narrower API was ruled out.</Verify>
+<Verify rule="bg-declared">Every declared background mode and foreground service type maps to a shipping feature that uses it for that purpose, and anything else is deleted from the manifest.</Verify>
+<Verify rule="bg-location">Background location uses significant-change monitoring or a geofence unless a moving position has to be followed, and the feature that needs it is named where the permission is asked for.</Verify>
+<Verify rule="bg-exact-time">Count the exact alarms: each one is a time the user set, and everything else uses an inexact window.</Verify>
+<Verify rule="bg-wake-push">Wake-up pushes are sent for content the user is waiting on, and the app does not send them per server-side change.</Verify>
+<Verify rule="bg-restricted">The app reads the restriction state, no screen promises that background work keeps running, and the dependent feature degrades in place, in one line, rather than blocking or nagging.</Verify>
+<Verify rule="bg-exemption">No code path prompts for a battery optimisation exemption, and any settings route is reached after the user hits the limit and reads why.</Verify>
+<Verify rule="bg-failed-away">Every background job's failure path writes a state a screen reads, and every retry the app runs itself stops at an attempt ceiling held in a named constant.</Verify>
 
-- No timer, interval or polling loop is the mechanism for work expected to happen while the app is away, and every such unit is handed to a platform-owned mechanism instead: the scheduler, a transfer session, a drained queue, a push, a location trigger or a declared service. `bg-not-running`
-- Every deferrable job declares at least one system constraint where the platform offers them, no job encodes a wall clock time the app chose, and every unit carries an id generated before the first attempt that makes a retry recognisable as the same request. `bg-now-or-later`
-- Work in flight when the app is backgrounded takes the platform's short assertion, and the expiration hands what is left to the queue or the scheduler rather than dropping it. `bg-leaving`
-- Count the recurring jobs the app schedules: each one has its reason written in `STACK.md`, and none assumes its interval is a schedule. `bg-periodic`
-- Every long-running background unit reports real progress through the platform's visible surface and carries a stop that cancels the work itself. `bg-visible-stoppable`
-- Each foreground service names a declared type with its matching permission, calls `startForeground` within 5 seconds of the service being created wherever the start came from, and was chosen only after the narrower API was ruled out. `bg-service-last`
-- Every declared background mode and foreground service type maps to a shipping feature that uses it for that purpose, and anything else is deleted from the manifest. `bg-declared`
-- Background location uses significant-change monitoring or a geofence unless a moving position has to be followed, and the feature that needs it is named where the permission is asked for. `bg-location`
-- Count the exact alarms: each one is a time the user set, and everything else uses an inexact window. `bg-exact-time`
-- Wake-up pushes are sent for content the user is waiting on, and the app does not send them per server-side change. `bg-wake-push`
-- The app reads the restriction state, no screen promises that background work keeps running, and the dependent feature degrades in place, in one line, rather than blocking or nagging. `bg-restricted`
-- No code path prompts for a battery optimisation exemption, and any settings route is reached after the user hits the limit and reads why. `bg-exemption`
-- Every background job's failure path writes a state a screen reads, and every retry the app runs itself stops at an attempt ceiling held in a named constant. `bg-failed-away`
+</Check>

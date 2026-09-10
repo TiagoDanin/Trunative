@@ -80,16 +80,16 @@ The keyboard is not an overlay that happens to the screen, it is part of the scr
 - Which keyboard opens, and what its return key does, is decided per field rather than globally. `form-input` covers that in full.
 - A fixed bottom action either rises with the keyboard or is reachable above it. Leaving it underneath means the user types and then cannot submit.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="touch-floor">Every interactive element measures at least 44pt or 48dp in its hit area, and list rows are tappable across their full width.</Verify>
+<Verify rule="touch-spacing">Adjacent targets are separated by at least 8dp of dead space.</Verify>
+<Verify rule="touch-reach">Primary action and primary navigation sit in the bottom third, and the layout was checked mirrored for a left thumb.</Verify>
+<Verify rule="touch-destructive">Destructive actions sit outside the easy region, and the vehicle carrying the confirmation is the one `fb-confirm-test` selects.</Verify>
+<Verify rule="touch-feedback">Pressed state is visible under a covering finger, feedback lands within about 100ms outside the occluded area, and nothing depends on hover.</Verify>
+<Verify rule="touch-gestures">Back works on every screen including sheets, no custom gesture starts in a system edge zone, and every gesture has a visible alternative.</Verify>
+<Verify rule="touch-keyboard">With the keyboard open, the focused field is visible and the primary action is reachable.</Verify>
 
-- Every interactive element measures at least 44pt or 48dp in its hit area, and list rows are tappable across their full width. `touch-floor`
-- Adjacent targets are separated by at least 8dp of dead space. `touch-spacing`
-- Primary action and primary navigation sit in the bottom third, and the layout was checked mirrored for a left thumb. `touch-reach`
-- Destructive actions sit outside the easy region, and the vehicle carrying the confirmation is the one `fb-confirm-test` selects. `touch-destructive`
-- Pressed state is visible under a covering finger, feedback lands within about 100ms outside the occluded area, and nothing depends on hover. `touch-feedback`
-- Back works on every screen including sheets, no custom gesture starts in a system edge zone, and every gesture has a visible alternative. `touch-gestures`
-- With the keyboard open, the focused field is visible and the primary action is reachable. `touch-keyboard`
+<Device>Hit areas are measured, not estimated: read the bounds in the inspector or the layout tree. A target that looks big enough next to a 24dp icon is exactly the one that is not.</Device>
 
-Hit areas are measured, not estimated: read the bounds in the inspector or the layout tree. A target that looks big enough next to a 24dp icon is exactly the one that is not.
+</Check>

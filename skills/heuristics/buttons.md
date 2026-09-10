@@ -85,15 +85,15 @@ Three to five destinations, and they are the top level of the app rather than a 
 - Top tabs and bottom tabs on the same screen is two navigation systems arguing. Pick one.
 - A segmented control is not a tab bar. It filters or switches the view in front of the user, it holds about three options, and past that it becomes a menu or a filter screen.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="button-one-primary">Exactly one primary action is visible on the screen, counting the bottom bar, the top bar, the content and the FAB together, and any sheet or dialog carries its own single primary.</Verify>
+<Verify rule="button-ladder">Emphasis comes from the platform's ladder, one style per rank, styled in the theme rather than per call site, and the same action looks the same across screens.</Verify>
+<Verify rule="button-target">Every button's touch area reaches the platform floor even where the drawn height is smaller.</Verify>
+<Verify rule="button-label">Labels name the action and its object, are capitalised as `copy-case` requires, and survive the longest translation at the largest text size.</Verify>
+<Verify rule="button-state">Disabled states explain themselves, and every button that starts work becomes unpressable and shows it, without resizing.</Verify>
+<Verify rule="button-fab">At most one FAB, holding the screen's defining action, absent on iOS, with the list underneath padded to clear it.</Verify>
+<Verify rule="button-chips">Chip selection is visible without color, chip rows scroll instead of wrapping, and no chip is doing a tab's job.</Verify>
+<Verify rule="button-tabs">Three to five labelled destinations, a selected state that is not color alone, and one navigation system per screen.</Verify>
 
-- Exactly one primary action is visible on the screen, counting the bottom bar, the top bar, the content and the FAB together, and any sheet or dialog carries its own single primary. `button-one-primary`
-- Emphasis comes from the platform's ladder, one style per rank, styled in the theme rather than per call site, and the same action looks the same across screens. `button-ladder`
-- Every button's touch area reaches the platform floor even where the drawn height is smaller. `button-target`
-- Labels name the action and its object, are capitalised as `copy-case` requires, and survive the longest translation at the largest text size. `button-label`
-- Disabled states explain themselves, and every button that starts work becomes unpressable and shows it, without resizing. `button-state`
-- At most one FAB, holding the screen's defining action, absent on iOS, with the list underneath padded to clear it. `button-fab`
-- Chip selection is visible without color, chip rows scroll instead of wrapping, and no chip is doing a tab's job. `button-chips`
-- Three to five labelled destinations, a selected state that is not color alone, and one navigation system per screen. `button-tabs`
+</Check>

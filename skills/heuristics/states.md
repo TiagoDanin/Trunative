@@ -101,20 +101,20 @@ A call, a notification pulled down and an app switch stop the screen without des
 - If something was lost, say so. A form silently emptied claims nothing happened, and the user finds out by reading it back.
 - Long work resumes rather than restarting from zero, and a cancelled screen cancels its own requests and timers on the way out.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="state-set">Every state the screen can enter has a line in the code, and each one it cannot is answered as not applicable with the reason.</Verify>
+<Verify rule="state-loading">First load draws a placeholder matching the final layout, no spinner covers the screen, nothing appears under 300ms or leaves within 500ms of appearing, ten seconds names a stage and offers an exit, the timeout has a written branch behind it, and the transitions are announced.</Verify>
+<Verify rule="state-empty">The three empties render three different sentences, with an action on the first two and none invented for the third.</Verify>
+<Verify rule="state-error">There is a message per next action, with connection and refusal never sharing one, no cause is asserted that was not verified, no failure renders as an empty, no message carries a status code, and the message reaches a screen reader.</Verify>
+<Verify rule="state-retry">A visible manual retry exists, retrying restores the input, the selection and the scroll position, and automatic retry backs off, stops, and never writes the message.</Verify>
+<Verify rule="state-offline">Offline is handled as slow, cached and uncached rather than as a boolean, the message is triggered by a failed request rather than by the radio, and the constrained, metered and power-saving flags are read where media and prefetch run.</Verify>
+<Verify rule="state-stale">Content that decays (a price, a balance, an arrival time, a count, availability) carries its age against a threshold that exists as a named constant; screens outside that set answer not applicable.</Verify>
+<Verify rule="state-queued">Unconfirmed actions render as pending with a way out on the item itself, a failed one rolls back on screen with the content kept, and a confirmed one names what changed in something that does not dismiss itself.</Verify>
+<Verify rule="state-partial">A failed region marks itself and retries alone, leaving the rest of the screen.</Verify>
+<Verify rule="state-permission">Denial degrades to a working screen, and the route back is a deep link into the system Settings page.</Verify>
+<Verify rule="state-interrupt">In-progress work survives a configuration change and a system-initiated process death.</Verify>
 
-- Every state the screen can enter has a line in the code, and each one it cannot is answered as not applicable with the reason. `state-set`
-- First load draws a placeholder matching the final layout, no spinner covers the screen, nothing appears under 300ms or leaves within 500ms of appearing, ten seconds names a stage and offers an exit, the timeout has a written branch behind it, and the transitions are announced. `state-loading`
-- The three empties render three different sentences, with an action on the first two and none invented for the third. `state-empty`
-- There is a message per next action, with connection and refusal never sharing one, no cause is asserted that was not verified, no failure renders as an empty, no message carries a status code, and the message reaches a screen reader. `state-error`
-- A visible manual retry exists, retrying restores the input, the selection and the scroll position, and automatic retry backs off, stops, and never writes the message. `state-retry`
-- Offline is handled as slow, cached and uncached rather than as a boolean, the message is triggered by a failed request rather than by the radio, and the constrained, metered and power-saving flags are read where media and prefetch run. `state-offline`
-- Content that decays (a price, a balance, an arrival time, a count, availability) carries its age against a threshold that exists as a named constant; screens outside that set answer not applicable. `state-stale`
-- Unconfirmed actions render as pending with a way out on the item itself, a failed one rolls back on screen with the content kept, and a confirmed one names what changed in something that does not dismiss itself. `state-queued`
-- A failed region marks itself and retries alone, leaving the rest of the screen. `state-partial`
-- Denial degrades to a working screen, and the route back is a deep link into the system Settings page. `state-permission`
-- In-progress work survives a configuration change and a system-initiated process death. `state-interrupt`
+<Device>`state-offline` and `state-stale` are answered on a device with the network actually off. `state-interrupt` is answered against a rotation and a kill the system would have made itself, using Don't keep activities or `adb shell am kill`, never a swipe out of the recents list: that gesture is the user asking for a clean start, and nothing is meant to come back from it. `state-queued` is the one that keeps the recents-swipe test, because persisted work is exactly what has to outlive a dismissal. Nothing in the file proves any of them, and a state that was never entered is unrun rather than passing.</Device>
 
-`state-offline` and `state-stale` are answered on a device with the network actually off. `state-interrupt` is answered against a rotation and a kill the system would have made itself, using Don't keep activities or `adb shell am kill`, never a swipe out of the recents list: that gesture is the user asking for a clean start, and nothing is meant to come back from it. `state-queued` is the one that keeps the recents-swipe test, because persisted work is exactly what has to outlive a dismissal. Nothing in the file proves any of them, and a state that was never entered is unrun rather than passing.
+</Check>

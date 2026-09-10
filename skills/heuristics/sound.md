@@ -80,16 +80,16 @@ An app-level control is right only where nothing above it can turn the sound off
 - One switch for the whole set, not one per event. A set small enough to defend under `sound-inventory` is small enough to turn off as a unit, and a sound settings screen with six rows is the inventory admitting it is too long.
 - A better default is cheaper than a switch (`set-default-first`). Where the sound is decoration rather than a signal, that default is off, and the switch exists for the people who want it back.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="sound-inventory">Every play site maps to an entry in a written set of sounds, each with one meaning, and a sound on a frequent event survives only where it is the platform's own behaviour for that control, played through the platform's gated API.</Verify>
+<Verify rule="sound-silenced">iOS interface sound uses `.ambient` rather than `.playback`, Android tags it as sonification and reads the user's interface-sound setting before playing its own sample, and nothing in the app changes the system volume or the volume buttons.</Verify>
+<Verify rule="sound-mixes">The audio session is configured rather than left at the default, no play site activates a session or requests focus around a UI sound, and other apps' audio is at the level it was at before.</Verify>
+<Verify rule="sound-system-sound">Recognised system actions use the platform's own sound, and any shipped asset meets the format limits of the API playing it and varies when it repeats.</Verify>
+<Verify rule="sound-never-alone">Every play site sits beside a visible state change, and the screen was built and reviewed muted.</Verify>
+<Verify rule="sound-unasked">No sound starts on launch, on navigation or on content appearing, and anything self-starting past 3 seconds has a stop control or its own volume.</Verify>
+<Verify rule="sound-off-switch">Sound the system cannot already silence has exactly one in-app switch, wired into every play site and persisted, and nothing duplicates a control the system already offers.</Verify>
 
-- Every play site maps to an entry in a written set of sounds, each with one meaning, and a sound on a frequent event survives only where it is the platform's own behaviour for that control, played through the platform's gated API. `sound-inventory`
-- iOS interface sound uses `.ambient` rather than `.playback`, Android tags it as sonification and reads the user's interface-sound setting before playing its own sample, and nothing in the app changes the system volume or the volume buttons. `sound-silenced`
-- The audio session is configured rather than left at the default, no play site activates a session or requests focus around a UI sound, and other apps' audio is at the level it was at before. `sound-mixes`
-- Recognised system actions use the platform's own sound, and any shipped asset meets the format limits of the API playing it and varies when it repeats. `sound-system-sound`
-- Every play site sits beside a visible state change, and the screen was built and reviewed muted. `sound-never-alone`
-- No sound starts on launch, on navigation or on content appearing, and anything self-starting past 3 seconds has a stop control or its own volume. `sound-unasked`
-- Sound the system cannot already silence has exactly one in-app switch, wired into every play site and persisted, and nothing duplicates a control the system already offers. `sound-off-switch`
+<Device>Two of those halves are not answerable from a diff. Whether other apps' audio comes back at the level it was at, and whether the muted screen still carries every signal, are settled on a device with music playing and the volume down; what the code can show is the half stated before each of them, that no play site claims a session or focus and that every play site has a visible state change beside it.</Device>
 
-Two of those halves are not answerable from a diff. Whether other apps' audio comes back at the level it was at, and whether the muted screen still carries every signal, are settled on a device with music playing and the volume down; what the code can show is the half stated before each of them, that no play site claims a session or focus and that every play site has a visible state change beside it.
+</Check>

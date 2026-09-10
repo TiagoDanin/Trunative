@@ -93,19 +93,19 @@ A large phone held horizontally keeps a wide line and takes its portrait width a
 
 Reflowing means the primary action stays visible without hunting for it, and the reading column keeps its measure rather than running the full width (`type-measure`). A turn is also a configuration change, so what has to survive it is `state-interrupt`. The geometry is the part this rule owns.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="layout-insets">The screen takes its insets from the framework's inset source rather than from a constant, and nothing readable or tappable sits outside them.</Verify>
+<Verify rule="layout-grid">Every gap is a multiple of 4, and of 8 above 16, the text column starts at the same margin on every screen outside full-bleed content and the platform list containers, and the screen uses about five distinct vertical gaps rather than a new one per component.</Verify>
+<Verify rule="layout-grouping">Grouping comes from space before containers, no container is nested inside another that already groups the same content, and the row height and section gap are the numbers this kind of screen uses everywhere else.</Verify>
+<Verify rule="layout-column">One column, no same-axis nesting outside what `scroll-nest` permits, and nothing side by side that would leave either half under about 140 wide apart from short fixed-format fields.</Verify>
+<Verify rule="layout-width">No content container carries a fixed width, and the screen was checked at 320dp with nothing clipped or overflowing.</Verify>
+<Verify rule="layout-chrome">Bars sit in the platform's bar slot, hand-placed chrome derives its padding from the measured bar plus the inset instead of a typed number, and no more than two persistent bars stand besides the system ones.</Verify>
+<Verify rule="layout-overlays">The snackbar comes from the platform's host slot rather than a hand-placed overlay, it clears the bottom bar and the inset, it moves the floating button rather than covering it, and one is on screen at a time.</Verify>
+<Verify rule="layout-fold">On the narrow device at default text size, the screen's subject and the start of its content are visible unscrolled, and the primary action is either in that screenful or in a bar pinned above the bottom inset and visible at rest.</Verify>
+<Verify rule="layout-short">A screen whose content does not fill the height holds its action against the bottom rather than centred in the empty middle, through the same code that lets it scroll once the content grows.</Verify>
+<Verify rule="layout-orientation">Landscape is either locked with a reason recorded in `STACK.md` or reflows, with the action still visible and the measure still capped at the shorter height.</Verify>
 
-- The screen takes its insets from the framework's inset source rather than from a constant, and nothing readable or tappable sits outside them. `layout-insets`
-- Every gap is a multiple of 4, and of 8 above 16, the text column starts at the same margin on every screen outside full-bleed content and the platform list containers, and the screen uses about five distinct vertical gaps rather than a new one per component. `layout-grid`
-- Grouping comes from space before containers, no container is nested inside another that already groups the same content, and the row height and section gap are the numbers this kind of screen uses everywhere else. `layout-grouping`
-- One column, no same-axis nesting outside what `scroll-nest` permits, and nothing side by side that would leave either half under about 140 wide apart from short fixed-format fields. `layout-column`
-- No content container carries a fixed width, and the screen was checked at 320dp with nothing clipped or overflowing. `layout-width`
-- Bars sit in the platform's bar slot, hand-placed chrome derives its padding from the measured bar plus the inset instead of a typed number, and no more than two persistent bars stand besides the system ones. `layout-chrome`
-- The snackbar comes from the platform's host slot rather than a hand-placed overlay, it clears the bottom bar and the inset, it moves the floating button rather than covering it, and one is on screen at a time. `layout-overlays`
-- On the narrow device at default text size, the screen's subject and the start of its content are visible unscrolled, and the primary action is either in that screenful or in a bar pinned above the bottom inset and visible at rest. `layout-fold`
-- A screen whose content does not fill the height holds its action against the bottom rather than centred in the empty middle, through the same code that lets it scroll once the content grows. `layout-short`
-- Landscape is either locked with a reason recorded in `STACK.md` or reflows, with the action still visible and the measure still capped at the shorter height. `layout-orientation`
+<Device>`layout-insets`, `layout-width` and `layout-fold` are answered on a rendered screen at the narrow end of the range, on a device using three-button navigation as well as gestures. The token table and the component tree both look correct while the bottom bar is sitting under the navigation bar.</Device>
 
-`layout-insets`, `layout-width` and `layout-fold` are answered on a rendered screen at the narrow end of the range, on a device using three-button navigation as well as gestures. The token table and the component tree both look correct while the bottom bar is sitting under the navigation bar.
+</Check>

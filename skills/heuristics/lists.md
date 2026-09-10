@@ -110,20 +110,20 @@ A screen reader moves stop by stop and there is no pointer here to skip ahead wi
 - Every swipe and every long press is also an action on that node: `customActions` in Compose, `.accessibilityAction` in SwiftUI, `CustomSemanticsAction` in Flutter, `accessibilityActions` in React Native. The visible equivalent under `list-swipe` is what a sighted user reaches for, and this is the route a screen reader has.
 - A section header carries the heading trait, so the reader can jump between groups instead of walking every row: `heading()`, `.accessibilityAddTraits(.isHeader)`, `Semantics(header: true)`.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="list-virtualise">Every list uses the stack's recycling primitive with a stable non-positional key, and uniform rows carry a size hint where the stack takes one.</Verify>
+<Verify rule="list-density">Row height follows the content instead of one padded maximum, and any row carrying two or more pieces of content ranks them by size, weight or color.</Verify>
+<Verify rule="list-separator">Rows are separated by one device rather than three, and hand-drawn dividers are inset to the text with none after the last row.</Verify>
+<Verify rule="list-row">At most two controls sit inside a row, each with its own hit area and its own clearance, and a chevron is not counted as one.</Verify>
+<Verify rule="list-swipe">Every swipe action has a visible equivalent, at most two per edge, destructive swipes end in undo, and the gesture commits past a distance threshold rather than on drift.</Verify>
+<Verify rule="list-images">Image containers carry fixed dimensions with a placeholder at the same size.</Verify>
+<Verify rule="list-sections">Section headers are headings rather than rows, grouping goes one level deep, and a sticky header stays legible over the content moving under it.</Verify>
+<Verify rule="list-end">The list loads continuously or offers a load-more control and never numbered pages, and a list that pages states where the data ends and turns a failed page into a retry at the bottom.</Verify>
+<Verify rule="list-refresh">Pull to refresh uses the platform control, and the same refresh is reachable without the gesture.</Verify>
+<Verify rule="list-select">Selection mode is entered deliberately, shows its count and its exit, marks selection without color alone, and offers undo.</Verify>
+<Verify rule="list-a11y">Each row is one merged accessibility node, every swipe or long press is also an accessibility action, and section headers carry the heading trait.</Verify>
 
-- Every list uses the stack's recycling primitive with a stable non-positional key, and uniform rows carry a size hint where the stack takes one. `list-virtualise`
-- Row height follows the content instead of one padded maximum, and any row carrying two or more pieces of content ranks them by size, weight or color. `list-density`
-- Rows are separated by one device rather than three, and hand-drawn dividers are inset to the text with none after the last row. `list-separator`
-- At most two controls sit inside a row, each with its own hit area and its own clearance, and a chevron is not counted as one. `list-row`
-- Every swipe action has a visible equivalent, at most two per edge, destructive swipes end in undo, and the gesture commits past a distance threshold rather than on drift. `list-swipe`
-- Image containers carry fixed dimensions with a placeholder at the same size. `list-images`
-- Section headers are headings rather than rows, grouping goes one level deep, and a sticky header stays legible over the content moving under it. `list-sections`
-- The list loads continuously or offers a load-more control and never numbered pages, and a list that pages states where the data ends and turns a failed page into a retry at the bottom. `list-end`
-- Pull to refresh uses the platform control, and the same refresh is reachable without the gesture. `list-refresh`
-- Selection mode is entered deliberately, shows its count and its exit, marks selection without color alone, and offers undo. `list-select`
-- Each row is one merged accessibility node, every swipe or long press is also an accessibility action, and section headers carry the heading trait. `list-a11y`
+<Device>`list-virtualise` and `list-density` both pass at ten rows and fail at a thousand, so neither is answered from the file alone. Fill the list with production-sized data and scroll it on the slowest device the app supports.</Device>
 
-`list-virtualise` and `list-density` both pass at ten rows and fail at a thousand, so neither is answered from the file alone. Fill the list with production-sized data and scroll it on the slowest device the app supports.
+</Check>

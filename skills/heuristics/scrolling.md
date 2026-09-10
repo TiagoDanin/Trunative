@@ -96,19 +96,19 @@ Half the screen disappears with no warning, and the scrolling container has to l
 - Dragging the content dismisses the keyboard, interactively where the platform offers it, which on iOS is the scroll view's interactive dismiss mode. Nobody should have to aim at a done button before they can read.
 - The focused field staying visible is `touch-keyboard`.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="scroll-nest">Every same-axis nesting names the connection that wires it, and no scrollable was placed inside another simply because its content did not fit.</Verify>
+<Verify rule="scroll-affordance">Each scrollable region shows content cut by the edge it continues past, and a paged one carries a page indicator rather than a scroll indicator on that axis.</Verify>
+<Verify rule="scroll-collapse">Every collapsing bar names its behaviour, leaves a route out of the screen that does not depend on it, holds no primary action, saves its position, and pins under a screen reader.</Verify>
+<Verify rule="scroll-edge">The bar over a scroll takes its resting and scrolled appearances from the platform rather than from a drawn shadow, a pinned divider or a permanently opaque background.</Verify>
+<Verify rule="scroll-anchor">Nothing above the current position changes height after it renders, and anything that prepends is either keyed or anchors the first visible row itself.</Verify>
+<Verify rule="scroll-restore">List items carry stable keys, the position is persisted as an item identity that survives the process, restored after the data loads, and falls back to the top when the item is gone.</Verify>
+<Verify rule="scroll-top">On iPhone exactly one scroll view per screen keeps scroll-to-top enabled; on Android any unbounded scroll offers a built return-to-top at the touch floor.</Verify>
+<Verify rule="scroll-programmatic">Every programmatic scroll is guarded against an in-progress drag, moves the minimum needed, and animates only over a short distance.</Verify>
+<Verify rule="scroll-overscroll">No hand-written bounce, overscroll is not disabled, and scroll-linked effects move only transform and opacity.</Verify>
+<Verify rule="scroll-keyboard">The scroll container consumes the keyboard inset, and dragging the content dismisses the keyboard.</Verify>
 
-- Every same-axis nesting names the connection that wires it, and no scrollable was placed inside another simply because its content did not fit. `scroll-nest`
-- Each scrollable region shows content cut by the edge it continues past, and a paged one carries a page indicator rather than a scroll indicator on that axis. `scroll-affordance`
-- Every collapsing bar names its behaviour, leaves a route out of the screen that does not depend on it, holds no primary action, saves its position, and pins under a screen reader. `scroll-collapse`
-- The bar over a scroll takes its resting and scrolled appearances from the platform rather than from a drawn shadow, a pinned divider or a permanently opaque background. `scroll-edge`
-- Nothing above the current position changes height after it renders, and anything that prepends is either keyed or anchors the first visible row itself. `scroll-anchor`
-- List items carry stable keys, the position is persisted as an item identity that survives the process, restored after the data loads, and falls back to the top when the item is gone. `scroll-restore`
-- On iPhone exactly one scroll view per screen keeps scroll-to-top enabled; on Android any unbounded scroll offers a built return-to-top at the touch floor. `scroll-top`
-- Every programmatic scroll is guarded against an in-progress drag, moves the minimum needed, and animates only over a short distance. `scroll-programmatic`
-- No hand-written bounce, overscroll is not disabled, and scroll-linked effects move only transform and opacity. `scroll-overscroll`
-- The scroll container consumes the keyboard inset, and dragging the content dismisses the keyboard. `scroll-keyboard`
+<Device>Check nesting, the scroll affordance, anchoring and restoration on a device with real data rather than in the layout code. All four look correct in a short mock list and fail only once the content outruns the screen.</Device>
 
-Check nesting, the scroll affordance, anchoring and restoration on a device with real data rather than in the layout code. All four look correct in a short mock list and fail only once the content outruns the screen.
+</Check>

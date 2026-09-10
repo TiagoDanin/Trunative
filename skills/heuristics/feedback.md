@@ -104,19 +104,19 @@ Use the system prompt and nothing else. The system rate limits it, at most 3 per
 - Not during a task, not during the first run, and not while something is being fixed. It goes after a moment that went well: `onboard-defer`.
 - The card is shown as the system draws it, with nothing over it, around it, or removing it once it appears.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="fb-ladder">Every message takes the quietest rung that works, no actionable Android message is a `Toast`, no transient message offers more than 1 action, and the only dialog standing in front of the first screen is the one `onboard-ask-order` allows. A flow raising more than one blocking dialog is reported as a problem with the flow rather than counted as a violation.</Verify>
+<Verify rule="fb-silent-success">No success message duplicates a result the screen already shows, and the ones that remain are for outcomes the screen cannot show.</Verify>
+<Verify rule="fb-confirm-test">Every alert that stops the user is both rare and irreversible, and everything else acts and offers undo.</Verify>
+<Verify rule="fb-undo">Undo either holds the work for a window written down in `STACK.md` or commits into a place the user can restore from, the message offering it never outlives that window, and it is reachable without a system gesture.</Verify>
+<Verify rule="fb-place">Each message sits at the smallest scope that contains its cause, nothing that fits beside a control is raised as a dialog, and a message that has to name its cause is inline rather than transient.</Verify>
+<Verify rule="fb-duration">Every duration is the host's named length or the one number in `STACK.md`, never a value written at a call site, the user's accessibility timeout is applied, every message is dismissible, and nothing lives only inside one.</Verify>
+<Verify rule="fb-reach">Every transient message is announced by its platform's own route rather than only drawn, and no outcome is carried by a haptic alone.</Verify>
+<Verify rule="fb-queue">Repeats of one cause arrive as one message with a count, and a stale backlog is dropped instead of replayed.</Verify>
+<Verify rule="fb-survives">Messages and dialogs are held as state with a consumed flag, so one rotation shows them once and not twice.</Verify>
+<Verify rule="fb-blocking-shape">An alert is used only for a yes or no about one irreversible action, blocking surfaces carry at most 3 buttons, do not scroll, name their buttons by result, and never hold a progress bar.</Verify>
+<Verify rule="fb-unprompted">Nothing the user did not ask for blocks or interrupts them, apart from the segment-boundary ad `ads-placement` allows: it waits for a finished task, closes in one tap, and stays closed for a stated period.</Verify>
+<Verify rule="fb-review-prompt">The rating prompt is the system one, is not preceded by a question, is not wired to a button, and is not raised during onboarding.</Verify>
 
-- Every message takes the quietest rung that works, no actionable Android message is a `Toast`, no transient message offers more than 1 action, and the only dialog standing in front of the first screen is the one `onboard-ask-order` allows. A flow raising more than one blocking dialog is reported as a problem with the flow rather than counted as a violation. `fb-ladder`
-- No success message duplicates a result the screen already shows, and the ones that remain are for outcomes the screen cannot show. `fb-silent-success`
-- Every alert that stops the user is both rare and irreversible, and everything else acts and offers undo. `fb-confirm-test`
-- Undo either holds the work for a window written down in `STACK.md` or commits into a place the user can restore from, the message offering it never outlives that window, and it is reachable without a system gesture. `fb-undo`
-- Each message sits at the smallest scope that contains its cause, nothing that fits beside a control is raised as a dialog, and a message that has to name its cause is inline rather than transient. `fb-place`
-- Every duration is the host's named length or the one number in `STACK.md`, never a value written at a call site, the user's accessibility timeout is applied, every message is dismissible, and nothing lives only inside one. `fb-duration`
-- Every transient message is announced by its platform's own route rather than only drawn, and no outcome is carried by a haptic alone. `fb-reach`
-- Repeats of one cause arrive as one message with a count, and a stale backlog is dropped instead of replayed. `fb-queue`
-- Messages and dialogs are held as state with a consumed flag, so one rotation shows them once and not twice. `fb-survives`
-- An alert is used only for a yes or no about one irreversible action, blocking surfaces carry at most 3 buttons, do not scroll, name their buttons by result, and never hold a progress bar. `fb-blocking-shape`
-- Nothing the user did not ask for blocks or interrupts them, apart from the segment-boundary ad `ads-placement` allows: it waits for a finished task, closes in one tap, and stays closed for a stated period. `fb-unprompted`
-- The rating prompt is the system one, is not preceded by a question, is not wired to a button, and is not raised during onboarding. `fb-review-prompt`
+</Check>

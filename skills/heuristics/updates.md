@@ -110,20 +110,20 @@ The case that reaches this rule most often is not a self updating binary but a r
 
 So no surface in the app is an update button that updates. It is a link to a listing, and every rule above is written around a channel the app does not own.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="upd-block-test">The blocking condition names a broken contract, a security fix, data damage or a legal requirement, is not a comparison of the installed version against the latest, and anything outside that list is a named exception in `STACK.md`.</Verify>
+<Verify rule="upd-min-version">The minimum version arrives over the network with a deadline, and the app opens when that request fails.</Verify>
+<Verify rule="upd-gate-screen">The gate screen is raised over a drawn screen rather than held launch, states a reason in the reader's language, carries a working route to the store listing with a fallback, shows the version, and gives an action reaching anything it names as still working.</Verify>
+<Verify rule="upd-prompt-shape">The offer is not a launch dialog, its dismissal is persisted, and the interval before it returns is written in `STACK.md`.</Verify>
+<Verify rule="upd-flexible-install">The install completes on the user's tap, the entry point is drawn only where the flow is allowed, and both an interrupted flow and a finished download are picked up at every entry point.</Verify>
+<Verify rule="upd-restart-state">Everything unsaved is committed before the update flow starts, and a restored destination that no longer exists opens a root.</Verify>
+<Verify rule="upd-migration-once">The migration is keyed off a stored schema version, writes that version in the same transaction as the work, and every step that leaves the framework's store is safe to run twice.</Verify>
+<Verify rule="upd-migration-path">A migration path exists from every version still installed, chained and tested pairwise, with a defined behaviour for a newer store.</Verify>
+<Verify rule="upd-migration-visible">Migration is off the launch path, shows a real loading state when it is slow, and has a designed failure screen.</Verify>
+<Verify rule="upd-no-wipe">No destructive migration fallback and no drop-and-recreate upgrade, except over a store that is purely a cache and says so.</Verify>
+<Verify rule="upd-carry-over">Queued entries and drafts written by the previous version are readable or drained, and every renamed key moves its value.</Verify>
+<Verify rule="upd-whats-new">Any what's new screen is single, skippable, shown once, and not in front of the first screen.</Verify>
+<Verify rule="upd-store-channel">Nothing in the app downloads or installs a new version itself, and any remote bundle that changes behaviour is held to the same restart, migration and blocking rules.</Verify>
 
-- The blocking condition names a broken contract, a security fix, data damage or a legal requirement, is not a comparison of the installed version against the latest, and anything outside that list is a named exception in `STACK.md`. `upd-block-test`
-- The minimum version arrives over the network with a deadline, and the app opens when that request fails. `upd-min-version`
-- The gate screen is raised over a drawn screen rather than held launch, states a reason in the reader's language, carries a working route to the store listing with a fallback, shows the version, and gives an action reaching anything it names as still working. `upd-gate-screen`
-- The offer is not a launch dialog, its dismissal is persisted, and the interval before it returns is written in `STACK.md`. `upd-prompt-shape`
-- The install completes on the user's tap, the entry point is drawn only where the flow is allowed, and both an interrupted flow and a finished download are picked up at every entry point. `upd-flexible-install`
-- Everything unsaved is committed before the update flow starts, and a restored destination that no longer exists opens a root. `upd-restart-state`
-- The migration is keyed off a stored schema version, writes that version in the same transaction as the work, and every step that leaves the framework's store is safe to run twice. `upd-migration-once`
-- A migration path exists from every version still installed, chained and tested pairwise, with a defined behaviour for a newer store. `upd-migration-path`
-- Migration is off the launch path, shows a real loading state when it is slow, and has a designed failure screen. `upd-migration-visible`
-- No destructive migration fallback and no drop-and-recreate upgrade, except over a store that is purely a cache and says so. `upd-no-wipe`
-- Queued entries and drafts written by the previous version are readable or drained, and every renamed key moves its value. `upd-carry-over`
-- Any what's new screen is single, skippable, shown once, and not in front of the first screen. `upd-whats-new`
-- Nothing in the app downloads or installs a new version itself, and any remote bundle that changes behaviour is held to the same restart, migration and blocking rules. `upd-store-channel`
+</Check>

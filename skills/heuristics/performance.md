@@ -94,18 +94,18 @@ Then the reading is compared against something. `STACK.md` names that device and
 - **React Native:** the performance monitor, with the JS frame rate and the UI frame rate read as two separate numbers.
 - **Mobile web inside the app:** 2.5s to the largest contentful paint, 200ms interaction to next paint, and 0.1 of cumulative layout shift, each measured at the 75th percentile rather than as an average.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="perf-cold-start">Nothing initializes on the launch path that the first screen does not draw, and any launch whose first frame is a placeholder reports its own time to full display.</Verify>
+<Verify rule="perf-main-thread">Zero parses, queries, file reads, decodes or whole-collection sorts run on the drawing thread, and each one names where it moved to.</Verify>
+<Verify rule="perf-frame">No timer, duration or step count assumes 60Hz, and every hand-written animation is driven by the stack's frame callback.</Verify>
+<Verify rule="perf-overdraw">No two translucent or blurred layers stack over the same content, elevation comes from a token count rather than a per-card decision, and no gradient or shader runs behind a whole screen.</Verify>
+<Verify rule="perf-decode">Every decode targets the box the image is drawn into, declared at the load site wherever the loader cannot derive it, and no decode runs on the drawing thread.</Verify>
+<Verify rule="perf-memory">Every cache the app wrote states a maximum and an eviction rule and no library cache has had its bound removed, every listener, observer and subscription a screen registers is removed with it, and nothing depends on a trim-memory level the platform no longer sends.</Verify>
+<Verify rule="perf-power">Every repeating timer, scanning subscription, wake lock and background assertion names the interval it defends and has exactly one path that ends it, including the failure path, and sustained work reads the thermal level.</Verify>
+<Verify rule="perf-size">The shipped build sends one density and one architecture per device rather than a universal binary, only the font weights the type scale names, and nothing large that the first session does not open.</Verify>
+<Verify rule="perf-measure">`STACK.md` names the slowest supported device and a budget for cold start, for frames on the longest list, and for memory after a few screens.</Verify>
 
-- Nothing initializes on the launch path that the first screen does not draw, and any launch whose first frame is a placeholder reports its own time to full display. `perf-cold-start`
-- Zero parses, queries, file reads, decodes or whole-collection sorts run on the drawing thread, and each one names where it moved to. `perf-main-thread`
-- No timer, duration or step count assumes 60Hz, and every hand-written animation is driven by the stack's frame callback. `perf-frame`
-- No two translucent or blurred layers stack over the same content, elevation comes from a token count rather than a per-card decision, and no gradient or shader runs behind a whole screen. `perf-overdraw`
-- Every decode targets the box the image is drawn into, declared at the load site wherever the loader cannot derive it, and no decode runs on the drawing thread. `perf-decode`
-- Every cache the app wrote states a maximum and an eviction rule and no library cache has had its bound removed, every listener, observer and subscription a screen registers is removed with it, and nothing depends on a trim-memory level the platform no longer sends. `perf-memory`
-- Every repeating timer, scanning subscription, wake lock and background assertion names the interval it defends and has exactly one path that ends it, including the failure path, and sustained work reads the thermal level. `perf-power`
-- The shipped build sends one density and one architecture per device rather than a universal binary, only the font weights the type scale names, and nothing large that the first session does not open. `perf-size`
-- `STACK.md` names the slowest supported device and a budget for cold start, for frames on the longest list, and for memory after a few screens. `perf-measure`
+<Device>`perf-measure` is the one answered by whether the budgets exist at all, and a missing budget is the violation rather than a slow number. `perf-frame` and `perf-power` are answered in the source first, where a hardcoded 16ms and a subscription with no stop are both visible, and then again on hardware that has been working long enough to get warm, because thermal behaviour and sustained frame pacing exist nowhere else.</Device>
 
-`perf-measure` is the one answered by whether the budgets exist at all, and a missing budget is the violation rather than a slow number. `perf-frame` and `perf-power` are answered in the source first, where a hardcoded 16ms and a subscription with no stop are both visible, and then again on hardware that has been working long enough to get warm, because thermal behaviour and sustained frame pacing exist nowhere else.
+</Check>

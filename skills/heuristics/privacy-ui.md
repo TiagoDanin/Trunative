@@ -95,18 +95,18 @@ Both stores require this and both require it to be accurate, and each asks for t
 - Collection with no system prompt in front of it still owes the user a disclosure, and Play requires it inside the app during normal use rather than in the listing or behind a settings screen. The permission case is `perm-rationale`; this is the case with no dialog to attach to.
 - The policy is reachable from inside the app and not only from the store listing; the row that holds it is `set-account-exit`.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="priv-shoulder">Every sensitive value on the screen is drawn in the shortest form that identifies it, and the mask is a fixed shape rather than the real string covered up.</Verify>
+<Verify rule="priv-reveal">Reveal is an explicit, named, labelled action that reverts on leaving, on backgrounding and on a written idle period.</Verify>
+<Verify rule="priv-switcher">Every screen holding something from the inventory covers itself as the app leaves the foreground: an opaque cover removed on return on iOS, that cover or `FLAG_SECURE` on Android, and somebody has looked at the switcher thumbnail to confirm it.</Verify>
+<Verify rule="priv-capture-block">Capture blocking is scoped to the screen that needs it, is not relied on as a guarantee, and no screen puts two halves of one secret together.</Verify>
+<Verify rule="priv-capture-detect">Capture detection is used as a notice the user was warned about, never as protection, and the live mirroring signal is read on both platforms and answered by hiding the region rather than by ending the session.</Verify>
+<Verify rule="priv-gate">The gate covers an area rather than the app, re-locks on background and idle, and ships together with the switcher cover.</Verify>
+<Verify rule="priv-instrument">No log, crash report, analytics event or replay session carries typed text, masked values, tokens or full identifiers.</Verify>
+<Verify rule="priv-delete-data">Data deletion exists separately from account deletion, removes the row rather than hiding it, says which copies went, names what is retained and why, and reaches the on device leftovers.</Verify>
+<Verify rule="priv-declared">`STACK.md` records what both stores were told, that record matches the dependency list and the requests in the diff, and the in-app disclosure and the policy route both exist.</Verify>
 
-- Every sensitive value on the screen is drawn in the shortest form that identifies it, and the mask is a fixed shape rather than the real string covered up. `priv-shoulder`
-- Reveal is an explicit, named, labelled action that reverts on leaving, on backgrounding and on a written idle period. `priv-reveal`
-- Every screen holding something from the inventory covers itself as the app leaves the foreground: an opaque cover removed on return on iOS, that cover or `FLAG_SECURE` on Android, and somebody has looked at the switcher thumbnail to confirm it. `priv-switcher`
-- Capture blocking is scoped to the screen that needs it, is not relied on as a guarantee, and no screen puts two halves of one secret together. `priv-capture-block`
-- Capture detection is used as a notice the user was warned about, never as protection, and the live mirroring signal is read on both platforms and answered by hiding the region rather than by ending the session. `priv-capture-detect`
-- The gate covers an area rather than the app, re-locks on background and idle, and ships together with the switcher cover. `priv-gate`
-- No log, crash report, analytics event or replay session carries typed text, masked values, tokens or full identifiers. `priv-instrument`
-- Data deletion exists separately from account deletion, removes the row rather than hiding it, says which copies went, names what is retained and why, and reaches the on device leftovers. `priv-delete-data`
-- `STACK.md` records what both stores were told, that record matches the dependency list and the requests in the diff, and the in-app disclosure and the policy route both exist. `priv-declared`
+<Device>Check the first three on a running build rather than in the source: the cover, the mask on every route onto the screen, and the reveal reverting are all things a screen can be written to do and still fail to do. Two more do not come out of the app at all. Open the data safety form in the Play console and the privacy details in App Store Connect and read both against what `STACK.md` records, and confirm on the server, not in the app, that a delete took the row away rather than flagging it.</Device>
 
-Check the first three on a running build rather than in the source: the cover, the mask on every route onto the screen, and the reveal reverting are all things a screen can be written to do and still fail to do. Two more do not come out of the app at all. Open the data safety form in the Play console and the privacy details in App Store Connect and read both against what `STACK.md` records, and confirm on the server, not in the app, that a delete took the row away rather than flagging it.
+</Check>

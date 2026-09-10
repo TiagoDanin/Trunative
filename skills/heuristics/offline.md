@@ -105,20 +105,20 @@ It happens on first launch, and it happens again after the OS reclaimed everythi
 
 What it renders is one of two states, and which depends on whether a request can still be made: `state-empty`'s nothing yet on a first launch with a working connection, and `state-offline`'s fourth state when there is no connection to fill it from. What this rule adds is on the storage side: the path is not gated on a first-run flag, and whatever that screen stands on (seeded rows, the app's own help) ships inside the binary, so it is there to be read at the moment the store is not.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="off-local-first">The view layer observes the local store, and content the device already holds renders without waiting on a request.</Verify>
+<Verify rule="off-sync-scope">Every collection names what is kept on the device and how far back, whether it fills by pull or by push, and bulk fills run deferred and unmetered while a user-requested one does not.</Verify>
+<Verify rule="off-fresh-marks">Every cached record carries a written-at time and a synced or pending origin, plus the version conflict resolution needs.</Verify>
+<Verify rule="off-cache-policy">Every collection on disk has a written lifetime and eviction rule, every collection deliberately not stored is named beside them, the token sits in the Keychain or encrypted under a Keystore key rather than in the store, content that must be unreadable on a locked device raises its protection class, and none of it is exposed as a user setting.</Verify>
+<Verify rule="off-reclaimable">No queued write, draft or user-requested download lives in a cache directory, and every read of a cached file handles the file being gone.</Verify>
+<Verify rule="off-write-mode">Every mutation is one of the three modes, and the online-only ones attempt the request and fail with the input kept rather than being disabled ahead of the tap.</Verify>
+<Verify rule="off-queue">Queue entries are rows in durable storage with device-generated ids reused across retries, drained in order by the platform scheduler with dependent writes collapsed or chained, with no promised time in the interface, and cancel removes the entry and reverses its local write.</Verify>
+<Verify rule="off-session">A refresh that fails for want of a network leaves the session and the store intact, and a sign-out drains or explicitly discards the queue before clearing local data.</Verify>
+<Verify rule="off-destructive-offline">A delete stays reversible on the device until the drain makes it final, and a removal that reaches the person's other devices is confirmed at the tap whether or not there is a connection.</Verify>
+<Verify rule="off-conflict">The conflict strategy is written down per collection, the losing version is kept and surfaced quietly, and nothing resolves by discarding what the user typed.</Verify>
+<Verify rule="off-no-cache">Clearing app storage lands on the same screen as a first launch, and that screen shows bundled content rather than a blank.</Verify>
 
-- The view layer observes the local store, and content the device already holds renders without waiting on a request. `off-local-first`
-- Every collection names what is kept on the device and how far back, whether it fills by pull or by push, and bulk fills run deferred and unmetered while a user-requested one does not. `off-sync-scope`
-- Every cached record carries a written-at time and a synced or pending origin, plus the version conflict resolution needs. `off-fresh-marks`
-- Every collection on disk has a written lifetime and eviction rule, every collection deliberately not stored is named beside them, the token sits in the Keychain or encrypted under a Keystore key rather than in the store, content that must be unreadable on a locked device raises its protection class, and none of it is exposed as a user setting. `off-cache-policy`
-- No queued write, draft or user-requested download lives in a cache directory, and every read of a cached file handles the file being gone. `off-reclaimable`
-- Every mutation is one of the three modes, and the online-only ones attempt the request and fail with the input kept rather than being disabled ahead of the tap. `off-write-mode`
-- Queue entries are rows in durable storage with device-generated ids reused across retries, drained in order by the platform scheduler with dependent writes collapsed or chained, with no promised time in the interface, and cancel removes the entry and reverses its local write. `off-queue`
-- A refresh that fails for want of a network leaves the session and the store intact, and a sign-out drains or explicitly discards the queue before clearing local data. `off-session`
-- A delete stays reversible on the device until the drain makes it final, and a removal that reaches the person's other devices is confirmed at the tap whether or not there is a connection. `off-destructive-offline`
-- The conflict strategy is written down per collection, the losing version is kept and surfaced quietly, and nothing resolves by discarding what the user typed. `off-conflict`
-- Clearing app storage lands on the same screen as a first launch, and that screen shows bundled content rather than a blank. `off-no-cache`
+<Device>Test the last five with the device actually offline. Airplane mode on a warm app, a write made in it, a force quit, then reconnect, is the one pass that exercises the store, the queue and the drain together. What it proves differs by platform, so read the result accordingly: WorkManager carries on with the app gone, while a kill by the user on iOS stops background transfers until the app is opened again, which is `net-upload`, so there the pass is that the drain resumes at the next launch with nothing lost.</Device>
 
-Test the last five with the device actually offline. Airplane mode on a warm app, a write made in it, a force quit, then reconnect, is the one pass that exercises the store, the queue and the drain together. What it proves differs by platform, so read the result accordingly: WorkManager carries on with the app gone, while a kill by the user on iOS stops background transfers until the app is opened again, which is `net-upload`, so there the pass is that the drain resumes at the next launch with nothing lost.
+</Check>

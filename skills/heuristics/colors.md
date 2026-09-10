@@ -98,18 +98,18 @@ So every status, state and series gets a second carrier: an icon, a word, a shap
 
 On Android 12 and up, Material You builds the scheme from the user's wallpaper. Take it where it fits, keep a static scheme for older releases and for users who turn it off, and open the app under a few wallpapers to see whether it still reads as this product. A brand that only exists at its own hex value does not survive the feature.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="color-roles">No component holds a raw hex, and every color arrives through a token or a platform role.</Verify>
+<Verify rule="color-derived">The palette follows from the product in one sentence, and the neutral ramp is not tinted toward the accent.</Verify>
+<Verify rule="color-ramp-hsl">Ramp steps hold the hue and shed saturation toward both ends.</Verify>
+<Verify rule="color-one-accent">The accent marks what is interactive and nothing else, and no grey sits on a colored surface.</Verify>
+<Verify rule="color-gradient">Every gradient does work flat color cannot, and none carries identity or stands in for elevation.</Verify>
+<Verify rule="color-dark-composed">Dark has its own ground, its own accent values and its own measurements, and the ground is not full black.</Verify>
+<Verify rule="color-contrast">Contrast is calculated for every pair, including pressed, disabled and text over images, in both themes.</Verify>
+<Verify rule="color-not-alone">Nothing is communicated by color alone.</Verify>
+<Verify rule="color-dynamic">Where Dynamic Color applies there is a static fallback, and the product still reads as itself under a wallpaper-derived scheme.</Verify>
 
-- No component holds a raw hex, and every color arrives through a token or a platform role. `color-roles`
-- The palette follows from the product in one sentence, and the neutral ramp is not tinted toward the accent. `color-derived`
-- Ramp steps hold the hue and shed saturation toward both ends. `color-ramp-hsl`
-- The accent marks what is interactive and nothing else, and no grey sits on a colored surface. `color-one-accent`
-- Every gradient does work flat color cannot, and none carries identity or stands in for elevation. `color-gradient`
-- Dark has its own ground, its own accent values and its own measurements, and the ground is not full black. `color-dark-composed`
-- Contrast is calculated for every pair, including pressed, disabled and text over images, in both themes. `color-contrast`
-- Nothing is communicated by color alone. `color-not-alone`
-- Where Dynamic Color applies there is a static fallback, and the product still reads as itself under a wallpaper-derived scheme. `color-dynamic`
+<Device>Check the last four on a rendered screen in both appearances rather than in the token table. Overlays, translucent material and anything painted over the background all land after the tokens, so the token table is the one place a light theme can look fine while dark quietly fails.</Device>
 
-Check the last four on a rendered screen in both appearances rather than in the token table. Overlays, translucent material and anything painted over the background all land after the tokens, so the token table is the one place a light theme can look fine while dark quietly fails.
+</Check>

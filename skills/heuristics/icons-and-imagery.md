@@ -105,19 +105,19 @@ The app icon is drawn at about the size of a fingertip, beside twenty others, in
 - Ship the monochrome layer on Android, and the dark and tinted appearances on iOS. Both systems generate any variant that is not supplied, so the choice is not whether the app has one, it is whether anybody drew it. An alternate app icon needs its own full set.
 - The mark is the product's own. System symbols may not be used in an app icon or a logo, and platform hardware may not be drawn inside one.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="icon-one-set">One icon set is in use, with one dependency or a stated reason for a second, every glyph on a screen comes from that set at the weight of the text beside it, and a filled selected state is that set's own fill rather than a second file.</Verify>
+<Verify rule="icon-weight">Every icon beside text matches its weight, scales with the user's text setting, sets the optical size wherever the set carries that axis, and sits on the text baseline on iOS.</Verify>
+<Verify rule="icon-no-emoji">No emoji and no glyph borrowed from a prose typeface stands in for an icon, a bullet, an arrow or a button mark anywhere in the interface.</Verify>
+<Verify rule="icon-vector">Flat artwork is vector and tintable in one colour, and every raster interface asset is authored at each density the platform asks for.</Verify>
+<Verify rule="icon-reserve">Every remote image outside a list takes its dimensions from the layout before the request is made, and nothing below it moves when it lands.</Verify>
+<Verify rule="icon-crop">Each image surface names one aspect ratio, or a fixed short list of them, plus one fill mode, and images crop rather than stretch or letterbox.</Verify>
+<Verify rule="icon-alt">Every image either describes what it shows or is hidden as decoration, and no description is a file name or the word image.</Verify>
+<Verify rule="icon-dark">Every asset that cannot be tinted has a dark counterpart selected by the asset system, and no asset carries an opaque light background.</Verify>
+<Verify rule="icon-avatar">The avatar has a generated fallback at the same size, stable per user, covering the missing name, and no path renders a broken image.</Verify>
+<Verify rule="icon-app">The app icon carries no text, ships unmasked layers with no baked effects, keeps its mark inside the safe box, and supplies the monochrome layer on Android and the dark and tinted appearances on iOS rather than letting the system invent them.</Verify>
 
-- One icon set is in use, with one dependency or a stated reason for a second, every glyph on a screen comes from that set at the weight of the text beside it, and a filled selected state is that set's own fill rather than a second file. `icon-one-set`
-- Every icon beside text matches its weight, scales with the user's text setting, sets the optical size wherever the set carries that axis, and sits on the text baseline on iOS. `icon-weight`
-- No emoji and no glyph borrowed from a prose typeface stands in for an icon, a bullet, an arrow or a button mark anywhere in the interface. `icon-no-emoji`
-- Flat artwork is vector and tintable in one colour, and every raster interface asset is authored at each density the platform asks for. `icon-vector`
-- Every remote image outside a list takes its dimensions from the layout before the request is made, and nothing below it moves when it lands. `icon-reserve`
-- Each image surface names one aspect ratio, or a fixed short list of them, plus one fill mode, and images crop rather than stretch or letterbox. `icon-crop`
-- Every image either describes what it shows or is hidden as decoration, and no description is a file name or the word image. `icon-alt`
-- Every asset that cannot be tinted has a dark counterpart selected by the asset system, and no asset carries an opaque light background. `icon-dark`
-- The avatar has a generated fallback at the same size, stable per user, covering the missing name, and no path renders a broken image. `icon-avatar`
-- The app icon carries no text, ships unmasked layers with no baked effects, keeps its mark inside the safe box, and supplies the monochrome layer on Android and the dark and tinted appearances on iOS rather than letting the system invent them. `icon-app`
+<Device>Check `icon-dark`, `icon-avatar` and `icon-app` on a rendered screen in dark appearance, and `icon-weight` at the largest text step. All four pass a light-theme, default-size screenshot.</Device>
 
-Check `icon-dark`, `icon-avatar` and `icon-app` on a rendered screen in dark appearance, and `icon-weight` at the largest text step. All four pass a light-theme, default-size screenshot.
+</Check>

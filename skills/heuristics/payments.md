@@ -117,22 +117,22 @@ Tricking someone into a subscription is grounds for removal from the store, and 
 - What the user gets is described before the price is asked for, and `onboard-look-first` already rules that people may see the product first.
 - Purchases involving children carry the same restraint `ads-children` demands.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="pay-rail">Each purchasable item is on the rail its type requires, store billing for digital goods consumed in the app and an outside processor for physical goods and outside services, with both present where the app sells both.</Verify>
+<Verify rule="pay-steering">Any link to an external purchase page is conditional on the storefront at runtime, and the enabled storefronts are recorded.</Verify>
+<Verify rule="pay-wallet-first">The wallet button is the primary payment option where credentials exist, drawn by the platform API, no smaller than the alternatives and visible without scrolling, with all purchase options settled before the sheet.</Verify>
+<Verify rule="pay-sheet">No screen imitates, wraps or precedes the system purchase sheet with a lookalike.</Verify>
+<Verify rule="pay-total">The full billed amount, including shipping, tax and fees, is on the screen where the user commits, formatted for the locale.</Verify>
+<Verify rule="pay-price-source">Every displayed price, and everything derived from one, comes from the store's product object, with a loading and a failure state instead of a placeholder amount and no invented reference price. No currency symbol appears in the view layer.</Verify>
+<Verify rule="pay-subscription-terms">The subscription screen carries name, period, what is included, the localised price, restore or sign-in, and the automatic charge at the end of any trial.</Verify>
+<Verify rule="pay-cancel">A link to the system cancellation page is reachable from the account area rather than buried.</Verify>
+<Verify rule="pay-restore">A labelled restore control exists, is reachable from the paywall, and reports its result.</Verify>
+<Verify rule="pay-card">Card fields use autofill and the right keyboards, sit in one column, and survive a declined payment with the input intact.</Verify>
+<Verify rule="pay-handoff">A payment that leaves the app holds its pending order across the trip, routes the return to the outcome, and reconciles on next launch when the user does not return.</Verify>
+<Verify rule="pay-outcome">Pending is a rendered state, and every attempt carries an idempotency key so no retry can bill twice.</Verify>
+<Verify rule="pay-honest-paywall">The paywall has a visible close control meeting the touch floor, legible terms, no pre-selected plan the user did not choose, and no countdown that resets.</Verify>
 
-- Each purchasable item is on the rail its type requires, store billing for digital goods consumed in the app and an outside processor for physical goods and outside services, with both present where the app sells both. `pay-rail`
-- Any link to an external purchase page is conditional on the storefront at runtime, and the enabled storefronts are recorded. `pay-steering`
-- The wallet button is the primary payment option where credentials exist, drawn by the platform API, no smaller than the alternatives and visible without scrolling, with all purchase options settled before the sheet. `pay-wallet-first`
-- No screen imitates, wraps or precedes the system purchase sheet with a lookalike. `pay-sheet`
-- The full billed amount, including shipping, tax and fees, is on the screen where the user commits, formatted for the locale. `pay-total`
-- Every displayed price, and everything derived from one, comes from the store's product object, with a loading and a failure state instead of a placeholder amount and no invented reference price. No currency symbol appears in the view layer. `pay-price-source`
-- The subscription screen carries name, period, what is included, the localised price, restore or sign-in, and the automatic charge at the end of any trial. `pay-subscription-terms`
-- A link to the system cancellation page is reachable from the account area rather than buried. `pay-cancel`
-- A labelled restore control exists, is reachable from the paywall, and reports its result. `pay-restore`
-- Card fields use autofill and the right keyboards, sit in one column, and survive a declined payment with the input intact. `pay-card`
-- A payment that leaves the app holds its pending order across the trip, routes the return to the outcome, and reconciles on next launch when the user does not return. `pay-handoff`
-- Pending is a rendered state, and every attempt carries an idempotency key so no retry can bill twice. `pay-outcome`
-- The paywall has a visible close control meeting the touch floor, legible terms, no pre-selected plan the user did not choose, and no countdown that resets. `pay-honest-paywall`
+<Device>`pay-rail` and `pay-steering` are answered against the store policy that applies to the item and the storefront, not against taste. When the two rails disagree with a product decision, the policy wins and the product decision changes.</Device>
 
-`pay-rail` and `pay-steering` are answered against the store policy that applies to the item and the storefront, not against taste. When the two rails disagree with a product decision, the policy wins and the product decision changes.
+</Check>

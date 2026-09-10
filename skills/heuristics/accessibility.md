@@ -105,20 +105,20 @@ Phones are used muted, in public, and by people who cannot hear them.
 - Then use the app without looking at it. One complete flow, start to finish, stepping forward through every element with the screen reader on. Count the stops on the busiest screen: a card or a row costs one stop plus one for each separately tappable control it carries, which `list-row` caps at two. Above that, the merge `a11y-order` and `list-a11y` ask for did not happen.
 - Run it once more at the largest text size, and once with the reader off using a switch or a hardware keyboard.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="a11y-name">Every interactive element has a name that is not its icon or asset, a declared role, and a declared value wherever the platform's own is missing or misleading, and no two controls a voice user could address share a name.</Verify>
+<Verify rule="a11y-hidden">No decorative element produces a stop, and nothing decorative carries a description of its own appearance.</Verify>
+<Verify rule="a11y-order">Traversal follows declaration order, any `traversalIndex` sits under an `isTraversalGroup` and carries the reason the order itself could not be fixed, each composite reads as one stop, and the screen has a title the system knows about.</Verify>
+<Verify rule="a11y-collection">Every list, grid and carousel declares its collection and each child its position, with a total taken from the data rather than from the realised rows.</Verify>
+<Verify rule="a11y-announce">Every in-place content change has a live region or an announcement, polite unless it stops the user, none fires per keystroke, per frame, per row or per tick, and a failed field declares the failure on its own node.</Verify>
+<Verify rule="a11y-focus">Modals contain focus and return it to the opening control on dismissal, a hand-built overlay makes the layer beneath inert, and focus moves nowhere else except onto a single-field screen or the first failure after a submit.</Verify>
+<Verify rule="a11y-gesture">Every swipe, long press, drag and multi-finger gesture reaches the same result through a named action: the primitive's own label where it projects one, a custom action where nothing does.</Verify>
+<Verify rule="a11y-alt-input">Spoken names match visible labels, nothing decorative takes the highlight, the focus indicator is visible and was never merely removed, every action is reachable by stepping, and nothing holding the only copy of something dismisses on a timer.</Verify>
+<Verify rule="a11y-settings">Increased contrast is read and honoured on each platform it exists on, reduced transparency on iOS is left to the system material, and every setting is read live rather than cached at launch.</Verify>
+<Verify rule="a11y-media">The system captions preference is read, video with speech has captions, no signal is audio or haptic only, and anything that starts on its own can be stopped in one step.</Verify>
+<Verify rule="a11y-test">The scanner was run on the changed screens and one full flow was completed with the screen reader on.</Verify>
 
-- Every interactive element has a name that is not its icon or asset, a declared role, and a declared value wherever the platform's own is missing or misleading, and no two controls a voice user could address share a name. `a11y-name`
-- No decorative element produces a stop, and nothing decorative carries a description of its own appearance. `a11y-hidden`
-- Traversal follows declaration order, any `traversalIndex` sits under an `isTraversalGroup` and carries the reason the order itself could not be fixed, each composite reads as one stop, and the screen has a title the system knows about. `a11y-order`
-- Every list, grid and carousel declares its collection and each child its position, with a total taken from the data rather than from the realised rows. `a11y-collection`
-- Every in-place content change has a live region or an announcement, polite unless it stops the user, none fires per keystroke, per frame, per row or per tick, and a failed field declares the failure on its own node. `a11y-announce`
-- Modals contain focus and return it to the opening control on dismissal, a hand-built overlay makes the layer beneath inert, and focus moves nowhere else except onto a single-field screen or the first failure after a submit. `a11y-focus`
-- Every swipe, long press, drag and multi-finger gesture reaches the same result through a named action: the primitive's own label where it projects one, a custom action where nothing does. `a11y-gesture`
-- Spoken names match visible labels, nothing decorative takes the highlight, the focus indicator is visible and was never merely removed, every action is reachable by stepping, and nothing holding the only copy of something dismisses on a timer. `a11y-alt-input`
-- Increased contrast is read and honoured on each platform it exists on, reduced transparency on iOS is left to the system material, and every setting is read live rather than cached at launch. `a11y-settings`
-- The system captions preference is read, video with speech has captions, no signal is audio or haptic only, and anything that starts on its own can be stopped in one step. `a11y-media`
-- The scanner was run on the changed screens and one full flow was completed with the screen reader on. `a11y-test`
+<Device>The last line is not answerable from a diff. `a11y-order`, `a11y-collection`, `a11y-announce` and `a11y-focus` are only half answerable from one: the tree they describe exists at runtime, so a file can show the intent and only a running screen shows the result.</Device>
 
-The last line is not answerable from a diff. `a11y-order`, `a11y-collection`, `a11y-announce` and `a11y-focus` are only half answerable from one: the tree they describe exists at runtime, so a file can show the intent and only a running screen shows the result.
+</Check>

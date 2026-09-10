@@ -119,22 +119,22 @@ Apple's Kids Category rule keeps third-party advertising out altogether, with a 
 
 No single configuration satisfies both. Decide from `PRODUCT.md` whether the app makes either declaration, and where it does, record the per-store ad configuration in `STACK.md` before any unit is added.
 
-## Check
+<Check>
 
-Review answers each of these against the code, pointing at the line:
+<Verify rule="ads-labelled">Every ad container carries a visible label drawn by the app, and no unit is styled as a feed row, a system alert, navigation or a download control.</Verify>
+<Verify rule="ads-close">Every ad the app can show has an exit present in its first frame, meeting the platform touch floor, with the back gesture still working.</Verify>
+<Verify rule="ads-placement">No interstitial call site sits at launch, on exit, on back, inside a task or at the start of a segment, and no ad unit is built outside the app itself, in an extension, a widget, a notification, a keyboard or a watch app.</Verify>
+<Verify rule="ads-frequency">A frequency cap with a written number and a time interval is enforced in code, not in the mediation config.</Verify>
+<Verify rule="ads-reserve">Every ad slot reserves its declared size before it fills, has a decided no-fill state, and shortens the scroll rather than covering it.</Verify>
+<Verify rule="ads-adjacency">At least 16dp separates every ad container from the nearest control and 24dp from a primary action, and screens that exist for one decision carry no ad at all.</Verify>
+<Verify rule="ads-rewarded">A rewarded offer states what is traded, grants on the reward callback and persists it, and nothing the app is for sits behind an ad.</Verify>
+<Verify rule="ads-consent">The consent state is read at request time, the non-personalised request is the default path, `NSUserTrackingUsageDescription` is in the property list and `com.google.android.gms.permission.AD_ID` is declared where the build targets Android 13 or above, and no health, classroom or child data reaches a request.</Verify>
+<Verify rule="ads-report">Targeting information and an ad report route are both reachable without leaving the app, and the unit carries a content rating ceiling matching the app's own age rating; a codebase that ships only to Android answers this not applicable.</Verify>
+<Verify rule="ads-a11y">The close control has a name, the ad contains focus and returns it on dismissal, and the creative is a single stop for the reader.</Verify>
+<Verify rule="ads-entitlement">Where any purchase removes advertising, one entitlement check guards every ad request rather than each display, resolves before the first opportunity, treats unknown as the last known state, survives restore, and collapses the reserved slot.</Verify>
+<Verify rule="ads-cost">Ad SDK initialisation is off the cold start path, the preload pool is one, and video is not prefetched on a metered connection.</Verify>
+<Verify rule="ads-children">Where the app is submitted to the Kids Category or declares a child target audience, the ad configuration is per store and written into `STACK.md`.</Verify>
 
-- Every ad container carries a visible label drawn by the app, and no unit is styled as a feed row, a system alert, navigation or a download control. `ads-labelled`
-- Every ad the app can show has an exit present in its first frame, meeting the platform touch floor, with the back gesture still working. `ads-close`
-- No interstitial call site sits at launch, on exit, on back, inside a task or at the start of a segment, and no ad unit is built outside the app itself, in an extension, a widget, a notification, a keyboard or a watch app. `ads-placement`
-- A frequency cap with a written number and a time interval is enforced in code, not in the mediation config. `ads-frequency`
-- Every ad slot reserves its declared size before it fills, has a decided no-fill state, and shortens the scroll rather than covering it. `ads-reserve`
-- At least 16dp separates every ad container from the nearest control and 24dp from a primary action, and screens that exist for one decision carry no ad at all. `ads-adjacency`
-- A rewarded offer states what is traded, grants on the reward callback and persists it, and nothing the app is for sits behind an ad. `ads-rewarded`
-- The consent state is read at request time, the non-personalised request is the default path, `NSUserTrackingUsageDescription` is in the property list and `com.google.android.gms.permission.AD_ID` is declared where the build targets Android 13 or above, and no health, classroom or child data reaches a request. `ads-consent`
-- Targeting information and an ad report route are both reachable without leaving the app, and the unit carries a content rating ceiling matching the app's own age rating; a codebase that ships only to Android answers this not applicable. `ads-report`
-- The close control has a name, the ad contains focus and returns it on dismissal, and the creative is a single stop for the reader. `ads-a11y`
-- Where any purchase removes advertising, one entitlement check guards every ad request rather than each display, resolves before the first opportunity, treats unknown as the last known state, survives restore, and collapses the reserved slot. `ads-entitlement`
-- Ad SDK initialisation is off the cold start path, the preload pool is one, and video is not prefetched on a metered connection. `ads-cost`
-- Where the app is submitted to the Kids Category or declares a child target audience, the ad configuration is per store and written into `STACK.md`. `ads-children`
+<Device>Four of these are only half answerable from a diff, because the SDK draws what the file cannot show. On a device, run every ad format the app can serve and watch which frame the close control appears in (`ads-close`), open the targeting and report affordances and confirm they stayed inside the app at the largest text size on the smallest supported screen (`ads-report`), drive one interstitial and one banner with the screen reader on (`ads-a11y`), and measure the distance from the rendered ad container to its nearest control (`ads-adjacency`). A call site is where the rest of the file is checked; these four are settled on the running screen.</Device>
 
-Four of these are only half answerable from a diff, because the SDK draws what the file cannot show. On a device, run every ad format the app can serve and watch which frame the close control appears in (`ads-close`), open the targeting and report affordances and confirm they stayed inside the app at the largest text size on the smallest supported screen (`ads-report`), drive one interstitial and one banner with the screen reader on (`ads-a11y`), and measure the distance from the rendered ad container to its nearest control (`ads-adjacency`). A call site is where the rest of the file is checked; these four are settled on the running screen.
+</Check>
