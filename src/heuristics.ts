@@ -1,6 +1,8 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { basename, join } from 'node:path'
 
+import { tokenize } from './mdx.js'
+
 /** One rule: a `## <Rule id="..." />` section and the Check line that verifies it. */
 export interface Rule {
 	id: string
@@ -146,8 +148,43 @@ export function parseHeuristic(
 		order.set(rule.id, rule)
 	})
 
-	const start = lines.findIndex((line) => line.trim() === '## Check')
 	const device: string[] = []
+
+	for (const token of tokenize(source)) {
+		if (token.type !== 'tag' || token.tag.kind !== 'inline') {
+			continue
+		}
+		if (token.tag.name === 'Device') {
+			device.push(token.tag.content)
+			continue
+		}
+		if (token.tag.name !== 'Verify') {
+			continue
+		}
+		const id = token.tag.attributes['rule'] ?? ''
+		const known = order.get(id)
+		if (known) {
+			known.check = token.tag.content
+			known.checkLine = token.tag.line + 1
+			continue
+		}
+		const rule: Rule = {
+			id,
+			title: '',
+			check: token.tag.content,
+			file,
+			always: always.includes(id),
+			line: 0,
+			checkLine: token.tag.line + 1,
+			evidence: 'source',
+		}
+		rules.push(rule)
+		order.set(id, rule)
+	}
+
+	const start = rules.some((rule) => rule.checkLine > 0)
+		? -1
+		: lines.findIndex((line) => line.trim() === '## Check')
 
 	if (start !== -1) {
 		let seenBullet = false

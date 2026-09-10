@@ -7,8 +7,24 @@ export const packageRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 /** The skill as it is written, with its tags still in it. */
 export const packagedSkillDir = join(packageRoot, 'skills')
 
-/** Where "trunative build" writes one resolved copy per agent and stack. */
-export const compiledSkillsDir = join(packageRoot, 'dist', 'skills')
+/**
+ * Where "trunative build" writes the resolved copies. Inside it the layout is
+ * the one a project has, so ".claude/skills/trunative-flutter" here is the same
+ * path it lands on there.
+ */
+export const compiledSkillsDir = join(packageRoot, 'dist', 'agents')
+
+/**
+ * The directory each agent reads in a project. Zed and anything else reading
+ * the shared root gets the "other" build, which resolves no harness branch.
+ */
+export const AGENT_DIR: Record<string, string> = {
+	claude: '.claude',
+	codex: '.codex',
+	antigravity: '.antigravity',
+	opencode: '.opencode',
+	other: '.agents',
+}
 
 /** "trunative" for the generic copy, "trunative-flutter" for a stack variant. */
 export function variantName(name: string, stack?: string): string {

@@ -2,7 +2,7 @@ import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { dirname, join, relative, sep } from 'node:path'
 
 import { AGENTS, compile, variantStacks, type Target } from '../compile.js'
-import { compiledSkillsDir, packagedSkillDir, variantName } from '../paths.js'
+import { AGENT_DIR, compiledSkillsDir, packagedSkillDir, variantName } from '../paths.js'
 import { isSkillFile } from '../skill.js'
 
 export interface BuildOptions {
@@ -17,12 +17,6 @@ const STACK_DESCRIPTIONS: Record<string, string> = {
 	compose: 'Jetpack Compose',
 	web: 'mobile web',
 }
-
-/**
- * Files that exist for whoever writes the skill, not for whoever reads it. The
- * tag spec describes a syntax the built copy no longer contains.
- */
-const SOURCE_ONLY = ['references/annotations.md']
 
 /** Every file of the source skill, project-relative, in a stable order. */
 async function listFiles(root: string): Promise<string[]> {
@@ -64,7 +58,7 @@ function retitle(source: string, stack: string | undefined): string {
 }
 
 export async function build(options: BuildOptions): Promise<number> {
-	const files = (await listFiles(packagedSkillDir)).filter((file) => !SOURCE_ONLY.includes(file))
+	const files = await listFiles(packagedSkillDir)
 	const sources = new Map<string, string>()
 	for (const file of files) {
 		sources.set(file, await readFile(join(packagedSkillDir, file), 'utf8'))
@@ -78,7 +72,12 @@ export async function build(options: BuildOptions): Promise<number> {
 	for (const agent of AGENTS) {
 		for (const stack of variants) {
 			const target: Target = stack ? { agent, stack } : { agent }
-			const root = join(compiledSkillsDir, agent, variantName('trunative', stack))
+			const root = join(
+				compiledSkillsDir,
+				AGENT_DIR[agent] ?? `.${agent}`,
+				'skills',
+				variantName('trunative', stack),
+			)
 
 			for (const file of files) {
 				const source = sources.get(file)!
@@ -99,9 +98,10 @@ export async function build(options: BuildOptions): Promise<number> {
 	}
 
 	const names = variants.map((stack) => variantName('trunative', stack)).join(', ')
+	const dirs = AGENTS.map((agent) => AGENT_DIR[agent] ?? `.${agent}`).join(', ')
 	console.log(`built ${written} files for trunative ${options.version}`)
-	console.log(`agents: ${AGENTS.join(', ')}`)
-	console.log(`variants: ${names}`)
+	console.log(`directories: ${dirs}`)
+	console.log(`skills in each: ${names}`)
 	console.log(`into ${relative(process.cwd(), compiledSkillsDir).split(sep).join('/')}`)
 	return 0
 }

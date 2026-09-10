@@ -217,6 +217,29 @@ export function compile(source: string, target: Target): string {
 			continue
 		}
 
+		if (tag.name === 'Check') {
+			if (tag.kind === 'open') {
+				const against = tag.attributes['against'] ?? 'line'
+				out.push(
+					'## Check',
+					'',
+					`Review answers each of these against the code, pointing at the ${against}:`,
+					'',
+				)
+			}
+			continue
+		}
+
+		if (tag.name === 'Verify') {
+			out.push(`- ${tag.content} \`${tag.attributes['rule'] ?? ''}\``)
+			continue
+		}
+
+		if (tag.name === 'Device') {
+			out.push('', tag.content)
+			continue
+		}
+
 		if (tag.name === 'Ask') {
 			if (tag.kind === 'open') {
 				ask = {
