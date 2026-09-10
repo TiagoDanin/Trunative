@@ -4,8 +4,16 @@ import { fileURLToPath } from 'node:url'
 /** Root of the installed trunative package, resolved from this module. */
 export const packageRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 
-/** The skill as it ships inside the package. */
+/** The skill as it is written, with its tags still in it. */
 export const packagedSkillDir = join(packageRoot, 'skills')
+
+/** Where "trunative build" writes one resolved copy per agent and stack. */
+export const compiledSkillsDir = join(packageRoot, 'dist', 'skills')
+
+/** "trunative" for the generic copy, "trunative-flutter" for a stack variant. */
+export function variantName(name: string, stack?: string): string {
+	return stack ? `${name}-${stack}` : name
+}
 
 /** Where trunative keeps its own files inside a consumer project. */
 export const CONFIG_DIR = '.trunative'

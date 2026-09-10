@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { parseArgs } from 'node:util'
 
+import { build } from './commands/build.js'
 import { doctor } from './commands/doctor.js'
 import { install } from './commands/install.js'
 import { rubric } from './commands/rubric.js'
@@ -14,6 +15,7 @@ Usage
   npx trunative doctor            check the project before the agent starts
   npx trunative install [--dir]   copy the skill into the agent directories
   npx trunative rubric [--only]   print the review checklist, one row per rule
+  npx trunative build             resolve the skill once per agent and stack
 
 Options
   --dir <path>   install into this directory instead of the detected ones
@@ -73,6 +75,8 @@ async function main(): Promise<number> {
 			return doctor({ cwd, version })
 		case 'install':
 			return install({ cwd, version, dirs: values.dir })
+		case 'build':
+			return build({ version })
 		case 'rubric':
 			return rubric({ version, only: values.only, format: values.format })
 		default:
