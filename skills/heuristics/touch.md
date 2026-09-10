@@ -6,7 +6,7 @@ It is blunt: the contact patch is an oval of 16 to 20mm for a fingertip and more
 
 Add the fourth condition that belongs to the device rather than the hand: the grip changes constantly, often within a single task, so nothing can assume the phone is being held the way it was a moment ago.
 
-## `touch-floor` The target is the hit area, never the drawing
+## <Rule id="touch-floor" evidence="device" description="The target is the hit area, never the drawing" />
 
 44pt on iOS, 48dp on Android, for everything a user can activate. Both land under a centimetre of glass, which is already smaller than the finger arriving at it. That is why they are floors and not goals.
 
@@ -22,13 +22,13 @@ Two consequences that get missed. A list row is a target: full width, at least 4
 
 The web accessibility floor is lower than the platform one and does not replace it. WCAG 2.2 asks for 24 by 24 CSS pixels at AA, with exceptions, and 44 by 44 only at AAA. On a phone the platform number wins, every time.
 
-## `touch-spacing` Two correct targets can still produce a wrong tap
+## <Rule id="touch-spacing" description="Two correct targets can still produce a wrong tap" />
 
 Leave at least 8dp of dead space between neighbouring targets. Adjacent controls that each meet the floor still collect mis-taps, because the contact oval straddles the boundary between them and the system awards the tap to whichever one owns the centre.
 
 Watch the places it concentrates: a row of icon buttons in a toolbar, a line of chips, a close control sitting beside another control, and two swipe actions revealed on the same row. When a target has to be smaller than the floor, the distance to its neighbours has to grow to compensate, which is the same trade WCAG makes with its spacing exception.
 
-## `touch-reach` The bottom third is the only easy part of the screen
+## <Rule id="touch-reach" description="The bottom third is the only easy part of the screen" />
 
 Roughly half of phone use is one-handed, and about two thirds of that is a right thumb. A layout that only works for one hand fails a large minority of users, so check the mirror before shipping.
 
@@ -42,13 +42,13 @@ Past about six inches of screen, the top is not reachable one-handed at all. Any
 
 Since the grip changes mid-task, the design has to survive the change rather than assume a posture. A control that only works while the phone is cradled in two hands is a control that fails while walking.
 
-## `touch-destructive` Distance is the safety mechanism
+## <Rule id="touch-destructive" description="Distance is the safety mechanism" />
 
 Delete, unsubscribe, cancel the order and send the payment do not belong in the easy region, and never beside something used often. The whole point of the hard region is that reaching it takes a deliberate second movement.
 
 Prefer undo over a confirmation dialog. Undo is faster for the person who meant it, recoverable for the person who did not, and it does not train users to dismiss dialogs without reading them. When a dialog is the right vehicle instead is `fb-confirm-test`.
 
-## `touch-feedback` If it happened under the finger, it did not happen
+## <Rule id="touch-feedback" description="If it happened under the finger, it did not happen" />
 
 Every touch gets an acknowledgement inside about 100ms, before the work behind it finishes. Latency between contact and response is the loudest quality signal a phone app has.
 
@@ -60,7 +60,7 @@ Every touch gets an acknowledgement inside about 100ms, before the work behind i
 
 The touch state set is its own thing: rest, pressed, long press where the element has one, dragging where it moves, plus disabled, loading, error and empty. `hover` does not exist here, and `focus` belongs to a hardware keyboard or switch control rather than to a finger. Nothing may hide behind either.
 
-## `touch-gestures` The edges belong to the operating system
+## <Rule id="touch-gestures" description="The edges belong to the operating system" />
 
 A gesture that starts at a screen edge is competing with the OS and will lose. On iOS that is back from the left edge, the shade from the top left, the control panel from the top right, and home from the bottom. On Android it is back from either side, home from the bottom, and the shade from the top. Where a drag genuinely has to begin at an edge, claim the strip explicitly through the system's gesture exclusion mechanism and keep it as small as possible.
 
@@ -72,7 +72,7 @@ A gesture that starts at a screen edge is competing with the OS and will lose. O
 
 Content runs underneath the system bars on current Android targets, so a control pinned to the bottom edge without inset handling ends up beneath the gesture strip: visible, and not tappable. The inset geometry itself is `layout-insets`.
 
-## `touch-keyboard` Half the screen, arriving without warning
+## <Rule id="touch-keyboard" description="Half the screen, arriving without warning" />
 
 The keyboard is not an overlay that happens to the screen, it is part of the screen for as long as someone is typing, and it deserves the same design attention as anything else that takes up that much room.
 

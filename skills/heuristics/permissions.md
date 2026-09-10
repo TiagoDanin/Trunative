@@ -6,7 +6,7 @@ That makes the ask itself a design object. What is asked for at all, at which mo
 
 `state-permission` already covers denial as a screen state. This file covers the request.
 
-## `perm-inventory` Every permission traces to a feature the user can point at
+## <Rule id="perm-inventory" description="Every permission traces to a feature the user can point at" />
 
 The declared set is public. On Android the Play listing shows it before install, on both platforms the system permission screen shows it after, and store review reads it against what the app claims to do. Each entry is a cost paid whether or not the prompt ever fires.
 
@@ -14,7 +14,7 @@ Name the feature behind each entry, and hold each class to its own standard: a r
 
 The source manifest is not the answer, because library permissions arrive through manifest merging and never appear in it. Read the merged manifest report under the build outputs, or the effective list on an installed build, and the `Info.plist` inside the built app rather than the one in the project.
 
-## `perm-ask-less` The right answer is usually a component that asks for nothing
+## <Rule id="perm-ask-less" description="The right answer is usually a component that asks for nothing" />
 
 Both platforms ship system UI that runs outside the app, hands back exactly what the user picked, and needs no permission at all. Reaching past it for the permission is the most common way an app asks for more than it needs.
 
@@ -31,7 +31,7 @@ Where library access is genuinely needed it is still partial: iOS has a limited 
 - A subset is grown in place, not by asking again for everything. Re-open the picker for more items on Android; on iOS 18 `ContactAccessButton` and `contactAccessPicker(isPresented:completionHandler:)` widen a limited contacts grant with no prompt at all. Widening is the third answer beside grant and deny, and the only route out of a subset that turned out too small.
 - An app on limited photo access owns its own re-prompt. Set `PHPhotoLibraryPreventAutomaticLimitedAccessAlert` and raise the selection change at the point the user is looking for more photos, or the system raises that alert at launch on the app's behalf and the user reads it as the app nagging.
 
-## `perm-scope` Ask for the level the feature uses, not the level that would be convenient
+## <Rule id="perm-scope" description="Ask for the level the feature uses, not the level that would be convenient" />
 
 Every permission with a strong and a weak form gets the weak one first.
 
@@ -43,7 +43,7 @@ Every permission with a strong and a weak form gets the weak one first.
 
 An upgrade is requested the first time the stronger level is actually used, not at the moment the weaker one is granted.
 
-## `perm-rationale` The screen before the dialog is what earns the dialog
+## <Rule id="perm-rationale" description="The screen before the dialog is what earns the dialog" />
 
 The system dialog is a yes or a no with one app-written sentence in it. Everything else the user needs in order to decide has to arrive before it, on a screen the app owns. The dialog is modal over the one surface the phone has: the feature it is asking about cannot be shown behind it, and a user who declines has nowhere else on screen to go, so the reduced form has to already be on the screen they were standing on.
 
@@ -54,7 +54,7 @@ That screen says three things: what the feature does, what the data is used for,
 - One rationale screen per feature, covering the permissions that one feature needs, and never a queue of asks chained across unrelated features. Where the platform requires or documents a bundle it goes out as one ask: paired location, or camera plus microphone for a single capture surface, through `RequestMultiplePermissions` on Android.
 - It sits at the feature. A permission without which the app has no first screen at all may be asked for earlier, and then that screen has to make the reason obvious before the dialog appears.
 
-## `perm-purpose-string` The sentence inside the dialog is written, not generated
+## <Rule id="perm-purpose-string" description="The sentence inside the dialog is written, not generated" />
 
 iOS drops the app's usage description into the system alert. The Android request API takes permission strings and nothing else, so there is nowhere for an app sentence to go and the rationale screen carries the entire explanation. Either way somebody writes copy.
 
@@ -62,7 +62,7 @@ An active sentence naming the feature and the use: "Records at night to detect s
 
 On iOS every protected resource has its own key, and a missing one is not a warning: the access fails, the app is terminated on the spot, and review rejects the build. The seven in common use are `NSCameraUsageDescription`, `NSMicrophoneUsageDescription`, `NSPhotoLibraryUsageDescription`, `NSPhotoLibraryAddUsageDescription`, `NSLocationWhenInUseUsageDescription`, `NSLocationAlwaysAndWhenInUseUsageDescription` and `NSUserTrackingUsageDescription`. They are user-visible strings, so they localize, and they are as long as the language makes them.
 
-## `perm-answers` A permission has more than two answers
+## <Rule id="perm-answers" evidence="device" description="A permission has more than two answers" />
 
 Granted or denied is the branch most code has. The states that exist:
 
@@ -76,7 +76,7 @@ Each is a different screen. Permanent denial is the one that gets folded into pl
 
 Partial grants belong here too. An approximate location, a single session of access, a subset of a library. The feature either runs on what it was given or names the part of itself that is missing, and a partial yes is never handled as a no.
 
-## `perm-recheck` A grant is a current value, not a fact
+## <Rule id="perm-recheck" evidence="device" description="A grant is a current value, not a fact" />
 
 Check immediately before each access instead of caching the answer at launch.
 
@@ -84,7 +84,7 @@ The user can revoke anything from system settings while the app sits in the back
 
 The screen that assumes otherwise crashes, or shows an empty list where the content used to be and blames the server.
 
-## `perm-no-coercion` A no is an answer the app has to live with
+## <Rule id="perm-no-coercion" evidence="device" description="A no is an answer the app has to live with" />
 
 `state-permission` owns the degraded screen and the route back into system settings. What that route must not turn into:
 
@@ -93,7 +93,7 @@ The screen that assumes otherwise crashes, or shows an empty list where the cont
 - The note about what is missing sits where that feature's results would have been and names only the feature affected.
 - Consent is withdrawn where it was given. Every permission the app holds is reachable from inside the app, as a link to the system page for it rather than a second switch, which is `set-system-owned`, and any consent the app stores itself, a tracking flag or an analytics opt-in, is turned off where `set-account-exit` puts it. Where the user has turned tracking off in Settings, a shortcut back there is allowed.
 
-## `perm-notify-ask` The notification prompt comes after the user makes something worth being told about
+## <Rule id="perm-notify-ask" evidence="device" description="The notification prompt comes after the user makes something worth being told about" />
 
 Consent is required before a single notification is sent, and this ask follows the same rule as the others: it belongs to the moment the user places the order, sets the reminder or follows the thread, not to the first screen.
 
@@ -101,7 +101,7 @@ Consent is required before a single notification is sent, and this ask follows t
 - iOS has a provisional level that sends with no prompt, delivering quietly to the notification list where the user can keep it or turn it off. That is the honest way to earn the loud one.
 - Promotional messages get their own opt-in inside the app, and the system grant is not it.
 
-## `perm-tracking` The tracking prompt exists only if the app actually tracks (iOS)
+## <Rule id="perm-tracking" evidence="device" description="The tracking prompt exists only if the app actually tracks (iOS)" />
 
 From iOS 14.5, linking this app's data to data other companies collected, or passing it to a data broker, needs the tracking prompt and its own usage description. Without a grant the advertising identifier comes back as all zeros.
 

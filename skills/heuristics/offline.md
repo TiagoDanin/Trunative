@@ -4,7 +4,7 @@ A phone loses the network as a normal condition of use: lifts, tunnels, basement
 
 This file is about the copy the app keeps on the device: what is stored, for how long, what is deliberately never stored, what happens to a write made while disconnected, and what the app becomes when that copy is gone. The request itself, its timeout and its retry, is `heuristics/network.md`. How the screen says offline, pending or stale is `state-offline`, `state-queued` and `state-stale`. Everything here is the layer underneath those three.
 
-## `off-local-first` The screen reads the store, and the network writes to the store
+## <Rule id="off-local-first" description="The screen reads the store, and the network writes to the store" />
 
 The local store is the source of truth for the content the app is expected to be able to show again: what the person already opened, and the core of what they come back for. A response updates the store, and the store updates the screen. For that content, nothing in the view layer waits on a request to draw its first frame.
 
@@ -16,7 +16,7 @@ The scope is the critical subset, not every byte. A collection the device has ne
 - The view model observes the store. A repository that hands the network result back to the caller and writes the cache on the side is keeping two truths, and they disagree the first time a write fails.
 - What is deliberately not stored is a decision rather than an oversight, and it is written down beside the rest of the storage policy in `off-cache-policy`.
 
-## `off-sync-scope` Decide what is kept on the device, how far back, and what fills it
+## <Rule id="off-sync-scope" description="Decide what is kept on the device, how far back, and what fills it" />
 
 `off-local-first` makes the store the thing the screen reads. This rule decides what is in it, which is otherwise whatever the user happened to open. Per collection in `STACK.md`: kept complete or only what was visited, how far back it goes as a count or a window, and which of two ways it fills.
 
@@ -25,7 +25,7 @@ The scope is the critical subset, not every byte. A collection the device has ne
 
 A bulk fill is deferred work: unmetered, and left to the system to run when it suits the battery (`NetworkType.UNMETERED`, `isDiscretionary`). A fill the user asked for is neither deferred nor budgeted against `net-prefetch`, which spends on the next screen of this session rather than on the working set that has to survive a tunnel.
 
-## `off-fresh-marks` Every stored record knows when it arrived and whether the server has seen it
+## <Rule id="off-fresh-marks" description="Every stored record knows when it arrived and whether the server has seen it" />
 
 Two fields, not one: the time the value was written, and its origin, meaning confirmed by the server or written on this device and not yet sent. `state-stale` renders the first and `state-queued` renders the second, and neither can render what the schema does not hold.
 
@@ -33,7 +33,7 @@ On a device that spends part of every session disconnected, those two fields are
 
 Add the version or timestamp that `off-conflict` needs at the same time. Retrofitting it is a migration that runs on data already sitting on people's phones, with no earlier value to backfill it from.
 
-## `off-cache-policy` What is cached, for how long, and what is never cached
+## <Rule id="off-cache-policy" description="What is cached, for how long, and what is never cached" />
 
 This rule is about what sits on disk. Write it per collection in `STACK.md`: what is stored, its lifetime, and what evicts it. A store with no lifetime grows until the OS deletes all of it at once, which is the worst moment for it to happen. The in-memory tier of the same cache is `perf-memory`, and an image cache with both tiers owes both rules.
 
@@ -45,7 +45,7 @@ The never-cached list goes in the same entry: a one-time code, a live price, any
 
 None of this becomes a user-facing setting. People expect their content to be available and do not want to manage the storage of individual items.
 
-## `off-reclaimable` Discardable storage gets discarded, and the app has to survive it
+## <Rule id="off-reclaimable" description="Discardable storage gets discarded, and the app has to survive it" />
 
 Both platforms reclaim cache locations under storage pressure: `Library/Caches` and the `URLCache` on iOS, `getCacheDir()` on Android, best-effort buckets on the web. Every read of a cached file checks that the file is still there before using it.
 
@@ -55,7 +55,7 @@ Backup follows the same line silently. Android Auto Backup always excludes `getC
 
 A phone with a full camera roll is the ordinary device, not the low-storage one.
 
-## `off-write-mode` Every write declares which of three things it is
+## <Rule id="off-write-mode" description="Every write declares which of three things it is" />
 
 Decide per action, in the code that performs it:
 
@@ -65,7 +65,7 @@ Decide per action, in the code that performs it:
 
 A screen where every mutation is optimistic will eventually tell someone in a tunnel that their transfer went through.
 
-## `off-queue` The queue is durable, identified, and drained by the platform's own scheduler
+## <Rule id="off-queue" evidence="device" description="The queue is durable, identified, and drained by the platform's own scheduler" />
 
 - **Durable.** Rows in the database. Not an array in a view model, and not a cache directory, which `off-reclaimable` can empty between the write and the drain.
 - **Identified.** The device generates the entry's id before the first attempt and reuses it on every retry, so a reply lost on the way back becomes one order rather than two.
@@ -75,14 +75,14 @@ A screen where every mutation is optimistic will eventually tell someone in a tu
 
 Cancelling an entry is two operations rather than one: the entry leaves the queue, and the local write it made is reversed. Whether pending work is shown on the item or on a surface of its own is `state-queued`.
 
-## `off-session` A token that could not be refreshed is not a sign-out
+## <Rule id="off-session" evidence="device" description="A token that could not be refreshed is not a sign-out" />
 
 Refreshing needs a server, so a token that expires on a disconnected device says nothing about whether the person is still signed in. Treating it as a sign-out clears the store the rest of this file rests on and turns a lost signal into lost work.
 
 - An expired token with no path to the server leaves the app in its cached form: content still renders, writes still queue, and the credentials are exchanged again on the next request that reaches. Signing the user out is what happens when the server refuses the refresh, never when it cannot be asked. `net-backoff` owns the refresh itself.
 - Sign-out is the other half. A queue with entries in it is drained first, or discarded with the user told what is going, and only then is local data cleared. Wiping the store on the way out deletes work the person watched the app accept.
 
-## `off-destructive-offline` A delete is answered by how far it reaches, not by whether it is queued
+## <Rule id="off-destructive-offline" evidence="device" description="A delete is answered by how far it reaches, not by whether it is queued" />
 
 `state-queued` settles that destructive actions do not queue silently. What is left is which of two mechanisms covers a given delete, and they are not both owed on the same one.
 
@@ -90,7 +90,7 @@ The default is the local hold. Mark the record deleted on the device, take it ou
 
 What earns a confirmation is reach. A removal on a synced account lands on every device the person owns, which is as true on a full signal as it is in a tunnel, so it is asked at the tap in both, and only where the hold cannot take it back. The wording of that confirmation is `touch-destructive`. What is forbidden is the silent version: the row disappears, the queue carries it away, and the user finds out on another device a day later.
 
-## `off-conflict` Somebody's edit loses, and it is never the one still on screen
+## <Rule id="off-conflict" evidence="device" description="Somebody's edit loses, and it is never the one still on screen" />
 
 Two devices, one account, both edited. Resolve automatically wherever the shape of the data allows it, and design the rest.
 
@@ -99,7 +99,7 @@ Two devices, one account, both edited. Resolve automatically wherever the shape 
 - Resolution happens as early as the app can detect the collision, before more work is poured into a version that is about to lose.
 - Not an alert, and not at launch. An app that opens onto a modal about sync has spent the user's first tap on its own plumbing. Show the stored copy with the marker on it.
 
-## `off-no-cache` The empty store happens twice, and one screen answers both
+## <Rule id="off-no-cache" evidence="device" description="The empty store happens twice, and one screen answers both" />
 
 It happens on first launch, and it happens again after the OS reclaimed everything under `off-reclaimable`. That is the same screen, reached by the same code path, and it must be reachable in testing by clearing app storage rather than only by reinstalling.
 

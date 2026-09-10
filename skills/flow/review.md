@@ -54,7 +54,7 @@ Every row gets a score, one line of finding, and its evidence:
 - `device`: the screen was driven. The claim is about the app.
 - `source+device`: both, and they agreed. Where they disagree the device wins, and the disagreement is a finding.
 
-A rule its file marks `<Rule evidence="device" />` may not take `source`: the file has already said a diff cannot settle it, so a number from the source alone is a guess wearing a score. The checklist prints `[device]` on those rows, and the paragraph the file closes its Check section with, printed under the group as `Not from a diff`, says why. Those rules are `device`, `source+device`, or `unrun`. A rule without the mark can be graded from the source, and is still worth seeing on a device.
+A rule the checklist prints `[device]` on may not take `source`: its own file has already said a diff cannot settle it, so a number from the source alone is a guess wearing a score. The paragraph that file closes its Check section with, printed under the group as `Not from a diff`, says why. Those rules are `device`, `source+device`, or `unrun`. A rule without the mark can be graded from the source, and is still worth seeing on a device.
 
 When the app is running on a device, split the work in two and keep the halves apart, because a grader who has already read the measurements grades the measurements:
 

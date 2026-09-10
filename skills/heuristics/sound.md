@@ -4,7 +4,7 @@ Sound the app makes on its own: a tap tone, a success chime, an error beep, a lo
 
 The player and the audio somebody pressed play on are `media-system-player` and `media-unasked-sound`. The sound attached to a notification is fixed on its channel, which is `notify-channels` and `notify-level`. Haptics are `touch-feedback` and `sense-haptic`. What is left, the noise the interface makes by itself, is this file, and for most apps the right size of it is zero.
 
-## `sound-inventory` A short list with fixed meanings, and an empty list is a legitimate answer
+## <Rule id="sound-inventory" description="A short list with fixed meanings, and an empty list is a legitimate answer" />
 
 Write the set down in `STACK.md` before any of it is coded: the event, what the sound means, and what the screen shows at the same moment. Every play site in the code maps to one entry, and nothing plays that is not in it.
 
@@ -13,7 +13,7 @@ Write the set down in `STACK.md` before any of it is coded: the event, what the 
 - A sound is worth its slot only when the user's eyes may be elsewhere. Anything confirming something already visible on screen is decoration, and `fb-silent-success` has already ruled on it.
 - Nothing plays while the app is not the thing on screen. Sound coming out of a screen nobody is looking at is a notification wearing the wrong clothes, and a notification is silenceable per kind while this is not.
 
-## `sound-silenced` One platform settles it with a category, the other leaves most of it to the app
+## <Rule id="sound-silenced" description="One platform settles it with a category, the other leaves most of it to the app" />
 
 On iOS the answer is the audio session category, chosen once for the app rather than branched on at each play site.
 
@@ -36,7 +36,7 @@ The app never sets the system volume or the ringer mode. On iOS the system volum
 
 The decision is made once, at the level where the platform exposes it, and never as a runtime test of whether the phone happens to be silenced right now. Code that plays a sound only after inspecting the ringer or the mute state has moved a system guarantee into a branch that will be wrong on some device, some launch, or some version.
 
-## `sound-mixes` A chime lands on top of whatever is already coming out of the speaker
+## <Rule id="sound-mixes" evidence="device" description="A chime lands on top of whatever is already coming out of the speaker" />
 
 The failure is loud and the documented default is the one that produces it. `.soloAmbient` is the default iOS category and it does not mix, so an app that never states a category can put its first chime through a podcast that then does not come back. Say which category the app uses rather than inheriting one.
 
@@ -45,7 +45,7 @@ The failure is loud and the documented default is the one that produces it. `.so
 - A sound has no route back. If the other app's music is quieter after the chime, or gone, the category is the first place to look: a non-mixing `.soloAmbient`, a `.playback` with the mixing option unset, or a focus request that should not have been made. Where a session really is being activated around the sound, the missing deactivation belongs to `media-unasked-sound`.
 - Test it the way it will happen: start music in another app, then use the screen. Every sound the app makes should land on top of that music without changing it, and the music should be at the same level when the screen is closed.
 
-## `sound-system-sound` Play the platform's sound before shipping one
+## <Rule id="sound-system-sound" description="Play the platform's sound before shipping one" />
 
 The system already has the sounds for the actions the system invented, and its versions are the ones the user recognises from every other app on the phone.
 
@@ -56,7 +56,7 @@ The system already has the sounds for the actions the system invented, and its v
 - A sound on a repeated action is varied per play in pitch and level rather than shipped as one identical sample. The system does exactly that for the keyboard, and it is why forty taps in a row stay bearable.
 - A haptic beside a sound is written, not inherited. The iOS alert-sound path vibrates only where the user has switched vibration on for the ringer, and drops the vibration entirely while the session is set to `.record` or `.playAndRecord`, so an app that leans on it for the felt half of a signal loses that half on two ordinary devices. Pair the sound with a feedback generator explicitly, under `sense-haptic`.
 
-## `sound-never-alone` Design the screen muted, then decide whether to add sound
+## <Rule id="sound-never-alone" evidence="device" description="Design the screen muted, then decide whether to add sound" />
 
 An install may never hear any of it: the phone is silenced, muted, in a pocket, on a table across the room, or held by somebody who cannot hear it. `a11y-media` and `color-not-alone` set the law; the working rule is the order in which the screen gets built.
 
@@ -64,7 +64,7 @@ Build and review it with the device muted first, so nothing on it depends on bei
 
 The two places this breaks are worth naming, because both look finished on a developer's desk with the volume up. A failure that beeps and changes nothing on screen leaves the user tapping again. A long operation that announces its end with a sound and no visible completion leaves someone who put the phone down with no way to find out it worked, which is the exact situation the sound was added for.
 
-## `sound-unasked` Nothing starts making noise because a screen opened
+## <Rule id="sound-unasked" description="Nothing starts making noise because a screen opened" />
 
 Sound follows a touch. Launching, arriving at a screen, a card scrolling into view, a fanfare over a result nobody asked to celebrate: each one plays into a room the app cannot see, and it lands on whoever is nearest rather than on the user.
 
@@ -72,7 +72,7 @@ Sound follows a touch. Launching, arriving at a screen, a card scrolling into vi
 - Audio that does start by itself owes a control that stops it, or its own volume separate from the system's. On the web that is an accessibility floor rather than a courtesy, and WCAG puts the line at anything running past 3 seconds. Native publishes no number, so take the same 3 seconds as the working one, and it applies to a splash animation and a game menu alike.
 - Whether a media surface may start by itself is `motion-autoplay`, and claiming the speaker at launch is `media-unasked-sound`. The addition here is that outside a player there is no case for it at all.
 
-## `sound-off-switch` One switch, in the place that already owns the sound
+## <Rule id="sound-off-switch" description="One switch, in the place that already owns the sound" />
 
 An app-level control is right only where nothing above it can turn the sound off. A click played through the framework's effect API already obeys the user's system setting, and a notification's sound is not this file's to switch at all: `notify-channels` owns it on both platforms, including the iOS half where the per-kind control does belong inside the app. Duplicating a control the system already offers is the bug `set-system-owned` names.
 

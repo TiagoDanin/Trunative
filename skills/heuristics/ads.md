@@ -6,7 +6,7 @@ A phone hands an ad the whole screen and hands the user one thumb. There is no w
 
 An app that carries no ad SDK skips this file. An app that carries one reads all of it, because a single ad unit brings the whole policy surface with it. It starts with the store data declaration: the dependency collects on its own account, so the diff that adds it is the diff that leaves the filing stale, which is `priv-declared`.
 
-## `ads-labelled` An ad says it is an ad, and never wears the app's clothes
+## <Rule id="ads-labelled" description="An ad says it is an ad, and never wears the app's clothes" />
 
 Both stores require this. Apple's display advertising rule says an ad that interrupts or blocks must clearly indicate that it is an ad and must not manipulate or trick users into tapping it. Play's ads policy bans ads that simulate or impersonate the interface of any app feature, notifications included, and requires that it be clear which app is serving each ad.
 
@@ -14,7 +14,7 @@ Both stores require this. Apple's display advertising rule says an ad that inter
 - A native unit borrows the row's layout, never its meaning. Styled as a feed item, a search result, a chat message or a system alert, it is the pattern the policies exist to stop.
 - Nothing dressed as a permission prompt, a notification, a download control or a piece of navigation, and nothing the app draws itself pointing at the unit: an arrow, a badge, a count, a caption suggesting a tap.
 
-## `ads-close` The close control is visible in the first frame and sized like a target
+## <Rule id="ads-close" evidence="device" description="The close control is visible in the first frame and sized like a target" />
 
 Apple requires any interrupting ad to provide easily accessible and visible close or skip buttons, large enough to dismiss with ease, and attaches no delay to that anywhere. Play requires ads that interfere with normal use to be easily dismissible without penalty, and only forbids a full-screen interstitial still uncloseable after 15 seconds, dropping to 5 seconds where the app declares a child target audience. Those permissions do not overlap, so build the strict one: an exit present from the first frame.
 
@@ -22,7 +22,7 @@ Apple requires any interrupting ad to provide easily accessible and visible clos
 - Where the SDK draws it, the choice of format and its close configuration is still yours. Run each format on a real device and watch for the frame the control appears in, because some defaults hold the user longer than the strict rule allows.
 - Play states that ads must not interfere with the operation of the device, system or device buttons included. The back gesture keeps working while the ad is up, and it is never the only way out.
 
-## `ads-placement` The full screen ad marks the end of something, never the start of it
+## <Rule id="ads-placement" description="The full screen ad marks the end of something, never the start of it" />
 
 Play forbids full-screen interstitials that appear unexpectedly, typically when the user has chosen to do something else, and forbids them at the beginning of a level or content segment. Google's own SDK guidance points at the pause between levels. Both are satisfied only when the ad closes the segment the user just finished instead of standing in front of the next one.
 
@@ -38,13 +38,13 @@ The result is a surface the user did not open. It is not a modal in the sense `n
 
 The segment boundary above is the only thing that buys the full screen. Everything else about a surface nobody asked for is `fb-unprompted`, which names this placement as its one exception and keeps the rest: the dismissal remembered for a written period, the plain close rather than a trick one, and the shapes an app may not borrow.
 
-## `ads-frequency` The cap is a number in the code, not whatever the network sends
+## <Rule id="ads-frequency" description="The cap is a number in the code, not whatever the network sends" />
 
 Neither store publishes a frequency figure. AdMob does, as a ceiling on its own publishers: no more than one interstitial after every two user actions. This skill borrows that number as the default wherever the network in use publishes none of its own. Treat it as the maximum and pick something lower.
 
 Enforce it at the call site rather than in the mediation dashboard, which changes without a build and is not in the diff. And remember what a session is here: minutes long, interrupted constantly (`state-interrupt`). A counter that resets on every resume is not a cap, so the interval is wall clock time as well as a count.
 
-## `ads-reserve` The slot is the right size before the ad exists
+## <Rule id="ads-reserve" description="The slot is the right size before the ad exists" />
 
 An ad comes over the network, so it arrives late, after the reading has started and the thumb is already moving. A container that grows when it fills shoves everything below it and the tap lands on whatever slid into place. Reserve the declared ad size as a fixed height, the same way `icon-reserve` reserves a picture's box. Where the format sizes itself from the device width, the height is available before the request is sent: ask for it and reserve that, rather than letting the container find out on fill.
 
@@ -52,7 +52,7 @@ An ad comes over the network, so it arrives late, after the reading has started 
 - A pinned banner shortens the scroll rather than floating over its last row, `layout-chrome`.
 - It also comes out of the first screenful, `layout-fold`. The content budget pays for the banner; the banner does not arrive from somewhere else.
 
-## `ads-adjacency` Nothing the user aims at shares an edge with an ad
+## <Rule id="ads-adjacency" evidence="device" description="Nothing the user aims at shares an edge with an ad" />
 
 AdMob's placement policy says an ad may not be placed so that it interferes with navigating or interacting with the app's core content and functionality, and Play's families policy names ads that suddenly appear in areas of the app where the user usually taps for another function. A mis-tap here earns money, and Apple bans both halves of that trade: artificially increasing impressions or click-throughs, and apps designed predominantly to display ads.
 
@@ -60,7 +60,7 @@ AdMob's placement policy says an ad may not be placed so that it interferes with
 - The bottom third is where the thumb lands (`touch-reach`) and where the tab bar, the primary button and the banner all want to sit. At least one of the three moves.
 - No ad on a screen that exists for one decision: a confirmation, a payment, a permission rationale, anything destructive.
 
-## `ads-rewarded` The trade is stated before it starts, and the reward survives the process
+## <Rule id="ads-rewarded" description="The trade is stated before it starts, and the reward survives the process" />
 
 A rewarded ad is one of the two places an ad may interrupt honestly. The other is the end of a segment the user just finished (`ads-placement`); this one qualifies because the user chose it. Tapping the offer is the consent, so the offer has to be complete: what they get, and roughly how long it takes.
 
@@ -68,7 +68,7 @@ A rewarded ad is one of the two places an ad may interrupt honestly. The other i
 - What is bought is always an extra. Play states that an app cannot force a user to click an ad, or submit personal information for advertising, before they can fully use it, so the app's own function never sits behind an ad.
 - No dead ends. Declining the offer returns to the screen it was made on, and the exit rules in `ads-close` apply to the rewarded unit exactly as they apply to any other full-screen ad.
 
-## `ads-consent` The consent state is read when the request is built, and the no path is the normal one
+## <Rule id="ads-consent" description="The consent state is read when the request is built, and the no path is the normal one" />
 
 - **iOS.** An ad SDK that links this app's data to what other companies collected needs the tracking permission and `NSUserTrackingUsageDescription` in the property list; without that key, the app can crash the first time a user opens it. Whether the prompt is owed at all, and how it is introduced, is `perm-tracking`.
 - **Android.** Declare `com.google.android.gms.permission.AD_ID` when targeting Android 13 or above. It is not `androidx.ads.identifier.provider.HIGH_PRIORITY`, which is the provider side of the same feature and belongs to nobody shipping an app. Ask for the ID fresh on every request instead of caching it, and expect a string of zeros from anyone who opted out or deleted theirs.
@@ -77,13 +77,13 @@ A rewarded ad is one of the two places an ad may interrupt honestly. The other i
 - Read the state at request time. Play requires the opt out of interest-based advertising or ads personalisation setting to be verified, and a value captured at launch is stale the moment someone changes it in system settings and comes back.
 - Some signals are barred from targeting whatever the answer was. Apple names health and medical data, school and classroom data, and anything from children. Nothing in those categories reaches an ad request, which is a question about what the app passes to the SDK, not about the consent flag.
 
-## `ads-report` The user can see why this ad reached them, and report it, without leaving the app
+## <Rule id="ads-report" evidence="device" description="The user can see why this ad reached them, and report it, without leaving the app" />
 
 Apple requires both halves: all the information used to target an ad has to be visible without leaving the app, and the app has to include a way to report an inappropriate or age-inappropriate ad. Where a unit ships an affordance, open it and watch where it lands, because one that opens a browser is the failure rather than the pass, and check it renders and responds on the smallest supported screen at the largest text size. Where a format has none, the app supplies the route itself, next to the reporting path in `set-diagnostics`.
 
 Apple also requires the served creatives to suit the app's own age rating. That is a setting on the ad unit, not a property of the ad stack: put the content rating ceiling on the unit rather than leaving it at whatever the network defaults to, which is how a 12+ app ends up carrying 17+ creatives. The child audience case is a harder fork, `ads-children`.
 
-## `ads-a11y` Someone using a screen reader has to be able to get out
+## <Rule id="ads-a11y" evidence="device" description="Someone using a screen reader has to be able to get out" />
 
 Third-party creative is content nobody on the team wrote and nobody can relabel, so the app owns the frame around it.
 
@@ -91,7 +91,7 @@ Third-party creative is content nobody on the team wrote and nobody can relabel,
 - The container announces itself as an ad, and the creative under it is one stop rather than a walk through every element inside it.
 - Drive one interstitial and one banner with the reader on before shipping, as `a11y-test` requires of any flow.
 
-## `ads-entitlement` Someone who paid to remove ads has to stop seeing them everywhere
+## <Rule id="ads-entitlement" description="Someone who paid to remove ads has to stop seeing them everywhere" />
 
 An app that sells any removal of advertising (a one-off unlock, a paid tier, a subscription, or a bundle that happens to include it) carries an entitlement, and every ad call site reads it before requesting anything. Not before showing: before requesting, so nothing is fetched, no impression is counted and no data leaves the device.
 
@@ -104,14 +104,14 @@ One missed call site is the whole feature failing, because the user only has to 
 - Anything the paid tier still shows, a house promo or a cross-sell for another app of yours, is still an ad under `ads-labelled`, and selling their removal and then showing them is the pattern users report.
 - Apple's Developer Code of Conduct, guideline 5.6, names charging for features or content that are not delivered as conduct that terminates the developer account. An ad shown to someone who paid to remove ads is that sentence, with the receipt attached.
 
-## `ads-cost` The ad stack is paid for in launch time, memory and the user's data
+## <Rule id="ads-cost" description="The ad stack is paid for in launch time, memory and the user's data" />
 
 - Initialising an ad SDK is not launch work. Keep it off the path to the first frame, `perf-cold-start`.
 - The Google Mobile Ads SDK treats a preloaded ad as stale after an hour, and endorses a cache of them cleared and reloaded on that hour. This rule overrides that: hold one at a time, because a pool of full-screen creatives is the largest thing the app keeps for nothing, and `perf-memory` is what the phone kills the app over.
 - Video creatives are the heaviest thing the app fetches and nobody asked for them. Do not prefetch them on a metered connection, `net-metered`.
 - Each SDK is download size the user sees before any of the design does, `perf-size`, and mediation adds one per network.
 
-## `ads-children` A child audience declaration forks the ad design per store
+## <Rule id="ads-children" description="A child audience declaration forks the ad design per store" />
 
 Neither store binds on who is observed using the app. It binds on what the app declared: submission to Apple's Kids Category, and a child or mixed target audience declared on Play. An app children use that made neither declaration is not under these rules, and one that made them is, whoever ends up holding the phone.
 

@@ -6,7 +6,7 @@ Then the session breaks. Someone walks away mid task, the system reclaims the pr
 
 `STACK.md` records which navigator this codebase uses and what its destinations are. This file is about the structure those choices produce. The tab bar as a control is `button-tabs`; the back gesture, the predictive animation and the system edge zones are `touch-gestures`. Container and restoration APIs per stack sit in `references/navigation-containers.md`, for one lookup rather than a read through.
 
-## `nav-depth` Three levels, and the job within two taps
+## <Rule id="nav-depth" description="Three levels, and the job within two taps" />
 
 Destination, list, detail. Three is what someone holds in their head without a map, and a fourth needs a reason written into `STACK.md`. Count it from a top-level destination to the deepest screen reachable under it.
 
@@ -14,7 +14,7 @@ The other half is distance: the job this app exists for, the one named in `PRODU
 
 A fourth level is usually a filter wearing a screen. If the new screen is the previous list narrowed, narrow the list instead.
 
-## `nav-container` The container comes from the relationship, not from convenience
+## <Rule id="nav-container" description="The container comes from the relationship, not from convenience" />
 
 Five containers, five different relationships to what is underneath them:
 
@@ -30,7 +30,7 @@ The reflex to watch is presenting everything modally. A modal is presented rathe
 
 The sheet, cover or dialog carries its own primary action: `button-one-primary`.
 
-## `nav-modal` A modal is a task, and its exit is one you drew
+## <Rule id="nav-modal" description="A modal is a task, and its exit is one you drew" />
 
 On a phone the modal covers its parent, so there is no visible background to click away to and no window edge to close. The only way out is the one on the screen.
 
@@ -38,7 +38,7 @@ On a phone the modal covers its parent, so there is no visible background to cli
 - Interactive dismissal is already on, so the line to look for is the one that turns it off: `interactiveDismissDisabled`, a sheet state that refuses to hide. It belongs only where dismissing loses work, and where it appears the question appears with it, which is not the same as trapping.
 - Never open a modal over a modal. The second one is a pushed screen inside the first.
 
-## `nav-back` Back unwinds the stack and nothing else
+## <Rule id="nav-back" description="Back unwinds the stack and nothing else" />
 
 On Android back is a system event that reaches every screen, sheet, cover and dialog, and the components dismiss the top surface with it already. That it exists and must not be swallowed is `touch-gestures`. iOS sends no such event: a full screen cover and an alert there end only through a control the app drew, which is what `nav-container` and `nav-modal` ask for. What is left here is what back means against the stack.
 
@@ -47,19 +47,19 @@ On Android back is a system event that reaches every screen, sheet, cover and di
 - From a top-level destination that is not the start destination, back unwinds to the start destination first, and only leaves the app from there. Dropping someone out of the app from the third tab ends the session by accident. That unwinding is the stack emptying, not back being repurposed.
 - Where an interception guards work that was typed and not saved, what happens to that work is `form-persist`.
 
-## `nav-back-control` A custom back control keeps the gesture it replaced
+## <Rule id="nav-back-control" description="A custom back control keeps the gesture it replaced" />
 
 On iOS the edge swipe that pops a screen is wired to the system's own back button. Hide that button or swap it out and the gesture leaves with it, silently: `navigationBarBackButtonHidden`, a custom `leftBarButtonItem`, `setNavigationBarHidden`. The screen still shows something that looks like back, so nothing is visible in a screenshot, while everyone who navigates by thumb has lost the fastest way out.
 
 Keep the system control. Where a custom one has to replace it, restore the interactive pop on that screen in the same place, and make sure the replacement still reads as back rather than as a new action.
 
-## `nav-location` Every screen says where it is
+## <Rule id="nav-location" description="Every screen says where it is" />
 
 There is no window title and no breadcrumb, so a screen that names nothing leaves its position to be inferred from the content. That inference fails fastest where it costs most: three levels down, on the screen a notification just opened, in an app that was closed a second ago.
 
 Every pushed destination carries a title naming what it is, and every top-level destination carries its own. Where more than one screen leads to this one, the back control names the destination it returns to instead of showing a bare arrow. Which top-level destination is selected stays visible throughout, which is `button-tabs`.
 
-## `nav-deeplink` Arriving in the middle still needs everything above it
+## <Rule id="nav-deeplink" evidence="device" description="Arriving in the middle still needs everything above it" />
 
 Phone apps are entered from outside constantly, and usually cold: notification, widget, share sheet, a link in a message, with the process dead and nothing in memory.
 
@@ -69,7 +69,7 @@ Phone apps are entered from outside constantly, and usually cold: notification, 
 - A target that no longer exists lands on the nearest real screen and says what happened; what that screen says is `state-error`.
 - The toolbar arrow on a screen entered from outside climbs this app's hierarchy. Wiring it to the same dismiss the device back calls hands the user back to the app they came from while pointing at this one.
 
-## `nav-tab-stack` Each top-level destination keeps its own stack
+## <Rule id="nav-tab-stack" description="Each top-level destination keeps its own stack" />
 
 Switching away and coming back returns to the screen that was left, not the root of that section. This is how people check one thing mid task and resume, and losing it costs them the work in progress on that branch.
 
@@ -77,19 +77,19 @@ The frameworks disagree on the default here, so it is a decision to make rather 
 
 The stability of the destination set itself belongs to `button-tabs`.
 
-## `nav-drawer` A drawer is not primary navigation on a phone
+## <Rule id="nav-drawer" description="A drawer is not primary navigation on a phone" />
 
 Navigation behind a hamburger costs a tap before it can even be read, and what people cannot see they do not use. The trigger also lives in the top corner, which is the hardest point on the screen to reach one-handed: `touch-reach`. iOS has no drawer convention at all, so a drawer there reads as a port.
 
 Material allows the modal drawer at a phone's width, and this skill overrules that, with the cost stated: a map nobody sees, behind a control in the hard region, paid on every session. Primary destinations are visible without a tap. Where the app has more sections than the bar holds, the overflow is a destination of its own: a screen with a title and a back path, not a panel sliding over the app. A drawer that survives is a secondary surface for account switching, rare settings or a long secondary list, and every job `PRODUCT.md` names is reachable without opening it.
 
-## `nav-search` Search becomes structure once a collection outgrows the thumb
+## <Rule id="nav-search" description="Search becomes structure once a collection outgrows the thumb" />
 
 There is no sidebar to park a filter tree in, and scanning by thumb gives out long before a list does. The trigger is what the collection is for: once people arrive at it to find one specific item rather than to browse, it needs search. Roughly 50 items is this skill's working number for where that flips, and an app whose content makes it lower or higher sets its own in `STACK.md`.
 
 - Search that spans the app is a top-level destination with its own stack, not a screen pushed onto whatever happened to be open. Which surface it becomes, and everything inside it, is `search-surface`.
 
-## `nav-restore` The process will be killed, and nobody asked for that
+## <Rule id="nav-restore" evidence="device" description="The process will be killed, and nobody asked for that" />
 
 Backgrounded apps get reclaimed, on both platforms, without warning. Coming back to a different screen than the one that was left is a bug even when the process died in between.
 

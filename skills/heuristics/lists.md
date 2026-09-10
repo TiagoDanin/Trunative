@@ -4,7 +4,7 @@ Most of a phone app is lists. It is the screen the user opens most, scrolls fast
 
 Loading, empty, error, offline and stale belong to `heuristics/states.md`. This file is what is specific to a collection: what a row is, how many exist at once, and what the top and the bottom of the list do.
 
-## `list-virtualise` Rows recycle, or the list breaks on real data
+## <Rule id="list-virtualise" evidence="device" description="Rows recycle, or the list breaks on real data" />
 
 Ten rows in a mockup and two thousand in production run the same code. A scrolling container wrapped around a mapped array constructs every row up front, keeps all of them alive, and misses the frame budget on the way, which `perf-frame` states. This is the single most reliable performance defect in generated mobile code.
 
@@ -20,7 +20,7 @@ Three things the recycler needs before it delivers anything. A key taken from th
 
 Putting a windowed list inside another scroller running the same direction cancels the windowing outright: the outer scroller asks for the full height, so every row is built and kept, and the primitive costs more than the plain column it replaced. The gesture half of that mistake is `scroll-nest`.
 
-## `list-density` A wall of identical rows is a missing hierarchy, not consistency
+## <Rule id="list-density" evidence="device" description="A wall of identical rows is a missing hierarchy, not consistency" />
 
 Material sizes its list item by content: 56dp for one line of text, 72dp for two, 88dp for three. iOS names no tiers, only the 44pt row it grows upward from. Take whichever set the stack belongs to and pick the height the content needs, instead of padding every row up to the tallest one in the list. These are density steps rather than touch targets, and the target floor is a separate number (`touch-floor`).
 
@@ -28,7 +28,7 @@ Inside the row there are usually three jobs: the thing itself, what qualifies it
 
 Let the rows differ where the content differs. An unread item outweighs a read one, a row with a picture is taller than a row without, and a group of two does not get the treatment a group of forty needs. Forty rows carrying three things each, identical in height, weight and color, force the user to read every one, which is slower than looking and slower still while walking. The exception is the row that carries one thing: a menu of single labels, each with its chevron, is uniform because the content is uniform, and ranking there invents a difference the screen does not have. Hierarchy is owed wherever a row holds two pieces of content or more.
 
-## `list-separator` One device separates rows, not three
+## <Rule id="list-separator" description="One device separates rows, not three" />
 
 Dividers, spacing and cards all answer the same question. Choose one per list, because on a phone a line that only repeats what the gap already said is width and ink spent for nothing. The grouped iOS list is not the thing being warned about: an inset rounded section with hairline rules between its rows is a single platform device, and it stays the right default for a settings or a form list. What is assembled from parts is a card per row that also carries an internal divider, dropped into a stack that is already gapped.
 
@@ -36,13 +36,13 @@ Dividers, spacing and cards all answer the same question. Choose one per list, b
 - **Dividers** suit dense uniform rows where the eye needs a line to track along. Where they are drawn by hand, in Compose or on the web, inset them to the text rather than to the leading icon and leave none after the final row. SwiftUI and `ListView.separated` already do both, so this is a review point only on the stacks that do not.
 - **Cards** suit rows that are genuinely separate objects carrying their own actions. One card per row across forty rows is forty containers, each spending side padding the content wanted.
 
-## `list-row` The row is one target, and every control inside it is another
+## <Rule id="list-row" description="The row is one target, and every control inside it is another" />
 
 That the row itself is a target, and how big it has to be, is `touch-floor`. What belongs to this file is what may sit inside it. A control living in the row is a second target on the same line: a favourite toggle, an overflow button, a checkbox. A chevron is not one of those, it is decoration on the row's own tap. Each real control takes its own hit area and its own dead space away from the row around it (`touch-spacing`), or the user opens a detail screen while trying to star something. Two controls is the ceiling; past that the row needs an overflow menu or a long press.
 
 A row that navigates, and toggles, and expands, is three gestures competing over 56dp of glass held in a moving hand. Give the row one meaning and put the rest behind a control.
 
-## `list-swipe` A swipe is a shortcut, never the only route
+## <Rule id="list-swipe" description="A swipe is a shortcut, never the only route" />
 
 Every stack draws them: `.swipeActions`, `SwipeToDismissBox`, `Dismissible`, a swipeable row. They are fast for the person who knows and invisible to everyone else.
 
@@ -53,7 +53,7 @@ Every stack draws them: `.swipeActions`, `SwipeToDismissBox`, `Dismissible`, a s
 - The horizontal gesture and the vertical scroll begin at the same point, so the horizontal one commits past a distance threshold instead of on sideways drift. The platform's own touch slop, about 8dp on Android, is the floor for that threshold, and anything under it fires during ordinary scrolling.
 - Drag to reorder falls under the same rule: a visible handle or a move action in the menu, not a long press nobody discovers.
 
-## `list-images` The row reserves the picture's space before the picture arrives
+## <Rule id="list-images" description="The row reserves the picture's space before the picture arrives" />
 
 Images reach a row late, out of order, and at whatever resolution the server holds.
 
@@ -63,7 +63,7 @@ Images reach a row late, out of order, and at whatever resolution the server hol
 
 Fixed dimensions is not the same as one aspect ratio for every list, and choosing the ratio and the crop is `icon-crop`.
 
-## `list-sections` Sections tell the user where they are
+## <Rule id="list-sections" description="Sections tell the user where they are" />
 
 Past a screenful or two, a list needs structure the user can navigate by: date, status, alphabet, whatever the order actually follows.
 
@@ -72,7 +72,7 @@ Past a screenful or two, a list needs structure the user can navigate by: date, 
 - One level of grouping. Nested sections in a column this narrow produce indentation nobody can follow.
 - Position is worth more here than anywhere else: somebody scrolls two hundred rows, opens one, and comes back to a list that has to be where they left it. What survives that trip, and the mechanism that carries it, is `state-interrupt`.
 
-## `list-end` The bottom of the list is a designed state
+## <Rule id="list-end" description="The bottom of the list is a designed state" />
 
 Pick one and commit to it.
 
@@ -83,7 +83,7 @@ Numbered pagination is a desktop control: there is nowhere on a phone to put pag
 
 The last row also has to clear whatever floats above the list, whether that is a fixed bar, a tab bar, a FAB or a mini player. `layout-chrome` owns that padding and the inset that belongs in it.
 
-## `list-refresh` Pull to refresh is one path to fresh data, not the path
+## <Rule id="list-refresh" description="Pull to refresh is one path to fresh data, not the path" />
 
 Use the platform control rather than a hand-built one (`refreshable`, `PullToRefreshBox`, `RefreshIndicator`, `RefreshControl`), so the threshold, the haptic and the animation match every other app on the device.
 
@@ -92,7 +92,7 @@ Use the platform control rather than a hand-built one (`refreshable`, `PullToRef
 - It does not replace refreshing on return, and it is not how a user recovers from a failed load. That is the error state's retry (`state-retry`).
 - Refreshing keeps the user's place: new items arrive without discarding the row currently under the thumb.
 
-## `list-select` Selection is a mode, and the screen says so
+## <Rule id="list-select" description="Selection is a mode, and the screen says so" />
 
 Bulk actions on a phone take over the screen, because there is no modifier key and no width for a permanent column of checkboxes.
 
@@ -102,7 +102,7 @@ Bulk actions on a phone take over the screen, because there is no modifier key a
 - The bulk action says what it did and offers undo, because one mis-tap here costs forty items instead of one (`touch-destructive`).
 - Select all in a list that is still paging means selecting what has loaded, and the label has to admit that.
 
-## `list-a11y` A row is one stop, not four
+## <Rule id="list-a11y" description="A row is one stop, not four" />
 
 A screen reader moves stop by stop and there is no pointer here to skip ahead with. A row left as its icon, then its title, then its subtitle, then its badge is four stops, so two hundred rows become eight hundred and the list stops being navigable long before it stops being correct.
 

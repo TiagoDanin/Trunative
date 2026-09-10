@@ -6,7 +6,7 @@ The ask belongs to `permissions.md`: what is requested, at which moment, after w
 
 Per-stack presence, status and accuracy APIs are in `references/capability-checks.md`, for one lookup rather than a read through.
 
-## `sense-states` Five states past the grant, and a granted boolean covers one
+## <Rule id="sense-states" evidence="device" description="Five states past the grant, and a granted boolean covers one" />
 
 A capability is not on or off. Five states exist whether or not anybody was ever prompted:
 
@@ -18,7 +18,7 @@ A capability is not on or off. Five states exist whether or not anybody was ever
 
 Count the branches around every capability the app touches. Granted against denied is one pair, it answers `perm-answers` and nothing here, and it is the whole integration in most generated code. Where the capability returns a value over time (the camera, the microphone, location, the motion sensors, a connected radio) each of the five is a different screen with a different thing for the user to do, so each needs its own branch or its own written reason for being folded into another. The rest answer from what the hardware is rather than from a note in the source: a vibration motor has no imprecise state to design.
 
-## `sense-absent` Ask the device before drawing the entry point
+## <Rule id="sense-absent" evidence="device" description="Ask the device before drawing the entry point" />
 
 One binary installs on a phone with three cameras and on one with no gyroscope, no barometer and no biometric reader. There is no build time answer to which; the app asks at runtime and gets a real no often enough to design for.
 
@@ -26,7 +26,7 @@ Query first, then decide whether the surface exists. When the answer is no, the 
 
 On Android this also decides distribution. A hardware feature declared as required removes the app from the store for every device without it, so anything the app runs without is declared not required and detected at runtime instead. A capability dragged in by a dependency ends up in that declaration too, which is `perm-inventory`.
 
-## `sense-off-system` Off at the system level is a different question from denied, and the app asks both
+## <Rule id="sense-off-system" evidence="device" description="Off at the system level is a different question from denied, and the app asks both" />
 
 From Android 12 a device-wide toggle gives every app a blank camera feed and silent audio while the permission still reads as granted, and rate-limits the motion sensors at the same time. Location services switched off at the OS level makes the last known location null, and switching them off clears the cached fix, so a device that answered a minute ago now answers with nothing.
 
@@ -35,7 +35,7 @@ Permission granted and service available are two reads, and the code that only d
 - Each answer has its own sentence and its own destination, and neither is a retry button. The permission route is the one `state-permission` already owns. Location services are a second route to a different page, the system's location settings, deep linked the same way. The device-wide camera and microphone toggle is a quick settings tile with nothing to link to, so that sentence names where the tile is instead of promising a link nobody can write.
 - A retry loop is the failure mode here. Nothing the app can do changes the answer, so a spinner that keeps trying is a screen that never resolves.
 
-## `sense-running` Say it is running, agreeing with the indicator the system already drew
+## <Rule id="sense-running" evidence="device" description="Say it is running, agreeing with the indicator the system already drew" />
 
 From iOS 14 the microphone shows an orange dot, the camera or camera with microphone shows a green one, and the orange becomes a square when Differentiate Without Color is on. From Android 12 the same use puts an icon in the status bar, moved into the top right corner when the app is immersive. The user sees these before they see anything the app draws.
 
@@ -44,7 +44,7 @@ From iOS 14 the microphone shows an orange dot, the camera or camera with microp
 - The indicator is never imitated. A dot of the same colour drawn somewhere else teaches the user to distrust the real one.
 - A capture the user did not start as an ongoing task ends with the surface that started it. One meant to outlive its screen (a voice recording, a route, a tracked run) carries the platform's ongoing surface for as long as it runs, which is `notify-ongoing`, and ends when the task does. What never ships is the third case: a capability still live with nothing on screen saying so, the platform reporting a capture the app has stopped mentioning. `perf-power` owns what it costs.
 
-## `sense-interrupted` The system takes the hardware back, and the take is what is at stake
+## <Rule id="sense-interrupted" evidence="device" description="The system takes the hardware back, and the take is what is at stake" />
 
 A call arrives during a recording, another app claims the microphone, the headphones come out and the audio route changes, the app goes to the background and the camera is released. `state-interrupt` covers what the view holds through that and the OS carries it for free; the capture session is not carried, and the user meets a recording that stopped without saying so and a take that is gone.
 
@@ -52,7 +52,7 @@ A call arrives during a recording, another app claims the microphone, the headph
 - What was already captured is kept, named and reachable. A partial take is worth more than a clean start, and a discarded one is unrecoverable.
 - Returning re-establishes the session and offers to continue. Resumption is offered rather than assumed, and never left as a dead preview with a shutter that does nothing.
 
-## `sense-accuracy` The uncertainty arrives with the value, and the screen shows it
+## <Rule id="sense-accuracy" evidence="device" description="The uncertainty arrives with the value, and the screen shows it" />
 
 Every fix comes with a horizontal accuracy radius in metres beside the coordinate, and the number is not the same measurement everywhere: Android reports it at the 68th percentile, the web at the 95th, and Apple as a radius of uncertainty. A threshold tuned against one of those is wrong against the others, and code that reads the coordinate and drops the radius is claiming a precision nobody offered.
 
@@ -63,7 +63,7 @@ The gap is wide. An approximate grant on Android covers roughly 3 square kilomet
 - Anything that needs precision says so on a reduced fix rather than computing quietly on it. That the feature runs on a reduced grant instead of routing to a denial is `perm-answers`.
 - The same applies to every other estimate: a heading before the compass is calibrated, a step count, a barometric altitude. Where the platform hands over an accuracy field, something on screen is derived from it.
 
-## `sense-preview` A live preview is a surface with a crop, not an image view
+## <Rule id="sense-preview" evidence="device" description="A live preview is a surface with a crop, not an image view" />
 
 The defaults disagree, so the fit is chosen rather than inherited. CameraX's `PreviewView` fills and crops by default, which shows the user a narrower frame than the one that gets captured and only admits it after the shutter. `AVCaptureVideoPreviewLayer` defaults the other way, fitting the frame inside its bounds, so a crop there is `resizeAspectFill` asked for on purpose; Flutter's `CameraPreview` fits as well. Whichever way it is set, what was framed is what is saved.
 
@@ -73,7 +73,7 @@ The defaults disagree, so the fit is chosen rather than inherited. CameraX's `Pr
 - It takes the safe area like any other content (`layout-insets`), and the shutter sits where a thumb reaches (`touch-reach`).
 - A scanner adds three things: a target to aim at, a bound on how long it tries before offering something else, and a route that does not need the camera at all, such as typing the code or picking an existing photo.
 
-## `sense-biometric` The system prompt is the surface, and the fallback is drawn rather than assumed
+## <Rule id="sense-biometric" evidence="device" description="The system prompt is the surface, and the fallback is drawn rather than assumed" />
 
 Never build a face or fingerprint screen. The prompt belongs to the platform and it is the only one the user has been trained to trust, so an imitation is a security problem the user has no way to see through. Face authentication in particular runs through the platform's authentication framework rather than an AR or face recognition library, and an account holder under 13 is authenticated some other way.
 
@@ -83,7 +83,7 @@ Never build a face or fingerprint screen. The prompt belongs to the platform and
 - Every biometric route has a second route to the same place that does not need the sensor, reachable in the same session. Faces get covered, hands get wet, and readers fail.
 - Whether this app asks for a check at all, and what that check protects, is `auth-biometric-session`. Android refuses to combine a custom negative button with the device credential option, so one of those is the fallback and the other does not ship.
 
-## `sense-haptic` The pattern the device cannot render is the one the design leans on
+## <Rule id="sense-haptic" evidence="device" description="The pattern the device cannot render is the one the design leans on" />
 
 `touch-feedback` sets the vocabulary: one meaning per pattern, nothing on scroll. This is the hardware underneath it, which varies more than any other output on the phone.
 
@@ -93,7 +93,7 @@ Never build a face or fingerprint screen. The prompt belongs to the platform and
 - Nothing fires while a reading is in flight: an exposure, a running video or audio recording, a motion sensor sample. The motor shakes the device the sensor is measuring. A confirmation after a scan resolves is the correct use of one, and on a scanner it is the only non-visual confirmation the surface has.
 - Either switch, the system's or the app's, can silence all of it, so a haptic never carries a message on its own.
 
-## `sense-motion` Motion sensors are data, not an input method
+## <Rule id="sense-motion" evidence="device" description="Motion sensors are data, not an input method" />
 
 Where the reading is the content the user came for, a heading, a tilt, the orientation of a camera held in space, the sensor drives the view and that is the whole feature. What does not ship is motion standing in for a control the finger already has: those gestures are hard to perform precisely, and they are difficult or impossible for anyone who cannot move the device freely.
 
@@ -102,7 +102,7 @@ Where the reading is the content the user came for, a heading, a tilt, the orien
 - A compass is wrong until it is calibrated, so a heading gets a calibration state before it gets a needle.
 - On mobile web the motion permission request has to be triggered by a real tap and the API is missing in some browsers, so the control that asks is one the user pressed, and the missing API is the absent state rather than a crash.
 
-## `sense-radio` An adapter that is off is not a permission that was denied
+## <Rule id="sense-radio" evidence="device" description="An adapter that is off is not a permission that was denied" />
 
 Bluetooth and NFC split the way the camera splits in `sense-off-system`: the permission reads as granted while the adapter is switched off, and that is a different sentence with a different move behind it. iOS raises its own system alert for a powered-off adapter and the app does not draw or control it, and Android answers with its own enable request rather than a screen the app owns.
 

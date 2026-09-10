@@ -4,7 +4,7 @@ A phone carries an ordered list of languages, a separate region, a calendar and 
 
 Shipping one language today is fine. Almost everything in this file costs nothing while the app has one language and is a rewrite once it has forty screens, which is the reason it belongs in the build step rather than in a later project.
 
-## `l10n-strings` No user-facing text lives in code
+## <Rule id="l10n-strings" description="No user-facing text lives in code" />
 
 Every string a person reads comes out of the catalogue under a key: a String Catalog on iOS, `strings.xml` on Android, ARB files in Flutter, locale files in a React Native or web project. A literal sitting in a widget is what this file is here to find, and it survives review because nothing on the device gives it away: the screen looks finished until the phone is set to another language and one label stays behind in English.
 
@@ -14,7 +14,7 @@ Every string a person reads comes out of the catalogue under a key: a String Cat
 - Machine-readable strings do not: keys, URLs, analytics event names, log lines. Those stay literal.
 - Every key carries a comment saying where it appears and what it does. A translator sees the string and nothing around it.
 
-## `l10n-direction` Leading and trailing, never left and right
+## <Rule id="l10n-direction" evidence="device" description="Leading and trailing, never left and right" />
 
 Under a right to left language the layout mirrors as a whole: the back chevron, the row disclosure, the progress fill, the drawer edge, the order of everything sitting in a row. The system does this for free, but only for the attributes that describe direction rather than sides.
 
@@ -24,7 +24,7 @@ Under a right to left language the layout mirrors as a whole: the back chevron, 
 - A value inserted into a translated sentence carries its own direction. A name, an ID or a file name dropped into an Arabic sentence drags the punctuation around it to the wrong end unless it is wrapped for bidirectional text.
 - The back control mirrors with everything else, and on iOS the edge that pops the screen mirrors with it, so the interactive pop is a swipe in from the trailing edge.
 
-## `l10n-no-mirror` Some things are physical and do not turn around
+## <Rule id="l10n-no-mirror" evidence="device" description="Some things are physical and do not turn around" />
 
 Mirroring is the default. These are the exceptions, and each one gets pinned to an absolute direction on purpose:
 
@@ -38,13 +38,13 @@ An arrow decides its own case: an arrow that means forward or back mirrors, an a
 
 Phone numbers are laid out left to right in every language, including the right to left ones.
 
-## `l10n-expansion` The label you sized is the shortest one it will ever be
+## <Rule id="l10n-expansion" evidence="device" description="The label you sized is the shortest one it will ever be" />
 
 Budget by the length of the source string, because the short ones grow the most. Up to 10 characters, expect two to three times the width. From 11 to 20, about double. From 21 to 30, three quarters again. From 31 to 50, half again. From 51 characters up it settles near a third more. Chinese and Japanese go the other way and leave a button looking half empty.
 
 The breakage is `type-strings` and `layout-width`. What this rule adds is which strings are at risk: a tab label, a chip and a button verb are the shortest strings in the app, so they are the ones that double. Decide per label whether it wraps to a second line, steps down the scale, or moves to a stacked layout, and never let it truncate the verb (`button-label`).
 
-## `l10n-format` The locale formats it, not a pattern someone typed
+## <Rule id="l10n-format" description="The locale formats it, not a pattern someone typed" />
 
 Dates, times, numbers, currency, percentages, byte counts, measurements and durations all come from the platform formatter carrying the user's locale, a value the device already holds and the reader has already set: `formatted(.currency(code:))` and the `FormatStyle` family on iOS, `NumberFormat` and `DateFormat` on Android and in Flutter's `intl`, `Intl.NumberFormat` on the web.
 
@@ -53,7 +53,7 @@ Dates, times, numbers, currency, percentages, byte counts, measurements and dura
 - Currency is a code and an amount handed to a formatter, which decides the symbol, which side it sits on, and the separators. A hardcoded `$` is a bug in two directions at once.
 - Units follow the region's measurement system, which is not the same setting as the language. Someone reads Japanese and lives in Germany.
 
-## `l10n-plurals` A count and a string cannot be glued together
+## <Rule id="l10n-plurals" description="A count and a string cannot be glued together" />
 
 Plural forms live in the platform's plural resource: `<plurals>` on Android, read through `pluralStringResource` in Compose, the plural entries in a String Catalog or stringsdict on iOS, `Intl.plural` in Flutter. Six categories exist across languages, `zero`, `one`, `two`, `few`, `many` and `other`, and which one a number selects is a fact about the language rather than about the number.
 
@@ -62,7 +62,7 @@ Plural forms live in the platform's plural resource: `<plurals>` on Android, rea
 - If the sentence does not contain the number, it is not a plural. Use an ordinary key.
 - Gender and any other grammatical selection go through the same resource, never through string surgery in the app.
 
-## `l10n-script` The face has to have the letters, and the line has to have the room
+## <Rule id="l10n-script" evidence="device" description="The face has to have the letters, and the line has to have the room" />
 
 `type-face` picks the family. This is whether it can draw the languages the app ships.
 
@@ -70,21 +70,21 @@ Plural forms live in the platform's plural resource: `<plurals>` on Android, rea
 - Non-Latin scripts are taller and want more space between lines: Thai, Devanagari and Arabic in a Nastaliq face all clip inside a box measured against English. Vietnamese does the same without leaving the Latin alphabet, because its tone marks stack above and below the vowel.
 - So the leading is a ratio of the font size rather than a point value, taking the ratio `type-roles` sets for that role, and the box it sits in follows its content (`layout-width`).
 
-## `l10n-personal` Names, addresses and phone numbers have no universal shape
+## <Rule id="l10n-personal" description="Names, addresses and phone numbers have no universal shape" />
 
 - One field for the full name, in the order the person types it. Two required fields for a first and last name shut out anyone with a single name and misfile anyone whose family name comes first. They ship only where an outside format demands the split, a ticket, a KYC check or a card network, and `STACK.md` names which one.
 - Address parts follow from the country, which is why the country is picked first. A required postcode, a dropdown of US states and a fixed city, state and zip row are one country's paper form.
 - Deriving a city and a state from a postal code, which `form-count` asks for, is a prefill in the countries whose postal system carries it, never a field taken away from the rest. The device region is where the country guess comes from and not where the answer comes from, since people travel and ship abroad.
 - A phone number keeps its country code and is not forced through a fixed mask. Validate it loosely and format it for display. Formatting as it is typed is `form-input`, and the mask it uses belongs to the country the number is in. The keyboard under it is `touch-keyboard`.
 
-## `l10n-collate` A to Z is not the same alphabet everywhere
+## <Rule id="l10n-collate" description="A to Z is not the same alphabet everywhere" />
 
 Sorting display names by code point puts accented words after Z, splits the cases apart, and produces an order no reader recognises. Use the platform's locale-aware collator: `Collator` on Android, `localizedStandardCompare` on iOS.
 
 - Section headers and the fast-scroll rail down a long list come from that collator, `UILocalizedIndexedCollation` where iOS builds the index for you, never from the first character of the string. Ch, Ñ and Ø are letters in their own right where the list is being read, and this is what `list-sections` is built from.
 - Search matches without regard to case, accents or character width, so typing `jose` finds José.
 
-## `l10n-per-app` The app language and the system language are two different facts
+## <Rule id="l10n-per-app" description="The app language and the system language are two different facts" />
 
 Both platforms let someone point a single app at a language of its own, so the app cannot read the system language and assume that is what it is rendering in.
 
@@ -93,13 +93,13 @@ Both platforms let someone point a single app at a language of its own, so the a
 - So store resources under the widest parent dialect the strings are correct for, and a device asking for a country you never shipped still resolves to something readable.
 - An in-app language picker that writes to your own preference store leaves the app disagreeing with the OS about what language it is in. Where one is offered, it writes through the platform API.
 
-## `l10n-change` The language can change while the app is running
+## <Rule id="l10n-change" description="The language can change while the app is running" />
 
 - The locale is read where it is used. A `Locale` captured at launch, a formatter built once inside a singleton, or a string preformatted into a cache leaves the screen rendering half in each language after the switch.
 - Changing the app or the system language recreates the screen on Android the way a rotation does, so what the user had on it comes back with it, which is `state-interrupt`.
 - Anything told the locale once is told it again: the push token registration, the requests that return user-facing text, and any preference the backend stores.
 
-## `l10n-pseudo` Run the fake languages before the real ones
+## <Rule id="l10n-pseudo" evidence="device" description="Run the fake languages before the real ones" />
 
 Most of this is findable without a translator, on a device, before any string is sent out.
 

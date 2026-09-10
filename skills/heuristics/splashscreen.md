@@ -8,13 +8,13 @@ One naming trap sits under the whole subject and it breaks rules written from ei
 
 The branded moment that happens once, inside the app, is `onboard-splash`. The wait that continues after this surface is gone is `state-loading`. Per stack keys, attributes and dismissal APIs are in `references/launch-surface.md`, for one lookup rather than a read through.
 
-## `splash-system` The system draws it, the app only configures it
+## <Rule id="splash-system" description="The system draws it, the app only configures it" />
 
 There is no code running on this surface. On iOS it is a property list dictionary or an inert storyboard with no outlets, no actions and no custom classes. On Android 12 and up it is a set of theme attributes, and the compat library puts the same surface back on older releases from a single theme.
 
 A screen the app draws is a different thing wearing the same name. A splash route in the navigator, a dedicated splash Activity, a `<Splash />` component with its own timer: each of those runs *after* launching has already finished, so it adds time to the open rather than covering it. The enter animation belongs to the system and cannot be replaced.
 
-## `splash-double` One surface between the icon and the first screen
+## <Rule id="splash-double" description="One surface between the icon and the first screen" />
 
 Count them. The answer is one.
 
@@ -22,7 +22,7 @@ Two is what ships when a dedicated splash Activity survives into Android 12: it 
 
 Where a routing activity has to stay, hold the system surface across it rather than drawing a second one, so the same surface transfers to the destination.
 
-## `splash-contents` What may be on it is narrower than the design assumes
+## <Rule id="splash-contents" description="What may be on it is narrower than the design assumes" />
 
 Two element sets, one per platform. One asset shipped to both is wrong on one of them.
 
@@ -31,7 +31,7 @@ Two element sets, one per platform. One asset shipped to both is wrong on one of
 
 Neither platform gets a tagline, a version string, a copyright line or a loading message.
 
-## `splash-match` It matches the frame that replaces it
+## <Rule id="splash-match" evidence="device" description="It matches the frame that replaces it" />
 
 The background is the first real screen's background token, at the same value, in the same appearance. Not the brand color, unless those are the same thing. Anything that differs shows up as a flash on every open, which is the exact opposite of what the surface is for.
 
@@ -39,13 +39,13 @@ Orientation follows what the app itself supports. An app that runs in both orien
 
 On Android the background reaches the surface through the splash screen attributes. A launch theme that sets `android:windowBackground` is the pre Android 12 pattern, and from Android 12 the system discards that theme and draws its own default splash instead, so the color that was matched so carefully never appears at all.
 
-## `splash-no-progress` Nothing on it measures anything
+## <Rule id="splash-no-progress" description="Nothing on it measures anything" />
 
 No spinner, no progress bar, no percentage, no status line naming a step. The surface is a static image the system composites, with no access to the work happening behind it, so any number written on it was invented. A staged sequence of stages and percentages is a script driven by a timer, and it reports on nothing.
 
 Once the app is stable enough to take the surface down, there is nothing left to spin about. A spinner that feels necessary here is the signal that the surface was held too long: `splash-hold`.
 
-## `splash-hold` Hold it only for work that has a bound
+## <Rule id="splash-hold" description="Hold it only for work that has a bound" />
 
 What legitimately holds it: a session token read from local storage, a theme or token set resolving, a font loading. Local, fast, and finite.
 
@@ -53,13 +53,13 @@ What does not: a network request. There is no bound on one, and on iOS a launch 
 
 The budget the hold is spent from is `perf-cold-start`. The moment the work stops being local and bounded, take the surface down and let the real screen do the waiting with a placeholder, which is `state-loading`. Every hold mechanism takes a condition that has to become false, so write the failure path first: name what flips it when the read fails, returns nothing, or hangs.
 
-## `splash-no-floor` No artificial minimum
+## <Rule id="splash-no-floor" description="No artificial minimum" />
 
 A timer that keeps the surface up for a fixed two seconds so a logo can be admired is time taken from the user on every open, several times a day, forever. Ready in 180 ms means shown for 180 ms.
 
 Read the dismissal path. Any duration in it that is not the platform's own fade is a floor, and it is the single most common thing added to a launch surface that should not be there.
 
-## `splash-appearance` It cannot read a theme, translate, or scale
+## <Rule id="splash-appearance" evidence="device" description="It cannot read a theme, translate, or scale" />
 
 It resolves before the app runs, which decides three things rather than one.
 
@@ -67,25 +67,25 @@ It resolves before the app runs, which decides three things rather than one.
 - No text is a localization rule, not a taste one. The string layer cannot reach this surface, so anything written on it ships in one language to everyone: `l10n-strings`.
 - Nothing on it responds to the text size setting either, which is the second reason nothing on it is text: `type-scaling`.
 
-## `splash-animation` Movement on it extends the wait it exists to hide
+## <Rule id="splash-animation" description="Movement on it extends the wait it exists to hide" />
 
 The iOS launch screen is static and has no mechanism to be otherwise. On Android the centre icon may be an animated vector, under three limits: at most 166 ms of delay before it starts, which the platform bounds; at most 1000 ms of animation, which is this file's ceiling; and a loop rather than a longer one shot if the app is still not ready. The declared duration only reports the animation's length to a custom exit. It changes neither the animation nor how long the surface stays up.
 
 Taking over the exit animation makes the app responsible for removing the surface, and a path that skips the removal leaves it on screen permanently. That exit is also the only movement here `motion-reduced` can reach: the enter animation belongs to the system, which answers the device's animation setting on its own, and no app code is running yet to read a flag.
 
-## `splash-daily` It belongs to the cold open, not the first one
+## <Rule id="splash-daily" description="It belongs to the cold open, not the first one" />
 
 Three kinds of open, and this surface belongs to two of them. Cold, with no process: it shows. Warm, process gone but the app in the recents list: it shows. Hot, coming back from the background with everything alive: it does not, and a build that draws its own splash on resume has turned a free return into a wait.
 
 So nothing on it is a first run event. No welcome, no version notice, no changelog, no tip. Whatever appears here appears on the thousandth open as well.
 
-## `splash-entry` It hands over to whatever the launch was for
+## <Rule id="splash-entry" description="It hands over to whatever the launch was for" />
 
 Most opens are not an icon tap. A notification, a deep link, a widget and a share sheet all start the same cold launch, and the surface comes down onto whatever the app draws first. Draw the home screen and push the target after it, and the user watches a second transition, which is precisely the transition this surface existed to hide.
 
 So the destination is resolved before the first draw, from the intent, the launch URL or the payload, rather than in an effect that runs once a screen is already up. Every cold entry point the app declares is one of these. What sits underneath the destination is `nav-deeplink`, and the payload that names it is `notify-destination`.
 
-## `splash-first-frame` The frame after it is already the screen
+## <Rule id="splash-first-frame" evidence="device" description="The frame after it is already the screen" />
 
 The handoff is invisible only if what replaces the surface is the screen and not a stand in for it. That frame already carries the chrome (navigation bar, tab bar, header), sits inside the safe area (`layout-insets`), and shows the content as placeholders in its real shape (`state-loading`).
 

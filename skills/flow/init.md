@@ -4,7 +4,7 @@ Runs once per project, and again whenever `doctor` fails. Nothing else in the fl
 
 ## Asking
 
-This step runs on answers, not on guesses. Every decision below that the code cannot settle is a question for the user, asked one at a time. A question is written as an `<Ask>` block: one decision, the options in order, the recommended one first and marked, each option phrased as what it costs the design. How a block reaches the user depends on the harness and is written once, in `references/annotations.md`.
+This step runs on answers, not on guesses. Every decision below that the code cannot settle is a question for the user, asked one at a time: one decision per question, the options in the order given, the recommended one first and named as the recommendation, and each option phrased as what it costs the design.
 
 The user chooses. A recommendation is a default worth stating, not a decision already taken, and an answer that goes against it wins with no argument back.
 
@@ -62,6 +62,11 @@ Read the codebase first and derive the tokens from what is actually there. Ask t
 
 **A stated constraint moves the recommendation off Flutter**, and only a stated one does. Never a preference of yours. When code already exists, or the team already ships in another stack, use what is there and do not ask at all. Otherwise:
 
+<If stack="flutter, expo, react-native, swiftui, compose, web">
+This copy of the skill was built for one stack, which is the answer. Record it in `STACK.md` with the reason it was chosen, and do not ask.
+</If>
+
+<If stack="undecided">
 <Ask header="Stack">
 There is no code to read yet, so the stack is a decision rather than an observation. Which one?
 
@@ -81,8 +86,9 @@ There is no code to read yet, so the stack is a decision rather than an observat
 **Mobile web.** The target is a website. The browser owns gestures, insets and the keyboard, and the heuristics apply to what it leaves.
 </Option>
 </Ask>
+</If>
 
-Write the answer into `STACK.md` as its first line, `Stack:` followed by one of the values `references/annotations.md` lists (an Expo project writes `expo`, a bare React Native one writes `react-native`), because every `<If stack>` block in this skill is answered from that line. Under it, the reason, naming the constraint that moved the recommendation when one did. A stack chosen off the recommendation and a stack chosen against it are different facts, and review needs to tell them apart.
+Write the answer into `STACK.md` as its first line, `Stack:` followed by exactly one of `flutter`, `expo`, `react-native`, `swiftui`, `compose` or `web`, because that line is what decides which copy of this skill the project installs next. Under it, the reason, naming the constraint that moved the recommendation when one did. A stack chosen off the recommendation and a stack chosen against it are different facts, and review needs to tell them apart.
 
 ## 3. Check the project is not wearing another app's identity
 

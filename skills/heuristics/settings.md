@@ -6,7 +6,7 @@ On a phone that costs more than it costs anywhere else. Opening settings suspend
 
 Two neighbours own things that look like they belong here. Text size, bold text, contrast, reduced motion, language and region are system settings the app reads, under `a11y-settings` and `l10n-per-app`, and a second copy inside the app is the defect `set-system-owned` names. How a row is worded is `copy.md`.
 
-## `set-default-first` A setting is a default nobody was willing to pick
+## <Rule id="set-default-first" description="A setting is a default nobody was willing to pick" />
 
 For every row, write down the value most people would keep, and why, in `STACK.md` beside the sync marking `set-sync` already asks for there, so one table holds the key, its default, the reason, and device-local against account-level. The row survives only if two reasonable people would keep different values and nothing the app can observe says which of them is in front of it.
 
@@ -14,13 +14,13 @@ For every row, write down the value most people would keep, and why, in `STACK.m
 - A default is not a coin toss. It is the value that is quiet, cheap in battery and data, safe to be wrong about, and reversible with one tap.
 - Count the rows in the whole tree, subscreens included. That count is the number of decisions handed back to the user, and it is a finding about the product before it is a problem with the screen.
 
-## `set-in-context` What gets changed often is not a setting
+## <Rule id="set-in-context" evidence="device" description="What gets changed often is not a setting" />
 
 Sort order, filter, list density, playback speed, muting this one conversation, the unit on this one chart: each belongs on the screen it changes, where the result is visible while the choice is made. Filed under settings instead, it makes somebody leave the thing, guess, and come back to find out what happened.
 
 Settings holds the rare and the app-wide. The test runs one way only: a control whose effect is visible on one particular screen belongs on that screen. Run backwards it deletes settings entirely, because a notification preference, a unit, a data saver or a privacy choice has no single screen to show its effect on, and those are exactly what the screen is for.
 
-## `set-system-owned` A copy of a system setting is a bug, not a convenience
+## <Rule id="set-system-owned" description="A copy of a system setting is a bug, not a convenience" />
 
 An app-level switch for something the OS already owns tells the user that the system's own choice may not apply here, and the two go out of sync the first time either one is touched.
 
@@ -37,7 +37,7 @@ One override is worth building rather than reading: appearance. Both platforms a
 
 One of these is not optional. An app that asked for the notification permission carries an in-app place where that answer can be changed, and on both platforms that place is a link into the system's notification settings rather than a second switch sitting beside the real one. What the channels behind it are is `notify-channels`.
 
-## `set-shape` Ten rows is the ceiling, and frequency is the order
+## <Rule id="set-shape" evidence="device" description="Ten rows is the ceiling, and frequency is the order" />
 
 - Group under a heading with a divider, around a job the user recognises rather than the module that implements it. A group of one is not a group. Sections are `list-sections`.
 - Order by how often something is changed, most changed at the top. Alphabetical and source order are both the absence of a decision.
@@ -46,28 +46,28 @@ One of these is not optional. An app that asked for the notification permission 
 - A feature screen whose whole feature can be turned off carries one main switch, at the top, above everything it governs. The rows under it stay visible and disabled rather than vanishing and reflowing the screen under a thumb already on its way down, and a disabled row says what turns it back on.
 - Repeating one setting in two places is allowed when two different situations send people looking in two different places. It is one setting on one subscreen with two entry points, never two controls writing the same value, and where what is repeated is a whole feature, that one control is its main switch.
 
-## `set-status` Every row shows its current value without being opened
+## <Rule id="set-status" description="Every row shows its current value without being opened" />
 
 Title, then the value it is currently set to, on the row itself. In one column this is the whole difference between reading the screen and opening six subscreens to find out how the app is configured.
 
 - The value is a value, not the title again. Sync, Wi-Fi only. Not Sync, On.
 - A switch is its own value, and anything that opens a subscreen states its value beside the chevron. The row is one target and any control on it is another, under `list-row`.
 
-## `set-controls` Two shapes carry nearly all of it
+## <Rule id="set-controls" description="Two shapes carry nearly all of it" />
 
 - **On or off:** a switch on the row. A checkbox is for the negative case, restricting or blocking something, where a switch would have to be labelled with a "don't" and read backwards.
 - **One of several:** a subscreen or a sheet with the options as rows. A menu that drops open under the finger is covered by that same finger, and it hides how many options exist until it is opened.
 - Sliders and free text fields are the exceptions, each one costing a fine gesture or a keyboard, and each shows its current value as text next to it.
 - A row that leaves the app for a web page says so before it is tapped. A settings screen assembled out of links is a website wearing a title bar.
 
-## `set-effect` Instant or saved, and never both on one screen
+## <Rule id="set-effect" description="Instant or saved, and never both on one screen" />
 
 - **Instant:** the change is stored and applied as it is made, with no Save. There is no Cancel either, so nothing that cannot be undone by moving the control back belongs on an instant screen.
 - **Saved:** for values that only mean something as a set, such as an address or a server and its credentials. One commit action, the typed input surviving a failed commit under `form-submit`, and leaving with uncommitted changes asks first.
 - The mixed screen is the defect: a switch that applies immediately sitting above a Save button, where nothing on the screen says which of the two rules the switch is following. It is what a generated settings screen produces by default, and the back gesture makes it worse, because the user can leave at any moment with no OK button in the way.
 - A write that failed reports at the control that failed, under `fb-place`, and that control returns to the value actually stored rather than sitting on the one that did not take.
 
-## `set-wired` A control nothing reads is a picture of a control
+## <Rule id="set-wired" evidence="device" description="A control nothing reads is a picture of a control" />
 
 A settings screen generated from a feature list is a column of switches bound to screen-local state. They move under the thumb, they store nothing, and no code anywhere asks what they are set to. The screen looks finished, which is why this one survives to release.
 
@@ -75,7 +75,7 @@ A settings screen generated from a feature list is a column of switches bound to
 - Every read states the value to use when the store answers with nothing, because it will: first launch, a reinstall, a store not ready yet. What came back empty is never written back as though the person had chosen it.
 - Kill the process and open the screen again. A preference that did not survive that was never stored, whatever the switch was showing.
 
-## `set-sync` Say what follows the account and what stays on this phone
+## <Rule id="set-sync" description="Say what follows the account and what stays on this phone" />
 
 A preference that silently appears on the other device, or silently does not, is a bug report either way.
 
@@ -84,7 +84,7 @@ A preference that silently appears on the other device, or silently does not, is
 - Two devices will write the same preference at different moments, so last write wins is a decision to make rather than a default to inherit, under `off-conflict`.
 - What survives signing out is already ruled by `auth-signout`.
 
-## `set-destructive` The one-way rows sit apart from the weekly ones
+## <Rule id="set-destructive" description="The one-way rows sit apart from the weekly ones" />
 
 Clear cache, remove downloads, reset settings, leave the group, sign out, delete the account. Distance is the mechanism and the confirmation rules are `touch-destructive`.
 
@@ -92,11 +92,11 @@ Clear cache, remove downloads, reset settings, leave the group, sign out, delete
 - Each one names what it removes and how much of it, in the unit the person counts in: delete 1.2 GB of downloaded episodes, not clear data.
 - Reset states its scope and keeps to it, meaning this group of settings rather than everything the app holds.
 
-## `set-search` A settings tree that needs search is telling you something first
+## <Rule id="set-search" description="A settings tree that needs search is telling you something first" />
 
 The trigger is depth, not taste: the moment one row sits three levels below the root, nobody navigates to it any more, they hunt for it. Depth that `set-shape` produced by itself does not count toward that, because an overflow subscreen and an Advanced section are its fix for a crowded screen rather than evidence of a deep tree. Then the root gets a field that matches row titles, group names and current values, and lands on the subscreen with the row it found marked. Which surface that field is and how it behaves is `search-surface`. Read the finding before shipping the fix, though: search makes a deep settings tree survivable, it does not make it right, and the row count that drove it there is the count `set-default-first` is asking about.
 
-## `set-account-exit` Settings is where people go when they want out
+## <Rule id="set-account-exit" description="Settings is where people go when they want out" />
 
 Whatever else it holds, this is the screen somebody opens to stop paying, stop being sent things, or stop having an account. Burying any of them costs goodwill, and burying most of them costs a store review as well.
 
@@ -104,7 +104,7 @@ Whatever else it holds, this is the screen somebody opens to stop paying, stop b
 - A subscription sold inside the app carries a row here that manages and cancels it. Play names the missing link on the account settings screen or its equivalent as a violation, and takes either the Subscription Center at `play.google.com/store/account/subscriptions` or that same address carrying `sku` and `package` for the one subscription the row is about; on iOS the row opens the system's own sheet through `AppStore.showManageSubscriptions(in:)` from iOS 15.
 - The privacy policy is reachable from inside the app rather than only from the store listing, and that one is a review requirement rather than a courtesy. The terms and a way to withdraw any consent the app collected sit here too, by this skill's placement decision: what is required of the withdrawal is that it is easy to reach and easy to understand, and settings is where this skill puts it.
 
-## `set-diagnostics` The version, and a way to report something
+## <Rule id="set-diagnostics" description="The version, and a way to report something" />
 
 The version and build are the first thing a support reply asks for, and somebody has to be able to read them out loud off a phone they are holding at arm's length. They go on an About subscreen with the licences, one level down, rather than taking a row at the top from something adjustable. Beside them sits one route to support that attaches the version, the device and the locale by itself: a report typed with a thumb will not carry them, and without them it cannot be answered.
 

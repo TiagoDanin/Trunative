@@ -4,7 +4,7 @@ Scrolling is the movement a phone gets the most of. The screen is a few hundred 
 
 This file is the scroll itself: its axis, its position over time, the chrome that moves with it, and the effects the platform owns. The collection inside the scroll is `heuristics/lists.md`. The column it runs in, the bars pinned over it and the insets around it are `heuristics/layout.md`.
 
-## `scroll-nest` Same-axis nesting needs a wired handoff, and the fling is part of it
+## <Rule id="scroll-nest" evidence="device" description="Same-axis nesting needs a wired handoff, and the fling is part of it" />
 
 Whether a same-axis nest is allowed at all is `layout-column`. This rule is what has to hold once one is: the two scrollers are connected, so at every moment a delta has one owner rather than two competing for it. Android's collapsing app bar is that arrangement and works for exactly that reason, while a scroll view hand-placed inside another of the same orientation is the same shape with nothing joining the halves.
 
@@ -18,7 +18,7 @@ Three places the wiring is missing and the arrangement still compiles:
 
 A windowed list inside a plain scroller is a different failure and `list-virtualise` owns it.
 
-## `scroll-affordance` The edge says there is more
+## <Rule id="scroll-affordance" evidence="device" description="The edge says there is more" />
 
 Touch scroll indicators appear during the drag and fade, so on a still screen there is nothing telling the user the region moves. The content has to say it: let the next item be cut by the edge it continues past, rather than ending the visible set flush against the margin. A horizontal row of cards whose last card lands exactly at the padding reads as a complete set, and most people never drag it.
 
@@ -26,7 +26,7 @@ A paged horizontal scroll is the exception that needs a control instead. On a ph
 
 The stock page indicator is a control, not a read-out: it handles its own touches, and its hit area is the whole control rather than one dot, so nothing in it needs inflating and working tap-to-page behaviour is not a defect. A row of dots assembled by hand has only the target its author gave it, and that one owes `touch-floor`.
 
-## `scroll-collapse` What collapses is chrome, never the last way out
+## <Rule id="scroll-collapse" description="What collapses is chrome, never the last way out" />
 
 The two platforms hand you opposite starting points. On iOS a large title shrinks to a standard title as scrolling begins and returns at the top, with no work. On Android nothing collapses unless it is asked to: the scroll behaviour parameter on every Material 3 top app bar defaults to none, and in the view system the scroll flags default to `noScroll`, while Google's own layout guidance says the bar should collapse. So on Android this is a decision, and which behaviour is chosen has consequences.
 
@@ -37,13 +37,13 @@ An enter-always bar comes back on any downward drag. An exit-until-collapsed bar
 - The collapse position is saved state, so rotation does not re-expand a bar over content the user had scrolled past. Material's app bar state carries the offset for this.
 - Material disables the scroll behaviour on its bottom app bar while touch exploration is running, and applies no such guard to the top bars, so write that guard for a top bar that hides a control. A collapse is reached by dragging, and a control that only returns after a drag has no route for someone who does not drag (`a11y-gesture`).
 
-## `scroll-edge` The line between content and chrome is drawn by the platform
+## <Rule id="scroll-edge" description="The line between content and chrome is drawn by the platform" />
 
 A bar pinned over a scroll has two conditions, content resting at the edge and content passing underneath, and both platforms already decide what each looks like. iOS gives a bar a separate scroll edge appearance and switches to it the moment scrolled content reaches the bar, so a bar transparent at rest picks up its background by itself. Android's app bar lifts when content scrolls under it, taking a container surface color as it does, and that behaviour is on by default.
 
 Take the transition from there. A shadow painted by hand, a divider pinned under the bar, and a bar left permanently opaque all trade a conditional behaviour for a fixed one: the opaque bar spends the edge-to-edge look while nothing is even scrolled, and the drawn line stays put at the top where the platform would have removed it. Apply one such effect per scroll view, and leave the status bar area translucent so content reads as passing under the bar rather than being cut off by it.
 
-## `scroll-anchor` Nothing arrives above the reading position
+## <Rule id="scroll-anchor" evidence="device" description="Nothing arrives above the reading position" />
 
 This is the defect that makes people lose their place. An image finishing its decode, a banner resolving, a consent strip appearing, or a page of older messages prepending: each one inserts height above the viewport and pushes the sentence being read off the top. One column means the insertion has nowhere to go sideways, so it moves the whole screen at once, and it lands while the thumb is still travelling.
 
@@ -53,7 +53,7 @@ Where the insertion is real rather than late, the anchoring is the framework's j
 
 Content appended below the viewport is free. Refreshing in place keeps the row under the thumb, which is `list-refresh`.
 
-## `scroll-restore` The place comes back keyed to the item, not to the index
+## <Rule id="scroll-restore" evidence="device" description="The place comes back keyed to the item, not to the index" />
 
 Restoration is ordinal by default, and that default is the bug. A Compose lazy list does keep the key of its first visible item in memory, which is what lets it stay on the same row when items are added or removed above it while the screen is alive. What it writes to saved state is two integers: the index of the first visible item and its pixel offset. So the identity is there until the process dies and absent after it, and in a list whose items were never given keys it is absent from the start. Either way the list comes back at whatever now sits at that index, which after a re-sort or an insertion at the top is a different piece of content. RecyclerView admits the same problem from the other side with a restoration policy that withholds state until the adapter has items, because index 40 is meaningless during the first layout of an asynchronously loaded list.
 
@@ -64,13 +64,13 @@ Restoration is ordinal by default, and that default is the bug. A Compose lazy l
 
 Which screen comes back is `nav-restore`. Unfinished input is `form-persist`.
 
-## `scroll-top` Returning to the top is a system gesture on iOS and yours to build on Android
+## <Rule id="scroll-top" description="Returning to the top is a system gesture on iOS and yours to build on Android" />
 
 On iOS the status bar tap does it, it is on by default, and it breaks quietly: on iPhone the gesture has no effect when more than one scroll view on screen still has it enabled. A horizontal carousel inside a feed is enough to kill it. Turn it off on every scroller except the one the screen is about.
 
 Android publishes no equivalent gesture, so a screen whose scroll has no fixed end builds the affordance: a tap on the already-selected tab, or a control that appears once the user is far enough down. It is sized to the touch floor (`touch-floor`), and it arrives at the top without a long animated ride through everything in between.
 
-## `scroll-programmatic` Code never moves the screen under a finger that is moving it
+## <Rule id="scroll-programmatic" description="Code never moves the screen under a finger that is moving it" />
 
 A touch becomes a scroll after a small amount of travel, 8 dp by the Android default and adjustable per device, which means the user is scrolling well before anything looks like a scroll. A programmatic scroll issued in that window takes the screen away from a hand that is already using it.
 
@@ -79,7 +79,7 @@ A touch becomes a scroll after a small amount of travel, 8 dp by the Android def
 - Animate only across a short distance. An animated scroll to a distant index rides through everything between and lasts as long as the distance. Jump instead, and let the destination be the first frame the user sees.
 - Reduced motion turns the animated ones into jumps (`motion-reduced`).
 
-## `scroll-overscroll` The end-of-content effect belongs to the operating system
+## <Rule id="scroll-overscroll" description="The end-of-content effect belongs to the operating system" />
 
 Android 12 replaced the edge glow with a stretch that bounces back on drag and on fling, for every app on the device. iOS bounces elastically and expects apps to keep that behaviour. In both cases the scrolling container already provides it, so a hand-built rubber band is a second bounce arguing with the first: it starts at a different velocity and settles on a different curve, and it reads as a rendering fault rather than as a style.
 
@@ -88,7 +88,7 @@ Android 12 replaced the edge glow with a stretch that bounces back on drag and o
 - Android publishes a hook for replacing the effect, an `OverscrollEffect` applied with `Modifier.overscroll` or supplied for the whole theme. iOS publishes no equivalent, so there the effect is kept rather than restyled. On neither is it rebuilt by intercepting touches.
 - Anything driven by scroll offset is recomputed on every frame of the drag, so it stays on transform and opacity (`motion-cheap`) and never triggers layout.
 
-## `scroll-keyboard` The keyboard shortens the scroll, it does not cover it
+## <Rule id="scroll-keyboard" description="The keyboard shortens the scroll, it does not cover it" />
 
 Half the screen disappears with no warning, and the scrolling container has to lose that height rather than keep it underneath. A container that stays full height while the keyboard sits over its bottom third makes everything below the focused field unreachable at the exact moment it is wanted.
 

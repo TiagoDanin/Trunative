@@ -4,7 +4,7 @@ Everything a user taps to act or to choose: buttons, the floating action button,
 
 A phone shows one screen at a time to someone who is usually doing something else. The whole point of a control vocabulary here is that the answer to "what do I do now" arrives before any reading happens.
 
-## `button-one-primary` One primary action per screen. One.
+## <Rule id="button-one-primary" description="One primary action per screen. One." />
 
 This is the rule the rest of the file exists to protect, and it is the one generated screens break most often.
 
@@ -24,7 +24,7 @@ When two actions genuinely feel equal, that is the screen telling you it has two
 
 Cancel, Back, Skip and Dismiss are never the emphasized control. They are the exit, and the exit does not need to be sold. A destructive action is not the top of the ladder either: it is a role of its own, it keeps its distance from the frequent controls, and it is never the primary of a screen the user opened to do something else.
 
-## `button-ladder` Use the ladder the platform already defines
+## <Rule id="button-ladder" description="Use the ladder the platform already defines" />
 
 Below the primary there are two useful rungs, no more: a secondary for the alternative, and a quiet tertiary for the optional. Reach for them by name instead of inventing a parallel set of styles.
 
@@ -37,13 +37,13 @@ Three different button styles at the same rank on one screen is the composite lo
 
 Button labels sit at the label role of the type scale, which on Material is 14sp at weight 500. Not 400, and not bold.
 
-## `button-target` The drawn height is not the touch target
+## <Rule id="button-target" description="The drawn height is not the touch target" />
 
 Material's default button is 36dp tall, with a size range that runs from 32dp to 56dp, and the framework component quietly extends its own touch area to reach the 48dp floor. Draw that button by hand at 36dp with no extended area and it is a target that fails, while looking identical to the one that passes.
 
 The whole control is tappable, not the text inside it. A full-width primary at the bottom of the screen is a good fit for a thumb, and it is also a large accidental target, so nothing destructive belongs beside it.
 
-## `button-label` The label says what will happen
+## <Rule id="button-label" description="The label says what will happen" />
 
 Write the verb of the action and the object it acts on: Send, Pay 42, Delete photo. OK, Submit and Yes describe nothing, and Yes in particular forces the user back up to reread the question.
 
@@ -51,7 +51,7 @@ Write the verb of the action and the object it acts on: Send, Pay 42, Delete pho
 - Keep it short enough to survive translation and a 200% text size, and decide now what a long label does: wrap, or shrink the container, never quietly truncate the verb.
 - An icon-only button carries an accessibility label saying the action, not the picture. On Android, navigation destinations always carry a visible text label as well.
 
-## `button-state` A button has four states, and two of them are usually missing
+## <Rule id="button-state" description="A button has four states, and two of them are usually missing" />
 
 Rest and pressed are covered by the touch rules. The two that get skipped:
 
@@ -59,7 +59,7 @@ Rest and pressed are covered by the touch rules. The two that get skipped:
 
 **In flight.** The moment it is tapped, the control stops accepting taps and says that work is happening, in place, at the same width, so the layout does not jump under the finger that is still there. A button that looks identical during a three second request gets pressed again, and the second press is a duplicate order.
 
-## `button-fab` One FAB, for the action the screen exists for
+## <Rule id="button-fab" description="One FAB, for the action the screen exists for" />
 
 The FAB is Material. It does not belong in an iOS build, where the same action goes in the navigation bar or the toolbar.
 
@@ -67,7 +67,7 @@ Where it is right, it *is* the primary action of that screen, which means there 
 
 Use the extended form when the action needs a word to be understandable, since an icon alone rarely carries a verb. And remember it floats over content: the scrolling list underneath needs bottom padding equal to the FAB plus its margin, or the last row spends its life beneath it.
 
-## `button-chips` Chips are not small buttons
+## <Rule id="button-chips" description="Chips are not small buttons" />
 
 Four kinds, four jobs. Assist chips offer an action in context. Filter chips narrow a set and can be multi-selected. Input chips represent something the user already entered and can remove. Suggestion chips offer content the system is proposing.
 
@@ -75,7 +75,7 @@ Four kinds, four jobs. Assist chips offer an action in context. Filter chips nar
 - A row of chips scrolls horizontally. Letting them wrap turns a filter row into a growing wall that pushes the content it filters off the screen.
 - Chips do not carry the primary action, and they are not a navigation control. A chip that changes screen is a tab wearing the wrong clothes.
 
-## `button-tabs` Tabs are navigation, not action
+## <Rule id="button-tabs" description="Tabs are navigation, not action" />
 
 Three to five destinations, and they are the top level of the app rather than a place for actions. They belong at the bottom, where the thumb is.
 

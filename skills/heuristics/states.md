@@ -6,7 +6,7 @@ The phone is where the gap costs most. The connection comes and goes inside a si
 
 Every state below needs its own words and its own way forward. A generic message is the same as no state at all, because it leaves the user with nothing to do next.
 
-## `state-set` Six states, named before the happy path is written
+## <Rule id="state-set" description="Six states, named before the happy path is written" />
 
 For any screen that loads, sends or stores anything, write the line it shows in each of six: **loading**, **empty**, **error**, **offline or stale**, **partial**, and **permission denied or read only**. Produce that list while framing the screen in `flow/build.md`, before the layout exists.
 
@@ -14,7 +14,7 @@ A screen that cannot enter a state answers it as not applicable and says which: 
 
 Half of the six are conditions the device imposes rather than paths the user chooses, which is why they never show up while writing the happy path and always show up in a hand. A state discovered afterwards arrives as a branch bolted onto a layout built for one case, and it shows.
 
-## `state-loading` A placeholder in the shape of the content, never a spinner over it
+## <Rule id="state-loading" description="A placeholder in the shape of the content, never a spinner over it" />
 
 The first load draws the real layout with its content replaced by blocks: same row height, same position for the thing the user is waiting for, and roughly as many as fill the screen, since the length of the response is not known yet. `list-virtualise` owns the count inside a list. iOS has `.redacted(reason: .placeholder)` for exactly this. A placeholder whose geometry does not match shifts the layout at the moment the data lands, and in a narrow column that moves a target sideways under a thumb already coming down.
 
@@ -27,7 +27,7 @@ The first load draws the real layout with its content replaced by blocks: same r
 
 Acknowledging the tap comes before all of this and belongs to `touch-feedback`.
 
-## `state-empty` Three different empties, three different sentences
+## <Rule id="state-empty" description="Three different empties, three different sentences" />
 
 - **Nothing yet.** First run, and the only one of the three that is a teaching screen: say what will live here and give the single action that puts the first item in it.
 - **Nothing matched.** A search or a filter excluded everything. The way out is clearing it, so the filter stays visible and the action offered is removing it, not creating something new.
@@ -35,7 +35,7 @@ Acknowledging the tap comes before all of this and belongs to `touch-feedback`.
 
 Printing "No results" for all three is the tell. The first leaves a new user with no idea what the app is for, the second hides the filter that is doing the excluding, and the third turns success into a reprimand.
 
-## `state-error` Say what failed, and do not guess at why
+## <Rule id="state-error" description="Say what failed, and do not guess at why" />
 
 There are four failure classes and they are not interchangeable: the radio has nothing, the request ran out of time, the server answered with a fault, or the server understood and refused. Sort them by the move they leave the user, and write one sentence per move: nothing connected sends the user to the connection, timeout and server fault both land on retry and may share a sentence, and a refusal needs something changed or somebody asked, which retry will never fix. One shared sentence for all four leaves the user with no move to make and, more often, with the wrong one.
 
@@ -43,14 +43,14 @@ There are four failure classes and they are not interchangeable: the radio has n
 - Never dress a failure as an empty. "No messages" and "could not load messages" are opposite claims, and code that returns an empty list on failure makes them identical on screen.
 - The message lands where the failure is: at the field for a field, in the region for a region, on the screen for the screen. `heuristics/forms.md` owns field-level validation. A modal alert for something that could be said inline charges the user an interruption, and whether the message reaches a screen reader at all is `fb-reach`. How it is worded is `copy-error` and `copy-jargon`.
 
-## `state-retry` A retry that loses what was typed is a second failure
+## <Rule id="state-retry" description="A retry that loses what was typed is a second failure" />
 
 - The manual retry is always present and always visible once something failed. Automatic retry does not replace it.
 - Retrying returns to the same state: the input, the selection, the scroll offset, the sheet that was open. On a phone the typed content is the expensive part, thumbed in one character at a time, and it is never recoverable from anywhere else.
 - Retry only what failed, not the whole screen.
 - Automatic retry backs off and then stops, and it fires on the platform's reconnect signal (`NWPathMonitor`, `ConnectivityManager.NetworkCallback`) rather than on a fixed timer. A loop on an interval spends battery the user will attribute to this app. That signal is allowed to drive retry and prefetch. It is never allowed to drive the message, which is `state-offline`.
 
-## `state-offline` Four network states, not two
+## <Rule id="state-offline" evidence="device" description="Four network states, not two" />
 
 1. **Online and fast.** The one everything was built and demonstrated in.
 2. **Online and slow.** The most common and the least designed. It has no branch of its own, so what carries it is the ceiling in `state-loading` and whatever renders when that ceiling is hit.
@@ -61,13 +61,13 @@ Tell the user when what they can do changes, not when the radio changed. The mes
 
 Across all four, the OS may report a constraint the user asked for: Low Data Mode and Data Saver, whose flags `net-metered` reads, and Low Power Mode (`ProcessInfo.isLowPowerModeEnabled`, `PowerManager.isPowerSaveMode()`). Where one is set, autoplay stops, prefetch stops, images come at the smaller size, and the screen says what it is holding back with a way to ask for it anyway. A screen that never reads the flag spends a metered radio the user explicitly asked it not to spend.
 
-## `state-stale` Cached content carries its age
+## <Rule id="state-stale" evidence="device" description="Cached content carries its age" />
 
 Show the content and say when it was fetched. "Updated 2 hours ago" beats a spinner, and it beats a stale number presented as current by more than that.
 
 How fast a screen goes stale is per screen: a price, a balance or an arrival time is wrong within seconds, an article is not. Pick the threshold, and mark staleness with a word rather than a dimmed color alone, which is `color-not-alone`.
 
-## `state-queued` Anything the server has not confirmed reads as pending, not as done
+## <Rule id="state-queued" evidence="device" description="Anything the server has not confirmed reads as pending, not as done" />
 
 Optimistic updates are right on a phone, because waiting for a round trip on a slow radio makes the whole app feel broken. The optimism has to be reversible in the interface as well as in the data.
 
@@ -77,13 +77,13 @@ Optimistic updates are right on a phone, because waiting for a round trip on a s
 - A queued action survives a force quit, or it was never queued.
 - Destructive actions do not queue silently. A delete that syncs an hour later has outlived its undo, and undo is the mechanism `touch-destructive` relies on.
 
-## `state-partial` Some of it arrived, so show that
+## <Rule id="state-partial" description="Some of it arrived, so show that" />
 
 One region failing does not take the screen down. Render what loaded, mark the region that did not, and let that region retry by itself.
 
 The phone shows one thing at a time, so replacing the whole screen because an avatar, a price chart or a recommendation strip failed costs the user everything that had already arrived, and the thing they came for is usually in the part that worked.
 
-## `state-permission` Denied is a state with a way forward, never a dead end
+## <Rule id="state-permission" description="Denied is a state with a way forward, never a dead end" />
 
 The ask itself, the reason shown before it and how many chances are left belong to `perm-rationale` and `perm-answers`. What this rule owns is the screen the user is left holding once the answer is no.
 
@@ -92,7 +92,7 @@ The ask itself, the reason shown before it and how many chances are left belong 
 - Read only belongs here too: viewing allowed and editing not. `button-state` starts by leaving the control live and answering on tap with what is missing; where it genuinely has to be disabled, that rule's fallback applies and the reason sits beside it rather than being left to be inferred.
 - No screen is a wall that cannot be left without granting.
 
-## `state-interrupt` The phone takes the app away mid task
+## <Rule id="state-interrupt" evidence="device" description="The phone takes the app away mid task" />
 
 A call, a notification pulled down and an app switch stop the screen without destroying it, and the OS carries what is in memory through all three for free. Two events do not, and they are the ones this rule is about: a configuration change (rotation, multi-window, and the text size and theme changes `type-scaling` sends you to go and set), and the system killing the process while the app is in the background.
 

@@ -6,7 +6,7 @@ Whether an account is needed before the first useful action is `onboard-look-fir
 
 The field mechanics belong to forms: `form-input` and `form-autofill`. The biometric prompt as a surface, and the eight ways it can end, are `sense-biometric`. System permission prompts are a different thing and live in `permissions.md`.
 
-## `auth-methods` Every route on the screen reaches the same account
+## <Rule id="auth-methods" evidence="device" description="Every route on the screen reaches the same account" />
 
 Count the sign-in routes a returning user can tap without scrolling. The count is not the rule: what fails is two routes that open separate accounts for the same person, which is where somebody taps the wrong logo and lands in a second account holding none of their data. Which routes have to be on that screen at all, and how they are sized against each other, is `onboard-account`. The order they appear in is decided once and does not reshuffle between visits.
 
@@ -15,7 +15,7 @@ Count the sign-in routes a returning user can tap without scrolling. The count i
 - Prefer a passkey where the app is not already offering Sign in with Apple, and on Android wherever Credential Manager is the entry point. Where the app still accepts a password, the passkey is offered at the first successful sign-in that does not use one.
 - Registering or asserting a passkey needs the app and the site associated first, and each side has its own file and its own failure: the `webcredentials` associated domain on iOS, where a missing one returns an error, and on Android an `assetlinks.json` at the domain's well-known path carrying the login-credentials relation for the app's package and its release signing fingerprint, where a mismatched package or fingerprint fails both create and get. The association ships with the button or the button does not ship.
 
-## `auth-provider-button` A provider button is a component, not a style
+## <Rule id="auth-provider-button" description="A provider button is a component, not a style" />
 
 Apple ships a component and Google ships artwork, so the two are built differently. Take Apple's wherever the stack can reach it: `ASAuthorizationAppleIDButton` in UIKit, `SignInWithAppleButton` in SwiftUI, or a wrapper that renders one of those. A hand-built copy where the component is reachable loses the approved appearance, the automatic translation and the accessibility label that came with it. Only where the stack cannot reach it, Flutter included, is the button a replica, and then it owes the published specification exactly. Google publishes marks and a specification rather than a button, so that one is always built and always measured against the specification.
 
@@ -24,27 +24,27 @@ Apple ships a component and Google ships artwork, so the two are built different
 - Google's mark keeps its standard colors at its standard size: never monochrome, never the letter alone without the button around it, and the button preserves its aspect ratio.
 - The narrow column is what breaks these. A full-width stack of buttons stretches a fixed-ratio asset, so scale the button and let the artwork keep its ratio inside it.
 
-## `auth-web-flow` The provider's page opens outside the app
+## <Rule id="auth-web-flow" description="The provider's page opens outside the app" />
 
 A provider sign-in that opens a web page opens it in the system authentication session: `ASWebAuthenticationSession` on iOS, Custom Tabs on Android. `SFSafariViewController` is not one of these. It is a browsing surface: what happens inside it is not visible to the app, and nothing guarantees the callback comes back to the app that opened it rather than to another app registering the same scheme. An embedded web view under the app's own control is worse still, refused outright by the provider, and it puts somebody else's password field inside a surface this app can read.
 
 - The return leg lands back on the screen the flow started from, with its state, rather than on a fresh stack or the home screen. It arrives through the session's own callback on iOS, a registered callback scheme or, from iOS 17.4, an https callback, and through a claimed app link on Android.
 - A cancelled or failed return leaves that screen intact and says what happened beside the route that failed, under `form-error`.
 
-## `auth-magic-link` A sign-in link has to survive the trip through a mail app
+## <Rule id="auth-magic-link" description="A sign-in link has to survive the trip through a mail app" />
 
 - The link is a claimed universal link or app link, so tapping it opens the app rather than a web view inside the mail client, where the session waiting for it does not exist. Its landing is `nav-deeplink`.
 - The screen that is waiting is going to be backgrounded and is often process-killed before the link is tapped. It comes back under `state-interrupt` and finishes there, rather than restarting the flow with a second link.
 - A link opened on a different device from the one waiting says so and offers the code route in `auth-code-screen` instead of failing silently, and the link is spent when the person acts on it rather than when something fetches it, because a mail scanner or a link preview fetches it first.
 
-## `auth-last-used` The phone remembers which door this person used
+## <Rule id="auth-last-used" description="The phone remembers which door this person used" />
 
 A phone is one device belonging to one person far more often than a browser is, and that is the fact a sign-in screen should be spending. Store which method succeeded on this device and mark it on the next visit, because a returning user offered four identical buttons and no memory is how one person acquires three accounts and files a ticket saying their data disappeared.
 
 - The marker names the method, never the account: "you used Google here" and not the address, because the device gets handed over and the sign-in screen is visible before anyone authenticates.
 - Where a new sign-up arrives with an address that already has an account, offer to link the two instead of creating the second.
 
-## `auth-code-screen` The code lands on the device that is showing the field
+## <Rule id="auth-code-screen" evidence="device" description="The code lands on the device that is showing the field" />
 
 One field with the one time code content type, paste never blocked, is `form-autofill`. The screen around it is this rule, and it exists because the user has to leave the app to read the code and the app has to still be there when they get back.
 
@@ -52,7 +52,7 @@ One field with the one time code content type, paste never blocked, is `form-aut
 - The screen says where the code was sent and lets that be corrected without restarting the sign-in. Resend exists beside it and is disabled behind a visible countdown, so the control is never dead with no explanation.
 - An autofilled code may submit itself once. A rejected code returns to an editable field with a message beside it, under `form-error`, and never back to the first screen.
 
-## `auth-biometric-session` Rule on the API, not on the sensor
+## <Rule id="auth-biometric-session" evidence="device" description="Rule on the API, not on the sensor" />
 
 The division is the API and not the gesture, and the same face drives both. A credential API assertion, which is what a passkey is, signs the user in: the verification gesture releases a key and the server verifies what comes back. A `LocalAuthentication` or `BiometricPrompt` success does not: it re-authorizes a session that already exists. The credential API is the sign-in on every platform, the prompt is the re-authorization, and the bullets below land on the prompt alone.
 
@@ -62,7 +62,7 @@ The division is the API and not the gesture, and the same face drives both. A cr
 - Where the check gates money, credentials or identity documents, require the strong class. Android names them Class 3 and Class 2, and accepting whatever is enrolled accepts the weak one.
 - Two authenticator sets do not work on API level 29 and below: `DEVICE_CREDENTIAL` alone, and `BIOMETRIC_STRONG | DEVICE_CREDENTIAL`, which is the usual way to satisfy the bullet above. On those releases check for a PIN, pattern or password with `KeyguardManager.isDeviceSecure()` instead of asking the prompt for it.
 
-## `auth-expiry` Expiry interrupts the task, it does not restart the app
+## <Rule id="auth-expiry" evidence="device" description="Expiry interrupts the task, it does not restart the app" />
 
 Tokens die while the app is backgrounded, which on a phone is most of the time, so the expiry is usually discovered on the way back into a half-finished screen. That screen is what is at stake.
 
@@ -71,7 +71,7 @@ Tokens die while the app is backgrounded, which on a phone is most of the time, 
 - Re-authentication arrives over the task as a modal, under `nav-modal`, rather than as a navigation that unwinds the stack the task was living in, and several requests expiring at once produce one prompt over that task rather than one per request. Deduplicating the refresh underneath and replaying what failed is `net-backoff`.
 - The session lifetime is recorded in `STACK.md` and read from one constant at every call site, rather than scattered as literals.
 
-## `auth-reauth` A sensitive action asks again, and the window is written down once
+## <Rule id="auth-reauth" description="A sensitive action asks again, and the window is written down once" />
 
 An unlocked phone is regularly in someone else's hands, which is why a live session is not proof of anything for the actions below.
 
@@ -81,7 +81,7 @@ An unlocked phone is regularly in someone else's hands, which is why a live sess
 - Ordinary activity does not extend the window. Reading is not proving.
 - A refused re-authentication returns to the screen with the action untaken and says so. It is never a sign-out.
 
-## `auth-active-account` The screen that acts names the account acting
+## <Rule id="auth-active-account" description="The screen that acts names the account acting" />
 
 A phone has no window title and no persistent chrome to keep an avatar in, so on a device carrying a work account and a personal one, the identity has to be on the screen where the action happens.
 
@@ -89,7 +89,7 @@ A phone has no window title and no persistent chrome to keep an avatar in, so on
 - Switching accounts happens in one place and states what is changing.
 - After a switch, nothing from the previous account remains on screen: cached lists, badges, avatars and the contents of the outgoing queue in `off-queue` all belong to the account that made them.
 
-## `auth-signout` Nobody is signed out quietly
+## <Rule id="auth-signout" description="Nobody is signed out quietly" />
 
 An app stays signed in for months, so an unasked-for sign-in screen reads as data loss. It is also the only privacy control many users have on a shared device, which is why it has to be findable.
 
@@ -99,7 +99,7 @@ An app stays signed in for months, so an unasked-for sign-in screen reads as dat
 - What survives is a decision rather than an accident. Device-level things stay, such as theme, language and the fact that onboarding was seen.
 - Sign out is not account deletion. They never share a row, a color or an adjacent position, under `touch-destructive`.
 
-## `auth-delete` Deletion has two routes, a scope and a date
+## <Rule id="auth-delete" evidence="device" description="Deletion has two routes, a scope and a date" />
 
 The stores do not ask for the same shape and an app has to satisfy both: an in-app path to delete the account and its data, plus a web resource where the same request can be made. Shipping only the in-app path passes one store and fails the other. The web route is excused for an app that is permanently private and for one whose job is enterprise device management, so an app claiming any other excuse is guessing.
 

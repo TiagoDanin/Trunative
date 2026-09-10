@@ -4,7 +4,7 @@ Search is how somebody finds a thing they already know is in there. On a phone i
 
 Two failures account for most of what goes wrong: a plain text field with a magnifier icon standing in for the platform's search control, and a query fired at the server on every keystroke.
 
-## `search-surface` An inline filter and a search screen are two different things
+## <Rule id="search-surface" description="An inline filter and a search screen are two different things" />
 
 Decide which one the screen needs before writing the field.
 
@@ -15,7 +15,7 @@ Focus on open belongs to the search screen, the single-field exception `form-inp
 
 On Android a screen pairing the search bar with the search view does not resize under the keyboard, because the resize runs during the expand and collapse animation and breaks it. Everywhere else the constraint is the outcome rather than a window flag: the field being typed into stays visible (`touch-keyboard`), and the result rows do not shift under a thumb already on its way down.
 
-## `search-stock-field` Use the platform's search control, do not assemble one
+## <Rule id="search-stock-field" description="Use the platform's search control, do not assemble one" />
 
 Both platforms ship the whole control, and every part of it is a part somebody forgets when rebuilding it from a text field: the clear button that appears with the text, the cancel that dismisses the keyboard and the surface together, the search return key, and the expand and collapse transition. `references/search-controls.md` names the control per stack.
 
@@ -25,7 +25,7 @@ Both platforms ship the whole control, and every part of it is a part somebody f
 - The Android search view takes the screen behind out of the reader's path while it is open and puts it back on hide. Nothing hands that over on iOS or in a hand-built surface, so there it is owed rather than inherited: while search owns the screen, what is underneath is not what the reader walks into (`a11y-hidden`).
 - A voice entry point, where there is one, is the platform's, and it lives in the field rather than as a second control beside it. The keyboard already carries dictation, so a hand-drawn microphone next to it is the same button twice. What is dictated lands in the field as a query the user can read and correct, never as a search that has already run.
 
-## `search-placement` Where the field goes forks by platform
+## <Rule id="search-placement" description="Where the field goes forks by platform" />
 
 There is no cross-platform answer here, and shipping one platform's arrangement on the other is visible immediately. One codebase cannot hold both at once, so it either chooses the arrangement at runtime by platform or picks one for both and records the choice and its reason in `STACK.md`.
 
@@ -34,7 +34,7 @@ There is no cross-platform answer here, and shipping one platform's arrangement 
 
 An iOS search tab comes in two flavours and they answer different products: a standard tab lands on a search page with suggestions, for browsing and discovery; a button-style tab opens the field focused and returns to the previous tab on exit, for people who arrived knowing what they want. Pick one deliberately.
 
-## `search-typing` A keystroke is not a request
+## <Rule id="search-typing" description="A keystroke is not a request" />
 
 Filtering a collection already on the device happens as the user types. A network search does not.
 
@@ -43,7 +43,7 @@ Filtering a collection already on the device happens as the user types. A networ
 - Failures back off on the schedule in `net-backoff`. Retrying per keystroke turns one bad connection into a burst that holds the radio up (`perf-power`) and spends somebody's data (`net-metered`).
 - Typing is never blocked by a request. The field accepts input while the previous search is still out.
 
-## `search-suggest` A suggestion says what it will do
+## <Rule id="search-suggest" description="A suggestion says what it will do" />
 
 Suggestions come in two kinds and they are not interchangeable: one completes the query into the field, the other opens a result and ends the search. Make which is which readable from the row, because guessing wrong costs a screen and a back gesture.
 
@@ -51,7 +51,7 @@ Suggestions come in two kinds and they are not interchangeable: one completes th
 - The list does not reorder under a finger already on its way down. Rows that resequence on the next keystroke produce a tap on whatever slid into that spot (`touch-spacing`).
 - The suggestion list is a list: it recycles (`list-virtualise`) and it scrolls. Only the rows above the keyboard get read, so the strongest candidate is first.
 
-## `search-recent` Recent searches are the cheapest query on a phone
+## <Rule id="search-recent" description="Recent searches are the cheapest query on a phone" />
 
 Retyping is the expensive part of searching with two thumbs, so by default the search surface with an empty field shows what this person searched before, and tapping one re-runs it rather than just filling the field.
 
@@ -59,7 +59,7 @@ Retyping is the expensive part of searching with two thumbs, so by default the s
 - The history is on the device and belongs to this app. It does not travel to another surface or another account without the user saying so.
 - A phone screen gets read over a shoulder. Showing history is the default; suppressing it is a decision the app is allowed to make, recorded in `STACK.md` with its reason, and content somebody would not want visible on a bus is that reason. The clearing control above is not a decision either way.
 
-## `search-scope` The screen says what it is searching
+## <Rule id="search-scope" description="The screen says what it is searching" />
 
 A phone has no sidebar and no visible category tree, so the corpus being searched has to be stated on the surface itself, by the placeholder that names it, the screen title, or a scope statement under the field. Only Apple ships a stock control for that last one, so on Android and in the cross-platform stacks the scope statement is a row of selected filter chips (`button-chips`) instead of a scope bar nobody hands you.
 
@@ -67,7 +67,7 @@ A phone has no sidebar and no visible category tree, so the corpus being searche
 - Default to the widest scope and let people narrow. Somebody who does not know which section holds the thing cannot choose the section first.
 - Changing scope keeps the query that was typed. Retyping to switch scope makes the control cost more than it saves.
 
-## `search-filters` What is narrowing the results stays on screen
+## <Rule id="search-filters" description="What is narrowing the results stays on screen" />
 
 Filters on a phone live in a sheet, and the sheet closes. After it does, nothing tells the user the set is narrowed unless the results screen says so.
 
@@ -75,7 +75,7 @@ Filters on a phone live in a sheet, and the sheet closes. After it does, nothing
 - Each applied filter comes off in one tap, and Clear all is allowed here: it is the exception `form-submit` names, because rebuilding a filter set costs a few taps rather than a retyped form.
 - Whether a new query keeps the current filters or drops them is a decision recorded in `STACK.md`, and the screen shows the answer either way.
 
-## `search-pending` The results on screen stay up while the next query is out
+## <Rule id="search-pending" description="The results on screen stay up while the next query is out" />
 
 Between the request leaving and the answer landing is the state a search screen spends most of its life in on a cell connection, and it is the one that gets built by emptying the list.
 
@@ -83,7 +83,7 @@ Between the request leaving and the answer landing is the state a search screen 
 - The in-flight marker sits in or beside the field, not over the rows. A cover across the results hides the thing the user is reading in order to refine the query.
 - The placeholder in `state-loading`, with its 300ms and 500ms floors, is for the first search of a session, when there is nothing on screen yet to keep. Those floors are never applied per keystroke, where they hold a placeholder over results that have already arrived.
 
-## `search-result` The row says why it matched
+## <Rule id="search-result" description="The row says why it matched" />
 
 One narrow column, no hover, no preview pane. Everything somebody needs in order to choose between two results is in the row itself.
 
@@ -92,7 +92,7 @@ One narrow column, no hover, no preview pane. Everything somebody needs in order
 - Most relevant first, and the ordering is one the user could predict. A result set spanning several kinds is grouped by kind rather than interleaved (`list-sections`), and each group header carries how many it holds.
 - The results replace the list without a navigation, so the list declares its length (`a11y-collection`) and the settled count is announced once typing has paused and the results have landed. Never one announcement per keystroke, which is the first thing `a11y-announce` forbids. Nothing on screen otherwise says whether this is 3 results or 300.
 
-## `search-zero` A query that matched nothing offers the next move
+## <Rule id="search-zero" description="A query that matched nothing offers the next move" />
 
 Keeping the query and the filters on screen is `state-empty`'s second empty. What makes it sharper here is the screen: there is one of them and no results pane beside the query, so whatever excluded everything is off screen entirely unless this screen is the thing holding it.
 
@@ -100,7 +100,7 @@ Keeping the query and the filters on screen is `state-empty`'s second empty. Wha
 - Nothing matched is not a failure state. A request that could not complete is `state-error` with a retry (`state-retry`), and the two never render as the same screen.
 - Do not fill the space with results that do not match. Related content is allowed below the statement that nothing matched, labelled as what it is.
 
-## `search-return` Coming back from a result comes back to the search
+## <Rule id="search-return" evidence="device" description="Coming back from a result comes back to the search" />
 
 Opening a result pushes a screen, and back returns to the query, the scope, the filters, the results and the scroll position, with the keyboard still down. Restarting the search is the most expensive thing this surface can do to somebody.
 

@@ -4,7 +4,7 @@ Type on a phone gets read close up, in a hand that moves, in light nobody chose,
 
 `DESIGN.md` holds the families and the ramp. This file is how they land in code, and what has to hold before the screen ships. Per-role sizes, weights and line heights sit in `references/type-scales.md`, to be opened for one lookup rather than read through.
 
-## `type-scale` The ramp already exists on both platforms
+## <Rule id="type-scale" description="The ramp already exists on both platforms" />
 
 Each platform publishes a complete role scale that is optically tuned, wired to the size setting, and understood by the screen reader. Pick the role that matches the job and adjust from there. Inventing a parallel ramp discards those three properties and returns nothing.
 
@@ -13,7 +13,7 @@ Each platform publishes a complete role scale that is optically tuned, wired to 
 - Body lands at 16sp or 17pt. Eleven is the floor, and it belongs to text at the margin of meaning, never to something a user has to read in order to act.
 - When the readers are older or the app lives outdoors, move the whole ramp up rather than granting one role an exception.
 
-## `type-roles` About four jobs per screen
+## <Rule id="type-roles" description="About four jobs per screen" />
 
 Material publishes fifteen roles and iOS eleven styles. A single screen usually needs four of them: what this screen is, what it says, what a control is called, and what qualifies the rest. Name each one after its job.
 
@@ -21,7 +21,7 @@ A row that shows up on two screens carries the same style in both, or the produc
 
 Line height is a property of the role, not of the paragraph: near 1.2 where the type is display sized, 1.4 to 1.5 for body. The ratio has to widen as the type gets smaller, which is why one global multiplier comes out wrong at both ends.
 
-## `type-weight` Weight is structure, and the user has a say in it
+## <Rule id="type-weight" description="Weight is structure, and the user has a say in it" />
 
 Both systems let someone ask for heavier text: Bold Text on iOS, `fontWeightAdjustment` from API 31 on Android. Styles that come from the theme respond by themselves. A weight typed into a component (`weight: .semibold`, `FontWeight.Bold`) does not, so the preference gets dropped in silence and nothing in the build says a word about it.
 
@@ -39,7 +39,7 @@ This is countable. Take the distinct text elements on the screen and look at how
 
 Build the hierarchy from weight and space before size. The reader has a slider for size and none for the others: at 200% a 24pt title and 17pt body are both large, and the distance that structured the screen at 100% is doing much less of the work.
 
-## `type-face` A typeface nobody chose
+## <Rule id="type-face" description="A typeface nobody chose" />
 
 Inter turns up on its own for the same reason violet does: it is the most common interface face in the training data. Inter is a fine typeface, which is exactly why finding it there says nothing about this product.
 
@@ -50,13 +50,13 @@ Inter turns up on its own for the same reason violet does: it is the most common
 
 What each platform and stack can reach without shipping a file, and what the Google Fonts route costs on each, is in `references/fonts.json`.
 
-## `type-measure` A narrow column, because the device is narrow
+## <Rule id="type-measure" description="A narrow column, because the device is narrow" />
 
 Body copy wants 40 to 60 characters per line, and the lower half of that band is normal here. The 65 to 75 everyone quotes was measured on a wide page at desk distance. A phone sits about a foot away with a column a few inches wide, and the return sweep to the next line is short to match.
 
 The usual failure is a paragraph running edge to edge on a large phone held sideways. Cap the column instead.
 
-## `type-scaling` Render it at maximum before calling it done
+## <Rule id="type-scaling" evidence="device" description="Render it at maximum before calling it done" />
 
 No other check in this file surfaces as many genuine defects. Turn the text size to the platform's largest accessibility step, walk every screen, and look for:
 
@@ -68,7 +68,7 @@ No other check in this file surfaces as many genuine defects. Turn the text size
 
 Layouts reflow; they do not truncate. A screen that only holds together at 100% has failed exactly the people who moved the setting.
 
-## `type-strings` The text in the layout is not the text you typed
+## <Rule id="type-strings" description="The text in the layout is not the text you typed" />
 
 Real strings come from translators, from an API and from users, and they run longer and stranger than the ones in a mockup.
 
@@ -77,7 +77,7 @@ Real strings come from translators, from an API and from users, and they run lon
 - Names, titles and anything user-authored need a line limit and a truncation point chosen per role, settled in the design rather than discovered in production.
 - All caps is for a short label at most. Applied to body text it removes the word shapes people actually read by.
 
-## `type-dark` Light on dark reads lighter than it measures
+## <Rule id="type-dark" evidence="device" description="Light on dark reads lighter than it measures" />
 
 Pale text on a dark ground bleeds into it, so an identical face at an identical weight looks thinner in dark theme than in light. Low brightness on an OLED panel exaggerates it.
 
