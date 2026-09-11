@@ -60,7 +60,15 @@ When the app is running on a device, split the work in two and keep the halves a
 
 **Judging.** Reads the source, drives the screen, and fills in every row.
 
-**Measuring.** Produces numbers and captures, no scores at all, each keyed to a rule id: both appearances on the narrowest and widest device class, the largest accessibility text step on the narrowest, hit area bounds read from the inspector rather than estimated from a screenshot, the primary flow completed with the screen reader on, the screen with the network off and after a process kill the system would have made itself, and real records rather than seed data, meaning a null, a zero, a long string, an old timestamp and an empty list.
+**Measuring.** Produces numbers and captures, no scores at all, each keyed to a rule id. Start with the one measurement that needs no device:
+
+```sh
+npx trunative detect lib/screens/checkout_screen.dart
+```
+
+It reads the files and answers the part of a `Check` line a file can settle, reporting per rule id. Three things follow from that and none of them is optional: every finding is `source` evidence, so it never settles a rule marked `[device]`; a finding is a place to look rather than a score; and its silence proves nothing, so a rule it did not answer stays with the grader. It exits 2 when it finds something, which is not a failure.
+
+Then the measurements that do need a device: both appearances on the narrowest and widest device class, the largest accessibility text step on the narrowest, hit area bounds read from the inspector rather than estimated from a screenshot, the primary flow completed with the screen reader on, the screen with the network off and after a process kill the system would have made itself, and real records rather than seed data, meaning a null, a zero, a long string, an old timestamp and an empty list.
 
 How the two are kept apart depends on the harness you are running in:
 
