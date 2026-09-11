@@ -1,9 +1,11 @@
 import { stat } from 'node:fs/promises'
 import { join, relative } from 'node:path'
 
+import { type Target } from '../compile.js'
+import { readSources, resolve } from '../emit.js'
 import { readLock } from '../lock.js'
 import { briefCandidates, packagedSkillDir } from '../paths.js'
-import { hashSkill, readSkillName } from '../skill.js'
+import { hashFiles, hashSkill, readSkillName } from '../skill.js'
 
 export interface DoctorOptions {
 	cwd: string
@@ -40,11 +42,12 @@ async function checkBrief(cwd: string, file: string, label: string): Promise<Che
 }
 
 /**
- * Compares the skill installed in the project against the one shipping in this
- * package. A different hash means the project is running an older copy.
+ * Compares each installed copy against the same variant resolved from the
+ * skill shipping in this package. Every target has its own hash, because a copy
+ * resolved for one agent and one stack is not the same bytes as another.
  */
 async function checkSkill(cwd: string, version: string): Promise<Check[]> {
-	const expected = await hashSkill(packagedSkillDir)
+	const source = await hashSkill(packagedSkillDir)
 	const name = await readSkillName(packagedSkillDir)
 	const lock = await readLock(cwd)
 
@@ -59,20 +62,28 @@ async function checkSkill(cwd: string, version: string): Promise<Check[]> {
 	}
 
 	const checks: Check[] = [
-		{ name: 'skill installed', ok: true, detail: `${lock.skill} in ${lock.targets.join(', ')}` },
+		{
+			name: 'skill installed',
+			ok: true,
+			detail: `${lock.skill} in ${lock.targets.map((target) => target.dir).join(', ')}`,
+		},
 	]
 
+	const sources = await readSources()
 	const missing: string[] = []
 	const stale: string[] = []
 
 	for (const target of lock.targets) {
-		const destination = join(cwd, ...target.split('/'))
+		const destination = join(cwd, ...target.dir.split('/'))
 		if (!(await exists(destination))) {
-			missing.push(target)
+			missing.push(target.dir)
 			continue
 		}
-		if ((await hashSkill(destination)) !== expected) {
-			stale.push(target)
+		const shape: Target = target.stack
+			? { agent: target.agent, stack: target.stack }
+			: { agent: target.agent }
+		if ((await hashSkill(destination)) !== hashFiles(resolve(sources, shape))) {
+			stale.push(target.dir)
 		}
 	}
 
@@ -84,7 +95,7 @@ async function checkSkill(cwd: string, version: string): Promise<Check[]> {
 		})
 	}
 
-	if (stale.length > 0 || lock.hash !== expected) {
+	if (stale.length > 0 || lock.hash !== source) {
 		const reason =
 			stale.length > 0
 				? `content differs in ${stale.join(', ')}`
@@ -95,7 +106,7 @@ async function checkSkill(cwd: string, version: string): Promise<Check[]> {
 			detail: `${reason}, run "npx trunative install"`,
 		})
 	} else {
-		checks.push({ name: 'skill up to date', ok: true, detail: `${name} ${expected.slice(0, 19)}` })
+		checks.push({ name: 'skill up to date', ok: true, detail: `${name} ${source.slice(0, 19)}` })
 	}
 
 	return checks

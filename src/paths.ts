@@ -45,6 +45,12 @@ export const AGENT_ROOTS = ['.claude', '.agents', '.antigravity', '.codex', '.op
 /** Used when the project has no agent directory at all. */
 export const DEFAULT_AGENT_ROOT = '.claude'
 
+/** The agent whose branches a directory's copy resolves. */
+export function agentFor(root: string): string {
+	const found = Object.entries(AGENT_DIR).find(([, dir]) => dir === root)
+	return found ? found[0] : 'other'
+}
+
 /**
  * Both places a brief may live, in priority order. The bare filename is
  * supported so a project can keep the briefs next to its README.

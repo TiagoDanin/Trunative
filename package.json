@@ -13,7 +13,7 @@
     "trunative": "dist/cli.js"
   },
   "files": [
-    "dist",
+    "dist/**/*.js",
     "skills"
   ],
   "engines": {
@@ -22,6 +22,8 @@
   "scripts": {
     "build": "tsc && node dist/cli.js build",
     "typecheck": "tsc --noEmit",
+    "lint": "tsx src/cli.ts lint",
+    "graph": "tsx src/cli.ts graph",
     "prepublishOnly": "yarn build"
   },
   "devDependencies": {

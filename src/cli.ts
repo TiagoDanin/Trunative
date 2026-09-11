@@ -4,7 +4,10 @@ import { join } from 'node:path'
 import { parseArgs } from 'node:util'
 
 import { build } from './commands/build.js'
+import { detect } from './commands/detect.js'
 import { doctor } from './commands/doctor.js'
+import { graph } from './commands/graph.js'
+import { lint } from './commands/lint.js'
 import { install } from './commands/install.js'
 import { rubric } from './commands/rubric.js'
 import { packageRoot } from './paths.js'
@@ -16,11 +19,16 @@ Usage
   npx trunative install [--dir]   copy the skill into the agent directories
   npx trunative rubric [--only]   print the review checklist, one row per rule
   npx trunative build             resolve the skill once per agent and stack
+  npx trunative lint              check the written skill, exits 1 on a finding
+  npx trunative graph [--only]    render the skill's structure
+  npx trunative detect [paths]    answer the Check lines a file can settle
 
 Options
   --dir <path>   install into this directory instead of the detected ones
                  (repeatable)
   --cwd <path>   run against this project instead of the current directory
+  --stack <name> install the copy resolved for this stack, instead of the one
+                 the STACK.md "Stack:" line names
   --only <name>  limit the rubric to a heuristics file ("touch"), a rule
                  prefix ("touch-") or one rule id (repeatable)
   --format <f>   rubric output: markdown (default), json, ids
@@ -48,6 +56,7 @@ async function main(): Promise<number> {
 			dir: { type: 'string', multiple: true },
 			only: { type: 'string', multiple: true },
 			format: { type: 'string' },
+			stack: { type: 'string' },
 			cwd: { type: 'string' },
 			version: { type: 'boolean', short: 'v' },
 			help: { type: 'boolean', short: 'h' },
@@ -74,9 +83,20 @@ async function main(): Promise<number> {
 		case 'doctor':
 			return doctor({ cwd, version })
 		case 'install':
-			return install({ cwd, version, dirs: values.dir })
+			return install({ cwd, version, dirs: values.dir, stack: values.stack })
 		case 'build':
 			return build({ version })
+		case 'lint':
+			return lint({ cwd })
+		case 'detect':
+			return detect({
+				cwd,
+				paths: positionals.slice(1),
+				only: values.only,
+				format: values.format,
+			})
+		case 'graph':
+			return graph({ only: values.only, format: values.format })
 		case 'rubric':
 			return rubric({ version, only: values.only, format: values.format })
 		default:

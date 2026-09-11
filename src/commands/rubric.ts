@@ -1,3 +1,4 @@
+import { DETECTORS } from '../detect/rules.js'
 import { packagedSkillDir } from '../paths.js'
 import {
 	readAlwaysInScope,
@@ -138,6 +139,8 @@ export async function rubric(options: RubricOptions): Promise<number> {
 					scope: only.length > 0 ? only : 'all',
 					base,
 					alwaysInScope: await readAlwaysInScope(packagedSkillDir),
+					/** Rules "trunative detect" can raise a finding on, as source evidence. */
+					detectable: DETECTORS.map((detector) => detector.rule),
 					heuristics: scoped,
 				},
 				undefined,
