@@ -30,11 +30,11 @@ After a build that is the diff. On request it is the screen: the widget, view or
 
 ## 2. Scope and checklist
 
-The scope is every base file plus the extra files this screen triggers, read off the trigger list under **Extra** in `SKILL.md` rather than off what the build says it opened. The nine always-in-scope rules sit inside the base files and are never `n/a`. Write the scope down before grading. A scope chosen once the scores are in is a scope chosen to flatter them.
+The scope is every base file plus the extra files this screen touches, settled by your own pass over the Extra table in `SKILL.md` rather than by what the build says it opened. The nine always-in-scope rules sit inside the base files and are never `n/a`. Write the scope down before grading. A scope chosen once the scores are in is a scope chosen to flatter them.
 
 An identity the build had to settle because `DESIGN.md` did not carry one is part of the scope, not a note beside it. It is graded by `color-derived`, `type-face`, `layout-shape` and `icon-depicts`, against the five lines the build wrote, and a screen whose identity would fit any other product in the category scores a 1 on the first of them however clean the rest of the code is.
 
-Name the screen first, the same way build does, and derive the scope from the name. A build that named it wrong took the wrong files with it, and a review that inherits the build's list inherits the mistake. Where a trigger names a file the build never opened, its rules are still in scope and every one of them is `unrun` until it is checked: a rule nobody looked at is not a rule that passed.
+Name the screen first, the same way build does, and derive the scope from the name. A build that named it wrong took the wrong files with it, and a review that inherits the build's list inherits the mistake. Where your pass reaches a file the build never opened, its rules are in scope all the same and every one of them is `unrun` until it is checked: a rule nobody looked at is not a rule that passed.
 
 ```sh
 npx trunative rubric --only forms --only search

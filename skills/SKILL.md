@@ -28,25 +28,32 @@ One concern per file, in two tiers. The tier decides when a file is opened, not 
 
 ### Base
 
-Opened on every screen, before writing. Every screen has colour, text, targets, a layout, states, at least one action, words, and something that moves, so nobody gets to decide a screen does not touch these.
+Opened on every screen, before writing. Every screen has colour, text, targets, a layout, states, at least one action, words, something that moves, and something drawn, so nobody gets to decide a screen does not touch these.
 
 <Index of="base" />
 
 | File | Prefix | Covers |
 |---|---|---|
-| `heuristics/colors.md` | `color-` | palette roles and tokens, the default palette, ramps, the accent, gradients, dark theme, contrast, color as state |
+| `heuristics/colors.md` | `color-` | palette roles and tokens, the default palette, ramps, the accent, colour that varies per item, gradients, dark theme, contrast, color as state |
 | `heuristics/typography.md` | `type-` | the platform type scale, roles per screen, weight and its distribution, typeface choice, measure, text scaling, real strings |
 | `heuristics/touch.md` | `touch-` | hit areas and spacing, thumb reach, where destructive actions go, press feedback, gestures and system edges, the keyboard as layout |
 | `heuristics/buttons.md` | `button-` | one primary per screen, the emphasis ladder, labels, button states, the FAB, chips, tabs and segmented controls |
-| `heuristics/layout.md` | `layout-` | insets and safe areas, the spacing scale, grouping and density, one column, the width range, fixed chrome and overlays, the first screenful, orientation |
+| `heuristics/layout.md` | `layout-` | insets and safe areas, the spacing scale, grouping and density, radius and shape, one column, the width range, fixed chrome and overlays, the first screenful, orientation |
 | `heuristics/states.md` | `state-` | the full state set, loading and skeletons, the three empties, error classes and retry, offline and queued work, stale and partial data, permission, interruption |
 | `heuristics/motion.md` | `motion-` | what earns an animation, the platform's own transitions, springs against durations, choreography, loops, motion that blocks input, cheap properties, reduced motion |
 | `heuristics/accessibility.md` | `a11y-` | names, roles and values, hidden decoration, focus order, announcements, focus containment, gesture alternatives, alternative input, the system settings, media, how to test it |
-| `heuristics/copy.md` | `copy-` | the word budget, the first word, voice, error wording, jargon, one term per thing, capitalisation, what absence says, numbers, figures that describe the product, rationale text |
+| `heuristics/copy.md` | `copy-` | the word budget, the first word, voice, error wording, jargon, one term per thing, capitalisation, what absence says, sample content and its arithmetic, numbers, figures that describe the product, rationale text |
+| `heuristics/icons-and-imagery.md` | `icon-` | one icon set, icon weight, emoji standing in for an icon, vector and density, reserving space, cropping, artwork that depicts nothing, dark variants, avatars, the app icon |
 
 ### Extra
 
 Opened when the screen touches the concern, and left closed otherwise. The list is what exists, not what to read.
+
+Whether it is touched is settled by a pass over this table, not by recall. Say in one line what is in front of you, as the thing it is rather than as the feature it belongs to, then read the Covers column against that line, row by row. A row whose words are on the screen gets opened. A row stays closed only when you can name what this screen does not have that the row is about, and "it does not seem relevant" is not that sentence.
+
+The pass runs before the first line of code. A file opened afterwards reviews the screen instead of shaping it, and the rule it carries has become a rewrite rather than a decision.
+
+It fails in two quiet ways. Judging by the feature closes a file that owns something the screen plainly shows, because the feature has a name and the screen has content. Judging by how simple the screen looks closes the file whose rules that screen is about to break, since a concern a screen does not advertise is precisely the one nobody designed for.
 
 <Index of="extra" />
 
@@ -67,7 +74,6 @@ Opened when the screen touches the concern, and left closed otherwise. The list 
 | `heuristics/offline.md` | `off-` | local first, freshness marks, cache policy, reclaimable storage, write modes, the queue, destructive work offline, conflict, the empty cache |
 | `heuristics/splashscreen.md` | `splash-` | the system launch surface, the double splash, what it may contain, matching the first frame, fake progress, what may hold it, appearance, the entry it hands over to |
 | `heuristics/performance.md` | `perf-` | cold start, the main thread, the frame budget, image decoding, memory, power, app size, and measuring instead of guessing |
-| `heuristics/icons-and-imagery.md` | `icon-` | one icon set, icon weight, emoji standing in for an icon, vector and density, reserving space, cropping, dark variants, avatars, the app icon |
 | `heuristics/feedback.md` | `fb-` | the vehicle ladder, silent success, when a dialog is justified, undo, where a message lands, duration, reach, queueing, surviving rotation, the review prompt |
 | `heuristics/search.md` | `search-` | the two search surfaces, the stock control, placement per platform, typing and suggestions, recents, scope, filters, the result row, zero results, coming back |
 | `heuristics/auth.md` | `auth-` | the methods and their order, provider buttons, web flows, last used, code screens, biometrics over a session, expiry, re-auth, the active account, sign out, deletion |
@@ -106,7 +112,7 @@ A splash screen, a settings list and a chart all answer these. Open the file tha
 
 ## Loading rules
 
-- Open every base file, then only the extra files the current screen touches. Reading the whole folder wastes the context that the actual code needs.
+- Open every base file, then every extra file this screen touches, settled by the pass over the Extra table rather than from memory of what the folder holds. Reading all of it wastes the context the code needs, and closing a file because the screen looked simple wastes the review.
 - Read `references/` on demand, for one specific number or API. Never as background.
 - This copy was built for one agent and, when its name says so, for one stack. It is not the file that was written: the branches for other harnesses and other frameworks were resolved away at build time. Never hand-edit it, and never reason about what a branch might have said.
 - The project briefs override nothing in `heuristics/`, but they decide which rules apply and record the exceptions accepted on purpose. `PRODUCT.md` is who uses this and for what, `DESIGN.md` is the visual identity in the [design.md format](https://github.com/google-labs-code/design.md), and `STACK.md` is this codebase: primitives, navigation, components, exceptions.

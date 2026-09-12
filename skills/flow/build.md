@@ -18,7 +18,7 @@ Read `DESIGN.md` for the tokens and `STACK.md` for the primitives that reach the
 
 Base is not part of this choice. Colour, text, targets, layout, states, actions, words, motion and artwork are on a splash screen and on a chart alike, so deciding a screen does not touch one of them is not a decision this step gets to make.
 
-Extra is not a feeling either. Name the screen in one line, as the thing it is rather than as the feature it belongs to: this is the first frame after the icon, this is a one time code, this is a list of orders, this is a paywall. Then read the trigger list under **Extra** in `SKILL.md` and open every file the name hits. Those are not optional and they are not weighed against the context they cost. Judgement applies to what no trigger caught, and to nothing else. List the triggered files before writing, because a file opened after the screen exists is a file that reviews it, not one that shapes it.
+Extra is not a feeling either. Name the screen in one line, as the thing it is rather than as the feature it belongs to, then run that line down the Covers column of the Extra table in `SKILL.md`, row by row. Open every row whose words are on the screen. Leave a row closed only with a sentence naming what this screen does not have that the row is about. List what you opened, and what you closed and why, before writing anything, because a file opened after the screen exists reviews it rather than shapes it.
 
 When the screen touches Firebase, in any of auth, Firestore, Storage, Messaging, Remote Config or Crashlytics, read `flow/firebase.md` as well. It is loaded here the way a heuristic is, and it is not a step.
 
