@@ -30,7 +30,11 @@ After a build that is the diff. On request it is the screen: the widget, view or
 
 ## 2. Scope and checklist
 
-The scope is every base file plus the extra files the code touches, chosen the way `flow/build.md` chooses them. The nine always-in-scope rules sit inside the base files and are never `n/a`. Write the scope down before grading. A scope chosen once the scores are in is a scope chosen to flatter them.
+The scope is every base file plus the extra files this screen triggers, read off the trigger list under **Extra** in `SKILL.md` rather than off what the build says it opened. The nine always-in-scope rules sit inside the base files and are never `n/a`. Write the scope down before grading. A scope chosen once the scores are in is a scope chosen to flatter them.
+
+An identity the build had to settle because `DESIGN.md` did not carry one is part of the scope, not a note beside it. It is graded by `color-derived`, `type-face`, `layout-shape` and `icon-depicts`, against the five lines the build wrote, and a screen whose identity would fit any other product in the category scores a 1 on the first of them however clean the rest of the code is.
+
+Name the screen first, the same way build does, and derive the scope from the name. A build that named it wrong took the wrong files with it, and a review that inherits the build's list inherits the mistake. Where a trigger names a file the build never opened, its rules are still in scope and every one of them is `unrun` until it is checked: a rule nobody looked at is not a rule that passed.
 
 ```sh
 npx trunative rubric --only forms --only search
@@ -55,6 +59,27 @@ Every row gets a score, one line of finding, and its evidence:
 - `source+device`: both, and they agreed. Where they disagree the device wins, and the disagreement is a finding.
 
 A rule the checklist prints `[device]` on may not take `source`: its own file has already said a diff cannot settle it, so a number from the source alone is a guess wearing a score. The paragraph that file closes its Check section with, printed under the group as `Not from a diff`, says why. Those rules are `device`, `source+device`, or `unrun`. A rule without the mark can be graded from the source, and is still worth seeing on a device.
+
+A screen is never closed on `source` alone. Render it, look at it, and keep the capture beside the report. What the file hides and the picture shows in a second: the last row of content sitting under a pinned bar, the primary action stranded in the middle of an empty frame, a hero occupying a third of the height and depicting nothing, placeholder text standing in as the content. None of that is arguable from code, and all of it is what a person sees first.
+
+<If stack="web">
+```sh
+chrome --headless --window-size=402,874 --screenshot=screen.png file:///absolute/path/screen.html
+```
+</If>
+
+<If stack="flutter,react-native,swiftui,compose">
+```sh
+xcrun simctl io booted screenshot screen.png   # iOS simulator
+adb exec-out screencap -p > screen.png         # Android emulator or device
+```
+</If>
+
+<If stack="other">
+Capture the running screen the way this platform captures one, and scroll to the end of the content before the capture.
+</If>
+
+Scroll to the end of the content before capturing, or the collision `layout-chrome` exists to catch stays hidden.
 
 When the app is running on a device, split the work in two and keep the halves apart, because a grader who has already read the measurements grades the measurements:
 
