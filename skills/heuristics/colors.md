@@ -22,10 +22,10 @@ A hex written straight into a component looks like a shortcut and behaves like a
 
 Two of them show up. Indigo through violet under a gradient is the median of everything a model read, Tailwind's default button included. Warm cream with a rust accent is what appears the moment violet is forbidden: take the violet away and it comes back as cream in six screens out of ten, the same reflex in a different coat.
 
-Neither family is banned. What is banned is being unable to say, in terms of this product, why it landed there.
+Neither family is banned, and the hex values are not the tell. Cream and rust pulled off film stock, in an app that edits photos, is those two colors doing work. The reflex is the same pair arriving with nothing behind it. What is banned is being unable to say, in terms of this product, why it landed there.
 
 - Ground, ink and accent follow from what the app does and who is holding it, which is `PRODUCT.md`. A category habit is not a derivation: finance is not blue, health is not green, fitness is not neon.
-- Write the one sentence that says what the palette follows from. If it would fit another app just as well, that is decoration talking.
+- Name the material or the reference the palette comes from, something this product actually evokes: newsprint, film stock, a transit sign, a receipt, a ledger. An adjective is not a reference, so modern, friendly and premium derive nothing. If the palette would fit another app just as well, that is decoration talking.
 - Look at the neutrals alone before handing off. Greys that all lean toward the accent were generated from the accent instead of chosen.
 
 ## <Rule id="color-ramp-hsl" description="Move one axis at a time" />
@@ -47,6 +47,15 @@ An accent works by being scarce. iOS gives the app a single tint and expects eve
 - When a color has to be loud, give it a whole region or a whole role instead of sprinkling it in six places.
 - Secondary text on a colored surface comes from that surface's own hue, or from opacity over it. Grey dropped onto a color reads as a rendering fault.
 - Status colors keep their jobs. Error red used for branding spends the one color a user reads without thinking.
+
+## <Rule id="color-variety" description="A hue per row is not a palette" />
+
+Four badges in four pastels, three avatars in three gradients, a tint cycling by position down a list. Nobody can say what the second colour means, because it means that the item is the second one.
+
+- Hue that varies across repeated items encodes a difference the reader can name: the category, the status, the account, the series on the chart. Otherwise every item in the set wears the same surface.
+- Where the difference is real, the mapping is fixed and written down once, so the same category is the same colour on every screen it appears on. A colour assigned by index changes the moment the list reorders.
+- Generated-per-item colour is legitimate in exactly one place, the avatar fallback, where it is derived from a stable identifier and stands in for a photograph: `icon-avatar`.
+- Variety that is genuinely wanted is a job for the artwork, not for the interface. Illustrations carry as many colours as they need; the rows around them do not.
 
 ## <Rule id="color-gradient" description="A gradient has to be doing a job" />
 
@@ -101,10 +110,11 @@ On Android 12 and up, Material You builds the scheme from the user's wallpaper. 
 <Check>
 
 <Verify rule="color-roles">No component holds a raw hex, and every color arrives through a token or a platform role.</Verify>
-<Verify rule="color-derived">The palette follows from the product in one sentence, and the neutral ramp is not tinted toward the accent.</Verify>
+<Verify rule="color-derived">The palette is derived from a named material or reference this product evokes, the same screen in a competitor's app would need a different one, and the neutral ramp is not tinted toward the accent.</Verify>
 <Verify rule="color-ramp-hsl">Ramp steps hold the hue and shed saturation toward both ends.</Verify>
 <Verify rule="color-one-accent">The accent marks what is interactive and nothing else, and no grey sits on a colored surface.</Verify>
-<Verify rule="color-gradient">Every gradient does work flat color cannot, and none carries identity or stands in for elevation.</Verify>
+<Verify rule="color-variety">Hue that varies across repeated items encodes a difference the reader can name, the mapping is fixed rather than positional, and nothing carries a tint picked for variety.</Verify>
+<Verify rule="color-gradient">Every gradient does work flat color cannot: no gradient-filled text, no gradient primary button, no gradient app background, and no colored glow at zero offset standing in for elevation.</Verify>
 <Verify rule="color-dark-composed">Dark has its own ground, its own accent values and its own measurements, and the ground is not full black.</Verify>
 <Verify rule="color-contrast">Contrast is calculated for every pair, including pressed, disabled and text over images, in both themes.</Verify>
 <Verify rule="color-not-alone">Nothing is communicated by color alone.</Verify>

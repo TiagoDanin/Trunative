@@ -86,7 +86,7 @@ Where a screen carries real reading, compensate in the dark theme only: one step
 <Check>
 
 <Verify rule="type-scale">Text styles trace back to the platform scale or to a written-down extension of it, no component carries a literal size, and Android text is in `sp`.</Verify>
-<Verify rule="type-roles">The screen works from a small set of named roles, and a role that repeats across screens is identical every time.</Verify>
+<Verify rule="type-roles">The screen works from about four named roles and carries no more than five distinct sizes, and a role that repeats across screens is identical every time.</Verify>
 <Verify rule="type-weight">Nothing below 400, no weight hardcoded outside a theme style, and every weight step jumps a grade. Weight is distributed across the screen, with most text on the regular cut and the heavy cut spent on a few elements.</Verify>
 <Verify rule="type-face">The typeface choice can be stated as a reason, a brand face stays in the display roles, and any custom face scales.</Verify>
 <Verify rule="type-measure">Body copy runs 40 to 60 characters per line.</Verify>

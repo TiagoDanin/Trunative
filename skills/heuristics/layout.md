@@ -40,6 +40,17 @@ Every container costs width the phone does not have. A card padded 16 inside a s
 
 Density follows the situation in `PRODUCT.md`: an app used while walking wants fewer things per screen and larger intervals, a tool someone works in seated can hold more. Fix it as numbers rather than as an intention. One row height and one section gap per kind of screen, written once and identical everywhere that kind appears, so a screen that is generous at the top and cramped at the bottom shows up as two different gaps instead of as a feeling.
 
+## <Rule id="layout-shape" description="Radius, edge and crop are one decision" />
+
+Corner radius is identity, the same way the palette and the typeface are. `DESIGN.md` carries it as `rounded` and in its Shapes section, and a component that picks its own number is a component that voted on the brand.
+
+A screen where a card, a photograph, a chip, a field and a button are all rounded to the same number has no shape language. It has one habit applied nine times, which is the reason so many generated screens read as the same app.
+
+- The radii come from the shape language: a small one for controls, a larger one for surfaces, a full round for what is meant to read as a pill or a circle. Three values on a screen is a system, nine is a reflex.
+- A square edge is a choice available to every surface. Photographs, thumbnails, tables and anything that reads as printed are frequently better with the edge the medium gives them, and a hairline rule does work that a rounded card cannot.
+- The radius of a nested surface is smaller than the one containing it, by the padding between them, or the two curves fight along the same corner.
+- Elevation is part of the same decision. Shadow, outline and fill are three ways to lift a surface, and a screen that reaches for all three at once has not decided how depth works.
+
 ## <Rule id="layout-column" description="One column, one scrolling axis" />
 
 There is no second column to escape into, and that changes what happens when something does not fit. Two halves side by side on a 320 wide screen leave each about 140 after the margins and the gap, and at the largest text step the same pair becomes two words per line. Whatever wants a second column is a row that should stack, a table that should be a list, or content that deserves its own screen. The exception is a pair of short fields whose format fixes their length in advance, expiry beside CVC being the one everybody ships: those fit at 140 and go on fitting at the largest step. Two fields on one line is otherwise the version of this that ships most often, and `form-column` owns it.
@@ -55,7 +66,7 @@ Design against a range. Supported iPhones run about 375 to 440pt wide, the narro
 - A fixed height is the same defect turned ninety degrees. A container sized to hold two lines holds one and a half as soon as the string is translated or the text scale moves, so heights follow content and only maximums are pinned.
 - Width and text size fail together. Recheck the narrow device at the largest accessibility step, which is `type-scaling`.
 
-## <Rule id="layout-chrome" description="Anything pinned covers the content underneath it" />
+## <Rule id="layout-chrome" evidence="device" description="Anything pinned covers the content underneath it" />
 
 A bar sitting in the platform's own bar slot is already handled: a Compose `Scaffold` reports the padding its top and bottom bars take, for the content to apply, and a SwiftUI `TabView` or `safeAreaInset(edge:)` extends the scroll view's safe area itself. Use the slot and there is no number to invent.
 
@@ -81,11 +92,13 @@ Scrolling costs more here than the wheel costs on a desk, because it takes the h
 
 Where content continues below, saying so is `scroll-affordance`. Everything past that line is a decision the user has to earn, so order the screen by what the job needs first, not by what the API returned first.
 
-## <Rule id="layout-short" description="Content that does not fill the height still has a bottom" />
+## <Rule id="layout-short" evidence="device" description="Content that does not fill the height still has a bottom" />
 
 Every rule above assumes the screen scrolls. The other case, a three-field form, an empty state, a detail screen holding two rows, is where a bottom action drifts: centred into the empty middle at one content length, and scrolled out of sight as soon as one more field arrives. There is no viewport height to fall back on the way a page has one.
 
 Both lengths run the same code. The scaffold's bottom bar slot pins it outright. Where the action belongs to the scrolling content instead, give the scroll a fill-height frame and a spacer that pushes the action down, so short content holds it against the bottom edge and long content lets it scroll away with the rest.
+
+The failure has a look, and only the short length shows it: a frame where the content stops a third of the way down, the action floats in the middle, and the bottom of the screen is empty. Nothing in the source says so, because the source is the long case.
 
 ## <Rule id="layout-orientation" description="Turned sideways the screen loses height, not width" />
 
@@ -98,14 +111,15 @@ Reflowing means the primary action stays visible without hunting for it, and the
 <Verify rule="layout-insets">The screen takes its insets from the framework's inset source rather than from a constant, and nothing readable or tappable sits outside them.</Verify>
 <Verify rule="layout-grid">Every gap is a multiple of 4, and of 8 above 16, the text column starts at the same margin on every screen outside full-bleed content and the platform list containers, and the screen uses about five distinct vertical gaps rather than a new one per component.</Verify>
 <Verify rule="layout-grouping">Grouping comes from space before containers, no container is nested inside another that already groups the same content, and the row height and section gap are the numbers this kind of screen uses everywhere else.</Verify>
+<Verify rule="layout-shape">Radius comes from the shape language rather than per component, the screen holds at most three radius values, a nested surface curves less than the one around it, and depth arrives through one of shadow, outline or fill rather than all three.</Verify>
 <Verify rule="layout-column">One column, no same-axis nesting outside what `scroll-nest` permits, and nothing side by side that would leave either half under about 140 wide apart from short fixed-format fields.</Verify>
-<Verify rule="layout-width">No content container carries a fixed width, and the screen was checked at 320dp with nothing clipped or overflowing.</Verify>
-<Verify rule="layout-chrome">Bars sit in the platform's bar slot, hand-placed chrome derives its padding from the measured bar plus the inset instead of a typed number, and no more than two persistent bars stand besides the system ones.</Verify>
+<Verify rule="layout-width">No content container carries a fixed width, and the screen was rendered at its own width and again at 320dp with nothing cut at an edge and nothing overflowing sideways.</Verify>
+<Verify rule="layout-chrome">Bars sit in the platform's bar slot, hand-placed chrome derives its padding from the measured bar plus the inset instead of a typed number, no more than two persistent bars stand besides the system ones, and on a rendered screen no line of content sits under a pinned bar, at the top edge or at the bottom one.</Verify>
 <Verify rule="layout-overlays">The snackbar comes from the platform's host slot rather than a hand-placed overlay, it clears the bottom bar and the inset, it moves the floating button rather than covering it, and one is on screen at a time.</Verify>
 <Verify rule="layout-fold">On the narrow device at default text size, the screen's subject and the start of its content are visible unscrolled, and the primary action is either in that screenful or in a bar pinned above the bottom inset and visible at rest.</Verify>
-<Verify rule="layout-short">A screen whose content does not fill the height holds its action against the bottom rather than centred in the empty middle, through the same code that lets it scroll once the content grows.</Verify>
+<Verify rule="layout-short">Rendered at its shortest content, the screen holds its action against the bottom rather than centred above an empty lower third, through the same code that lets it scroll once the content grows.</Verify>
 <Verify rule="layout-orientation">Landscape is either locked with a reason recorded in `STACK.md` or reflows, with the action still visible and the measure still capped at the shorter height.</Verify>
 
-<Device>`layout-insets`, `layout-width` and `layout-fold` are answered on a rendered screen at the narrow end of the range, on a device using three-button navigation as well as gestures. The token table and the component tree both look correct while the bottom bar is sitting under the navigation bar.</Device>
+<Device>`layout-insets`, `layout-width`, `layout-fold` and `layout-chrome` are answered on a rendered screen at the narrow end of the range, on a device using three-button navigation as well as gestures. The token table and the component tree both look correct while the bottom bar is sitting under the navigation bar. `layout-chrome` needs the screen scrolled to both ends with enough content to reach the pinned bars, because the collision is invisible until a row arrives under one of them, and the top bar hides the first row as readily as the bottom bar hides the last. `layout-short` needs the opposite render, the screen at its shortest content, which is the only length at which the action drifts into the middle.</Device>
 
 </Check>

@@ -94,6 +94,16 @@ Three strings do a different job from the sentences around them, and each has a 
 - **A line where content is missing names its cause and ends on a verb.** `state-empty` separates the three empties; the two that have a next move end on the verb of the control that takes it (`search-zero`, `list-end`).
 - **A waiting line says which operation is running**, and moves a determinate bar only where the app holds a real figure to move it with. `state-loading` owns when that line appears and what a long wait owes on top of it.
 
+## <Rule id="copy-sample-data" description="The screen shows the product's own content" />
+
+`you@example.com` in the field, `Enter your password` under it, three rows called Item one, Item two and Item three. Nothing on the screen came from the product, so nothing on it can be judged, and a reader learns only that somebody laid out boxes.
+
+- Every string and figure belongs to this domain and arrives in the shape the app will really receive: a merchant with a plausible name, a price with the locale's currency and separator, a timestamp the day would produce, a distance the sport actually covers.
+- The screen carries at least one concrete value a reader recognises. A price, a time, a name, an address, a measurement. A screen of headings and buttons with no data on it has not been designed against its content.
+- The figures reconcile. A yearly price and a monthly price produce the saving that is printed, timestamps in a list run one way, a total is the sum of its rows, a percentage matches the bar drawn beside it. One figure contradicting the one next to it tells the reader that none of them is real.
+- The sample covers what the layout has to survive rather than what flatters it: the long name, the zero, the negative, the empty list, the year-old record. `type-strings` owns the length side of this, `data-empty-null-zero` the difference between nothing and zero.
+- A hint inside a field is a format example and never the content, which is `copy-absence` and `form-label`.
+
 ## <Rule id="copy-numbers" description="The figure, not the word" />
 
 A digit is scanned and a spelled-out number is read, and scanning is all a phone gets.
@@ -131,12 +141,13 @@ Grep the view layer for digits inside display strings. Each hit is a claim, and 
 <Verify rule="copy-budget">No title wraps past 2 lines, no body runs past 1 sentence without a new fact in it, and no alert answer exceeds 2 words.</Verify>
 <Verify rule="copy-first-word">0 destination rows open with a generic verb, and 0 strings in a scannable column repeat their header or lead with a negated term.</Verify>
 <Verify rule="copy-voice">0 occurrences of "the user", "I", "my", "please", "sorry", "oops" and "!" in user-facing strings, "we" only where the sentence is about the company, and 0 gendered references the sentence does not need.</Verify>
-<Verify rule="copy-tells">0 em dashes and 0 en dashes in the string catalogue, 0 sales vocabulary on the empty, paywall and onboarding screens, and 0 chat leftovers.</Verify>
+<Verify rule="copy-tells">0 em dashes and 0 en dashes in the string catalogue, 0 sales vocabulary anywhere in the interface, and 0 chat leftovers.</Verify>
 <Verify rule="copy-error">Every string reporting a failed operation carries all 3 answers, the distinct failure sentences match the distinct moves rather than the 4 classes, and 0 of them lead with a code, blame the reader or spell out a settings path.</Verify>
 <Verify rule="copy-jargon">0 mechanism words, exception names or HTTP numbers in the string catalogue, sync, cache and queue only where the reader uses the word too, and every acronym either known to the audience or spelled out once.</Verify>
 <Verify rule="copy-terms">1 term per concept across the catalogue, listed in `STACK.md`, with 0 uses of "click" and 0 confirmations whose verb differs from the control that raised them.</Verify>
 <Verify rule="copy-case">1 case style per element type across every screen, the 4 iOS-fixed cases correct, whether the theme uppercases the label answered before the authored string is trusted (on Android Views that is `android:textAllCaps`), and 0 strings longer than a short label authored in capitals.</Verify>
 <Verify rule="copy-absence">Field hints show a format, each line standing in for missing content names its cause and the 2 empties with a next move end on the verb of the control that takes it, and 0 waiting lines claim unmeasured progress.</Verify>
+<Verify rule="copy-sample-data">Every string and figure belongs to the product's domain, the screen shows at least one concrete value a reader would recognise, and the figures on it reconcile with each other.</Verify>
 <Verify rule="copy-numbers">Numbers are numerals, destructive strings state the exact count and object, and formatting and plurals come from the locale.</Verify>
 <Verify rule="copy-claims">Every figure that describes what the product delivers is interpolated from the constant the behaviour uses, or lives in one named place the domain also reads, and no advertised ceiling is unreachable because of a limit elsewhere.</Verify>
 <Verify rule="copy-rationale">Every usage description is 1 sentence-case sentence ending in a full stop, the control that opens the system dialog reads Continue or Next, and any data disclosure says why, what and how before the dialog with nothing unrelated bundled into it.</Verify>

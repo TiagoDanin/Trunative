@@ -66,6 +66,16 @@ Fix one aspect ratio per surface, once, then crop everything entering it to fill
 - Fit-inside is right where the whole image is the point: a logo, a scanned document, a diagram. There the frame keeps its own background instead of leaving transparent bars.
 - Where a crop is destructive to the user's own content, the frame is a preview and the full image is one tap away.
 
+## <Rule id="icon-depicts" description="Artwork that depicts nothing is spending the screen" />
+
+The blurred oval behind the form, the glow under the logo tile, the three gradient bands standing where a feed's photographs go. Each one takes the area a person looks at first and reports nothing back, and that is the shape a generated screen has: the only decision behind the biggest element was to fill it.
+
+- Anything larger than a touch target that is not text, a control or data depicts something this product can name. The item being bought, the route being taken, the record being read, the state being waited on.
+- A container is not the artwork. An icon centred in a rounded tile is a hero that decided nothing, and on a first screen it is the most common form of this defect.
+- Where the real image does not exist yet, draw the subject, hold the frame it will occupy (`icon-reserve`), or leave the space. A placeholder that depicts nothing is worse than an honest gap, because it looks finished.
+- Texture is not subject. A pattern, a grain pass or a wash over artwork that already shows something is treatment. The same wash on its own is the defect.
+- Abstract is allowed where the product is abstract, and the test does not care about style: somebody who has not seen the app can say what the picture shows.
+
 ## <Rule id="icon-alt" description="A picture is content or it is decoration, and it says which" />
 
 Content describes what it shows. Decoration is hidden instead of described, which is `a11y-hidden`. Nothing sits between the two, both answers compile, and a screen where every image says nothing looks identical to one where every image is right.
@@ -93,6 +103,7 @@ Most accounts have no photo, so the fallback is the state to design first and th
 - Never a broken image frame, an alt-text box, or the platform's missing-asset glyph. At the size an avatar is actually drawn that is a dark square with a question mark in it, repeated down the list.
 - Initials come from the display name as the locale orders it, one or two characters, and they are measured against their generated background like any other text: `l10n-personal`, `color-contrast`.
 - The missing name is a case too. Deleted accounts, invited users who never joined, and system actors all arrive at the same component.
+- Never a drawn human face. It puts an invented person on somebody's account, it is the same face every time the component renders, and a column of them is three strangers who look related. Initials, a generated shape, or the product's own mark.
 
 ## <Rule id="icon-app" evidence="device" description="One asset, no words, no fine detail" />
 
@@ -113,9 +124,10 @@ The app icon is drawn at about the size of a fingertip, beside twenty others, in
 <Verify rule="icon-vector">Flat artwork is vector and tintable in one colour, and every raster interface asset is authored at each density the platform asks for.</Verify>
 <Verify rule="icon-reserve">Every remote image outside a list takes its dimensions from the layout before the request is made, and nothing below it moves when it lands.</Verify>
 <Verify rule="icon-crop">Each image surface names one aspect ratio, or a fixed short list of them, plus one fill mode, and images crop rather than stretch or letterbox.</Verify>
+<Verify rule="icon-depicts">Every region larger than a touch target that is not text, a control or data depicts something nameable in the product, and no glow, blob, wash or abstract gradient stands where an image belongs.</Verify>
 <Verify rule="icon-alt">Every image either describes what it shows or is hidden as decoration, and no description is a file name or the word image.</Verify>
 <Verify rule="icon-dark">Every asset that cannot be tinted has a dark counterpart selected by the asset system, and no asset carries an opaque light background.</Verify>
-<Verify rule="icon-avatar">The avatar has a generated fallback at the same size, stable per user, covering the missing name, and no path renders a broken image.</Verify>
+<Verify rule="icon-avatar">The avatar has a generated fallback at the same size, stable per user, covering the missing name, carrying no drawn human face, and no path renders a broken image.</Verify>
 <Verify rule="icon-app">The app icon carries no text, ships unmasked layers with no baked effects, keeps its mark inside the safe box, and supplies the monochrome layer on Android and the dark and tinted appearances on iOS rather than letting the system invent them.</Verify>
 
 <Device>Check `icon-dark`, `icon-avatar` and `icon-app` on a rendered screen in dark appearance, and `icon-weight` at the largest text step. All four pass a light-theme, default-size screenshot.</Device>
