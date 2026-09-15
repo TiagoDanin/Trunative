@@ -12,7 +12,14 @@ It is stack-agnostic: the rules apply to React Native, Expo, Flutter, SwiftUI, J
 
 Coding agents are trained mostly on desktop web. Left alone, they produce mobile screens that are technically correct and physically unusable:
 
-- ...
+- A tap target that measures 32 points because that is what the icon measures, and misses under a thumb that is not looking at it (`touch-floor`).
+- The primary action parked at the top of the screen, in the part of it a hand cannot reach without regripping the phone (`touch-reach`).
+- Insets taken from a constant instead of from the framework, so the last row of the list sits under the home indicator on the one device nobody opened (`layout-insets`).
+- One design for the case where the data arrived: no shape to load into, no sentence for the empty list, and a failure that does not say what failed (`state-set`).
+- A layout that holds at the default text size and falls apart two steps up the accessibility scale, which is where a lot of people already are (`type-scaling`).
+- A dark theme that is the light one with its colours inverted, so what was a shadow is now a glow (`color-dark-composed`).
+- Seed data chosen to flatter the layout: three short names, no zero, no null, no long string, no empty list (`copy-sample-data`).
+- A hero image filling a third of the screen and depicting nothing anybody chose (`icon-depicts`).
 
 None of this shows up in a code review or a passing test suite. It shows up when someone holds the phone.
 
@@ -104,7 +111,7 @@ It drives the app instead of reading the diff, separates what was read in the so
 
 The rules the skill enforces. Each is a hard constraint, not a preference, and each carries a stable id the agent reports against. `skills/heuristics/` is the source of truth; this is the summary.
 
-Nine files open on every screen, because every screen has colour, text, targets, a layout, states, an action, words and something that moves.
+Ten files open on every screen, because every screen has colour, text, targets, a layout, states, at least one action, words, something that moves and something drawn.
 
 **Colour** is reached through a role, never as a hex at a call site (`color-roles`). One accent means touchable and nothing else (`color-one-accent`). Dark is a second design rather than an inverted switch (`color-dark-composed`), contrast is calculated rather than eyeballed (`color-contrast`), and nothing is said by colour alone (`color-not-alone`).
 
@@ -122,9 +129,11 @@ Nine files open on every screen, because every screen has colour, text, targets,
 
 **Accessibility** gives every control a name, a role and a value (`a11y-name`), hides decoration rather than describing it (`a11y-hidden`), and never makes a gesture the only route to anything (`a11y-gesture`). One whole flow is driven with the screen reader on before it ships (`a11y-test`).
 
-**Copy** decides its word budget before the sentence is written (`copy-budget`), spends the first two words on meaning (`copy-first-word`), names the failure and ends on the fix (`copy-error`), and uses one term per thing throughout (`copy-terms`).
+**Copy** decides its word budget before the sentence is written (`copy-budget`), spends the first two words on meaning (`copy-first-word`), names the failure and ends on the fix (`copy-error`), and uses one term per thing throughout (`copy-terms`). Sample content is chosen to break the layout rather than to flatter it (`copy-sample-data`).
 
-The rest of the rules open when the screen touches them: navigation and back (`nav-`), lists (`list-`), forms (`form-`), chat (`chat-`), permissions (`perm-`), onboarding (`onboard-`), localization (`l10n-`), notifications (`notify-`), widgets and live surfaces (`widget-`), device capabilities (`sense-`), camera (`cam-`), network (`net-`), offline (`off-`), the launch surface (`splash-`), performance (`perf-`), icons and imagery (`icon-`), feedback (`fb-`), search (`search-`), auth (`auth-`), settings (`set-`), media (`media-`), background work (`bg-`), privacy (`priv-`), sharing (`share-`), updates and migrations (`upd-`), scrolling (`scroll-`), data and charts (`data-`), sound (`sound-`), payments (`pay-`), ads (`ads-`), maps (`map-`) and web views (`webview-`).
+**Icons and imagery** come from one set, at one weight, and an emoji is not a substitute for a missing icon (`icon-one-set`, `icon-no-emoji`). Artwork depicts something somebody chose, and decoration that means nothing loses its space to content (`icon-depicts`). The space an image will occupy is reserved before it lands, so nothing jumps under a thumb already moving (`icon-reserve`), and anything drawn light on dark needs its own variant rather than a filter (`icon-dark`).
+
+The rest of the rules open when the screen touches them: navigation and back (`nav-`), lists (`list-`), forms (`form-`), chat (`chat-`), permissions (`perm-`), onboarding (`onboard-`), localization (`l10n-`), notifications (`notify-`), widgets and live surfaces (`widget-`), device capabilities (`sense-`), camera (`cam-`), network (`net-`), offline (`off-`), the launch surface (`splash-`), performance (`perf-`), feedback (`fb-`), search (`search-`), auth (`auth-`), settings (`set-`), media (`media-`), background work (`bg-`), privacy (`priv-`), sharing (`share-`), updates and migrations (`upd-`), scrolling (`scroll-`), data and charts (`data-`), sound (`sound-`), payments (`pay-`), ads (`ads-`), maps (`map-`) and web views (`webview-`).
 
 ## License
 
