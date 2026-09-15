@@ -10,6 +10,7 @@ import { graph } from './commands/graph.js'
 import { lint } from './commands/lint.js'
 import { install } from './commands/install.js'
 import { rubric } from './commands/rubric.js'
+import { spec } from './commands/spec.js'
 import { packageRoot } from './paths.js'
 
 const USAGE = `trunative, a mobile-only design skill for AI coding agents
@@ -17,6 +18,7 @@ const USAGE = `trunative, a mobile-only design skill for AI coding agents
 Usage
   npx trunative doctor            check the project before the agent starts
   npx trunative install [--dir]   copy the skill into the agent directories
+  npx trunative spec [paths]      check the screen briefs, exits 1 on a finding
   npx trunative rubric [--only]   print the review checklist, one row per rule
   npx trunative build             resolve the skill once per agent and stack
   npx trunative lint              check the written skill, exits 1 on a finding
@@ -32,6 +34,7 @@ Options
   --only <name>  limit the rubric to a heuristics file ("touch"), a rule
                  prefix ("touch-") or one rule id (repeatable)
   --format <f>   rubric output: markdown (default), json, ids
+  --check        accepted on "spec", which only ever checks
   -v, --version  print the version
   -h, --help     print this help
 
@@ -58,6 +61,7 @@ async function main(): Promise<number> {
 			format: { type: 'string' },
 			stack: { type: 'string' },
 			cwd: { type: 'string' },
+			check: { type: 'boolean' },
 			version: { type: 'boolean', short: 'v' },
 			help: { type: 'boolean', short: 'h' },
 		},
@@ -88,6 +92,8 @@ async function main(): Promise<number> {
 			return build({ version })
 		case 'lint':
 			return lint({ cwd })
+		case 'spec':
+			return spec({ cwd, paths: positionals.slice(1) })
 		case 'detect':
 			return detect({
 				cwd,
