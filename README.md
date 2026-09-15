@@ -40,6 +40,12 @@ It checks that the project has its three briefs, in `.trunative/` or at the root
 
 The doctor reports and exits 1, it never writes the briefs. Writing them is the agent's job in the init step.
 
+A fourth brief is per screen instead of per project. The agent writes one to `.trunative/screens/<name>.md` whenever a task changes hierarchy, actions, states or navigation, and this checks it:
+
+```sh
+npx trunative spec
+```
+
 The agent also has a generator for the review checklist:
 
 ```sh
@@ -80,8 +86,9 @@ Use the trunative skill on src/screens/Checkout.tsx
 The agent then:
 
 1. **Detects the stack** and maps the rules to that framework's primitives (`SafeAreaView`, `SafeArea`, `WindowInsets`, `env(safe-area-inset-*)`, …).
-2. **Applies the design principles** below while writing the code.
-3. **Audits the result** against the checklist and reports what it could not satisfy, instead of silently shipping it.
+2. **Settles the structure first**, when the task moves hierarchy, actions, states or navigation. It writes a screen brief to `.trunative/screens/`, draws it as a greyscale wireframe, and asks once before any code exists. Approving a picture costs a fraction of rewriting a screen, and a cosmetic change skips this entirely.
+3. **Applies the design principles** below while writing the code.
+4. **Audits the result** against the checklist and reports what it could not satisfy, instead of silently shipping it.
 
 That audit scores every rule that applies from 1 to 5, and a 1 or a 2 sends the agent back to fix it before the work is handed over.
 

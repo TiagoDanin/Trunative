@@ -17,7 +17,7 @@ A **violation** is a 1 or a 2, and that is the whole of the gate: the build loop
 
 Two answers that are not scores:
 
-- **`n/a`**, with the reason in the row: the feature does not exist here, the platform does not have it, or `STACK.md` records the exception. Not available for the nine rules under **Always in scope** in `SKILL.md`.
+- **`n/a`**, with the reason in the row: the feature does not exist here, the platform does not have it, or `STACK.md` records the exception. Not available for the nine rules under **Always in scope** in `SKILL.md`. An `n/a` written in a screen brief is a claim the brief's author made before the code existed, so it is checked here like any other claim, and it never arrives as an exemption. Exceptions accepted on purpose live in `STACK.md`, which is the only file that grants one.
 - **`unrun`**: the rule applied, nothing was checked, and the run knows it. A rule you did not check is never a pass.
 
 Anchors are not a curve. Most rules on a screen built with this skill land at 3 and 4, a 5 is earned by evidence rather than by the absence of a complaint, and a screen with no 1s and no 2s is a screen that ships, which is a lower bar than a good screen.
@@ -35,6 +35,8 @@ The scope is every base file plus the extra files this screen touches, settled b
 An identity the build had to settle because `DESIGN.md` did not carry one is part of the scope, not a note beside it. It is graded by `color-derived`, `type-face`, `layout-shape` and `icon-depicts`, against the five lines the build wrote, and a screen whose identity would fit any other product in the category scores a 1 on the first of them however clean the rest of the code is.
 
 Name the screen first, the same way build does, and derive the scope from the name. A build that named it wrong took the wrong files with it, and a review that inherits the build's list inherits the mistake. Where your pass reaches a file the build never opened, its rules are in scope all the same and every one of them is `unrun` until it is checked: a rule nobody looked at is not a rule that passed.
+
+A screen brief at `.trunative/screens/<name>.md` does not change that. Its `scope` is what the spec step decided and what the rubric was generated from, and it may widen your scope and never shrink it. Where your own pass reaches a file the brief left out, grade it and report the difference as drift.
 
 ```sh
 npx trunative rubric --only forms --only search
@@ -132,7 +134,8 @@ The report goes in the response, in this order:
 1. **Header.** What was reviewed, the scope, the total, the percentage, the band and the coverage.
 2. **The table.** Columns: rule, score, evidence, finding. Print every rule at 4 or below and every one of the always-in-scope nine, then one line per file for the rest: file, rules scored, average, lowest.
 3. **Violations.** Every rule at 1 or 2, ordered by what it costs the person using the app and not by how easy it is to fix. Each names the rule id, the file and line, what the user meets, and the fix. Say plainly when the screen is unusable one-handed, loses work on interruption, or has no failure state, and do not bury it under smaller findings.
-4. **What moved.** Scores a measurement changed, with both numbers.
+4. **Spec drift.** Only when the screen has a brief, and unscored. Each entry quotes what the brief says and what the code does: a hierarchy in a different order, a `primary_action` whose label is not the one on screen, a state declared and not implemented, a scope the brief left out. Where the divergence also breaks a rule, name the id that already scores it, such as `state-offline` for a declared state that is not there, and do not score it twice. Drift is a fact about two files disagreeing, and the moment it carries a number this file has two graders in it.
+5. **What moved.** Scores a measurement changed, with both numbers.
 
 If a violation is a deliberate exception recorded in `STACK.md`, it is `n/a` with that exception as the reason, not a 1 defended in prose.
 
@@ -150,6 +153,7 @@ Frontmatter, machine readable:
 ---
 target: lib/screens/checkout_screen.dart
 slug: lib-screens-checkout-screen-dart
+spec: .trunative/screens/checkout.md
 date: 2026-09-08T14:22
 skill: sha256:6f0a...
 scope: [touch, forms, states, layout, typography, colors, motion, accessibility]
@@ -161,7 +165,7 @@ na: [pay-restore: no purchases on this screen, ads-report: no Android build]
 ---
 ```
 
-`skill` is the hash in `.trunative/skill.lock`. It says which set of rules produced the numbers, which is how a later run knows the rulebook moved under it.
+`skill` is the hash in `.trunative/skill.lock`. It says which set of rules produced the numbers, which is how a later run knows the rulebook moved under it. `spec` is the screen brief this run graded against, omitted when the screen has none, so a later comparison can tell a screen that changed from a screen whose declared intent changed.
 
 Then read the newest five archived runs with the same slug and print one line:
 
@@ -174,6 +178,7 @@ First run: there is nothing to compare against. Say so in one line, name it the 
 ## 7. Loop
 
 - Any rule at 1 or 2: go back to `flow/build.md` with this report and fix them, then review again.
+- Drift where the code is right and the brief is stale: correct the brief and carry on. Drift where the brief is right and the code left the approved structure: that is hierarchy, actions, states or navigation moving without anyone deciding it, so go back to `flow/spec.md`, not to build.
 - Nothing below 3: stop. Report what was built, what was checked, what was excused and what was not seen.
 
 Two consecutive reviews finding the same violation means the fix is not working. Say so and ask the user, instead of looping a third time.

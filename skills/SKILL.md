@@ -16,9 +16,10 @@ Follow it in order. Never skip init, never end on build.
 <Index of="flow" />
 
 1. **init**, read `flow/init.md`. Once per project, and again whenever `npx trunative doctor` fails.
-2. **build**, read `flow/build.md`. One screen, one component, or one flow at a time.
-3. **review**, read `flow/review.md`. Runs on the code that was just written, and again on request over a finished screen. It scores every rule in scope from 1 to 5, and a 1 or a 2 is a violation.
-4. **loop**, back to build while review reports violations. Stop when review comes back clean.
+2. **spec**, read `flow/spec.md`. Only when the task changes hierarchy, actions, states or navigation. It writes the screen brief, renders it as a greyscale wireframe, and takes one approval before any code exists. A cosmetic or local change skips it and goes straight to build.
+3. **build**, read `flow/build.md`. One screen, one component, or one flow at a time.
+4. **review**, read `flow/review.md`. Runs on the code that was just written, and again on request over a finished screen. It scores every rule in scope from 1 to 5, and a 1 or a 2 is a violation.
+5. **loop**, back to build while review reports violations. Stop when review comes back clean.
 
 Loaded by build, not a step: `flow/firebase.md`, whenever the screen touches Firebase.
 
@@ -93,7 +94,7 @@ It fails in two quiet ways. Judging by the feature closes a file that owns somet
 
 <Index of="references" />
 
-Lookup material, read on demand for one value and never as background: `references/type-scales.md`, `references/fonts.json`, `references/input-fields.md`, `references/navigation-containers.md`, `references/motion-tokens.md`, `references/capability-checks.md`, `references/launch-surface.md`, `references/icon-and-image-assets.md`, `references/search-controls.md`.
+Lookup material, read on demand for one value and never as background: `references/type-scales.md`, `references/fonts.json`, `references/input-fields.md`, `references/navigation-containers.md`, `references/motion-tokens.md`, `references/capability-checks.md`, `references/launch-surface.md`, `references/icon-and-image-assets.md`, `references/search-controls.md`, `references/wireframe-frame.md`.
 
 ## Always in scope
 
@@ -115,7 +116,7 @@ A splash screen, a settings list and a chart all answer these. Open the file tha
 - Open every base file, then every extra file this screen touches, settled by the pass over the Extra table rather than from memory of what the folder holds. Reading all of it wastes the context the code needs, and closing a file because the screen looked simple wastes the review.
 - Read `references/` on demand, for one specific number or API. Never as background.
 - This copy was built for one agent and, when its name says so, for one stack. It is not the file that was written: the branches for other harnesses and other frameworks were resolved away at build time. Never hand-edit it, and never reason about what a branch might have said.
-- The project briefs override nothing in `heuristics/`, but they decide which rules apply and record the exceptions accepted on purpose. `PRODUCT.md` is who uses this and for what, `DESIGN.md` is the visual identity in the [design.md format](https://github.com/google-labs-code/design.md), and `STACK.md` is this codebase: primitives, navigation, components, exceptions.
+- The project briefs override nothing in `heuristics/`, but they decide which rules apply and record the exceptions accepted on purpose. `PRODUCT.md` is who uses this and for what, `DESIGN.md` is the visual identity in the [design.md format](https://github.com/google-labs-code/design.md), and `STACK.md` is this codebase: primitives, navigation, components, exceptions. A fourth brief is per screen rather than per project: `.trunative/screens/<name>.md` holds the structure `flow/spec.md` settled, and it records intent rather than granting an exception.
 
 ## Non-negotiable
 

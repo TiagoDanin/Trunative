@@ -8,7 +8,7 @@ Every state below needs its own words and its own way forward. A generic message
 
 ## <Rule id="state-set" description="Six states, named before the happy path is written" />
 
-For any screen that loads, sends or stores anything, write the line it shows in each of six: **loading**, **empty**, **error**, **offline or stale**, **partial**, and **permission denied or read only**. Produce that list while framing the screen in `flow/build.md`, before the layout exists.
+For any screen that loads, sends or stores anything, write the line it shows in each of six: **loading**, **empty**, **error**, **offline or stale**, **partial**, and **permission denied or read only**. Produce that list in `flow/spec.md`, where it is the screen brief's six state keys, before the layout exists. A screen changed without a brief produces it while framing in `flow/build.md` instead.
 
 A screen that cannot enter a state answers it as not applicable and says which: no network call means no offline and no stale, a single indivisible payload means no partial, no protected capability means no permission state. A screen driving a camera, microphone, location, motion sensor or radio owes the five further states in `sense-states` on top of these. Every state the screen can reach is owed its line, and "not applicable" is a claim a reviewer can check, while a blank is not.
 

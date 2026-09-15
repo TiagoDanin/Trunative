@@ -4,13 +4,17 @@ Writes or changes one screen, one component, or one flow. Never runs before init
 
 ## 1. Frame the screen
 
-State, in one or two lines, before writing code:
+**When the screen has a brief**, at `.trunative/screens/<name>.md`, read it and build what it says. The job, the hierarchy, the one primary action, the six states and the scope were settled and approved in `flow/spec.md`, and rederiving them here is the context this step exists to save. Where the brief and the request disagree, the brief is stale: go back to `flow/spec.md` and change it rather than building against a file that now lies.
+
+**When it has none**, because the change touches no hierarchy, no action, no state and no navigation, state in one or two lines before writing code:
 
 - the single job this screen does, taken from `PRODUCT.md`
 - the one primary action, and where the thumb reaches it
 - what happens on a slow network, on failure, and with no data
 
 If the screen has more than one primary action, it is more than one screen. Split it and say so.
+
+If framing it turns out to move hierarchy, actions, states or navigation after all, the change was structural and misjudged. Stop and run `flow/spec.md`.
 
 ## 2. Load only what applies
 
@@ -19,6 +23,8 @@ Read `DESIGN.md` for the tokens and `STACK.md` for the primitives that reach the
 Base is not part of this choice. Colour, text, targets, layout, states, actions, words, motion and artwork are on a splash screen and on a chart alike, so deciding a screen does not touch one of them is not a decision this step gets to make.
 
 Extra is not a feeling either. Name the screen in one line, as the thing it is rather than as the feature it belongs to, then run that line down the Covers column of the Extra table in `SKILL.md`, row by row. Open every row whose words are on the screen. Leave a row closed only with a sentence naming what this screen does not have that the row is about. List what you opened, and what you closed and why, before writing anything, because a file opened after the screen exists reviews it rather than shapes it.
+
+A brief's `scope` has already made that pass. Open what `scope.open` names and reuse the sentences in `scope.closed`, and run the pass yourself for anything the brief does not cover, because a screen grows between the brief and the code.
 
 When the screen touches Firebase, in any of auth, Firestore, Storage, Messaging, Remote Config or Crashlytics, read `flow/firebase.md` as well. It is loaded here the way a heuristic is, and it is not a step.
 
@@ -40,4 +46,6 @@ Those five lines are provisional and say so. They go to the user to confirm into
 
 ## 4. Hand off
 
-Say which heuristics files you applied and which you deliberately skipped, with the reason, and name the triggers that opened the extra ones. When this screen had to settle an identity because `DESIGN.md` did not, the five lines go in the hand-off, marked provisional. Then run `flow/review.md`. Build is never the last step.
+Say which heuristics files you applied and which you deliberately skipped, with the reason, and name the triggers that opened the extra ones. When this screen had to settle an identity because `DESIGN.md` did not, the five lines go in the hand-off, marked provisional. Name the brief you built against, or say the change was not structural and had none. Then run `flow/review.md`. Build is never the last step.
+
+Where the code had to depart from the brief, change the brief in the same turn and say what moved. A brief left behind is what review reports as drift, and it is cheaper to correct here than to explain there.
