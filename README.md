@@ -64,14 +64,16 @@ It prints one row per rule id, with that rule's own checklist line as the criter
 The skills.sh CLI works too, without the lockfile and the version check:
 
 ```sh
-npx skills add TiagoDanin/Trunative
+npx skills add TiagoDanin/Trunative --skill trunative
 ```
 
-To install manually, copy the `skills/` folder into your agent's skills directory:
+The repository carries seven copies: `trunative` covers every stack, and `trunative-flutter`, `trunative-expo`, `trunative-react-native`, `trunative-swiftui`, `trunative-compose` and `trunative-web` are the same skill with the other frameworks' instructions removed. Pick one with `--skill`, or list them with `-l`. `npx trunative install` needs none of this: it reads the stack from `STACK.md` and resolves the copy itself.
+
+To install manually, copy one of those folders into your agent's skills directory:
 
 ```sh
 git clone https://github.com/TiagoDanin/Trunative.git
-cp -r Trunative/skills .claude/skills/trunative
+cp -r Trunative/skills/trunative .claude/skills/trunative
 ```
 
 ## Usage
@@ -109,7 +111,7 @@ It drives the app instead of reading the diff, separates what was read in the so
 
 ## Design Principles
 
-The rules the skill enforces. Each is a hard constraint, not a preference, and each carries a stable id the agent reports against. `skills/heuristics/` is the source of truth; this is the summary.
+The rules the skill enforces. Each is a hard constraint, not a preference, and each carries a stable id the agent reports against. `src/skills/heuristics/` is the source of truth; this is the summary.
 
 Ten files open on every screen, because every screen has colour, text, targets, a layout, states, at least one action, words, something that moves and something drawn.
 
