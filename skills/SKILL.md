@@ -16,7 +16,7 @@ Follow it in order. Never skip init, never end on build.
 <Index of="flow" />
 
 1. **init**, read `flow/init.md`. Once per project, and again whenever `npx trunative doctor` fails.
-2. **spec**, read `flow/spec.md`. Only when the task changes hierarchy, actions, states or navigation. It writes the screen brief, renders it as a greyscale wireframe, and takes one approval before any code exists. A cosmetic or local change skips it and goes straight to build.
+2. **spec**, read `flow/spec.md`. Whenever the task establishes or changes hierarchy, actions, states or navigation, which a new screen, a new component with state of its own, or a new flow always does. It writes the screen brief, renders it as a greyscale wireframe, and asks the user once, before any code exists. Skipping it is a verdict written in one line, never a default: only a cosmetic or local change goes straight to build.
 3. **build**, read `flow/build.md`. One screen, one component, or one flow at a time.
 4. **review**, read `flow/review.md`. Runs on the code that was just written, and again on request over a finished screen. It scores every rule in scope from 1 to 5, and a 1 or a 2 is a violation.
 5. **loop**, back to build while review reports violations. Stop when review comes back clean.

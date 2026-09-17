@@ -4,9 +4,13 @@ Writes or changes one screen, one component, or one flow. Never runs before init
 
 ## 1. Frame the screen
 
+Before anything else, write one line saying whether this task establishes or changes hierarchy, actions, states or navigation. If it touches any of the four, stop here and run `flow/spec.md`: a new screen, a new component with state of its own, or a new flow touches all four by definition, and arriving at this file with one of those in hand means the step was skipped rather than judged.
+
+That line is written, not recalled. Unwritten, the answer is always the same one, because code is what this step is for and the pull is toward starting it.
+
 **When the screen has a brief**, at `.trunative/screens/<name>.md`, read it and build what it says. The job, the hierarchy, the one primary action, the six states and the scope were settled and approved in `flow/spec.md`, and rederiving them here is the context this step exists to save. Where the brief and the request disagree, the brief is stale: go back to `flow/spec.md` and change it rather than building against a file that now lies.
 
-**When it has none**, because the change touches no hierarchy, no action, no state and no navigation, state in one or two lines before writing code:
+**When it has none**, and the line above says the task touches none of the four, state in one or two lines before writing code:
 
 - the single job this screen does, taken from `PRODUCT.md`
 - the one primary action, and where the thumb reaches it

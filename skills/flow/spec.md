@@ -1,20 +1,26 @@
 # Spec
 
-Settles what is on the screen before anything draws it. Runs between init and build, and only when the task changes structure.
+Settles what is on the screen before anything draws it. Runs between init and build, whenever the task establishes or changes structure.
 
-Structure is four things: hierarchy, actions, states, navigation. A task that moves any of them comes through here. A task that moves none of them goes straight to build.
+Structure is four things: hierarchy, actions, states, navigation. A new screen, a new component with state of its own, or a new flow settles all four at once, so it always comes through here: nothing is being changed because everything is being decided, and that is the maximum case rather than an exemption. An existing screen comes through when the task moves any of the four.
+
+The step ends with two things, and neither is optional: a wireframe rendered and looked at, and a question the user answered. A spec step that wrote a brief and went on to code did not run.
 
 ```text
-"Move People above Recently Viewed."   spec
-"Add Google sign-in."                  spec
-"This screen has no empty state."      spec
-"Send the row to a detail screen."     spec
+"Build the login screen."             spec, new screen
+"Add a settings screen to the app."   spec, new screen
+"Move People above Recently Viewed."  spec
+"Add Google sign-in."                 spec
+"This screen has no empty state."     spec
+"Send the row to a detail screen."    spec
 
-"Make the button blue."                build
-"Four more points of padding."         build
-"The transition is too slow."          build
-"Rename the view model."               build
+"Make the button blue."               build
+"Four more points of padding."        build
+"The transition is too slow."         build
+"Rename the view model."              build
 ```
+
+Write the verdict in one line before anything else, naming which of the four the task touches or naming that it touches none. A verdict nobody wrote is a step nobody ran, and it fails in one direction only: writing code is the attractor, so the unwritten answer is always "straight to build".
 
 The distinction is the whole economy of this step. A brief demanded for every cosmetic edit is ceremony people route around, and a brief skipped on a structural edit is a decision that dies with the session.
 
@@ -132,7 +138,11 @@ Approve?
 
 The approval is about hierarchy, actions, states and navigation. It is not about colour, typeface, spacing or polish, and an answer about those goes to `DESIGN.md` rather than into the brief.
 
-One question per session. A user who has already approved this session's direction is not asked again for every screen; the brief is written either way, and the question comes back only when a new structure contradicts one already approved.
+Ask the user, and never grant it yourself. Writing the brief, drawing the frame and deciding it looks right is this step doing its own homework, not the gate: the gate is the one part of the step the user sees, and a step reporting "approved" with no question asked has skipped exactly that part.
+
+One question per session, which is not none. The first structural task of a session always asks. After it, the brief is still written and the frame still drawn, and the question comes back when a new structure contradicts one already approved.
+
+When the harness cannot show the user a picture, say so and put the four lines in front of them anyway. A gate answered on the text alone is weaker than one answered on the frame, and it is still the user answering.
 
 ## 5. Hand off
 
