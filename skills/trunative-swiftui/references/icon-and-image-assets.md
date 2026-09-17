@@ -7,7 +7,6 @@ Lookup only. The rules live in `heuristics/icons-and-imagery.md`. Open this file
 | Set | Axes and variants | What it gives for free |
 |---|---|---|
 | SF Symbols (iOS) | 9 weights, ultralight to black, each mapped to a San Francisco font weight; 3 scales (small, medium, large) defined against the cap height; outline, fill, slash and enclosed variants | Baseline information on every symbol, Dynamic Type scaling when configured with a text style, and per-script variants that follow the device language |
-| Material Symbols (Android, web) | One variable font in Outlined, Rounded and Sharp. `opsz` 20 to 48, default 24. `wght` 100 to 700, default 400. `GRAD` -50 to 200, default 0. `FILL` 0 to 1, default 0 | One file for every weight and fill; `FILL` is animatable for selection |
 
 Axis meanings: `wght` is the stroke weight and moves the overall size a little. `GRAD` changes thickness more finely with almost no size change; -50 is the value for light artwork on a dark ground. `opsz` retunes the stroke so the glyph looks the same at a different size. `FILL` is for state.
 
@@ -25,8 +24,6 @@ Compose `Icon` is 24.dp when the painter has no intrinsic size, and is tinted wi
 |---|---|---|
 | iOS asset catalog | `@2x` and `@3x` filename suffixes | iOS ships at 2x and 3x. `scale` and `nativeScale` can differ |
 | Android resources | `res/drawable-<bucket>/` | A vector drawable goes in the default `res/drawable/` with no per-density copy |
-| Flutter | `2.0x/name.png` beside `name.png` | Nominal densities 1.5x, 2.0x, 3.0x, 4.0x. List only the main asset or its folder in `pubspec.yaml` |
-| React Native | `name@2x.png` sibling files, one `require` | The closest density is picked when the exact one is missing. A `uri` source carries no dimensions |
 
 ## Android density buckets
 
@@ -55,10 +52,6 @@ Flat artwork that scales: PDF or SVG. Bitmap work: de-interlaced PNG, or an 8-bi
 |---|---|---|
 | SwiftUI | `.scaledToFill()` with `.clipped()` | `.scaledToFit()` |
 | UIKit | `.scaleAspectFill` | `.scaleAspectFit` |
-| Compose | `ContentScale.Crop` | `ContentScale.Fit` |
-| Flutter | `BoxFit.cover` | `BoxFit.contain` |
-| React Native | `resizeMode="cover"` | `resizeMode="contain"` |
-| Mobile web | `object-fit: cover` | `object-fit: contain` |
 
 ## Dark variants
 

@@ -6,14 +6,8 @@ Lookup only. The rules live in `heuristics/search.md`. Open this file for the co
 
 | Stack | Field and entry point | Expanded state and results |
 |---|---|---|
-| SwiftUI | `.searchable(text:placement:prompt:)`, placement from `SearchFieldPlacement` | `.searchSuggestions`, `.searchCompletion`, `.searchScopes`, `isSearching`, `dismissSearch` |
-| UIKit | `UISearchController` on `navigationItem.searchController` | `searchResultsUpdater`, `automaticallyShowsCancelButton`, `automaticallyShowsScopeBar` |
 | Compose Material 3 | `SearchBar(state:inputField:)` with `rememberSearchBarState`, or `AppBarWithSearch` | `ExpandedFullScreenSearchBar` on a phone; `ExpandedDockedSearchBar` is the tablet form |
 | Android Views | `com.google.android.material.search.SearchBar` inside the app bar | `com.google.android.material.search.SearchView`, holding history, suggestions and results |
-| Flutter Material | `SearchAnchor`, or `SearchAnchor.bar` for the bar plus view together | `suggestionsBuilder`, `SearchController.openView`, full screen by default on mobile |
-| Flutter Cupertino | `CupertinoSearchTextField` | list of your own below it |
-| React Native | `TextInput` with `returnKeyType="search"`, or the navigator's own search header | list of your own below it |
-| Mobile web | `<input type="search">` | list of your own below it |
 
 ## Things the stock control already does
 

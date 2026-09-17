@@ -25,8 +25,6 @@ Compose `Icon` is 24.dp when the painter has no intrinsic size, and is tinted wi
 |---|---|---|
 | iOS asset catalog | `@2x` and `@3x` filename suffixes | iOS ships at 2x and 3x. `scale` and `nativeScale` can differ |
 | Android resources | `res/drawable-<bucket>/` | A vector drawable goes in the default `res/drawable/` with no per-density copy |
-| Flutter | `2.0x/name.png` beside `name.png` | Nominal densities 1.5x, 2.0x, 3.0x, 4.0x. List only the main asset or its folder in `pubspec.yaml` |
-| React Native | `name@2x.png` sibling files, one `require` | The closest density is picked when the exact one is missing. A `uri` source carries no dimensions |
 
 ## Android density buckets
 
@@ -53,11 +51,6 @@ Flat artwork that scales: PDF or SVG. Bitmap work: de-interlaced PNG, or an 8-bi
 
 | Stack | Fill the frame and crop | Fit inside the frame |
 |---|---|---|
-| SwiftUI | `.scaledToFill()` with `.clipped()` | `.scaledToFit()` |
-| UIKit | `.scaleAspectFill` | `.scaleAspectFit` |
-| Compose | `ContentScale.Crop` | `ContentScale.Fit` |
-| Flutter | `BoxFit.cover` | `BoxFit.contain` |
-| React Native | `resizeMode="cover"` | `resizeMode="contain"` |
 | Mobile web | `object-fit: cover` | `object-fit: contain` |
 
 ## Dark variants

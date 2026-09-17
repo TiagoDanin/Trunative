@@ -67,23 +67,13 @@ Compose spring constants outside Material: `Spring.DampingRatioNoBouncy` 1.0, `L
 
 | Stack | Animate | Continuity across screens |
 |---|---|---|
-| SwiftUI | `withAnimation`, `.animation(_:value:)`, `Animation.spring(response:dampingFraction:)` | `.navigationTransition(.zoom(sourceID:in:))` with `.matchedTransitionSource(id:in:)`, iOS 18; `matchedGeometryEffect` before that |
-| UIKit | `UIView.animate(springDuration:bounce:)`, iOS 17; `UIViewPropertyAnimator` | `preferredTransition = .zoom(options:sourceViewProvider:)`, iOS 18 |
 | Compose | `animate*AsState`, `AnimatedVisibility`, `AnimatedContent`, `Crossfade` | `SharedTransitionLayout` with `Modifier.sharedElement` or `sharedBounds` |
 | Views | `SpringAnimation` and `SpringForce` from dynamicanimation | `com.google.android.material.transition`: container transform, shared axis, fade through, fade |
-| Flutter | implicit `Animated*` widgets, `AnimationController`, `TweenAnimationBuilder` | `Hero`, `PageRouteBuilder` |
-| React Native | Reanimated worklets; `Animated` with `useNativeDriver: true` | `react-navigation` presets, `react-native-screens` |
-| Mobile web | CSS transitions and keyframes, Web Animations API | View Transitions where supported |
 
 ## Reduced motion flags per stack
 
 | Stack | Read |
 |---|---|
-| SwiftUI | `@Environment(\.accessibilityReduceMotion)` |
-| UIKit | `UIAccessibility.isReduceMotionEnabled`, plus `prefersCrossFadeTransitions` before substituting a cross fade; `reduceMotionStatusDidChangeNotification` to react to a change |
 | Android | no single API on phones: `ValueAnimator.areAnimatorsEnabled()` from API 26, or `Settings.Global.ANIMATOR_DURATION_SCALE` and `TRANSITION_ANIMATION_SCALE`. `LocalReduceMotion` exists only on Wear |
-| Flutter | both of `MediaQuery.disableAnimationsOf(context)` and `AccessibilityFeatures.reduceMotion`, because the first carries Android and the second carries iOS |
-| React Native | `AccessibilityInfo.isReduceMotionEnabled()`, and the `reduceMotionChanged` event; on Android it tracks the transition animation scale |
-| Mobile web | `@media (prefers-reduced-motion: reduce)`, equivalent to the bare `@media (prefers-reduced-motion)` |
 
 The user-facing names differ. On iOS the setting is Reduce Motion, with Prefer Cross-Fade Transitions beside it. On Android it is Remove animations, under Color and motion in Accessibility.

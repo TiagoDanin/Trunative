@@ -6,48 +6,48 @@ Two settings per field, and they are separate: the keyboard decides what the use
 
 ## Keyboard type
 
-| Field | SwiftUI `.keyboardType` | Compose `KeyboardType` | Flutter `TextInputType` | React Native `keyboardType` | Web `inputmode` |
-|---|---|---|---|---|---|
-| email | `.emailAddress` | `Email` | `.emailAddress` | `email-address` | `email` |
-| telephone | `.phonePad` | `Phone` | `.phone` | `phone-pad` | `tel` |
-| whole number | `.numberPad` | `Number` | `.number` | `number-pad` | `numeric` |
-| money or measure | `.decimalPad` | `Decimal` | `.numberWithOptions(decimal: true)` | `decimal-pad` | `decimal` |
-| URL | `.URL` | `Uri` | `.url` | `url` | `url` |
-| search | `.webSearch` | `Text` | `.text` | `web-search` | `search` |
-| password | `.default` | `Password` | `.visiblePassword` where shown | `default` | `text` |
-| multi-line note | `.default` | `Text` | `.multiline` | `default` | `text` |
+| Field | Flutter `TextInputType` |
+|---|---|
+| email | `.emailAddress` |
+| telephone | `.phone` |
+| whole number | `.number` |
+| money or measure | `.numberWithOptions(decimal: true)` |
+| URL | `.url` |
+| search | `.text` |
+| password | `.visiblePassword` where shown |
+| multi-line note | `.multiline` |
 
 Card numbers and one time codes are numeric keyboards over a text field, never a number field. A number field brings steppers, drops leading zeros, and on the web turns a mistyped digit into a scroll event.
 
 ## Return key
 
-| Meaning | SwiftUI | Compose | Flutter | React Native | Web |
-|---|---|---|---|---|---|
-| next field | `.submitLabel(.next)` | `ImeAction.Next` | `TextInputAction.next` | `returnKeyType="next"` | `enterkeyhint="next"` |
-| last field | `.submitLabel(.done)` | `ImeAction.Done` | `TextInputAction.done` | `"done"` | `"done"` |
-| submit now | `.submitLabel(.go)` | `ImeAction.Go` | `TextInputAction.go` | `"go"` | `"go"` |
-| search | `.submitLabel(.search)` | `ImeAction.Search` | `TextInputAction.search` | `"search"` | `"search"` |
+| Meaning | Flutter |
+|---|---|
+| next field | `TextInputAction.next` |
+| last field | `TextInputAction.done` |
+| submit now | `TextInputAction.go` |
+| search | `TextInputAction.search` |
 
 ## Autofill content type
 
-| Value | SwiftUI `.textContentType` | Compose `ContentType` | Flutter `AutofillHints` | React Native `autoComplete` | Web `autocomplete` |
-|---|---|---|---|---|---|
-| email | `.emailAddress` | `EmailAddress` | `.email` | `email` | `email` |
-| username | `.username` | `Username` | `.username` | `username` | `username` |
-| existing password | `.password` | `Password` | `.password` | `current-password` | `current-password` |
-| new password | `.newPassword` | `NewPassword` | `.newPassword` | `new-password` | `new-password` |
-| one time code | `.oneTimeCode` | `SmsOtpCode` | `.oneTimeCode` | `sms-otp` | `one-time-code` |
-| full name | `.name` | `PersonFullName` | `.name` | `name` | `name` |
-| given name | `.givenName` | `PersonFirstName` | `.givenName` | `given-name` | `given-name` |
-| family name | `.familyName` | `PersonLastName` | `.familyName` | `family-name` | `family-name` |
-| telephone | `.telephoneNumber` | `PhoneNumber` | `.telephoneNumber` | `tel` | `tel` |
-| street | `.streetAddressLine1` | `AddressStreet` | `.streetAddressLine1` | `street-address` | `street-address` |
-| city | `.addressCity` | `AddressLocality` | `.addressCity` | `postal-address-locality` | `address-level2` |
-| postal code | `.postalCode` | `PostalCode` | `.postalCode` | `postal-code` | `postal-code` |
-| country | `.countryName` | `AddressCountry` | `.countryName` | `country` | `country-name` |
-| card number | `.creditCardNumber` | `CreditCardNumber` | `.creditCardNumber` | `cc-number` | `cc-number` |
-| card expiry | `.creditCardExpiration` | `CreditCardExpirationDate` | `.creditCardExpirationDate` | `cc-exp` | `cc-exp` |
-| security code | `.creditCardSecurityCode` | `CreditCardSecurityCode` | `.creditCardSecurityCode` | `cc-csc` | `cc-csc` |
+| Value | Flutter `AutofillHints` |
+|---|---|
+| email | `.email` |
+| username | `.username` |
+| existing password | `.password` |
+| new password | `.newPassword` |
+| one time code | `.oneTimeCode` |
+| full name | `.name` |
+| given name | `.givenName` |
+| family name | `.familyName` |
+| telephone | `.telephoneNumber` |
+| street | `.streetAddressLine1` |
+| city | `.addressCity` |
+| postal code | `.postalCode` |
+| country | `.countryName` |
+| card number | `.creditCardNumber` |
+| card expiry | `.creditCardExpirationDate` |
+| security code | `.creditCardSecurityCode` |
 
 On iOS, the same attribute is `textContentType` on `UITextField` and a prop of the same name in React Native, which is the one that drives fill on that platform.
 
@@ -57,11 +57,7 @@ On Android, the Compose semantics property landed in Compose 1.8; view layouts u
 
 A credential is filled and saved as a set, so the fields have to be declared as one.
 
-- SwiftUI: fields in the same form are grouped by the system; submit ends the session.
-- Compose: read `LocalAutofillManager` and call `commit()` when the form is submitted, or nothing is offered for saving.
 - Flutter: wrap the fields in `AutofillGroup`, then call `TextInput.finishAutofillContext()` on submit.
-- React Native: `importantForAutofill` on the container, plus the props above per field.
-- Web: one `<form>` element around the fields, and a real submit.
 
 ## One time codes
 

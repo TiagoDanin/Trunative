@@ -1,4 +1,4 @@
-import { readFile, stat } from 'node:fs/promises'
+import { readFile, rm, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 
 import { STACKS, type Target } from '../compile.js'
@@ -47,6 +47,16 @@ async function detectAgentRoots(cwd: string): Promise<string[]> {
 }
 
 /**
+ * Every name this skill installs under. A project that records its stack after
+ * a stackless install ends up holding two copies of the same rules, and an
+ * agent that loads both reads one framework's mechanism from one and another
+ * framework's from the other. Only the copy being written survives.
+ */
+function siblings(name: string): string[] {
+	return [variantName(name), ...STACKS.map((stack) => variantName(name, stack))]
+}
+
+/**
  * The stack the project recorded, from the "Stack:" line init writes at the top
  * of STACK.md. Absent means the generic copy, which carries every branch.
  */
@@ -85,6 +95,21 @@ export async function install(options: InstallOptions): Promise<number> {
 		await write(files, join(cwd, ...dir.split('/')))
 		targets.push({ dir, agent, ...(stack ? { stack } : {}), hash: hashFiles(files) })
 		console.log(`installed ${skill} into ${dir} (resolved for ${agent})`)
+
+		// An explicit --dir writes the skill straight into that directory, so it
+		// has no siblings to supersede.
+		if (options.dirs) {
+			continue
+		}
+
+		for (const other of siblings(name)) {
+			const stale = [root, 'skills', other].join('/')
+			if (other === skill || !(await exists(join(cwd, ...stale.split('/'))))) {
+				continue
+			}
+			await rm(join(cwd, ...stale.split('/')), { recursive: true, force: true })
+			console.log(`removed ${stale}, superseded by ${skill}`)
+		}
 	}
 
 	await writeLock(cwd, {

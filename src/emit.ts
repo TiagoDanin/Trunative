@@ -3,6 +3,7 @@ import { dirname, join, relative, sep } from 'node:path'
 
 import { compile, type Target } from './compile.js'
 import { packagedSkillDir, variantName } from './paths.js'
+import { narrowReferences } from './references.js'
 import { isSkillFile } from './skill.js'
 
 /** One resolved file, keyed by its path inside the skill. */
@@ -77,7 +78,12 @@ export function resolve(sources: Sources, target: Target): Map<string, Buffer> {
 			continue
 		}
 		const compiled = compile(content.toString('utf8'), target)
-		out.set(file, Buffer.from(file === 'SKILL.md' ? retitle(compiled, target.stack) : compiled, 'utf8'))
+		// A reference table branches by the word in its header, not by a tag, so
+		// it is narrowed after the tags are gone.
+		const resolved = file.startsWith('references/')
+			? narrowReferences(compiled, target.stack)
+			: compiled
+		out.set(file, Buffer.from(file === 'SKILL.md' ? retitle(resolved, target.stack) : resolved, 'utf8'))
 	}
 
 	return out
