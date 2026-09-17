@@ -24,6 +24,10 @@ Two of them show up. Indigo through violet under a gradient is the median of eve
 
 Neither family is banned, and the hex values are not the tell. Cream and rust pulled off film stock, in an app that edits photos, is those two colors doing work. The reflex is the same pair arriving with nothing behind it. What is banned is being unable to say, in terms of this product, why it landed there.
 
+Look at the ground rather than at the accent. The accent is what gets swapped the moment the reflex is named, and the ground is what nobody looks at twice, so it survives the swap and gives the family away. One family is a near neutral ground whose small remaining chroma leans warm, under an almost black ink, and it stays that family whether the accent lands on terracotta, gold, olive or nothing at all. The other is an accent in the blue to violet band, on any ground. Judge the ground by chroma and not by saturation: a warm off-white reports as heavily saturated in HSL and is still an off-white.
+
+Landing in either family is not a violation, it is a prompt to do the work twice. Derive a second full palette from the same reference, in a different key: what the reference looks like at night, in a different material, or lit differently. Put the two side by side and keep the one a stranger could tie back to this product without being told the reference. A reference that only ever yields the palette that was already there was a caption written after the fact, and the second pass is the only thing that tells a caption from a derivation.
+
 - Ground, ink and accent follow from what the app does and who is holding it, which is `PRODUCT.md`. A category habit is not a derivation: finance is not blue, health is not green, fitness is not neon.
 - Name the material or the reference the palette comes from, something this product actually evokes: newsprint, film stock, a transit sign, a receipt, a ledger. An adjective is not a reference, so modern, friendly and premium derive nothing. If the palette would fit another app just as well, that is decoration talking.
 - Look at the neutrals alone before handing off. Greys that all lean toward the accent were generated from the accent instead of chosen.
@@ -110,7 +114,7 @@ On Android 12 and up, Material You builds the scheme from the user's wallpaper. 
 <Check>
 
 <Verify rule="color-roles">No component holds a raw hex, and every color arrives through a token or a platform role.</Verify>
-<Verify rule="color-derived">The palette is derived from a named material or reference this product evokes, the same screen in a competitor's app would need a different one, and the neutral ramp is not tinted toward the accent.</Verify>
+<Verify rule="color-derived">The palette is derived from a named material or reference this product evokes, the same screen in a competitor's app would need a different one, and the neutral ramp is not tinted toward the accent. A palette in either family carries the second derivation it was compared against and the reason this one survived.</Verify>
 <Verify rule="color-ramp-hsl">Ramp steps hold the hue and shed saturation toward both ends.</Verify>
 <Verify rule="color-one-accent">The accent marks what is interactive and nothing else, and no grey sits on a colored surface.</Verify>
 <Verify rule="color-variety">Hue that varies across repeated items encodes a difference the reader can name, the mapping is fixed rather than positional, and nothing carries a tint picked for variety.</Verify>

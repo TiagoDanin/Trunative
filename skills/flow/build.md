@@ -36,6 +36,8 @@ When the screen touches Firebase, in any of auth, Firestore, Storage, Messaging,
 - the shape language: which radii exist, which edges stay square, and how depth arrives (`layout-shape`).
 - what the artwork on this screen depicts (`icon-depicts`).
 
+Write the reference before any value, never the other way round. What arrives first in this gap is the median of everything the model read, and it arrives with a reference attached to it afterwards, which reads exactly like a derivation. When the palette lands in either family `color-derived` names, the second derivation it asks for happens here, before the first line of code, and the identity says which of the two was kept and why.
+
 Those five lines are provisional and say so. They go to the user to confirm into `DESIGN.md`, and until that happens they live in one place in the code rather than inside the components that read them. The next screen built in the same gap uses the same five lines, or the product has two identities and nobody decided which one it has.
 
 ## 3. Write it
