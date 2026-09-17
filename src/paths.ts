@@ -4,8 +4,13 @@ import { fileURLToPath } from 'node:url'
 /** Root of the installed trunative package, resolved from this module. */
 export const packageRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 
-/** The skill as it is written, with its tags still in it. */
-export const packagedSkillDir = join(packageRoot, 'skills')
+/**
+ * The skill as it is written, with its tags still in it. It sits under "src"
+ * because a skill index walks the repository root one level deep and the
+ * "skills" directory three: a source tree named "skills" is served as a skill,
+ * tags and all. Nested under "src" it is out of both walks.
+ */
+export const packagedSkillDir = join(packageRoot, 'src', 'skills')
 
 /**
  * Where "trunative build" writes the resolved copies. Inside it the layout is
@@ -13,6 +18,16 @@ export const packagedSkillDir = join(packageRoot, 'skills')
  * path it lands on there.
  */
 export const compiledSkillsDir = join(packageRoot, 'dist', 'agents')
+
+/**
+ * The published copies, in the flat layout a skill index reads. One directory
+ * per stack variant, resolved for the "other" agent, because an index hands
+ * every harness the same bytes and "other" is the branch that names no harness.
+ */
+export const publishedSkillsDir = join(packageRoot, 'skills')
+
+/** The agent a published copy resolves. See publishedSkillsDir. */
+export const PUBLISHED_AGENT = 'other'
 
 /**
  * The directory each agent reads in a project. Zed and anything else reading

@@ -12,9 +12,26 @@
   "bin": {
     "trunative": "dist/cli.js"
   },
+  "keywords": [
+    "skill",
+    "agent-skills",
+    "claude-code",
+    "mobile",
+    "design",
+    "ui",
+    "react-native",
+    "expo",
+    "flutter",
+    "swiftui",
+    "jetpack-compose"
+  ],
+  "homepage": "https://github.com/TiagoDanin/Trunative#readme",
+  "bugs": {
+    "url": "https://github.com/TiagoDanin/Trunative/issues"
+  },
   "files": [
     "dist/**/*.js",
-    "skills"
+    "src/skills"
   ],
   "engines": {
     "node": ">=20"

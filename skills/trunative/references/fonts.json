@@ -1,0 +1,339 @@
+{
+  "note": "Typefaces reachable per platform and per stack, and what it costs to reach them. Lookup only: the rules are in heuristics/typography.md and the per-role sizes are in type-scales.md.",
+  "updated": "2026-09-06",
+  "sources": [
+    "https://developer.apple.com/fonts/",
+    "https://fonts.google.com",
+    "https://github.com/material-components/material-components-android"
+  ],
+  "rules_of_thumb": [
+    "A face that ships with the OS costs no download, no cold start and no licence review. Start there and leave it only for a reason you can state.",
+    "A face that arrives without a reason is the tell. Inter unchosen is not a choice.",
+    "Two families is the ceiling, and the second one needs a job the first cannot do.",
+    "Whichever face wins, it reaches the screen through the platform text style, so the user's size setting still applies.",
+    "Before committing to a face for a localised app, check that it covers the scripts the product ships in. Coverage is per family, not per foundry."
+  ],
+  "platforms": {
+    "ios": {
+      "ui_default": "SF Pro",
+      "licence": "SF Pro, SF Compact, SF Mono and New York are licensed by Apple for use on Apple platforms. They do not travel to an Android build or a website.",
+      "system_faces": [
+        {
+          "family": "SF Pro",
+          "kind": "sans",
+          "note": "the UI face. Optical sizes switch on their own: Text below 20pt, Display at 20pt and above"
+        },
+        {
+          "family": "SF Pro Rounded",
+          "kind": "sans",
+          "note": "softer register, same metrics"
+        },
+        {
+          "family": "SF Compact",
+          "kind": "sans",
+          "note": "narrower, drawn for cramped UI"
+        },
+        {
+          "family": "SF Mono",
+          "kind": "mono",
+          "note": "code and fixed-width data"
+        },
+        {
+          "family": "New York",
+          "kind": "serif",
+          "note": "the system serif, cut to pair with SF at the same optical sizes"
+        }
+      ],
+      "preinstalled": {
+        "note": "Reachable by family name with no bundling. These are not the UI face and Apple does not guarantee them across OS versions, so confirm before depending on one.",
+        "sans": [
+          "Arial",
+          "Avenir",
+          "Avenir Next",
+          "Futura",
+          "Gill Sans",
+          "Helvetica",
+          "Helvetica Neue",
+          "Optima",
+          "Trebuchet MS",
+          "Verdana"
+        ],
+        "serif": [
+          "American Typewriter",
+          "Baskerville",
+          "Bodoni 72",
+          "Charter",
+          "Cochin",
+          "Didot",
+          "Georgia",
+          "Hoefler Text",
+          "Palatino",
+          "Times New Roman"
+        ],
+        "mono": [
+          "Courier New",
+          "Menlo"
+        ],
+        "display_script": [
+          "Chalkboard SE",
+          "Copperplate",
+          "Marker Felt",
+          "Papyrus",
+          "Snell Roundhand",
+          "Zapfino"
+        ]
+      }
+    },
+    "android": {
+      "ui_default": "Roboto on AOSP",
+      "licence": "Roboto and Noto are Apache-2.0 and can be bundled anywhere, including into an iOS build or a website.",
+      "warning": "The UI face is whatever the OEM shipped. Samsung One UI, OnePlus and MIUI each substitute their own, and the user can change it in settings. Roboto is the AOSP default, not a promise, so never let a layout depend on Roboto metrics.",
+      "system_aliases": {
+        "note": "How the bundled faces are actually reached, in XML or in Compose FontFamily.",
+        "sans-serif": "Roboto",
+        "sans-serif-condensed": "Roboto Condensed",
+        "sans-serif-medium": "Roboto at 500",
+        "sans-serif-light": "Roboto at 300, below the weight floor for body text",
+        "sans-serif-thin": "Roboto at 100, display only, and rarely even then",
+        "serif": "Noto Serif",
+        "monospace": "Droid Sans Mono",
+        "serif-monospace": "Cutive Mono",
+        "casual": "Coming Soon",
+        "cursive": "Dancing Script"
+      },
+      "other_bundled": [
+        {
+          "family": "Roboto Flex",
+          "note": "variable, full axis set. Bundled only on recent releases: check the API level before relying on it instead of shipping it"
+        },
+        {
+          "family": "Noto",
+          "note": "the script coverage behind the system. This is what renders text the UI face has no glyphs for"
+        },
+        {
+          "family": "Noto Color Emoji",
+          "note": "emoji come from here, and they are not a substitute for an icon set"
+        }
+      ],
+      "downloadable_fonts": {
+        "note": "The whole Google Fonts catalogue without bundling a file, served and cached by Google Play Services. This is the Android answer to a brand face on a size budget.",
+        "provider": "com.google.android.gms.fonts",
+        "xml": "<font-family app:fontProviderAuthority=\"com.google.android.gms.fonts\" app:fontProviderQuery=\"Manrope\" .../>",
+        "compose": "androidx.compose.ui.text.googlefonts.GoogleFont with GoogleFont.Provider",
+        "caution": "The first request can miss, and the device may have no Play Services at all. Always declare a bundled or system fallback, and never let the first screen wait on it."
+      }
+    }
+  },
+  "stacks": {
+    "flutter": {
+      "default": "Material widgets fall back to Roboto, which the framework carries; Cupertino widgets take the system face on Apple platforms.",
+      "custom": "Declare the family in pubspec.yaml, or use the google_fonts package.",
+      "caution": "google_fonts downloads at runtime by default, which means a fallback frame and a network dependency. For a face used on the first screen, bundle the file instead."
+    },
+    "react_native_expo": {
+      "default": "fontFamily: 'System' resolves to SF on iOS and to the OEM UI face on Android.",
+      "custom": "expo-font, or the @expo-google-fonts/<family> packages, which bundle the file.",
+      "caution": "Fonts load asynchronously. Hold the splash screen until they are ready, or the first paint ships in the fallback face and reflows in front of the user."
+    },
+    "swiftui_uikit": {
+      "default": ".font(.body) and the rest of the text styles.",
+      "custom": "Font.custom(_:size:relativeTo:) in SwiftUI, UIFontMetrics in UIKit. A custom face without one of those does not scale and does not ship."
+    },
+    "jetpack_compose": {
+      "default": "MaterialTheme.typography, which resolves to the platform face.",
+      "custom": "FontFamily from a bundled resource or from the Google Fonts provider, wired into a Typography object rather than applied per Text."
+    },
+    "mobile_web": {
+      "default": "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      "custom": "Self-host the subset files and declare font-display: swap. Preload only the faces the first screen needs.",
+      "caution": "Loading from the Google Fonts CDN sends the visitor's IP to a third party, which has been ruled a problem under GDPR in at least one jurisdiction. Self-hosting removes the question and is usually faster anyway."
+    }
+  },
+  "google_fonts": {
+    "note": "Open licence (OFL or Apache-2.0), free to bundle and subset. The catalogue is the practical answer for every stack except a pure Apple build, where the system face is already better integrated.",
+    "how_to_choose": [
+      "Pick the workhorse first: it carries body, labels and controls, and it needs every weight and the right scripts.",
+      "A display face is a second decision, and it only earns its place if the product has display-sized moments.",
+      "Prefer a variable family where the stack supports it: the weight axis interpolates, so a hierarchy step never lands on a cut that was never drawn.",
+      "Numeric columns need tabular figures. Most families here support the tnum feature, but confirm it before designing a table around it."
+    ],
+    "interface": [
+      {
+        "family": "Inter",
+        "variable": true,
+        "scripts": "latin, cyrillic, greek",
+        "good_for": "neutral UI at small sizes",
+        "caution": "the default a model reaches for. Fine when chosen on purpose, a tell when it just appears"
+      },
+      {
+        "family": "Roboto",
+        "variable": true,
+        "scripts": "latin, cyrillic, greek",
+        "good_for": "matching the Android platform look deliberately"
+      },
+      {
+        "family": "Roboto Flex",
+        "variable": true,
+        "axes": "weight, width, optical size, grade and more",
+        "scripts": "latin, cyrillic, greek",
+        "good_for": "one file covering the whole ramp, including the M3 expressive axes"
+      },
+      {
+        "family": "Noto Sans",
+        "variable": true,
+        "scripts": "the widest coverage in the catalogue",
+        "good_for": "a product shipping in scripts other families drop"
+      },
+      {
+        "family": "Open Sans",
+        "variable": true,
+        "scripts": "latin, cyrillic, greek",
+        "good_for": "plain, legible, very broad language support"
+      },
+      {
+        "family": "Source Sans 3",
+        "variable": true,
+        "scripts": "latin, cyrillic, greek",
+        "good_for": "a neutral workhorse with a matching serif and mono"
+      },
+      {
+        "family": "IBM Plex Sans",
+        "variable": true,
+        "scripts": "latin, cyrillic, greek",
+        "good_for": "an engineered voice, with Serif, Mono and Condensed siblings"
+      },
+      {
+        "family": "Public Sans",
+        "variable": true,
+        "scripts": "latin",
+        "good_for": "civic and utility products that want no accent at all"
+      },
+      {
+        "family": "DM Sans",
+        "variable": true,
+        "scripts": "latin",
+        "good_for": "geometric product UI with slightly rounded forms"
+      },
+      {
+        "family": "Plus Jakarta Sans",
+        "variable": true,
+        "scripts": "latin",
+        "good_for": "product UI with a little more character than Inter"
+      },
+      {
+        "family": "Manrope",
+        "variable": true,
+        "scripts": "latin, cyrillic, greek",
+        "good_for": "semi-geometric UI, reads well at label sizes"
+      },
+      {
+        "family": "Figtree",
+        "variable": true,
+        "scripts": "latin",
+        "good_for": "friendly consumer apps"
+      },
+      {
+        "family": "Work Sans",
+        "variable": true,
+        "scripts": "latin",
+        "good_for": "a grotesque with warmth, good from label to headline"
+      },
+      {
+        "family": "Archivo",
+        "variable": true,
+        "axes": "weight and width",
+        "scripts": "latin, cyrillic, greek",
+        "good_for": "dense UI where a width axis solves a long-label problem"
+      },
+      {
+        "family": "Instrument Sans",
+        "variable": true,
+        "scripts": "latin",
+        "good_for": "neutral with an edge, holds up in both UI and headline roles"
+      },
+      {
+        "family": "Space Grotesk",
+        "variable": true,
+        "scripts": "latin",
+        "good_for": "a technical voice",
+        "caution": "distinctive enough that it tires at body length"
+      }
+    ],
+    "reading_and_display": [
+      {
+        "family": "Literata",
+        "variable": true,
+        "kind": "serif",
+        "good_for": "long reading on a screen, which is what it was drawn for"
+      },
+      {
+        "family": "Source Serif 4",
+        "variable": true,
+        "kind": "serif",
+        "good_for": "body serif that pairs with Source Sans"
+      },
+      {
+        "family": "Newsreader",
+        "variable": true,
+        "kind": "serif",
+        "good_for": "editorial body and headline in one family"
+      },
+      {
+        "family": "Lora",
+        "variable": true,
+        "kind": "serif",
+        "good_for": "warm body serif for reading-heavy screens"
+      },
+      {
+        "family": "Fraunces",
+        "variable": true,
+        "kind": "serif display",
+        "axes": "weight, optical size, softness, wonk",
+        "good_for": "display with a real point of view",
+        "caution": "display sizes only"
+      },
+      {
+        "family": "Playfair Display",
+        "variable": true,
+        "kind": "serif display",
+        "good_for": "high contrast headlines",
+        "caution": "the thin strokes disappear at small sizes and in sunlight"
+      },
+      {
+        "family": "Instrument Serif",
+        "variable": false,
+        "kind": "serif display",
+        "good_for": "a single large moment per screen"
+      },
+      {
+        "family": "Bricolage Grotesque",
+        "variable": true,
+        "kind": "display",
+        "good_for": "an opinionated headline face that still has a usable weight range"
+      }
+    ],
+    "mono": [
+      {
+        "family": "JetBrains Mono",
+        "variable": true,
+        "good_for": "code, with a tall x-height that survives small sizes"
+      },
+      {
+        "family": "IBM Plex Mono",
+        "variable": false,
+        "good_for": "code and data next to Plex Sans"
+      },
+      {
+        "family": "Roboto Mono",
+        "variable": true,
+        "good_for": "code and tabular data in an Android-native product"
+      },
+      {
+        "family": "Space Mono",
+        "variable": false,
+        "good_for": "short technical labels",
+        "caution": "not a reading face"
+      }
+    ]
+  }
+}
