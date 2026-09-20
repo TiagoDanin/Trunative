@@ -4,7 +4,9 @@ Most of a phone app is lists. It is the screen the user opens most, scrolls fast
 
 Loading, empty, error, offline and stale belong to `heuristics/states.md`. This file is what is specific to a collection: what a row is, how many exist at once, and what the top and the bottom of the list do.
 
-## `list-virtualise` Rows recycle, or the list breaks on real data
+Rules in this file, in order: `list-virtualise`, `list-density`, `list-separator`, `list-row`, `list-swipe`, `list-images`, `list-sections`, `list-end`, `list-refresh`, `list-select`, `list-a11y`.
+
+## `list-virtualise` Rows recycle, or the list breaks on real data [pass or fail]
 
 Ten rows in a mockup and two thousand in production run the same code. A scrolling container wrapped around a mapped array constructs every row up front, keeps all of them alive, and misses the frame budget on the way, which `perf-frame` states. This is the single most reliable performance defect in generated mobile code.
 
@@ -28,7 +30,7 @@ Inside the row there are usually three jobs: the thing itself, what qualifies it
 
 Let the rows differ where the content differs. An unread item outweighs a read one, a row with a picture is taller than a row without, and a group of two does not get the treatment a group of forty needs. Forty rows carrying three things each, identical in height, weight and color, force the user to read every one, which is slower than looking and slower still while walking. The exception is the row that carries one thing: a menu of single labels, each with its chevron, is uniform because the content is uniform, and ranking there invents a difference the screen does not have. Hierarchy is owed wherever a row holds two pieces of content or more.
 
-## `list-separator` One device separates rows, not three
+## `list-separator` One device separates rows, not three [P3]
 
 Dividers, spacing and cards all answer the same question. Choose one per list, because on a phone a line that only repeats what the gap already said is width and ink spent for nothing. The grouped iOS list is not the thing being warned about: an inset rounded section with hairline rules between its rows is a single platform device, and it stays the right default for a settings or a form list. What is assembled from parts is a card per row that also carries an internal divider, dropped into a stack that is already gapped.
 
@@ -127,3 +129,16 @@ Review answers each of these against the code, pointing at the line:
 - Each row is one merged accessibility node, every swipe or long press is also an accessibility action, and section headers carry the heading trait. `list-a11y`
 
 `list-virtualise` and `list-density` both pass at ten rows and fail at a thousand, so neither is answered from the file alone. Fill the list with production-sized data and scroll it on the slowest device the app supports.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/colors.md`: `color-gradient`, `color-not-alone`
+- `heuristics/icons-and-imagery.md`: `icon-crop`
+- `heuristics/layout.md`: `layout-chrome`
+- `heuristics/scrolling.md`: `scroll-nest`
+- `heuristics/states.md`: `state-interrupt`, `state-retry`
+- `heuristics/touch.md`: `touch-floor`, `touch-spacing`, `touch-gestures`, `touch-destructive`
+- `heuristics/typography.md`: `type-weight`, `type-roles`
+- `platform/performance.md`: `perf-frame`, `perf-decode`

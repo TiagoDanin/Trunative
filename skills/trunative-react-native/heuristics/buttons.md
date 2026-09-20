@@ -4,13 +4,15 @@ Everything a user taps to act or to choose: buttons, the floating action button,
 
 A phone shows one screen at a time to someone who is usually doing something else. The whole point of a control vocabulary here is that the answer to "what do I do now" arrives before any reading happens.
 
-## `button-one-primary` One primary action per screen. One.
+Rules in this file, in order: `button-one-primary`, `button-ladder`, `button-target`, `button-label`, `button-state`, `button-fab`, `button-chips`, `button-tabs`.
+
+## `button-one-primary` One primary action per screen, and a second one owes a reason
 
 This is the rule the rest of the file exists to protect, and it is the one generated screens break most often.
 
 Emphasis is relative and nothing else. A filled button reads as *the* action only because the controls around it are not filled. Put two filled buttons side by side and neither one is primary any more: the visual system says both are the answer, so the user has to stop and decide which, and that decision is one you were supposed to make for them.
 
-**Count them.** Look at the screen as the user sees it and count the filled, prominent or otherwise heaviest controls visible at once. The answer is one, or zero on a screen that only reads or browses. Two is a defect, not a preference.
+**Count them.** Look at the screen as the user sees it and count the filled, prominent or otherwise heaviest controls visible at once. The answer is one, or zero on a screen that only reads or browses. Two with no reason recorded is a defect, not a preference.
 
 What counts in that number:
 
@@ -20,7 +22,11 @@ What counts in that number:
 
 A sheet, a dialog or a full-screen modal is its own decision point, so it gets its own single primary, and while it is open it owns the count.
 
-When two actions genuinely feel equal, that is the screen telling you it has two jobs. Split it, or pick the one the product wants and demote the other. Save and "save and add another" are not two primaries: one is the primary and the other is a secondary, a menu item, or a checkbox next to the first.
+When two actions feel equal, the first reading is that the screen has two jobs. Split it, or pick the one the product wants and demote the other. Save and "save and add another" are not two primaries: one is the primary and the other is a secondary, a menu item, or a checkbox next to the first.
+
+**Default.** One primary, or none.
+**Exception.** A screen whose whole job is a choice between two outcomes the product has no preference between, where ranking them would be the product putting its thumb on the scale: answer or decline a call, approve or reject a request, keep mine or keep theirs in a conflict, pick one of two plans being compared. There the pair is the primary. Both carry the same weight, sit side by side at the same height, and nothing else on the screen competes with them.
+**Reason required.** The brief's `primary_action` names both labels and says in one line why neither is preferred. "Both seemed important" is not that line: if the product would rather the person chose one, that one is the primary.
 
 Cancel, Back, Skip and Dismiss are never the emphasized control. They are the exit, and the exit does not need to be sold. A destructive action is not the top of the ladder either: it is a role of its own, it keeps its distance from the frequent controls, and it is never the primary of a screen the user opened to do something else.
 
@@ -89,7 +95,7 @@ Three to five destinations, and they are the top level of the app rather than a 
 
 Review answers each of these against the code, pointing at the line:
 
-- Exactly one primary action is visible on the screen, counting the bottom bar, the top bar, the content and the FAB together, and any sheet or dialog carries its own single primary. `button-one-primary`
+- At most one primary action is visible on the screen, counting the bottom bar, the top bar, the content and the FAB together, any sheet or dialog carries its own single primary, and a pair of equal primaries exists only where the brief names both and says why neither is preferred. `button-one-primary`
 - Emphasis comes from the platform's ladder, one style per rank, styled in the theme rather than per call site, and the same action looks the same across screens. `button-ladder`
 - Every button's touch area reaches the platform floor even where the drawn height is smaller. `button-target`
 - Labels name the action and its object, are capitalised as `copy-case` requires, and survive the longest translation at the largest text size. `button-label`
@@ -97,3 +103,9 @@ Review answers each of these against the code, pointing at the line:
 - At most one FAB, holding the screen's defining action, absent on iOS, with the list underneath padded to clear it. `button-fab`
 - Chip selection is visible without color, chip rows scroll instead of wrapping, and no chip is doing a tab's job. `button-chips`
 - Three to five labelled destinations, a selected state that is not color alone, and one navigation system per screen. `button-tabs`
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/copy.md`: `copy-case`

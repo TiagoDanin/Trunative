@@ -8,14 +8,40 @@ One grader, one scale, one set of rule ids. What changes between a run on a diff
 
 Every rule in scope gets a number from 1 to 5. The same words on every rule, on every run, because a rule that invents its own wording for a 3 makes two runs incomparable.
 
-- **1**: broken. What the rule exists to prevent is on the screen and the person using the app meets it.
-- **3**: met on the ordinary path, and nothing beyond it was asked.
-- **5**: met on the ordinary path and on the edges the rule itself names, with the evidence to say so.
-- **2** and **4** are the gaps. A 2 is something in place that does not hold: met on one screen and dropped on the next, or met for the default case while the rule's own case is the exception. A 4 is a 5 with one thing outstanding.
+A score is a claim about what was observed, never about how the screen feels. Each level has a test, and the test is a thing somebody can point at:
 
-A **violation** is a 1 or a 2, and that is the whole of the gate: the build loop continues while any rule is at 1 or 2. Nothing at 3 or above blocks a build, which does not make it finished.
+| Score | Means | The test |
+|---|---|---|
+| 1 | Critical violation | What the rule exists to prevent is on the screen, on the ordinary path, and the person meets it on every visit. You can name the element and what happens to them. |
+| 2 | Clear violation | Something is in place and it does not hold. Met here and dropped on the next screen, met for the default case while the case the rule is about is the exception, or met in code that never runs. You can name where it fails. |
+| 3 | Acceptable | The Check line is true on the ordinary path, and you can point at the line or the capture that makes it true. None of the edges the rule names was examined. |
+| 4 | Well resolved | A 3, plus every edge the rule's own text names was examined, and exactly one is still open. You can name that one. |
+| 5 | Reference | A 4 with nothing open, and the evidence is attached: the measurement, the capture, the device run. Another screen in the project could copy this one. |
 
-Two answers that are not scores:
+Three consequences, and they are what stops a number from being a mood. A 3 with nothing to point at is `unrun`. A 4 that cannot name its one open edge is a 3. A 5 without attached evidence is a 4, and a 5 on a `[device]` rule without a device run does not exist.
+
+Some rules are not a matter of degree. A control has an accessible name or it does not, a string is hardcoded or it is not, a list is virtualised or it is not. A row the checklist prints as `pass or fail` takes one of four answers and never a number, since a 1 to 5 on it would be precision nobody measured:
+
+- **`pass`**: the Check line is true, and you can point at why.
+- **`fail`**: it is not.
+- **`n/a`** and **`unrun`**, as below.
+
+A `pass` counts as 5 out of 5 and a `fail` as 1 out of 5 in the total, so the percentage still reads across runs.
+
+A **violation** is a 1, a 2 or a `fail`. The build loop continues while there is one. Nothing at 3 or above blocks a build, which does not make it finished.
+
+### Severity and the blocked screen
+
+Every row carries a severity, from the rule's own heading:
+
+- **P0**: the person cannot complete the job, or loses work.
+- **P1**: the person is excluded or misled. Every one of the nine always in scope is at least this.
+- **P2**: friction, or a platform convention broken. A rule with no mark is P2.
+- **P3**: polish.
+
+The overall score cannot outvote a severe failure. When any P0 or P1 rule is a violation, the status of the screen is `BLOCKED`, and it is printed in the header beside the percentage, never in place of it: `92%, BLOCKED by a11y-name` is a legitimate header, and it means what it says. Ninety-nine rules at 5 and one P0 at 1 is a screen somebody cannot use. The band in section 4 is not printed for a blocked screen, because "Nothing structural left" above a P0 failure is false.
+
+Two answers that are not scores. Not applicable is written `n/a` and never 0, because a zero in a table of scores reads as the worst one and ends up in somebody's sum:
 
 - **`n/a`**, with the reason in the row: the feature does not exist here, the platform does not have it, or `STACK.md` records the exception. Not available for the nine rules under **Always in scope** in `SKILL.md`. An `n/a` written in a screen brief is a claim the brief's author made before the code existed, so it is checked here like any other claim, and it never arrives as an exemption. Exceptions accepted on purpose live in `STACK.md`, which is the only file that grants one.
 - **`unrun`**: the rule applied, nothing was checked, and the run knows it. A rule you did not check is never a pass.
@@ -32,7 +58,7 @@ After a build that is the diff. On request it is the screen: the widget, view or
 
 The scope is every base file plus the extra files this screen touches, settled by your own pass over the Extra table in `SKILL.md` rather than by what the build says it opened. The nine always-in-scope rules sit inside the base files and are never `n/a`. Write the scope down before grading. A scope chosen once the scores are in is a scope chosen to flatter them.
 
-An identity the build had to settle because `DESIGN.md` did not carry one is part of the scope, not a note beside it. It is graded by `color-derived`, `type-face`, `layout-shape` and `icon-depicts`, against the five lines the build wrote, and a screen whose identity would fit any other product in the category scores a 1 on the first of them however clean the rest of the code is.
+An identity the build had to settle because `DESIGN.md` did not carry one is part of the scope, not a note beside it. It is graded by `color-derived`, `type-face`, `layout-shape` and `icon-depicts`, against the five lines the build wrote, and the arrangement answers to `comp-distinct` in the same way, and a screen whose identity would fit any other product in the category scores a 1 on the first of them however clean the rest of the code is.
 
 Name the screen first, the same way build does, and derive the scope from the name. A build that named it wrong took the wrong files with it, and a review that inherits the build's list inherits the mistake. Where your pass reaches a file the build never opened, its rules are in scope all the same and every one of them is `unrun` until it is checked: a rule nobody looked at is not a rule that passed.
 
@@ -111,6 +137,8 @@ The maximum is 5 times the number of rules actually scored from 1 to 5. Nothing 
 - Report coverage beside the total: scored, `n/a` and `unrun`, out of the scope. A run that skipped the device work does not come out ahead of one that did it.
 - Record which ids were `n/a` and which were `unrun`. A later comparison against a run that hid them is a comparison of two different measurements.
 
+The percentage is an average, and an average hides exactly the thing this step is for: one rule at 1 disappears among ninety at 5. So it is never reported alone. It travels with the status (`BLOCKED`, `VIOLATIONS` or `CLEAN`), the count of violations by severity, and the coverage. The band is read only when the status is `CLEAN`.
+
 Bands read off the percentage, since the maximum moves with the scope:
 
 | Percentage | Band |
@@ -125,13 +153,13 @@ Bands read off the percentage, since the maximum moves with the scope:
 
 The report goes in the response, in this order:
 
-1. **Header.** What was reviewed, the scope, the total, the percentage, the band and the coverage.
-2. **The table.** Columns: rule, score, evidence, finding. Print every rule at 4 or below and every one of the always-in-scope nine, then one line per file for the rest: file, rules scored, average, lowest.
-3. **Violations.** Every rule at 1 or 2, ordered by what it costs the person using the app and not by how easy it is to fix. Each names the rule id, the file and line, what the user meets, and the fix. Say plainly when the screen is unusable one-handed, loses work on interruption, or has no failure state, and do not bury it under smaller findings.
+1. **Header.** What was reviewed, the scope, the status first, then the violations counted by severity, the total, the percentage, the coverage, and the band when the status is `CLEAN`. `BLOCKED` names the rule ids that block.
+2. **The table.** Columns: rule, severity, score or pass and fail, evidence, finding. Print every rule at 4 or below and every one of the always-in-scope nine, then one line per file for the rest: file, rules scored, average, lowest.
+3. **Violations.** Every rule at 1, 2 or `fail`, ordered by severity and then by what it costs the person using the app, and never by how easy it is to fix. Each names the rule id, the file and line, what the user meets, and the fix. Say plainly when the screen is unusable one-handed, loses work on interruption, or has no failure state, and do not bury it under smaller findings.
 4. **Spec drift.** Only when the screen has a brief, and unscored. Each entry quotes what the brief says and what the code does: a hierarchy in a different order, a `primary_action` whose label is not the one on screen, a state declared and not implemented, a scope the brief left out. Where the divergence also breaks a rule, name the id that already scores it, such as `state-offline` for a declared state that is not there, and do not score it twice. Drift is a fact about two files disagreeing, and the moment it carries a number this file has two graders in it.
 5. **What moved.** Scores a measurement changed, with both numbers.
 
-If a violation is a deliberate exception recorded in `STACK.md`, it is `n/a` with that exception as the reason, not a 1 defended in prose.
+If a violation is a deliberate exception recorded in `STACK.md`, it is `n/a` with that exception as the reason, not a 1 defended in prose. Whether the exception is a good one is a separate question with its own test, in `references/accepted-exceptions.md`: a rule written as a default admits a reasoned exception, a reason that fails that test is reported as a finding against `STACK.md`, and the nine always in scope and every P0 rule admit none.
 
 Name the element, say what it costs, give the fix. Nothing in the report is an invitation to look into something later.
 
@@ -151,6 +179,8 @@ spec: .trunative/screens/checkout.md
 date: 2026-09-08T14:22
 skill: sha256:6f0a...
 scope: [touch, forms, states, layout, typography, colors, motion, accessibility]
+status: VIOLATIONS
+violations: [p0: 0, p1: 0, p2: 2, p3: 1]
 total: 236
 max: 300
 percent: 79
@@ -171,9 +201,16 @@ First run: there is nothing to compare against. Say so in one line, name it the 
 
 ## 7. Loop
 
-- Any rule at 1 or 2: go back to `flow/build.md` with this report and fix them, then review again.
+- Any rule at 1, 2 or `fail`: go back to `flow/build.md` with this report and fix them, P0 and P1 first, then review again.
+- A violation in a `comp-` rule where the arrangement itself is the problem is not a build fix. Go back to `flow/explore.md`: a composition nobody chose is repaired by choosing one, and patching the code leaves it unchosen.
 - Drift where the code is right and the brief is stale: correct the brief and carry on. Drift where the brief is right and the code left the approved structure: that is hierarchy, actions, states or navigation moving without anyone deciding it, so go back to `flow/spec.md`, not to build.
-- Nothing below 3: stop. Report what was built, what was checked, what was excused and what was not seen.
+- Stop when all four of these hold, and not because a number was reached. An average of 4.2 closes nothing by itself:
+  1. no P0 or P1 rule is a violation, so the status is not `BLOCKED`;
+  2. no rule at all is at 1, 2 or `fail`;
+  3. no spec drift is left unresolved, in either direction;
+  4. every rule the checklist marks `[device]`, and every one of the nine always in scope, has been checked on the evidence it requires, so none of them is `unrun`.
+
+  Then report what was built, what was checked, what was excused and what was not seen. A run that meets the first three and not the fourth has not closed the screen: it says which checks are outstanding and what would run them.
 
 Two consecutive reviews finding the same violation means the fix is not working. Say so and ask the user, instead of looping a third time.
 

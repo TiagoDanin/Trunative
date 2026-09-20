@@ -94,3 +94,16 @@ Every stack has a generator that takes one master image and writes every density
 ## Loading APIs
 
 Android decodes at the size drawn: `BitmapFactory.Options.inJustDecodeBounds` reads `outWidth` and `outHeight` without allocating, then `inSampleSize` decodes down. In practice a library does this: Glide, Coil (`AsyncImage`), Picasso or Fresco. Compose loads bundled assets with `painterResource`, which handles PNG, JPEG, WEBP, vector drawables and animated vector drawables. SwiftUI has `AsyncImage` for network images and `Image(decorative:)` for an unlabelled one.
+
+## Stand-in photography
+
+For a screen drawn before its content exists: a prototype, a design review, a screen whose backend is not built. It is sample content and it is fenced the same way, which is `copy-sample-data`: none of it ships.
+
+| Source | URL shape | What it gives |
+|---|---|---|
+| Lorem Picsum | `https://picsum.photos/seed/<seed>/<w>/<h>` | Unsplash photographs, no key and no attribution, seeded so one item keeps one photograph across renders. The subject cannot be asked for. |
+| Unsplash API | `https://api.unsplash.com/photos/random?query=<term>` | The subject can be asked for, so the picture can plausibly be the thing rather than any thing. Needs a registered key, attribution, and a download event per use. |
+
+`https://source.unsplash.com` is the endpoint most examples still reach for, and it is deprecated. It answers, from a pool frozen when it was retired, so a screen built on it is dated by construction.
+
+Seed from the item's stable identifier rather than its position, for the reason `icon-avatar` gives: a list that reorders keeps each picture attached to its own row. Where the screen may not reach the network at all, the subject gets drawn instead, which is `icon-depicts`.

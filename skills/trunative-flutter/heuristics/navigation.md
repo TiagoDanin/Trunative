@@ -6,6 +6,8 @@ Then the session breaks. Someone walks away mid task, the system reclaims the pr
 
 `STACK.md` records which navigator this codebase uses and what its destinations are. This file is about the structure those choices produce. The tab bar as a control is `button-tabs`; the back gesture, the predictive animation and the system edge zones are `touch-gestures`. Container and restoration APIs per stack sit in `references/navigation-containers.md`, for one lookup rather than a read through.
 
+Rules in this file, in order: `nav-depth`, `nav-container`, `nav-modal`, `nav-back`, `nav-back-control`, `nav-location`, `nav-deeplink`, `nav-tab-stack`, `nav-drawer`, `nav-search`, `nav-restore`.
+
 ## `nav-depth` Three levels, and the job within two taps
 
 Destination, list, detail. Three is what someone holds in their head without a map, and a fourth needs a reason written into `STACK.md`. Count it from a top-level destination to the deepest screen reachable under it.
@@ -38,7 +40,7 @@ On a phone the modal covers its parent, so there is no visible background to cli
 - Interactive dismissal is already on, so the line to look for is the one that turns it off: `interactiveDismissDisabled`, a sheet state that refuses to hide. It belongs only where dismissing loses work, and where it appears the question appears with it, which is not the same as trapping.
 - Never open a modal over a modal. The second one is a pushed screen inside the first.
 
-## `nav-back` Back unwinds the stack and nothing else
+## `nav-back` Back unwinds the stack and nothing else [P0]
 
 On Android back is a system event that reaches every screen, sheet, cover and dialog, and the components dismiss the top surface with it already. That it exists and must not be swallowed is `touch-gestures`. iOS sends no such event: a full screen cover and an alert there end only through a control the app drew, which is what `nav-container` and `nav-modal` ask for. What is left here is what back means against the stack.
 
@@ -114,3 +116,14 @@ Review answers each of these against the code, pointing at the line:
 - The destination, its stack, scroll, selection, filters and the open sheet come back after the process is killed, and the restore cutoff is a set number rather than forever. `nav-restore`
 
 `nav-deeplink` and `nav-restore` are answered by killing the process and launching from a link, not by reading the router. A graph that looks correct in the file is exactly the one that loses the stack on a cold link.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/buttons.md`: `button-tabs`, `button-one-primary`
+- `heuristics/forms.md`: `form-persist`
+- `heuristics/scrolling.md`: `scroll-restore`
+- `heuristics/search.md`: `search-surface`
+- `heuristics/states.md`: `state-error`, `state-interrupt`
+- `heuristics/touch.md`: `touch-gestures`, `touch-reach`

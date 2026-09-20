@@ -4,6 +4,8 @@ Scrolling is the movement a phone gets the most of. The screen is a few hundred 
 
 This file is the scroll itself: its axis, its position over time, the chrome that moves with it, and the effects the platform owns. The collection inside the scroll is `heuristics/lists.md`. The column it runs in, the bars pinned over it and the insets around it are `heuristics/layout.md`.
 
+Rules in this file, in order: `scroll-nest`, `scroll-affordance`, `scroll-collapse`, `scroll-edge`, `scroll-anchor`, `scroll-restore`, `scroll-top`, `scroll-programmatic`, `scroll-overscroll`, `scroll-keyboard`.
+
 ## `scroll-nest` Same-axis nesting needs a wired handoff, and the fling is part of it
 
 Whether a same-axis nest is allowed at all is `layout-column`. This rule is what has to hold once one is: the two scrollers are connected, so at every moment a delta has one owner rather than two competing for it. Android's collapsing app bar is that arrangement and works for exactly that reason, while a scroll view hand-placed inside another of the same orientation is the same shape with nothing joining the halves.
@@ -112,3 +114,18 @@ Review answers each of these against the code, pointing at the line:
 - The scroll container consumes the keyboard inset, and dragging the content dismisses the keyboard. `scroll-keyboard`
 
 Check nesting, the scroll affordance, anchoring and restoration on a device with real data rather than in the layout code. All four look correct in a short mock list and fail only once the content outruns the screen.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-gesture`
+- `heuristics/buttons.md`: `button-one-primary`
+- `heuristics/forms.md`: `form-persist`
+- `heuristics/icons-and-imagery.md`: `icon-reserve`
+- `heuristics/layout.md`: `layout-column`
+- `heuristics/lists.md`: `list-virtualise`, `list-refresh`, `list-end`
+- `heuristics/motion.md`: `motion-reduced`, `motion-cheap`
+- `heuristics/navigation.md`: `nav-restore`
+- `heuristics/states.md`: `state-interrupt`
+- `heuristics/touch.md`: `touch-floor`, `touch-keyboard`

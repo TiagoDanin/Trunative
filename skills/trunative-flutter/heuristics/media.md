@@ -4,6 +4,8 @@ A phone plays media in a pocket, on a commute, on a battery, on a connection som
 
 Here: the player surface, the transport controls, full screen and rotation, picture in picture, background audio, the lock screen, and what happens when something else on the device wants the speaker. Captions and anything an audio track carries alone are `a11y-media`. Whether a clip may start by itself is `motion-autoplay`. Sound the app makes outside a player is not playback and is not here.
 
+Rules in this file, in order: `media-system-player`, `media-controls`, `media-scrub`, `media-unasked-sound`, `media-focus`, `media-noisy`, `media-background`, `media-remote`, `media-resume`, `media-pip`, `media-away`, `media-fullscreen`, `media-awake`, `media-start`, `media-quality`, `media-live`.
+
 ## `media-system-player` Play through the platform's engine, and finish any transport you draw yourself
 
 The engine is `AVPlayer` on iOS and ExoPlayer on Android, with a wrapper over one of them in every cross-platform stack. Nothing here asks anyone to write a decoder. What varies is who draws the transport, and each system view hands over a different set: `AVPlayerViewController` and SwiftUI's `VideoPlayer` carry the route picker, the caption menu the system caption setting drives, and picture in picture once the capability is on, while Media3's `PlayerView` carries subtitles, artwork and the controls, with picture in picture and Cast wired separately beside it.
@@ -128,3 +130,21 @@ Review answers each of these against the code, pointing at the line:
 - Sound or a preparing indicator arrives within one second of the tap, and a rebuffer leaves the controls and the position alone. `media-start`
 - A metered connection has a written bitrate cap, a manual quality choice persists, and downloads wait for unmetered. `media-quality`
 - A live stream is labelled without relying on color, shows no total duration, offers a return to the edge, and stops once its surface is left with nothing playing it. `media-live`
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-media`, `a11y-name`
+- `heuristics/colors.md`: `color-not-alone`
+- `heuristics/layout.md`: `layout-insets`, `layout-chrome`, `layout-orientation`
+- `heuristics/localization.md`: `l10n-format`
+- `heuristics/motion.md`: `motion-autoplay`
+- `heuristics/notifications.md`: `notify-ongoing`
+- `heuristics/offline.md`: `off-queue`
+- `heuristics/sound.md`: `sound-silenced`
+- `heuristics/states.md`: `state-interrupt`, `state-loading`, `state-error`, `state-retry`
+- `heuristics/touch.md`: `touch-floor`
+- `platform/background-work.md`: `bg-service-last`, `bg-declared`
+- `platform/network.md`: `net-metered`, `net-prefetch`
+- `platform/performance.md`: `perf-memory`, `perf-power`

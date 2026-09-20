@@ -6,6 +6,8 @@ That makes the ask itself a design object. What is asked for at all, at which mo
 
 `state-permission` already covers denial as a screen state. This file covers the request.
 
+Rules in this file, in order: `perm-inventory`, `perm-ask-less`, `perm-scope`, `perm-rationale`, `perm-purpose-string`, `perm-answers`, `perm-recheck`, `perm-no-coercion`, `perm-notify-ask`, `perm-tracking`.
+
 ## `perm-inventory` Every permission traces to a feature the user can point at
 
 The declared set is public. On Android the Play listing shows it before install, on both platforms the system permission screen shows it after, and store review reads it against what the app claims to do. Each entry is a cost paid whether or not the prompt ever fires.
@@ -84,7 +86,7 @@ The user can revoke anything from system settings while the app sits in the back
 
 The screen that assumes otherwise crashes, or shows an empty list where the content used to be and blames the server.
 
-## `perm-no-coercion` A no is an answer the app has to live with
+## `perm-no-coercion` A no is an answer the app has to live with [P1]
 
 `state-permission` owns the degraded screen and the route back into system settings. What that route must not turn into:
 
@@ -123,3 +125,11 @@ Review answers each of these against the code, pointing at the line:
 - On iOS a tracking prompt exists if and only if a dependency tracks, and denial changes no feature; a codebase that ships only to Android answers this not applicable. `perm-tracking`
 
 Run the last five with the permission revoked and the app cold started, because every one of them passes on a device where the grant is already in place. Reach each state on purpose rather than waiting to meet it: on Android, `adb shell dumpsys package PACKAGE_NAME` reports the flags per permission, where `USER_SET` is one denial and `USER_FIXED` is the permanent one, and `adb shell pm clear-permission-flags PACKAGE_NAME PERMISSION_NAME user-set user-fixed` resets between runs; on iOS, Reset Location & Privacy returns every permission to not determined. A state nobody can enter deliberately gets answered from the granted device every time, which is the same as not running the check.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/onboarding.md`: `onboard-ask-order`
+- `heuristics/settings.md`: `set-system-owned`, `set-account-exit`
+- `heuristics/states.md`: `state-permission`

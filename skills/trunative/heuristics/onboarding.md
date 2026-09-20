@@ -6,6 +6,8 @@ So the first run is designed as a sequence and measured as one: what the system 
 
 The shape of a permission request is `perm-rationale`. The screen a new account lands on is `state-empty`. The surface the system draws before any of this runs is `heuristics/splashscreen.md`.
 
+Rules in this file, in order: `onboard-splash`, `onboard-screens`, `onboard-in-place`, `onboard-defer`, `onboard-ask-order`, `onboard-look-first`, `onboard-account`, `onboard-first-action`, `onboard-resume`.
+
 ## `onboard-splash` A branded moment goes inside the app, never in front of it
 
 If the product genuinely needs a branded frame, it belongs at the head of the first run, after launching has finished. This is a screen the app draws, so everything about it is the app's decision, and there is only one thing to decide well: how little of the user's time it takes.
@@ -22,6 +24,10 @@ Count the full-screen panels between launching and the first real screen. Three 
 - Skipping is permanent. The flow does not come back on the next launch, and it stays reachable from settings or help for whoever wants it later.
 - A first run of more than one step says where the user is in it, through a pager or a progress indicator that cannot be mistaken for decoration or for something to tap. Someone who can see two steps left finishes them; someone counting an unmarked sequence quits. Where the steps are fields, `form-steps` owns the rest.
 - The panels are content, so they reflow at the largest text setting rather than clipping the button off the bottom: `type-scaling`.
+
+**Default.** Three panels at most, and none where the first screen explains itself.
+**Exception.** A first run that is setup and not explanation: pairing a device, importing an account, choosing what a feed is built from. Those steps are the product's first real action and they take as many screens as the task has steps, under `form-steps` and `onboard-resume`. The ceiling counts panels that only explain.
+**Reason required.** What each step beyond the third collects or connects, and that the app cannot do its job without it.
 
 ## `onboard-in-place` A tour is what gets built when the interface does not explain itself
 
@@ -101,3 +107,17 @@ Review answers each of these against the code, pointing at the line:
 - The step is persisted as it completes and the done flag is read before the first draw, so a process kill resumes the step and a second launch shows nothing. `onboard-resume`
 
 `onboard-splash`, `onboard-first-action` and `onboard-resume` are answered from a clean install on a device, in both appearances, with the process killed mid flow the way the system would kill it. None of them can be settled by reading the router, because a flow that is correct in the file is exactly the one that starts over from panel one.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/copy.md`: `copy-rationale`
+- `heuristics/forms.md`: `form-steps`, `form-autofill`, `form-persist`
+- `heuristics/motion.md`: `motion-blocks`
+- `heuristics/navigation.md`: `nav-restore`, `nav-deeplink`
+- `heuristics/permissions.md`: `perm-rationale`, `perm-purpose-string`, `perm-notify-ask`, `perm-no-coercion`
+- `heuristics/settings.md`: `set-default-first`
+- `heuristics/states.md`: `state-empty`, `state-permission`, `state-interrupt`
+- `heuristics/touch.md`: `touch-floor`
+- `heuristics/typography.md`: `type-scaling`

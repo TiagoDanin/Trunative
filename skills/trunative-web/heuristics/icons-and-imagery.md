@@ -6,7 +6,9 @@ Both fail the same way: the set was assembled rather than chosen, and the box wa
 
 Sizes, axis ranges, density buckets and asset paths are in `references/icon-and-image-assets.md`. This file is the rules.
 
-## `icon-one-set` An icon set is a set, not a collection
+Rules in this file, in order: `icon-one-set`, `icon-weight`, `icon-no-emoji`, `icon-vector`, `icon-reserve`, `icon-crop`, `icon-depicts`, `icon-stand-in`, `icon-alt`, `icon-dark`, `icon-avatar`, `icon-app`.
+
+## `icon-one-set` An icon set is a set, not a collection [pass or fail]
 
 One set for the whole app, at one weight and one style. Two sets on one screen is the defect that reads from across the room: it takes no interaction to find and no expertise to name, and it is what a screen assembled out of search results looks like.
 
@@ -30,7 +32,7 @@ An icon next to text is part of that line, and every property it has is borrowed
 
 An icon rarely carries a verb on its own, so what is written next to it is `button-label` and what is spoken instead of it is `a11y-name`. Meaningful icons owe the same contrast as any other non-text mark: `color-contrast`. And the glyph is only the drawing: the target around it is a separate object with its own floor, which is `touch-floor`.
 
-## `icon-no-emoji` An emoji is content, never an icon
+## `icon-no-emoji` An emoji is content, never an icon [pass or fail]
 
 Emoji inside a message, a reaction, or a name somebody typed is content and stays. Emoji standing in for an icon is the most reliable tell of a generated screen, and it is not a shortcut, because none of the four things an icon does survives it.
 
@@ -76,6 +78,17 @@ The blurred oval behind the form, the glow under the logo tile, the three gradie
 - Texture is not subject. A pattern, a grain pass or a wash over artwork that already shows something is treatment. The same wash on its own is the defect.
 - Abstract is allowed where the product is abstract, and the test does not care about style: somebody who has not seen the app can say what the picture shows.
 
+## `icon-stand-in` A domain with pictures in it gets pictures
+
+Some products are mostly text and some are not. Where the thing the screen is about has a look, what it looks like is content: the dish, the movement, the place, the garment, the room, the face of the person the row is about. A screen that replaces those with a glyph centred in a filled rectangle has not drawn its content, it has labelled the absence of it, and a column of those is the screen saying it has nothing to show. That is `icon-depicts` in the form it takes most often, because a glyph is easy and a picture is not.
+
+The absence of real bytes is not the reason. A screen drawn before its backend exists still has to be judged, and it is judged on what a picture does to the weight, the reading order and the density around it, which a grey block does not do.
+
+- Stand in with a photograph, seeded from the item's stable identifier so it stays attached to its row, or draw the subject as vector. The services and their costs are in `references/icon-and-image-assets.md`, and sample imagery is sample content under the same fence as the rest of it: `copy-sample-data`.
+- What stands in does not ship. A build pointing at somebody else's photo service carries a third-party request per row (`priv-instrument`) and a payload nobody budgeted (`net-payload`, `net-metered`), and the licence to the picture is not the product's.
+- A glyph is right where the thing genuinely has no appearance: a category, a setting, a state, an action. Those are labels and the glyph is the label.
+- The picture keeps the edge its medium gives it (`layout-shape`). A decorative rule or a coloured frame added around content artwork is treatment standing where the subject should be, and it reads as a sticker.
+
 ## `icon-alt` A picture is content or it is decoration, and it says which
 
 Content describes what it shows. Decoration is hidden instead of described, which is `a11y-hidden`. Nothing sits between the two, both answers compile, and a screen where every image says nothing looks identical to one where every image is right.
@@ -97,6 +110,8 @@ A single-colour glyph needs no dark variant, because it is tinted from a theme r
 ## `icon-avatar` The fallback is the common case
 
 Most accounts have no photo, so the fallback is the state to design first and the one that will be on screen most.
+
+It works because a person has no subject to draw: an initial or a generated shape identifies them, and there was never a picture of something to show instead. Artwork that does have a subject is `icon-depicts`, whatever it stands in for, and a letter on a filled square in its place abbreviates a picture rather than identifying an account.
 
 - Initials from the name, or a shape generated from a stable identifier, so the same person keeps the same avatar between sessions and between devices. One shared silhouette for every user is decoration, and a list of them carries no information at all.
 - The fallback fills the same box the photo would, so a list of people keeps its rhythm while photos load.
@@ -127,9 +142,28 @@ Review answers each of these against the code, pointing at the line:
 - Every remote image outside a list takes its dimensions from the layout before the request is made, and nothing below it moves when it lands. `icon-reserve`
 - Each image surface names one aspect ratio, or a fixed short list of them, plus one fill mode, and images crop rather than stretch or letterbox. `icon-crop`
 - Every region larger than a touch target that is not text, a control or data depicts something nameable in the product, and no glow, blob, wash or abstract gradient stands where an image belongs. `icon-depicts`
+- Everything the screen is about that has an appearance is shown as a photograph or a drawing of its subject, seeded so it stays with its item, rather than as a glyph on a filled rectangle; nothing that stands in for missing bytes ships; and no content artwork carries an added decorative frame. `icon-stand-in`
 - Every image either describes what it shows or is hidden as decoration, and no description is a file name or the word image. `icon-alt`
 - Every asset that cannot be tinted has a dark counterpart selected by the asset system, and no asset carries an opaque light background. `icon-dark`
 - The avatar has a generated fallback at the same size, stable per user, covering the missing name, carrying no drawn human face, and no path renders a broken image. `icon-avatar`
 - The app icon carries no text, ships unmasked layers with no baked effects, keeps its mark inside the safe box, and supplies the monochrome layer on Android and the dark and tinted appearances on iOS rather than letting the system invent them. `icon-app`
 
 Check `icon-dark`, `icon-avatar` and `icon-app` on a rendered screen in dark appearance, and `icon-weight` at the largest text step. All four pass a light-theme, default-size screenshot.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-name`, `a11y-hidden`
+- `heuristics/buttons.md`: `button-tabs`, `button-label`
+- `heuristics/colors.md`: `color-contrast`, `color-dark-composed`
+- `heuristics/copy.md`: `copy-sample-data`
+- `heuristics/layout.md`: `layout-shape`
+- `heuristics/lists.md`: `list-images`
+- `heuristics/localization.md`: `l10n-no-mirror`, `l10n-personal`
+- `heuristics/privacy-ui.md`: `priv-instrument`
+- `heuristics/splashscreen.md`: `splash-contents`
+- `heuristics/states.md`: `state-loading`, `state-error`
+- `heuristics/touch.md`: `touch-floor`
+- `platform/network.md`: `net-payload`, `net-metered`
+- `platform/performance.md`: `perf-size`, `perf-decode`

@@ -6,6 +6,8 @@ The ladder runs from nothing at all up to a dialog that stops everything, and th
 
 One structural fact decides half of this. Android ships a transient actionable message as a component, with a host that positions it and decides what becomes of the next one. Apple ships none: it has alerts, action sheets and inline status, and nothing that slides in and leaves. Anything transient on iOS is a component somebody in this codebase has to build and maintain, which is a cost worth knowing before the design assumes one.
 
+Rules in this file, in order: `fb-ladder`, `fb-silent-success`, `fb-confirm-test`, `fb-undo`, `fb-place`, `fb-duration`, `fb-reach`, `fb-queue`, `fb-survives`, `fb-blocking-shape`, `fb-unprompted`, `fb-review-prompt`.
+
 ## `fb-ladder` Four rungs, and the first one is nothing
 
 - **Nothing.** The result is already on the screen. The row disappeared, the toggle moved, the total changed.
@@ -120,3 +122,22 @@ Review answers each of these against the code, pointing at the line:
 - An alert is used only for a yes or no about one irreversible action, blocking surfaces carry at most 3 buttons, do not scroll, name their buttons by result, and never hold a progress bar. `fb-blocking-shape`
 - Nothing the user did not ask for blocks or interrupts them, apart from the segment-boundary ad `ads-placement` allows: it waits for a finished task, closes in one tap, and stays closed for a stated period. `fb-unprompted`
 - The rating prompt is the system one, is not preceded by a question, is not wired to a button, and is not raised during onboarding. `fb-review-prompt`
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-gesture`, `a11y-alt-input`, `a11y-announce`
+- `heuristics/ads.md`: `ads-placement`, `ads-close`, `ads-rewarded`
+- `heuristics/buttons.md`: `button-label`
+- `heuristics/colors.md`: `color-not-alone`
+- `heuristics/forms.md`: `form-error`
+- `heuristics/layout.md`: `layout-overlays`
+- `heuristics/localization.md`: `l10n-strings`
+- `heuristics/navigation.md`: `nav-restore`, `nav-modal`
+- `heuristics/notifications.md`: `notify-inapp`
+- `heuristics/offline.md`: `off-destructive-offline`
+- `heuristics/onboarding.md`: `onboard-ask-order`, `onboard-defer`
+- `heuristics/sense.md`: `sense-haptic`
+- `heuristics/states.md`: `state-error`, `state-queued`, `state-interrupt`, `state-loading`
+- `heuristics/touch.md`: `touch-destructive`, `touch-feedback`

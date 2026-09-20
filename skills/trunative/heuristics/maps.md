@@ -4,6 +4,8 @@ A map fills the phone's whole screen and takes the drag with it. It is also the 
 
 Here: the map surface and its gestures, the initial camera, markers and clusters, following the user, the route as text, tiles that did not arrive, the cost of holding a map, attribution, and the equivalent representation that has to exist beside it. The location ask is `perm-scope` and `perm-rationale`, the uncertainty circle drawn around the user is `sense-accuracy`, location switched off above the app is `sense-off-system`, a follow that keeps running once the user has left is `bg-location`, and how the result list beside the map reads is `list-a11y`. A map drawn by a web page inside the app takes `webview-surface-choice` for the surface it sits in and every rule below for what is on it.
 
+Rules in this file, in order: `map-camera`, `map-gesture-owner`, `map-marker-target`, `map-cluster`, `map-not-alone`, `map-follow`, `map-legible`, `map-steps`, `map-offline`, `map-cost`, `map-attribution`, `map-terms`.
+
 ## `map-camera` The first frame is a decision: framed on the content, padded for the chrome, and bounded
 
 One screenful and no second pane. A map that opens on the whole world is an ocean to pinch out of with one thumb, and a map that opens centred behind a sheet has spent its only screenful on a region nobody can see.
@@ -127,3 +129,28 @@ Review answers each of these against the code, pointing at the line:
 - The app's terms name the map provider and link its end-user terms and privacy policy, nothing scrapes or rehosts provider content, and no stored latitude and longitude has a retention beyond 30 consecutive days. `map-terms`
 
 Four of these cannot be settled from a diff. On a device, raise the sheet to its lowest resting position and look for the provider credit under it (`map-attribution`); load production-scale markers and try to hit two adjacent pins with a thumb (`map-marker-target`); measure a control against the tile beneath it in both colour schemes and in sunlight (`map-legible`); and drive the whole map flow with the screen reader on to find out whether anything past the words "Google Map" is reachable at all (`map-not-alone`), which is the run `a11y-test` asks for.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-name`, `a11y-hidden`, `a11y-collection`, `a11y-gesture`, `a11y-test`
+- `heuristics/colors.md`: `color-not-alone`, `color-contrast`, `color-dark-composed`
+- `heuristics/data-display.md`: `data-units`, `data-chart-scale`
+- `heuristics/icons-and-imagery.md`: `icon-alt`
+- `heuristics/layout.md`: `layout-chrome`, `layout-overlays`, `layout-insets`
+- `heuristics/lists.md`: `list-a11y`, `list-virtualise`
+- `heuristics/localization.md`: `l10n-no-mirror`, `l10n-format`
+- `heuristics/offline.md`: `off-cache-policy`, `off-no-cache`
+- `heuristics/permissions.md`: `perm-scope`, `perm-rationale`, `perm-answers`
+- `heuristics/scrolling.md`: `scroll-nest`
+- `heuristics/sense.md`: `sense-accuracy`, `sense-off-system`, `sense-running`
+- `heuristics/settings.md`: `set-diagnostics`
+- `heuristics/sharing.md`: `share-link-not-shot`
+- `heuristics/states.md`: `state-offline`, `state-error`, `state-retry`, `state-loading`, `state-empty`, `state-stale`
+- `heuristics/touch.md`: `touch-floor`
+- `heuristics/typography.md`: `type-dark`
+- `heuristics/webviews.md`: `webview-surface-choice`
+- `platform/background-work.md`: `bg-location`
+- `platform/network.md`: `net-metered`, `net-prefetch`
+- `platform/performance.md`: `perf-frame`, `perf-power`, `perf-memory`

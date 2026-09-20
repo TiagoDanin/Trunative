@@ -6,7 +6,9 @@ Values already written into `DESIGN.md`, the spacing scale and the screen margin
 
 Neighbouring rules own the parts that are not geometry: thumb zones are `touch-reach`, the system gesture strips are `touch-gestures`, the keyboard is `touch-keyboard`, and long collections belong to `heuristics/lists.md`.
 
-## `layout-insets` The safe area is geometry, not padding added at the end
+Rules in this file, in order: `layout-insets`, `layout-grid`, `layout-grouping`, `layout-shape`, `layout-column`, `layout-width`, `layout-chrome`, `layout-overlays`, `layout-fold`, `layout-short`, `layout-orientation`.
+
+## `layout-insets` The safe area is geometry, not padding added at the end [P1]
 
 Read the inset at runtime and lay the screen out inside it. A constant copied off one device (34, 44, 48) is right on that phone and wrong on the next, and it is wrong on the same phone the moment a call banner or an expanded status bar changes the number.
 
@@ -54,6 +56,10 @@ A screen where a card, a photograph, a chip, a field and a button are all rounde
 ## `layout-column` One column, one scrolling axis
 
 There is no second column to escape into, and that changes what happens when something does not fit. Two halves side by side on a 320 wide screen leave each about 140 after the margins and the gap, and at the largest text step the same pair becomes two words per line. Whatever wants a second column is a row that should stack, a table that should be a list, or content that deserves its own screen. The exception is a pair of short fields whose format fixes their length in advance, expiry beside CVC being the one everybody ships: those fit at 140 and go on fitting at the largest step. Two fields on one line is otherwise the version of this that ships most often, and `form-column` owns it.
+
+**Default.** One column of content.
+**Exception.** Items that are pictures first and text second, where a second column shows more of the thing being chosen: a photo library, a wall of covers, a grid of swatches. Also an uneven split where one region is a persistent ground and the other acts on it, which is a composition and not a second column of reading. The test for both is that no item's text has to be read across the gap to make sense.
+**Reason required.** What the person is scanning for, and that every tile still holds its label on the narrowest device at the largest text step, which is `layout-width` and `type-scaling` and not an assumption.
 
 The screen scrolls in one place and along one axis. Put a vertical scroll inside another vertical scroll and the drag has two possible owners, so the inner one, holding the content the finger was aiming at, sits still while the page moves instead. Nesting on the same axis is only ever safe under the platform contract that `scroll-nest` owns. A horizontal strip inside a vertical page needs none of that, precisely because the axes differ. Virtualising what is inside the scroll is `list-virtualise`.
 
@@ -123,3 +129,15 @@ Review answers each of these against the code, pointing at the line:
 - Landscape is either locked with a reason recorded in `STACK.md` or reflows, with the action still visible and the measure still capped at the shorter height. `layout-orientation`
 
 `layout-insets`, `layout-width`, `layout-fold` and `layout-chrome` are answered on a rendered screen at the narrow end of the range, on a device using three-button navigation as well as gestures. The token table and the component tree both look correct while the bottom bar is sitting under the navigation bar. `layout-chrome` needs the screen scrolled to both ends with enough content to reach the pinned bars, because the collision is invisible until a row arrives under one of them, and the top bar hides the first row as readily as the bottom bar hides the last. `layout-short` needs the opposite render, the screen at its shortest content, which is the only length at which the action drifts into the middle.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/buttons.md`: `button-fab`
+- `heuristics/forms.md`: `form-column`
+- `heuristics/lists.md`: `list-virtualise`, `list-end`
+- `heuristics/scrolling.md`: `scroll-nest`, `scroll-affordance`
+- `heuristics/states.md`: `state-interrupt`
+- `heuristics/touch.md`: `touch-reach`, `touch-gestures`, `touch-keyboard`
+- `heuristics/typography.md`: `type-scaling`, `type-measure`

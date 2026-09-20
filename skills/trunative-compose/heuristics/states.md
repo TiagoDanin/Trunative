@@ -6,7 +6,9 @@ The phone is where the gap costs most. The connection comes and goes inside a si
 
 Every state below needs its own words and its own way forward. A generic message is the same as no state at all, because it leaves the user with nothing to do next.
 
-## `state-set` Six states, named before the happy path is written
+Rules in this file, in order: `state-set`, `state-loading`, `state-empty`, `state-error`, `state-retry`, `state-offline`, `state-stale`, `state-queued`, `state-partial`, `state-permission`, `state-interrupt`.
+
+## `state-set` Six states, named before the happy path is written [P1]
 
 For any screen that loads, sends or stores anything, write the line it shows in each of six: **loading**, **empty**, **error**, **offline or stale**, **partial**, and **permission denied or read only**. Produce that list in `flow/spec.md`, where it is the screen brief's six state keys, before the layout exists. A screen changed without a brief produces it while framing in `flow/build.md` instead.
 
@@ -43,7 +45,7 @@ There are four failure classes and they are not interchangeable: the radio has n
 - Never dress a failure as an empty. "No messages" and "could not load messages" are opposite claims, and code that returns an empty list on failure makes them identical on screen.
 - The message lands where the failure is: at the field for a field, in the region for a region, on the screen for the screen. `heuristics/forms.md` owns field-level validation. A modal alert for something that could be said inline charges the user an interruption, and whether the message reaches a screen reader at all is `fb-reach`. How it is worded is `copy-error` and `copy-jargon`.
 
-## `state-retry` A retry that loses what was typed is a second failure
+## `state-retry` A retry that loses what was typed is a second failure [P0]
 
 - The manual retry is always present and always visible once something failed. Automatic retry does not replace it.
 - Retrying returns to the same state: the input, the selection, the scroll offset, the sheet that was open. On a phone the typed content is the expensive part, thumbed in one character at a time, and it is never recoverable from anywhere else.
@@ -92,7 +94,7 @@ The ask itself, the reason shown before it and how many chances are left belong 
 - Read only belongs here too: viewing allowed and editing not. `button-state` starts by leaving the control live and answering on tap with what is missing; where it genuinely has to be disabled, that rule's fallback applies and the reason sits beside it rather than being left to be inferred.
 - No screen is a wall that cannot be left without granting.
 
-## `state-interrupt` The phone takes the app away mid task
+## `state-interrupt` The phone takes the app away mid task [P0]
 
 A call, a notification pulled down and an app switch stop the screen without destroying it, and the OS carries what is in memory through all three for free. Two events do not, and they are the ones this rule is about: a configuration change (rotation, multi-window, and the text size and theme changes `type-scaling` sends you to go and set), and the system killing the process while the app is in the background.
 
@@ -118,3 +120,22 @@ Review answers each of these against the code, pointing at the line:
 - In-progress work survives a configuration change and a system-initiated process death. `state-interrupt`
 
 `state-offline` and `state-stale` are answered on a device with the network actually off. `state-interrupt` is answered against a rotation and a kill the system would have made itself, using Don't keep activities or `adb shell am kill`, never a swipe out of the recents list: that gesture is the user asking for a clean start, and nothing is meant to come back from it. `state-queued` is the one that keeps the recents-swipe test, because persisted work is exactly what has to outlive a dismissal. Nothing in the file proves any of them, and a state that was never entered is unrun rather than passing.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/buttons.md`: `button-state`
+- `heuristics/colors.md`: `color-not-alone`
+- `heuristics/copy.md`: `copy-error`, `copy-jargon`
+- `heuristics/feedback.md`: `fb-reach`
+- `heuristics/forms.md`: `form-persist`
+- `heuristics/lists.md`: `list-virtualise`, `list-end`, `list-refresh`
+- `heuristics/navigation.md`: `nav-restore`
+- `heuristics/permissions.md`: `perm-rationale`, `perm-answers`
+- `heuristics/scrolling.md`: `scroll-restore`
+- `heuristics/sense.md`: `sense-states`
+- `heuristics/settings.md`: `set-system-owned`
+- `heuristics/touch.md`: `touch-feedback`, `touch-destructive`
+- `heuristics/typography.md`: `type-scaling`
+- `platform/network.md`: `net-timeout`, `net-metered`

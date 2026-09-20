@@ -4,6 +4,8 @@ A capture screen is aimed. The user holds the phone in one hand while the other 
 
 The preview itself is `sense-preview`: its fit and crop, the shutter being inert until the session is live, the screen held awake, and the scanner's time bound and camera-free route. Whether the hardware exists at all is `sense-absent`, the system taking it back is `sense-interrupted`, and saying it is running is `sense-running`. The permission belongs to permissions.md, from `perm-inventory` through `perm-answers`, playing back what was captured is `media-system-player`, and the app switcher snapshot is `priv-switcher`.
 
+Rules in this file, in order: `cam-system-first`, `cam-shutter`, `cam-torch`, `cam-lens-zoom`, `cam-aim`, `cam-scan-decides`, `cam-review`, `cam-unusable`, `cam-orientation`, `cam-bytes`, `cam-limited`, `cam-thermal`.
+
 ## `cam-system-first` When one photo is the whole requirement, the system's capture screen is the capture screen
 
 The phone already ships a capture screen the user has fired a thousand times, with a shutter, a torch, a lens switch and a retake. Drawing a second one buys a permission, a session lifecycle and every rule below it.
@@ -125,3 +127,24 @@ Review answers each of these against the code, pointing at the line:
 - The screen binds only the capture pipelines it draws, at most one instance of each, and system pressure is answered with a stated degradation rather than an error. `cam-thermal`
 
 Two of these cannot be settled from a diff. Drive the capture screen one-handed on the smallest and largest supported devices, with the platform capture indicator drawn, and measure the rendered hit rect of the shutter and of every control beside it (`cam-shutter`). Then hold a real capture session open until the device throttles, and watch what happens to the torch, the frame rate and the session (`cam-thermal`).
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-name`, `a11y-gesture`
+- `heuristics/colors.md`: `color-contrast`
+- `heuristics/copy.md`: `copy-error`
+- `heuristics/feedback.md`: `fb-silent-success`
+- `heuristics/layout.md`: `layout-insets`
+- `heuristics/media.md`: `media-system-player`
+- `heuristics/navigation.md`: `nav-modal`
+- `heuristics/offline.md`: `off-queue`
+- `heuristics/permissions.md`: `perm-inventory`, `perm-answers`, `perm-ask-less`, `perm-purpose-string`, `perm-scope`
+- `heuristics/privacy-ui.md`: `priv-switcher`, `priv-instrument`
+- `heuristics/sense.md`: `sense-preview`, `sense-absent`, `sense-interrupted`, `sense-running`, `sense-haptic`
+- `heuristics/sharing.md`: `share-payload-clean`
+- `heuristics/states.md`: `state-queued`, `state-retry`, `state-empty`, `state-error`
+- `heuristics/touch.md`: `touch-floor`, `touch-reach`, `touch-spacing`
+- `platform/network.md`: `net-upload`, `net-metered`
+- `platform/performance.md`: `perf-decode`, `perf-power`

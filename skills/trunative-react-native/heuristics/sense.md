@@ -6,6 +6,8 @@ The ask belongs to `permissions.md`: what is requested, at which moment, after w
 
 Per-stack presence, status and accuracy APIs are in `references/capability-checks.md`, for one lookup rather than a read through.
 
+Rules in this file, in order: `sense-states`, `sense-absent`, `sense-off-system`, `sense-running`, `sense-interrupted`, `sense-accuracy`, `sense-preview`, `sense-biometric`, `sense-haptic`, `sense-motion`, `sense-radio`.
+
 ## `sense-states` Five states past the grant, and a granted boolean covers one
 
 A capability is not on or off. Five states exist whether or not anybody was ever prompted:
@@ -126,3 +128,17 @@ Review answers each of these against the code, pointing at the line:
 - An adapter switched off is answered separately from a denied permission, pairing, range and disconnection each have a state, and no nearby interaction is the only route to its task. `sense-radio`
 
 Run these on a device that is missing something on purpose: location services off, the system camera toggle off, no biometric enrolled, Bluetooth off, a call placed mid recording. Each of those states passes on a fully equipped device with everything granted, which is the only device the code was written against.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-gesture`
+- `heuristics/auth.md`: `auth-biometric-session`
+- `heuristics/layout.md`: `layout-insets`
+- `heuristics/motion.md`: `motion-reduced`
+- `heuristics/notifications.md`: `notify-ongoing`
+- `heuristics/permissions.md`: `perm-answers`, `perm-inventory`
+- `heuristics/states.md`: `state-permission`, `state-interrupt`, `state-loading`
+- `heuristics/touch.md`: `touch-reach`, `touch-feedback`
+- `platform/performance.md`: `perf-power`

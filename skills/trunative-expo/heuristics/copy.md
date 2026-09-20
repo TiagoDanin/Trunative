@@ -4,6 +4,8 @@ Most of what an app says, it says in fewer than ten words, to someone reading at
 
 This file owns wording. Whether a message exists at all belongs to the file that owns the surface it lands on. Everything here is a string in the catalogue rather than a literal in a component (`l10n-strings`), which is also what makes most of these rules searchable.
 
+Rules in this file, in order: `copy-budget`, `copy-first-word`, `copy-voice`, `copy-tells`, `copy-error`, `copy-jargon`, `copy-terms`, `copy-case`, `copy-absence`, `copy-sample-data`, `copy-numbers`, `copy-claims`, `copy-rationale`.
+
 ## `copy-budget` Decide the count before writing the sentence
 
 Length is a decision taken before the wording, and it is a count.
@@ -103,6 +105,7 @@ Three strings do a different job from the sentences around them, and each has a 
 - The figures reconcile. A yearly price and a monthly price produce the saving that is printed, timestamps in a list run one way, a total is the sum of its rows, a percentage matches the bar drawn beside it. One figure contradicting the one next to it tells the reader that none of them is real.
 - The sample covers what the layout has to survive rather than what flatters it: the long name, the zero, the negative, the empty list, the year-old record. `type-strings` owns the length side of this, `data-empty-null-zero` the difference between nothing and zero.
 - A hint inside a field is a format example and never the content, which is `copy-absence` and `form-label`.
+- Sample imagery is sample content as much as the strings are, and it is held to the same standard: a screen whose text is the product's own and whose every picture is a filled rectangle was designed down to the text and no further. What stands in for a picture, and what is never allowed to stand in for one, is `icon-stand-in`.
 
 ## `copy-numbers` The figure, not the word
 
@@ -155,3 +158,24 @@ Review answers each of these against the code, pointing at the string:
 - Every usage description is 1 sentence-case sentence ending in a full stop, the control that opens the system dialog reads Continue or Next, and any data disclosure says why, what and how before the dialog with nothing unrelated bundled into it. `copy-rationale`
 
 Read the strings in the running app, not in the catalogue. Terminology drift only shows up when the screens are walked in the order the user walks them, and a string that is correct in the file can still be the wrong length once the device's text size is applied to it.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-alt-input`
+- `heuristics/buttons.md`: `button-label`
+- `heuristics/data-display.md`: `data-empty-null-zero`, `data-precision`
+- `heuristics/feedback.md`: `fb-place`, `fb-confirm-test`
+- `heuristics/forms.md`: `form-error`, `form-label`
+- `heuristics/icons-and-imagery.md`: `icon-stand-in`
+- `heuristics/lists.md`: `list-end`
+- `heuristics/localization.md`: `l10n-strings`, `l10n-expansion`, `l10n-format`, `l10n-plurals`
+- `heuristics/navigation.md`: `nav-location`
+- `heuristics/notifications.md`: `notify-lockscreen`
+- `heuristics/permissions.md`: `perm-rationale`, `perm-purpose-string`
+- `heuristics/search.md`: `search-scope`, `search-zero`
+- `heuristics/settings.md`: `set-shape`
+- `heuristics/states.md`: `state-error`, `state-retry`, `state-permission`, `state-empty`, `state-loading`
+- `heuristics/touch.md`: `touch-destructive`
+- `heuristics/typography.md`: `type-scaling`, `type-strings`

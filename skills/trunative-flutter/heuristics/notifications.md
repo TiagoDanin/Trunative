@@ -6,6 +6,8 @@ So the default answer to sending one is no, and the cost of getting it wrong is 
 
 The permission prompt itself is `perm-notify-ask`. This file is about what the app sends once it has one.
 
+Rules in this file, in order: `notify-earns-it`, `notify-channels`, `notify-level`, `notify-quiet`, `notify-lockscreen`, `notify-destination`, `notify-actions`, `notify-shade`, `notify-ongoing`, `notify-badge`, `notify-inapp`.
+
 ## `notify-earns-it` Every send site names the event, and the event is the user's
 
 Tolerance here is a single account that cannot be topped up. When it runs out people do not silence the noisy kind, they silence the app, and the transactional notification they actually wanted goes with it.
@@ -119,3 +121,14 @@ Review answers each of these against the code, pointing at the line:
 - Every notification the app sends has an in-app equivalent that works with notifications denied, and a foreground arrival lands in the content instead of presenting as a banner. `notify-inapp`
 
 `notify-destination`, `notify-lockscreen`, `notify-shade` and `notify-ongoing` are answered on a device with the app force stopped and the screen locked, not by reading the payload builder.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/navigation.md`: `nav-deeplink`
+- `heuristics/permissions.md`: `perm-notify-ask`
+- `heuristics/settings.md`: `set-system-owned`
+- `heuristics/splashscreen.md`: `splash-entry`
+- `heuristics/touch.md`: `touch-destructive`
+- `heuristics/typography.md`: `type-strings`

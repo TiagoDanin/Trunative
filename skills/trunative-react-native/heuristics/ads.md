@@ -6,6 +6,8 @@ A phone hands an ad the whole screen and hands the user one thumb. There is no w
 
 An app that carries no ad SDK skips this file. An app that carries one reads all of it, because a single ad unit brings the whole policy surface with it. It starts with the store data declaration: the dependency collects on its own account, so the diff that adds it is the diff that leaves the filing stale, which is `priv-declared`.
 
+Rules in this file, in order: `ads-labelled`, `ads-close`, `ads-placement`, `ads-frequency`, `ads-reserve`, `ads-adjacency`, `ads-rewarded`, `ads-consent`, `ads-report`, `ads-a11y`, `ads-entitlement`, `ads-cost`, `ads-children`.
+
 ## `ads-labelled` An ad says it is an ad, and never wears the app's clothes
 
 Both stores require this. Apple's display advertising rule says an ad that interrupts or blocks must clearly indicate that it is an ad and must not manipulate or trick users into tapping it. Play's ads policy bans ads that simulate or impersonate the interface of any app feature, notifications included, and requires that it be clear which app is serving each ad.
@@ -138,3 +140,22 @@ Review answers each of these against the code, pointing at the line:
 - Where the app is submitted to the Kids Category or declares a child target audience, the ad configuration is per store and written into `STACK.md`. `ads-children`
 
 Four of these are only half answerable from a diff, because the SDK draws what the file cannot show. On a device, run every ad format the app can serve and watch which frame the close control appears in (`ads-close`), open the targeting and report affordances and confirm they stayed inside the app at the largest text size on the smallest supported screen (`ads-report`), drive one interstitial and one banner with the screen reader on (`ads-a11y`), and measure the distance from the rendered ad container to its nearest control (`ads-adjacency`). A call site is where the rest of the file is checked; these four are settled on the running screen.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-focus`, `a11y-name`, `a11y-test`
+- `heuristics/feedback.md`: `fb-unprompted`
+- `heuristics/icons-and-imagery.md`: `icon-reserve`
+- `heuristics/layout.md`: `layout-chrome`, `layout-fold`
+- `heuristics/navigation.md`: `nav-modal`, `nav-back`
+- `heuristics/payments.md`: `pay-restore`
+- `heuristics/permissions.md`: `perm-tracking`
+- `heuristics/privacy-ui.md`: `priv-declared`
+- `heuristics/settings.md`: `set-diagnostics`
+- `heuristics/splashscreen.md`: `splash-hold`
+- `heuristics/states.md`: `state-interrupt`
+- `heuristics/touch.md`: `touch-floor`, `touch-spacing`, `touch-reach`
+- `platform/network.md`: `net-metered`
+- `platform/performance.md`: `perf-cold-start`, `perf-memory`, `perf-size`

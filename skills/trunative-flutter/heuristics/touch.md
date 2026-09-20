@@ -6,7 +6,9 @@ It is blunt: the contact patch is an oval of 16 to 20mm for a fingertip and more
 
 Add the fourth condition that belongs to the device rather than the hand: the grip changes constantly, often within a single task, so nothing can assume the phone is being held the way it was a moment ago.
 
-## `touch-floor` The target is the hit area, never the drawing
+Rules in this file, in order: `touch-floor`, `touch-spacing`, `touch-reach`, `touch-destructive`, `touch-feedback`, `touch-gestures`, `touch-keyboard`.
+
+## `touch-floor` The target is the hit area, never the drawing [P1]
 
 44pt on iOS, 48dp on Android, for everything a user can activate. Both land under a centimetre of glass, which is already smaller than the finger arriving at it. That is why they are floors and not goals.
 
@@ -48,7 +50,7 @@ Delete, unsubscribe, cancel the order and send the payment do not belong in the 
 
 Prefer undo over a confirmation dialog. Undo is faster for the person who meant it, recoverable for the person who did not, and it does not train users to dismiss dialogs without reading them. When a dialog is the right vehicle instead is `fb-confirm-test`.
 
-## `touch-feedback` If it happened under the finger, it did not happen
+## `touch-feedback` If it happened under the finger, it did not happen [P1]
 
 Every touch gets an acknowledgement inside about 100ms, before the work behind it finishes. Latency between contact and response is the loudest quality signal a phone app has.
 
@@ -64,9 +66,9 @@ The touch state set is its own thing: rest, pressed, long press where the elemen
 
 A gesture that starts at a screen edge is competing with the OS and will lose. On iOS that is back from the left edge, the shade from the top left, the control panel from the top right, and home from the bottom. On Android it is back from either side, home from the bottom, and the shade from the top. Where a drag genuinely has to begin at an edge, claim the strip explicitly through the system's gesture exclusion mechanism and keep it as small as possible.
 
-- Back works on every screen, sheets included. On Android that means the modern callback rather than an override of the old back method, keeping the predictive animation the system draws while the finger is still down and interpolating any custom transition from its progress. Consuming back without leaving a way out is the most common navigation defect in generated code.
+- The back gesture is the system's, and what this rule owns of it is the gesture: on Android the modern callback rather than an override of the old back method, keeping the predictive animation the system draws while the finger is still down and interpolating any custom transition from its progress. Where back lands, and a handler that consumes it and leaves no way out, is `nav-back`, and it is scored there and not twice.
 - Use the standard gesture for the standard meaning. Repurposing pull to refresh, long press or edge swipe costs the user the muscle memory built by every other app on the device.
-- Every gesture needs a visible equivalent. A swipe-only action does not exist for a new user, for a screen reader, or for anyone with a motor impairment.
+- Every gesture needs a visible equivalent, because a swipe-only action does not exist for someone who has never been shown it. That is the sighted half. The route for a reader, a switch or a keyboard is a named action, and `a11y-gesture` owns it.
 - A gesture nobody discovers is a feature nobody has. Leave a partial reveal at rest, a grabber, or a one-time hint.
 - Give a swipe region real height, and keep two swipeable things from overlapping where their gestures begin.
 
@@ -89,7 +91,17 @@ Review answers each of these against the code, pointing at the line:
 - Primary action and primary navigation sit in the bottom third, and the layout was checked mirrored for a left thumb. `touch-reach`
 - Destructive actions sit outside the easy region, and the vehicle carrying the confirmation is the one `fb-confirm-test` selects. `touch-destructive`
 - Pressed state is visible under a covering finger, feedback lands within about 100ms outside the occluded area, and nothing depends on hover. `touch-feedback`
-- Back works on every screen including sheets, no custom gesture starts in a system edge zone, and every gesture has a visible alternative. `touch-gestures`
+- No custom gesture starts in a system edge zone without an explicit exclusion, the system's back gesture keeps its own predictive animation, standard gestures keep their standard meaning, and every gesture has a visible equivalent on screen. `touch-gestures`
 - With the keyboard open, the focused field is visible and the primary action is reachable. `touch-keyboard`
 
 Hit areas are measured, not estimated: read the bounds in the inspector or the layout tree. A target that looks big enough next to a 24dp icon is exactly the one that is not.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-gesture`
+- `heuristics/feedback.md`: `fb-confirm-test`
+- `heuristics/forms.md`: `form-input`
+- `heuristics/layout.md`: `layout-insets`
+- `heuristics/navigation.md`: `nav-back`

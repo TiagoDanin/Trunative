@@ -4,6 +4,8 @@ Taking money on a phone is the one design problem where a wrong decision is not 
 
 Everything after that is a form on a small screen, held by someone who is about to hand over money and is looking for a reason not to.
 
+Rules in this file, in order: `pay-rail`, `pay-steering`, `pay-wallet-first`, `pay-sheet`, `pay-total`, `pay-price-source`, `pay-subscription-terms`, `pay-cancel`, `pay-restore`, `pay-card`, `pay-handoff`, `pay-outcome`, `pay-honest-paywall`.
+
 ## `pay-rail` What is being sold decides the rail, and it is not a preference
 
 Answer this before drawing anything, because it determines the whole screen.
@@ -36,7 +38,7 @@ The confirmation sheet exists to stop accidental purchases, and the platform is 
 
 The app's job is what comes before the sheet and what happens after it. The sheet itself is not styled, not wrapped, not preceded by a lookalike, and not dismissed programmatically.
 
-## `pay-total` The total is visible before the commitment, not after it
+## `pay-total` The total is visible before the commitment, not after it [P1]
 
 State the full amount to be billed for anything on offer, of any type. On a phone the surprise arrives late, because the screen is short and the fee lands at the bottom.
 
@@ -98,7 +100,7 @@ Strong authentication, a bank app, a wallet redirect or a browser step takes the
 - The return arrives as a link and is routed under `nav-deeplink`, landing on the outcome rather than on the home screen.
 - Design for the user who never comes back. The payment may have succeeded anyway, so the app reconciles on next launch rather than assuming failure.
 
-## `pay-outcome` Pending is a real answer, and a retry must not charge twice
+## `pay-outcome` Pending is a real answer, and a retry must not charge twice [P0]
 
 A payment has four outcomes, not two: succeeded, failed, still pending, and reversed later by a refund or a chargeback. Each gets a state under `state-set`.
 
@@ -106,7 +108,7 @@ A payment has four outcomes, not two: succeeded, failed, still pending, and reve
 - Every attempt carries an idempotency key so a retry, a double tap or a reconnect cannot bill twice. This is the payment case of `net-dedupe`, and here the cost of getting it wrong is money.
 - A receipt is reachable after the fact, from inside the app, without searching an inbox.
 
-## `pay-honest-paywall` The paywall is where scam patterns get apps removed
+## `pay-honest-paywall` The paywall is where scam patterns get apps removed [P1]
 
 Tricking someone into a subscription is grounds for removal from the store, and the patterns are well known enough to be worth naming.
 
@@ -136,3 +138,21 @@ Review answers each of these against the code, pointing at the line:
 - The paywall has a visible close control meeting the touch floor, legible terms, no pre-selected plan the user did not choose, and no countdown that resets. `pay-honest-paywall`
 
 `pay-rail` and `pay-steering` are answered against the store policy that applies to the item and the storefront, not against taste. When the two rails disagree with a product decision, the policy wins and the product decision changes.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/ads.md`: `ads-children`
+- `heuristics/auth.md`: `auth-delete`
+- `heuristics/data-display.md`: `data-precision`
+- `heuristics/forms.md`: `form-autofill`, `form-input`, `form-persist`
+- `heuristics/layout.md`: `layout-column`
+- `heuristics/localization.md`: `l10n-format`
+- `heuristics/navigation.md`: `nav-deeplink`
+- `heuristics/onboarding.md`: `onboard-look-first`
+- `heuristics/settings.md`: `set-system-owned`, `set-account-exit`
+- `heuristics/states.md`: `state-loading`, `state-error`, `state-interrupt`, `state-set`
+- `heuristics/touch.md`: `touch-floor`
+- `heuristics/typography.md`: `type-strings`
+- `platform/network.md`: `net-timeout`, `net-dedupe`

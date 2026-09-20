@@ -6,6 +6,8 @@ Generated screens fail this in a recognisable way: motion appears everywhere exc
 
 Press feedback timing is `touch-feedback`. Loading and skeleton behaviour is `state-loading`. The predictive back gesture is `touch-gestures`. Token values and per-stack API names are in `references/motion-tokens.md`.
 
+Rules in this file, in order: `motion-job`, `motion-answered`, `motion-platform`, `motion-model`, `motion-duration`, `motion-choreo`, `motion-loop`, `motion-autoplay`, `motion-blocks`, `motion-cheap`, `motion-reduced`.
+
 ## `motion-job` Every animation answers a question, and there are three questions
 
 Continuity: this came from that, or it went there. Latency: work is happening and here is the shape of it. Acknowledgement: your touch landed. Point at an animation and name which of the three it serves. If the answer is that the screen felt static, delete it.
@@ -13,6 +15,18 @@ Continuity: this came from that, or it went there. Latency: work is happening an
 The frequent interactions are already animated, and the two platforms want different things done about it. On iOS, do not add motion to a switch, a row selection or a tab change: the system tuned those and a hand-written replacement trades something tuned for something invented. On Android those same components move from the theme's motion scheme, so a build that wants them calmer or livelier changes the scheme rather than animating the component where it is used.
 
 The count is per screen, and at rest means no work outstanding, no gesture in progress and no media playing. In that condition nothing moves, with one exception: an indicator saying work is still happening, which is `state-loading`.
+
+## `motion-answered` The three questions are obligations, not only permissions
+
+`motion-job` reads as a gate: point at an animation and name which of the three it serves. Read only that way it leaves the opposite case unexamined, and the screen that satisfies every rule in this file with nothing to point at is the one where a change happened and none of the three was answered. A row is there and then it is not. A value is one number and then another. A panel is shut and then open. Nothing moved, so nothing broke a rule, and the reader is left to work out from the after what the before became.
+
+The obligation runs the same three ways the permission does:
+
+- **Continuity** is owed by a change of place. What opens from a point, expands into a screen, or leaves toward somewhere, does it from where that thing actually is. One surface replaced outright by another has had the relationship between them deleted, and the reader rebuilds it from memory every time.
+- **Acknowledgement** is owed by a touch that commits something, and the floor for it is `touch-feedback`.
+- **Latency** is owed by anything the user waits on, and its shape is `state-loading`.
+
+This is not licence to animate. At rest nothing moves, which `motion-job` settles, and an animation serving none of the three is still deleted. What changes is that a change arriving with nothing answered is a finding rather than a screen that happened to be quiet.
 
 ## `motion-platform` The transition between screens is not yours to write
 
@@ -40,7 +54,7 @@ Press feedback has its own deadline, which is `touch-feedback`. What this rule o
 
 Duration rises with the area covered: a chip changing tint and a full screen cover arriving do not share a number. In Material terms the short tokens (50 to 200ms) carry small in-place changes and the medium tokens (250 to 400ms) carry a transition, with a full screen change at the top of that band and nothing above it. The long and extra-long tokens start at 450ms, so they belong only to motion no interaction is waiting on.
 
-## `motion-choreo` One thing leads
+## `motion-choreo` One thing leads [P3]
 
 When several elements move at once, the eye needs one anchor. Give the change a single subject, either an element that persists across the transition (`SharedTransitionLayout` on Compose, `.navigationTransition(.zoom(sourceID:in:))` on iOS 18, `Hero` on Flutter) or one region that moves while the rest holds still. Four independent animations at four different durations is not choreography, it is four animations.
 
@@ -82,7 +96,7 @@ The test is who owns the animation, not which property moves. The framework's ow
 
 Blur, shadow and shader work stay bounded to a region, and the count of things animating at once is small enough to name.
 
-## `motion-reduced` The reduced build still communicates, it just does not move
+## `motion-reduced` The reduced build still communicates, it just does not move [P1]
 
 Reduce Motion on iOS and Remove animations on Android are settings real people turn on because motion makes them ill. Neither is answered by setting duration to zero and calling it done, and the two ask for different things, which is why one implementation cannot serve both.
 
@@ -100,6 +114,7 @@ Motion is also never the only carrier of a change. Anything that says its piece 
 Review answers each of these against the code, pointing at the line:
 
 - Every animation on the screen serves continuity, latency or acknowledgement; and separately, with no work outstanding, no gesture in progress and no media playing, the only thing still moving is a latency indicator. `motion-job`
+- Every change of place, every commit and every wait leaves its own question answered, and no surface is swapped for another without the two being connected. `motion-answered`
 - No custom transition replaces a platform push, sheet, cover or dismissal without a written reason. `motion-platform`
 - iOS motion is expressed as springs reached from one named set, Android motion through the scheme or the tokens, and no duration, curve or stiffness is a literal at a call site. `motion-model`
 - Routine transitions finish under 300ms, nothing an interaction waits on exceeds 400ms, and larger movements take longer than smaller ones. `motion-duration`
@@ -111,3 +126,15 @@ Review answers each of these against the code, pointing at the line:
 - The reduced-motion flag is read on every platform the app ships to, iOS substitutes rather than deletes, and the Android screen still reads with nothing animating. `motion-reduced`
 
 Three of these are not answered from the file. `motion-reduced` is answered on a device with the setting turned on, because a reduced-motion path that was written and never wired to the flag reads exactly like one that works. `motion-cheap` is answered half in the source, where the native driver and the animated properties are visible, and half in the frame profiler, which is the only place a dropped frame exists. `motion-blocks` is answered by tapping through a transition and pressing back during one.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-media`
+- `heuristics/colors.md`: `color-roles`
+- `heuristics/layout.md`: `layout-fold`
+- `heuristics/navigation.md`: `nav-container`
+- `heuristics/states.md`: `state-loading`, `state-offline`
+- `heuristics/touch.md`: `touch-feedback`, `touch-gestures`
+- `platform/performance.md`: `perf-frame`

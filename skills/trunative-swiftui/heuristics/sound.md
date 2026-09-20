@@ -4,6 +4,8 @@ Sound the app makes on its own: a tap tone, a success chime, an error beep, a lo
 
 The player and the audio somebody pressed play on are `media-system-player` and `media-unasked-sound`. The sound attached to a notification is fixed on its channel, which is `notify-channels` and `notify-level`. Haptics are `touch-feedback` and `sense-haptic`. What is left, the noise the interface makes by itself, is this file, and for most apps the right size of it is zero.
 
+Rules in this file, in order: `sound-inventory`, `sound-silenced`, `sound-mixes`, `sound-system-sound`, `sound-never-alone`, `sound-unasked`, `sound-off-switch`.
+
 ## `sound-inventory` A short list with fixed meanings, and an empty list is a legitimate answer
 
 Write the set down in `STACK.md` before any of it is coded: the event, what the sound means, and what the screen shows at the same moment. Every play site in the code maps to one entry, and nothing plays that is not in it.
@@ -93,3 +95,18 @@ Review answers each of these against the code, pointing at the line:
 - Sound the system cannot already silence has exactly one in-app switch, wired into every play site and persisted, and nothing duplicates a control the system already offers. `sound-off-switch`
 
 Two of those halves are not answerable from a diff. Whether other apps' audio comes back at the level it was at, and whether the muted screen still carries every signal, are settled on a device with music playing and the volume down; what the code can show is the half stated before each of them, that no play site claims a session or focus and that every play site has a visible state change beside it.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-media`
+- `heuristics/colors.md`: `color-not-alone`
+- `heuristics/feedback.md`: `fb-silent-success`, `fb-reach`
+- `heuristics/media.md`: `media-system-player`, `media-unasked-sound`, `media-focus`
+- `heuristics/motion.md`: `motion-autoplay`
+- `heuristics/notifications.md`: `notify-channels`, `notify-level`
+- `heuristics/sense.md`: `sense-haptic`
+- `heuristics/settings.md`: `set-system-owned`, `set-wired`, `set-default-first`
+- `heuristics/touch.md`: `touch-feedback`
+- `platform/performance.md`: `perf-size`

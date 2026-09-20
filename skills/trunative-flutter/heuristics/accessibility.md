@@ -6,7 +6,9 @@ A phone sharpens every part of it. There is no width for labels, so controls bec
 
 Four neighbours carry pieces of this and are not repeated here: `color-not-alone`, `touch-floor`, `touch-spacing` and `type-scaling`. `list-a11y` is a fifth of a different kind: it is these rules applied to a list row, so the two are read together.
 
-## `a11y-name` Every control carries a name, a role and a value
+Rules in this file, in order: `a11y-name`, `a11y-hidden`, `a11y-order`, `a11y-collection`, `a11y-announce`, `a11y-focus`, `a11y-gesture`, `a11y-alt-input`, `a11y-settings`, `a11y-media`, `a11y-test`.
+
+## `a11y-name` Every control carries a name, a role and a value [P1, pass or fail]
 
 Three separate things, and the last two are the ones that go missing.
 
@@ -61,7 +63,7 @@ Almost nothing on a phone is a page load. A filter narrows the list in place, a 
 - The way out has to be reachable from inside the surface, which is `nav-modal` stated for a user who cannot perform the dismissing gesture.
 - Focus never moves unless the user asked it to. Taking it on load talks over the screen title, and taking it on every state change makes the screen impossible to read. Two moves are asked for and stay: onto the single field a screen exists for, such as search or a code (`form-input`), and onto the first failing field after a submit (`form-error`).
 
-## `a11y-gesture` A gesture is never the only route
+## `a11y-gesture` A gesture is never the only route [P1]
 
 A swipe, a long press, a drag to reorder, a pinch, anything with two fingers: none of these can be performed by someone using a reader, a switch, or a keyboard. Each one needs a named route to the same result, and where that route comes from depends on what drew the gesture.
 
@@ -122,3 +124,19 @@ Review answers each of these against the code, pointing at the line:
 - The scanner was run on the changed screens and one full flow was completed with the screen reader on. `a11y-test`
 
 The last line is not answerable from a diff. `a11y-order`, `a11y-collection`, `a11y-announce` and `a11y-focus` are only half answerable from one: the tree they describe exists at runtime, so a file can show the intent and only a running screen shows the result.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/buttons.md`: `button-label`
+- `heuristics/colors.md`: `color-not-alone`, `color-roles`, `color-gradient`
+- `heuristics/forms.md`: `form-error`, `form-input`
+- `heuristics/lists.md`: `list-a11y`, `list-virtualise`, `list-swipe`, `list-refresh`, `list-row`
+- `heuristics/localization.md`: `l10n-strings`
+- `heuristics/motion.md`: `motion-autoplay`
+- `heuristics/navigation.md`: `nav-modal`
+- `heuristics/sound.md`: `sound-unasked`
+- `heuristics/states.md`: `state-loading`
+- `heuristics/touch.md`: `touch-floor`, `touch-spacing`, `touch-feedback`
+- `heuristics/typography.md`: `type-scaling`, `type-weight`

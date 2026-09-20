@@ -6,6 +6,8 @@ This file covers two things: what a stranger standing there can see, and what le
 
 Two of the platform capabilities below are weaker than they are usually assumed to be, and one does not exist at all on iOS. Design so the screen is safe without them, then add them.
 
+Rules in this file, in order: `priv-shoulder`, `priv-reveal`, `priv-switcher`, `priv-capture-block`, `priv-capture-detect`, `priv-gate`, `priv-instrument`, `priv-delete-data`, `priv-declared`.
+
 ## `priv-shoulder` Show the shortest form of a value that still does the job
 
 Take the inventory per screen: amounts and balances, one-time codes, card and account numbers, tokens and recovery phrases, health figures, home and precise addresses, legal or immigration status, and message bodies shown in a preview.
@@ -110,3 +112,20 @@ Review answers each of these against the code, pointing at the line:
 - `STACK.md` records what both stores were told, that record matches the dependency list and the requests in the diff, and the in-app disclosure and the policy route both exist. `priv-declared`
 
 Check the first three on a running build rather than in the source: the cover, the mask on every route onto the screen, and the reveal reverting are all things a screen can be written to do and still fail to do. Two more do not come out of the app at all. Open the data safety form in the Play console and the privacy details in App Store Connect and read both against what `STACK.md` records, and confirm on the server, not in the app, that a delete took the row away rather than flagging it.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-name`
+- `heuristics/auth.md`: `auth-reauth`, `auth-biometric-session`, `auth-delete`
+- `heuristics/feedback.md`: `fb-undo`
+- `heuristics/forms.md`: `form-autofill`
+- `heuristics/navigation.md`: `nav-restore`
+- `heuristics/notifications.md`: `notify-lockscreen`
+- `heuristics/offline.md`: `off-cache-policy`
+- `heuristics/permissions.md`: `perm-tracking`, `perm-rationale`
+- `heuristics/sense.md`: `sense-biometric`
+- `heuristics/settings.md`: `set-default-first`, `set-destructive`, `set-account-exit`
+- `heuristics/sharing.md`: `share-copy`
+- `heuristics/touch.md`: `touch-floor`

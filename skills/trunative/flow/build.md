@@ -8,7 +8,7 @@ Before anything else, write one line saying whether this task establishes or cha
 
 That line is written, not recalled. Unwritten, the answer is always the same one, because code is what this step is for and the pull is toward starting it.
 
-**When the screen has a brief**, at `.trunative/screens/<name>.md`, read it and build what it says. The job, the hierarchy, the one primary action, the six states and the scope were settled and approved in `flow/spec.md`, and rederiving them here is the context this step exists to save. Where the brief and the request disagree, the brief is stale: go back to `flow/spec.md` and change it rather than building against a file that now lies.
+**When the screen has a brief**, at `.trunative/screens/<name>.md`, read it and build what it says. The person's goal and the moment they are in, the hierarchy, the primary action, the six states and the scope were settled in `flow/spec.md`, and the composition was chosen between alternatives in `flow/explore.md`. Rederiving them here is the context this step exists to save. Build the composition that won, as it was drawn: the pull while writing code is back toward the stock arrangement the framework's widgets suggest, and a screen that quietly reverts to a bar over equal cards has thrown the choice away, which review reports as drift and scores under `comp-context`. Where the brief and the request disagree, the brief is stale: go back to `flow/spec.md` and change it rather than building against a file that now lies.
 
 **When it has none**, and the line above says the task touches none of the four, state in one or two lines before writing code:
 
@@ -50,7 +50,19 @@ Those five lines are provisional and say so. They go to the user to confirm into
 - Apply the heuristics as you write, not as a pass afterwards.
 - Where a heuristic cannot be met, leave the code correct and record the conflict for review. Do not silently drop the rule.
 
-## 4. Hand off
+## 4. Look at it
+
+The screen has been written, not seen. Everything above this line is source: the token reached for, the rule applied as the line went down, the conflict recorded. None of that is the screen, and the defects that survive a correct diff are the ones that only exist once something is drawn: a region that depicts nothing, a hierarchy that reads flat at arm's length, a control that sinks into the surface behind it, an identity that is named in `DESIGN.md` and absent from the render.
+
+So render it and look at it yourself, before anyone else does, the way `flow/spec.md` already looks at its own wireframe. How this project renders a screen is what `STACK.md` is for.
+
+Open the capture however this harness shows an image, and read it as a picture rather than as a file that was produced.
+
+Then say where the reference behind the identity is visible on the screen. One named thing a stranger could point at is enough. A reference that cannot be found anywhere in the render was a caption rather than a derivation, which is the failure `color-derived` names one level down, arriving here instead.
+
+This pass is cheap and it is not the review. It catches what the author can still fix in the same turn, which is the half of `flow/review.md` that would otherwise come back as a violation and spend a second pass on it. When the screen cannot be rendered here at all, say so in the hand-off instead of reporting it as looked at: a screen nobody has seen reaches review as a screen nobody has seen, and review is told that rather than left to discover it.
+
+## 5. Hand off
 
 Say which heuristics files you applied and which you deliberately skipped, with the reason, and name the triggers that opened the extra ones. When this screen had to settle an identity because `DESIGN.md` did not, the five lines go in the hand-off, marked provisional. Name the brief you built against, or say the change was not structural and had none. Then run `flow/review.md`. Build is never the last step.
 

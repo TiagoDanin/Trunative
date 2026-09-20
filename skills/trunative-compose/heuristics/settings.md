@@ -6,6 +6,8 @@ On a phone that costs more than it costs anywhere else. Opening settings suspend
 
 Two neighbours own things that look like they belong here. Text size, bold text, contrast, reduced motion, language and region are system settings the app reads, under `a11y-settings` and `l10n-per-app`, and a second copy inside the app is the defect `set-system-owned` names. How a row is worded is `copy.md`.
 
+Rules in this file, in order: `set-default-first`, `set-in-context`, `set-system-owned`, `set-shape`, `set-status`, `set-controls`, `set-effect`, `set-wired`, `set-sync`, `set-destructive`, `set-search`, `set-account-exit`, `set-diagnostics`.
+
 ## `set-default-first` A setting is a default nobody was willing to pick
 
 For every row, write down the value most people would keep, and why, in `STACK.md` beside the sync marking `set-sync` already asks for there, so one table holds the key, its default, the reason, and device-local against account-level. The row survives only if two reasonable people would keep different values and nothing the app can observe says which of them is in front of it.
@@ -45,6 +47,10 @@ One of these is not optional. An app that asked for the notification permission 
 - An Advanced section hides at least three rows or it does not exist, and its single line of subtext names what is inside it. A collapsed section with no preview is a locked drawer.
 - A feature screen whose whole feature can be turned off carries one main switch, at the top, above everything it governs. The rows under it stay visible and disabled rather than vanishing and reflowing the screen under a thumb already on its way down, and a disabled row says what turns it back on.
 - Repeating one setting in two places is allowed when two different situations send people looking in two different places. It is one setting on one subscreen with two entry points, never two controls writing the same value, and where what is repeated is a whole feature, that one control is its main switch.
+
+**Default.** Ten rows to a screen, the rest one level down.
+**Exception.** A list of instances and not of decisions: one row per account, per device, per notification kind, per blocked contact. The count is the person's own data, the rows are all the same shape, and splitting them across subscreens hides the one being looked for. Past a screenful it takes a filter, which is `search-surface`.
+**Reason required.** That the rows are instances of one thing, and what they are instances of.
 
 ## `set-status` Every row shows its current value without being opened
 
@@ -127,3 +133,20 @@ Review answers each of these against the code, pointing at the line:
 - Version and build are on an About subscreen, and the support route carries version, device and locale without the user typing them. `set-diagnostics`
 
 Three of these are not in the diff. Kill the process from outside the app, with Don't keep activities or `adb shell am kill`, then reopen the screen to find out which of `set-wired`'s values were really stored. The frequency judgements in `set-in-context` and `set-shape` are answered by which controls the app's own screens change often, which is a question for the product rather than for the settings file.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-settings`
+- `heuristics/auth.md`: `auth-biometric-session`, `auth-signout`, `auth-active-account`, `auth-delete`
+- `heuristics/feedback.md`: `fb-place`
+- `heuristics/forms.md`: `form-submit`
+- `heuristics/lists.md`: `list-sections`, `list-row`
+- `heuristics/localization.md`: `l10n-per-app`
+- `heuristics/notifications.md`: `notify-channels`
+- `heuristics/offline.md`: `off-conflict`
+- `heuristics/search.md`: `search-surface`
+- `heuristics/splashscreen.md`: `splash-appearance`
+- `heuristics/states.md`: `state-permission`, `state-loading`
+- `heuristics/touch.md`: `touch-destructive`

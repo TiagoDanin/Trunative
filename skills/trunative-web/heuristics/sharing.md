@@ -4,6 +4,8 @@ Sharing is how the app leaves the phone. Something inside it becomes a message, 
 
 Two things make it a phone problem rather than a general one. The share surface is not yours: the system sheet is drawn by the OS, ranked by the OS, and populated from apps you cannot enumerate. And the app is suspended the moment it opens, so whatever gets handed over has to be finished, small, and correct before the sheet appears. Coming back in, a share arrives on a device already showing something else, on top of work the user was in the middle of.
 
+Rules in this file, in order: `share-sheet-only`, `share-payload`, `share-link-not-shot`, `share-preview`, `share-ready`, `share-file-uri`, `share-outcome`, `share-payload-clean`, `share-accepts`, `share-arrives`, `share-targets`, `share-copy`, `share-paste`, `share-invite`.
+
 ## `share-sheet-only` The system sheet is the share UI
 
 A drawn row of service logos is the pattern to delete. Both platforms land in the same place from opposite sides: no app-drawn list of share targets and no variation on the sheet, because the Share control is expected to open the system activity view and anything else in its place only confuses. The sheet is the only surface that knows which apps are installed on this phone, which conversations are recent, and which system destinations exist at all. Six hardcoded logos are a guess about a stranger's device, and they rot every time one of those apps changes a URL scheme.
@@ -100,3 +102,19 @@ Review answers each of these against the code, pointing at the line:
 - Copy feedback follows the platform: no app toast where the system already confirms, and sensitive copies are flagged. `share-copy`
 - The clipboard is read only from a user action, never at launch. `share-paste`
 - Invites and referrals are reachable without an account, and their link opens the thing it named. `share-invite`
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/copy.md`: `copy-budget`
+- `heuristics/feedback.md`: `fb-silent-success`, `fb-ladder`
+- `heuristics/forms.md`: `form-persist`
+- `heuristics/icons-and-imagery.md`: `icon-one-set`
+- `heuristics/navigation.md`: `nav-deeplink`, `nav-restore`
+- `heuristics/onboarding.md`: `onboard-look-first`
+- `heuristics/privacy-ui.md`: `priv-instrument`, `priv-declared`
+- `heuristics/states.md`: `state-error`, `state-interrupt`
+- `heuristics/touch.md`: `touch-floor`
+- `platform/network.md`: `net-upload`
+- `platform/performance.md`: `perf-main-thread`, `perf-measure`

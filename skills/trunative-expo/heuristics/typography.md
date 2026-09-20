@@ -4,7 +4,9 @@ Type on a phone gets read close up, in a hand that moves, in light nobody chose,
 
 `DESIGN.md` holds the families and the ramp. This file is how they land in code, and what has to hold before the screen ships. Per-role sizes, weights and line heights sit in `references/type-scales.md`, to be opened for one lookup rather than read through.
 
-## `type-scale` The ramp already exists on both platforms
+Rules in this file, in order: `type-scale`, `type-roles`, `type-hierarchy`, `type-weight`, `type-face`, `type-measure`, `type-scaling`, `type-strings`, `type-dark`.
+
+## `type-scale` The ramp already exists on both platforms [P1, pass or fail]
 
 Each platform publishes a complete role scale that is optically tuned, wired to the size setting, and understood by the screen reader. Pick the role that matches the job and adjust from there. Inventing a parallel ramp discards those three properties and returns nothing.
 
@@ -21,6 +23,17 @@ A row that shows up on two screens carries the same style in both, or the produc
 
 Line height is a property of the role, not of the paragraph: near 1.2 where the type is display sized, 1.4 to 1.5 for body. The ratio has to widen as the type gets smaller, which is why one global multiplier comes out wrong at both ends.
 
+## `type-hierarchy` Four roles a reader cannot tell apart is one role
+
+`type-roles` asks for about four roles and `type-weight` takes weight out of the running for most of them, which leaves size carrying the structure. Neither says how far apart those sizes have to be, and the screen that exposes the gap passes both: a title two points above a section head, a section head one above body, a caption below it. Four roles, five sizes, nothing hardcoded, every rule in this file satisfied, and a reader at arm's length sees one grey block.
+
+The published ramps are far apart on purpose: a display or large-title role runs near twice body, not a step above it. A screen drawing only from the middle of the ramp has chosen the stretch where the roles stop being distinguishable, and it reads as a wireframe that was never promoted.
+
+- The test is the glance, before a word is read. The subject of the screen and the start of its content separate, or they do not. Look at it from across the room or out of focus: what survives is the hierarchy, and when nothing survives there was none.
+- The gap is optical rather than numeric. The same two steps that separate under one face collapse under another, and they collapse again in the other appearance, which is what `type-dark` is about.
+- Spending the range is not using more of it. `type-roles` still caps the count; this is about the distance between the few, never about adding a sixth.
+- A ramp that has to stay compressed, for density, for a table, for something worked in all day, says what carries the hierarchy instead: weight, space, a rule line, or colour (`color-assigned`). Unwritten, the compression was not a decision.
+
 ## `type-weight` Weight is structure, and the user has a say in it
 
 Both systems let someone ask for heavier text: Bold Text on iOS, `fontWeightAdjustment` from API 31 on Android. Styles that come from the theme respond by themselves. A weight typed into a component (`weight: .semibold`, `FontWeight.Bold`) does not, so the preference gets dropped in silence and nothing in the build says a word about it.
@@ -36,6 +49,8 @@ Two constraints on the ramp itself. Nothing below 400: fine strokes fragment at 
 Weight is relative, which means it gets judged across the whole screen and never element by element. It reads as emphasis only while most of the screen is not carrying it. A screen where the title, every row label and every price all sit at 600 has no emphasis anywhere on it: nothing was promoted, the page just got heavier and harder to read, and the reader now has to find the important thing by reading instead of by looking. The regular cut is the ground the screen is written on, and the heavier cut is spent on the few things that have to win.
 
 This is countable. Take the distinct text elements on the screen and look at how the weights fall across them. Most of them at 400 with two or three above it is a distributed hierarchy. Most of them above 400 is a flat screen wearing a heavy coat, and the fix is to take weight away rather than to add more of it somewhere else.
+
+The distribution has a floor as well as a ceiling, and the floor is the one this rule is usually read without. Most of the screen at 400 with two or three things above it is the target; every single thing at 400 is not the restrained version of that, it is a screen where nothing was promoted. Something on the screen is what the reader came for, and on a screen with no heavy cut anywhere the reader finds it by reading rather than by looking, which is the cost this rule exists to avoid paying.
 
 Build the hierarchy from weight and space before size. The reader has a slider for size and none for the others: at 200% a 24pt title and 17pt body are both large, and the distance that structured the screen at 100% is doing much less of the work.
 
@@ -56,7 +71,7 @@ Body copy wants 40 to 60 characters per line, and the lower half of that band is
 
 The usual failure is a paragraph running edge to edge on a large phone held sideways. Cap the column instead.
 
-## `type-scaling` Render it at maximum before calling it done
+## `type-scaling` Render it at maximum before calling it done [P1]
 
 No other check in this file surfaces as many genuine defects. Turn the text size to the platform's largest accessibility step, walk every screen, and look for:
 
@@ -89,7 +104,8 @@ Review answers each of these against the code, pointing at the line:
 
 - Text styles trace back to the platform scale or to a written-down extension of it, no component carries a literal size, and Android text is in `sp`. `type-scale`
 - The screen works from about four named roles and carries no more than five distinct sizes, and a role that repeats across screens is identical every time. `type-roles`
-- Nothing below 400, no weight hardcoded outside a theme style, and every weight step jumps a grade. Weight is distributed across the screen, with most text on the regular cut and the heavy cut spent on a few elements. `type-weight`
+- The screen's subject and the start of its content separate at a glance rather than sitting a step apart, the ramp reaches its display end instead of staying in the middle, and a ramp kept compressed names what carries the hierarchy in its place. `type-hierarchy`
+- Nothing below 400, no weight hardcoded outside a theme style, and every weight step jumps a grade. Weight is distributed across the screen, with most text on the regular cut and the heavy cut spent on a few elements, and something on the screen does carry it. `type-weight`
 - The typeface choice can be stated as a reason, a brand face stays in the display roles, and any custom face scales. `type-face`
 - Body copy runs 40 to 60 characters per line. `type-measure`
 - The screen was rendered at the largest accessibility step, and nothing clips, overlaps or truncates into ambiguity. `type-scaling`
@@ -97,3 +113,9 @@ Review answers each of these against the code, pointing at the line:
 - Dark theme text was judged on a rendered screen. `type-dark`
 
 `type-scaling` and `type-dark` are answered with a rendered screen or they are not answered at all. Everything else gets a file and a line number.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/colors.md`: `color-assigned`

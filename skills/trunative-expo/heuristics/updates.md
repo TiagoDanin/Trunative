@@ -4,6 +4,8 @@ The update that matters here is the one the user did not install: it arrived in 
 
 This file covers what that person meets: a screen that will not let them in, an install that happens under them, and the first launch of a new binary over a store the old one wrote. The surface the app launches onto is `heuristics/splashscreen.md`, the screen a failed migration shows is `heuristics/states.md`, and the first run of a fresh install is `heuristics/onboarding.md`.
 
+Rules in this file, in order: `upd-block-test`, `upd-min-version`, `upd-gate-screen`, `upd-prompt-shape`, `upd-flexible-install`, `upd-restart-state`, `upd-migration-once`, `upd-migration-path`, `upd-migration-visible`, `upd-no-wipe`, `upd-carry-over`, `upd-whats-new`, `upd-store-channel`.
+
 ## `upd-block-test` A block is earned by what broke, not by a version number being behind
 
 Four conditions earn a wall: the client speaks a contract the server has stopped honouring, a security fix that has to be everywhere, a bug that damages data while the app runs, or a legal requirement the installed build cannot satisfy. The list is closed. Everything else offers and lets the person carry on, and a fifth reason is a named exception in `STACK.md` saying what it costs the people it locks out.
@@ -79,7 +81,7 @@ It does not belong on the launch path: `perf-cold-start` puts database open and 
 - Measure it against the largest store a real user has. The first launch after an update is the one moment the biggest store meets the newest code, and an empty simulator never reproduces it.
 - Failure is a designed screen with a move (`state-error`), never a launch that hangs and never an empty screen implying the data is gone.
 
-## `upd-no-wipe` A schema bump is not permission to delete what the user has
+## `upd-no-wipe` A schema bump is not permission to delete what the user has [P0, pass or fail]
 
 The destructive escape hatches are one line each and they read like configuration: the destructive migration fallbacks delete every row in the tables, and the widespread raw SQLite upgrade that drops the tables and recreates them does the same thing by hand.
 
@@ -127,3 +129,21 @@ Review answers each of these against the code, pointing at the line:
 - Queued entries and drafts written by the previous version are readable or drained, and every renamed key moves its value. `upd-carry-over`
 - Any what's new screen is single, skippable, shown once, and not in front of the first screen. `upd-whats-new`
 - Nothing in the app downloads or installs a new version itself, and any remote bundle that changes behaviour is held to the same restart, migration and blocking rules. `upd-store-channel`
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/buttons.md`: `button-label`
+- `heuristics/copy.md`: `copy-error`
+- `heuristics/feedback.md`: `fb-unprompted`
+- `heuristics/forms.md`: `form-persist`
+- `heuristics/localization.md`: `l10n-strings`
+- `heuristics/navigation.md`: `nav-restore`
+- `heuristics/offline.md`: `off-no-cache`, `off-queue`, `off-cache-policy`
+- `heuristics/onboarding.md`: `onboard-in-place`, `onboard-screens`
+- `heuristics/settings.md`: `set-diagnostics`
+- `heuristics/splashscreen.md`: `splash-hold`, `splash-first-frame`
+- `heuristics/states.md`: `state-permission`, `state-interrupt`, `state-loading`, `state-error`, `state-queued`
+- `platform/network.md`: `net-timeout`
+- `platform/performance.md`: `perf-cold-start`

@@ -4,6 +4,8 @@ Web content inside a native app: an in-app browser, a help page, a checkout, a p
 
 Here: which surface a URL opens in, what the wrapper has to carry, what back does, and how content nobody on the team can restyle behaves against the theme, the text size setting, the safe area and the keyboard. The sign-in flow itself is `auth-web-flow`. A link resolving back into the app is `nav-deeplink`. The load and failure states are `state-loading`, `state-error` and `state-retry`. What the page asks the device for is the `perm-` prefix. Every setting named below is an engine setting: in a Flutter, React Native or Expo codebase the wrapper exposes the same one under its own name, and that property is where the rule is scored.
 
+Rules in this file, in order: `webview-surface-choice`, `webview-signin`, `webview-chrome`, `webview-back`, `webview-leaving`, `webview-appearance`, `webview-text-size`, `webview-viewport`, `webview-transfers`, `webview-session`, `webview-wrapper`.
+
 ## `webview-surface-choice` Three surfaces, and the raw web view is the narrowest of them
 
 A phone shows one thing at a time. There is no second window and no tab strip, so a web surface takes the whole screen and the only browser chrome the user gets is whatever this app handed them. The three are the system browser, the platform in-app browser (`SFSafariViewController` on iOS, Custom Tabs on Android) and a raw web view drawn by the app (`WKWebView`, `android.webkit.WebView`).
@@ -112,3 +114,25 @@ Review answers each of these against the code, pointing at the line:
 - Every web surface the app ships is listed in `STACK.md` beside what it does natively, and each entry on that list is scored against `touch-floor`, `webview-back`, `webview-text-size` and `webview-viewport` on its own account rather than inherited from the native screens. `webview-wrapper`
 
 Three of these are only half answerable from a diff, because what the page does with what it was handed is not in the code. Drive one screen three ways on the narrowest supported device: with the system in dark appearance, to see whether the page followed or arrived white (`webview-appearance`); with the text size at maximum, to see whether the page grew with nothing clipped, truncated, overlapped or pushed off the screen (`webview-text-size`); and with a field inside the page focused, to see what the keyboard covers and whether either edge of the screen is padded twice or not at all (`webview-viewport`).
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-name`, `a11y-settings`
+- `heuristics/auth.md`: `auth-web-flow`, `auth-signout`
+- `heuristics/colors.md`: `color-dark-composed`
+- `heuristics/forms.md`: `form-input`, `form-autofill`
+- `heuristics/layout.md`: `layout-insets`, `layout-chrome`
+- `heuristics/navigation.md`: `nav-deeplink`, `nav-location`, `nav-back`, `nav-back-control`
+- `heuristics/offline.md`: `off-session`
+- `heuristics/payments.md`: `pay-rail`, `pay-steering`
+- `heuristics/permissions.md`: `perm-inventory`, `perm-purpose-string`
+- `heuristics/privacy-ui.md`: `priv-instrument`
+- `heuristics/scrolling.md`: `scroll-keyboard`
+- `heuristics/sharing.md`: `share-sheet-only`, `share-link-not-shot`, `share-file-uri`
+- `heuristics/states.md`: `state-loading`, `state-error`, `state-retry`
+- `heuristics/touch.md`: `touch-floor`, `touch-gestures`, `touch-keyboard`
+- `heuristics/typography.md`: `type-dark`, `type-scaling`
+- `heuristics/updates.md`: `upd-store-channel`
+- `platform/network.md`: `net-upload`

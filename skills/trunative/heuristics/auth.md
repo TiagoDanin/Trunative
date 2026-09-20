@@ -6,6 +6,8 @@ Whether an account is needed before the first useful action is `onboard-look-fir
 
 The field mechanics belong to forms: `form-input` and `form-autofill`. The biometric prompt as a surface, and the eight ways it can end, are `sense-biometric`. System permission prompts are a different thing and live in `permissions.md`.
 
+Rules in this file, in order: `auth-methods`, `auth-provider-button`, `auth-web-flow`, `auth-magic-link`, `auth-last-used`, `auth-code-screen`, `auth-biometric-session`, `auth-expiry`, `auth-reauth`, `auth-active-account`, `auth-signout`, `auth-delete`.
+
 ## `auth-methods` Every route on the screen reaches the same account
 
 Count the sign-in routes a returning user can tap without scrolling. The count is not the rule: what fails is two routes that open separate accounts for the same person, which is where somebody taps the wrong logo and lands in a second account holding none of their data. Which routes have to be on that screen at all, and how they are sized against each other, is `onboard-account`. The order they appear in is decided once and does not reshuffle between visits.
@@ -128,3 +130,17 @@ Review answers each of these against the code, pointing at the line:
 - Account deletion is reachable in-app, the web route's address is held as a recorded constant rather than a literal, and the screen states scope and timing and confirms through re-authentication. `auth-delete`
 
 Five of these do not come out of a diff. Open the sign-in screen at the largest text size to see what is actually reachable without scrolling, background the code screen and come back to it, force a token to expire with a form half typed, read on a device which biometric class the prompt was granted rather than which constant was passed to it, and check in the Play console that the deletion URL declared there is the one the app ships.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/forms.md`: `form-input`, `form-autofill`, `form-error`, `form-persist`
+- `heuristics/localization.md`: `l10n-strings`
+- `heuristics/navigation.md`: `nav-deeplink`, `nav-restore`, `nav-modal`
+- `heuristics/offline.md`: `off-session`, `off-queue`
+- `heuristics/onboarding.md`: `onboard-look-first`, `onboard-account`
+- `heuristics/sense.md`: `sense-biometric`
+- `heuristics/states.md`: `state-interrupt`
+- `heuristics/touch.md`: `touch-floor`, `touch-destructive`
+- `platform/network.md`: `net-backoff`

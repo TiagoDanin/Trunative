@@ -8,6 +8,8 @@ One naming trap sits under the whole subject and it breaks rules written from ei
 
 The branded moment that happens once, inside the app, is `onboard-splash`. The wait that continues after this surface is gone is `state-loading`. Per stack keys, attributes and dismissal APIs are in `references/launch-surface.md`, for one lookup rather than a read through.
 
+Rules in this file, in order: `splash-system`, `splash-double`, `splash-contents`, `splash-match`, `splash-no-progress`, `splash-hold`, `splash-no-floor`, `splash-appearance`, `splash-animation`, `splash-daily`, `splash-entry`, `splash-first-frame`.
+
 ## `splash-system` The system draws it, the app only configures it
 
 There is no code running on this surface. On iOS it is a property list dictionary or an inert storyboard with no outlets, no actions and no custom classes. On Android 12 and up it is a set of theme attributes, and the compat library puts the same surface back on older releases from a single theme.
@@ -109,3 +111,17 @@ Review answers each of these against the code, pointing at the line:
 - The first frame after it carries the chrome, the insets and placeholder content, not a spinner. `splash-first-frame`
 
 Check `splash-match`, `splash-appearance` and `splash-first-frame` by opening the app cold in both appearances and watching the handoff, rather than by reading the config. A mismatch of one step is invisible in a token table and obvious as a flash.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/layout.md`: `layout-orientation`, `layout-insets`
+- `heuristics/localization.md`: `l10n-strings`
+- `heuristics/motion.md`: `motion-reduced`
+- `heuristics/navigation.md`: `nav-deeplink`
+- `heuristics/notifications.md`: `notify-destination`
+- `heuristics/onboarding.md`: `onboard-splash`
+- `heuristics/states.md`: `state-loading`
+- `heuristics/typography.md`: `type-scaling`
+- `platform/performance.md`: `perf-cold-start`

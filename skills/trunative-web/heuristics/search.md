@@ -4,6 +4,8 @@ Search is how somebody finds a thing they already know is in there. On a phone i
 
 Two failures account for most of what goes wrong: a plain text field with a magnifier icon standing in for the platform's search control, and a query fired at the server on every keystroke.
 
+Rules in this file, in order: `search-surface`, `search-stock-field`, `search-placement`, `search-typing`, `search-suggest`, `search-recent`, `search-scope`, `search-filters`, `search-pending`, `search-result`, `search-zero`, `search-return`.
+
 ## `search-surface` An inline filter and a search screen are two different things
 
 Decide which one the screen needs before writing the field.
@@ -125,3 +127,19 @@ Review answers each of these against the code, pointing at the line:
 - Back from a result restores the query, scope, filters, results and scroll position, and cancel returns to the originating screen unchanged. `search-return`
 
 The last one is answered by running it, not by reading the diff: leave the search, come back, and check that nothing had to be typed again.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-hidden`, `a11y-collection`, `a11y-announce`
+- `heuristics/buttons.md`: `button-chips`
+- `heuristics/colors.md`: `color-not-alone`
+- `heuristics/forms.md`: `form-input`, `form-submit`
+- `heuristics/lists.md`: `list-virtualise`, `list-sections`
+- `heuristics/localization.md`: `l10n-collate`
+- `heuristics/navigation.md`: `nav-search`, `nav-restore`
+- `heuristics/states.md`: `state-stale`, `state-loading`, `state-empty`, `state-error`, `state-retry`
+- `heuristics/touch.md`: `touch-keyboard`, `touch-reach`, `touch-spacing`
+- `platform/network.md`: `net-cancel`, `net-backoff`, `net-metered`
+- `platform/performance.md`: `perf-power`

@@ -4,6 +4,8 @@ A conversation screen is one column that grows from its bottom, read in glances,
 
 Here: the transcript's anchor and where it opens, paging history upward, the row, arrivals, grouping and time, the composer, the state of one message, attachments, presence, the empty conversation and announcing an arrival. Recycling is `list-virtualise` and the row as a target is `list-row`. The keyboard as layout is `touch-keyboard` and `scroll-keyboard`. The write queue itself is the `off-` prefix, telling somebody a message arrived is the `notify-` prefix, and field configuration is the `form-` prefix. A link tapped in a message opens through `webview-surface-choice`, and a place attached to one is the static or lite-mode map `map-cost` requires of any recycled row.
 
+Rules in this file, in order: `chat-anchor`, `chat-open-position`, `chat-history`, `chat-new-arrival`, `chat-grouping`, `chat-row`, `chat-empty`, `chat-composer`, `chat-message-state`, `chat-attach`, `chat-presence`, `chat-a11y`.
+
 ## `chat-anchor` The transcript opens at its newest end and stays there as it grows
 
 The only reason anyone opened the conversation is the last message, there is no second pane holding it in view, and the container changes size under it twice: once when the keyboard arrives, and again every time the composer takes another line.
@@ -123,3 +125,35 @@ Review answers each of these against the code, pointing at the line:
 - An arrival is announced once rather than once per message, through a polite live region on Android, Compose and the web and a posted announcement at low priority on iOS, the announcement names the sender and does not interrupt speech in progress, each row is one stop, and the composer and send control carry names. `chat-a11y`
 
 Three of these are not settled by the file. On a device, page a conversation holding more than one screenful of history and watch whether the row under the thumb moves (`chat-history`); drive an arrival while scrolled a screenful up, and again while a drag is in progress, and watch whether the screen jumps (`chat-new-arrival`); and send and receive through one whole conversation with the screen reader running, as `a11y-test` requires of any flow (`chat-a11y`).
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-name`, `a11y-collection`, `a11y-order`, `a11y-announce`, `a11y-alt-input`, `a11y-test`
+- `heuristics/buttons.md`: `button-target`, `button-state`, `button-label`
+- `heuristics/camera.md`: `cam-system-first`
+- `heuristics/colors.md`: `color-not-alone`
+- `heuristics/copy.md`: `copy-absence`
+- `heuristics/data-display.md`: `data-time-instant`, `data-time-relative`
+- `heuristics/feedback.md`: `fb-place`, `fb-duration`
+- `heuristics/forms.md`: `form-persist`
+- `heuristics/icons-and-imagery.md`: `icon-avatar`, `icon-reserve`
+- `heuristics/layout.md`: `layout-fold`, `layout-chrome`
+- `heuristics/lists.md`: `list-virtualise`, `list-row`, `list-end`, `list-sections`, `list-a11y`, `list-density`, `list-images`
+- `heuristics/localization.md`: `l10n-format`, `l10n-direction`
+- `heuristics/maps.md`: `map-cost`
+- `heuristics/motion.md`: `motion-loop`, `motion-reduced`
+- `heuristics/navigation.md`: `nav-restore`
+- `heuristics/notifications.md`: `notify-destination`
+- `heuristics/offline.md`: `off-write-mode`, `off-queue`, `off-fresh-marks`
+- `heuristics/permissions.md`: `perm-ask-less`, `perm-scope`
+- `heuristics/scrolling.md`: `scroll-keyboard`, `scroll-restore`, `scroll-anchor`, `scroll-programmatic`
+- `heuristics/settings.md`: `set-status`, `set-default-first`
+- `heuristics/sharing.md`: `share-accepts`
+- `heuristics/states.md`: `state-empty`, `state-interrupt`, `state-queued`, `state-retry`, `state-offline`
+- `heuristics/touch.md`: `touch-keyboard`, `touch-floor`
+- `heuristics/typography.md`: `type-measure`, `type-scaling`
+- `heuristics/webviews.md`: `webview-surface-choice`
+- `platform/background-work.md`: `bg-wake-push`
+- `platform/network.md`: `net-upload`

@@ -4,7 +4,9 @@ A phone carries an ordered list of languages, a separate region, a calendar and 
 
 Shipping one language today is fine. Almost everything in this file costs nothing while the app has one language and is a rewrite once it has forty screens, which is the reason it belongs in the build step rather than in a later project.
 
-## `l10n-strings` No user-facing text lives in code
+Rules in this file, in order: `l10n-strings`, `l10n-direction`, `l10n-no-mirror`, `l10n-expansion`, `l10n-format`, `l10n-plurals`, `l10n-script`, `l10n-personal`, `l10n-collate`, `l10n-per-app`, `l10n-change`, `l10n-pseudo`.
+
+## `l10n-strings` No user-facing text lives in code [pass or fail]
 
 Every string a person reads comes out of the catalogue under a key: a String Catalog on iOS, `strings.xml` on Android, ARB files in Flutter, locale files in a React Native or web project. A literal sitting in a widget is what this file is here to find, and it survives review because nothing on the device gives it away: the screen looks finished until the phone is set to another language and one label stays behind in English.
 
@@ -126,3 +128,17 @@ Review answers each of these against the code, pointing at the line:
 - Both passes were taken, the expanding one and the mirrored one, by whichever mechanism the stack provides, and the screen was seen under each. `l10n-pseudo`
 
 `l10n-direction`, `l10n-no-mirror`, `l10n-expansion`, `l10n-script` and `l10n-pseudo` are answered on a rendered screen rather than in the resource files. A catalogue can be complete, a formatter correct and a plural resource well formed while the screen itself still clips, mirrors the wrong element, or falls back to a face that has no glyphs.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/buttons.md`: `button-label`
+- `heuristics/forms.md`: `form-count`, `form-input`
+- `heuristics/layout.md`: `layout-width`
+- `heuristics/lists.md`: `list-sections`
+- `heuristics/notifications.md`: `notify-channels`
+- `heuristics/permissions.md`: `perm-purpose-string`
+- `heuristics/states.md`: `state-interrupt`
+- `heuristics/touch.md`: `touch-keyboard`
+- `heuristics/typography.md`: `type-strings`, `type-face`, `type-roles`, `type-scaling`

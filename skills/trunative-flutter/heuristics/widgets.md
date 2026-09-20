@@ -4,6 +4,8 @@ A home screen widget, a Live Activity with its Dynamic Island presentations, and
 
 Here: the update budget, stating what is stale, what fits at the size the user chose, the sizes themselves, the tap, the states nobody draws, what a stranger reads off the surface, what the surface may carry, the labels, the Dynamic Island, the final frame of a live one, and Android promotion. Whether a persistent live surface may exist at all, and what dismissing one means, is `notify-ongoing`. Scheduling the work behind an update is the `bg-` prefix, resolving the link the tap carries is `nav-deeplink`, and the inventory of what counts as sensitive is `priv-shoulder`.
 
+Rules in this file, in order: `widget-budget`, `widget-stale`, `widget-fits`, `widget-sizes`, `widget-tap`, `widget-states`, `widget-shoulder`, `widget-scope`, `widget-a11y`, `widget-island`, `widget-live-end`, `widget-promoted`.
+
 ## `widget-budget` The system decides when the surface is redrawn, so the app declares a policy and never a clock
 
 The app does not own the clock out here, and every redraw is battery the phone is rationing (`perf-power`). iOS spends a budget per widget instance that it tunes to how often that person looks, typically 40 to 70 refreshes across a day, roughly one every 15 to 60 minutes. Android will not deliver a periodic widget update more than once every 30 minutes and recommends no more than once an hour. A surface asking for a 60 second refresh does not get a fast surface, it gets a throttled one.
@@ -126,3 +128,25 @@ Review answers each of these against the code, pointing at the line:
 - Every promoted notification meets all nine promotion requirements, carries its state in its own title and body so nothing depends on the promoted presentation, checks promotability and user permission at runtime, and is not reposted after a dismissal; a codebase that ships only to iOS answers this not applicable. `widget-promoted`
 
 Two of these cannot be settled from the source. Run the app on a device with the reader on and walk every presentation, confirming each image has a name that follows its status and that the layout survives the largest accessibility text size at the smallest declared size (`widget-a11y`), and start a second Live Activity so the system falls back to the minimal presentation, then touch and hold to expand, and check the surface stays identifiable and untruncated in all four (`widget-island`).
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-name`, `a11y-test`
+- `heuristics/ads.md`: `ads-placement`
+- `heuristics/colors.md`: `color-not-alone`
+- `heuristics/data-display.md`: `data-time-relative`
+- `heuristics/icons-and-imagery.md`: `icon-alt`
+- `heuristics/layout.md`: `layout-width`
+- `heuristics/localization.md`: `l10n-expansion`
+- `heuristics/motion.md`: `motion-duration`
+- `heuristics/navigation.md`: `nav-deeplink`
+- `heuristics/notifications.md`: `notify-ongoing`, `notify-lockscreen`, `notify-level`
+- `heuristics/offline.md`: `off-local-first`, `off-session`
+- `heuristics/privacy-ui.md`: `priv-shoulder`
+- `heuristics/states.md`: `state-stale`, `state-loading`, `state-empty`, `state-error`
+- `heuristics/touch.md`: `touch-floor`
+- `heuristics/typography.md`: `type-scaling`
+- `platform/background-work.md`: `bg-not-running`, `bg-periodic`, `bg-wake-push`, `bg-visible-stoppable`
+- `platform/performance.md`: `perf-power`

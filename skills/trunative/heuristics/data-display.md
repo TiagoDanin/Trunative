@@ -6,6 +6,8 @@ Two failures produce most of the damage. The first is precision the data does no
 
 Neither platform will stop either one. Android ships no chart component and no data table component, in Material or in androidx, and iOS publishes no guidance for a sortable multicolumn table on a phone. Every grid and every chart on a phone is something someone decided to build from nothing.
 
+Rules in this file, in order: `data-precision`, `data-table-shape`, `data-subject-shape`, `data-chart-earns-it`, `data-chart-scale`, `data-chart-reach`, `data-time-relative`, `data-time-instant`, `data-units`, `data-date-entry`, `data-empty-null-zero`.
+
 ## `data-precision` Never show more digits than the value carries
 
 Decide the digits from the measurement, not from the type. A step count is an integer, a body weight is one decimal, a currency is the minor units its code declares, and a ratio computed from two small integers is not a four decimal percentage no matter what the division returns. The column is narrow enough that a digit spent is a digit not spent on the label beside it.
@@ -26,6 +28,16 @@ A horizontal scroll inside a vertical list moves the columns it hides off screen
 - **A different shape entirely.** A grouped list, a chart, or two records compared side by side with the third reachable by paging.
 
 Column headings are nouns or short noun phrases, and a single column of figures still needs a label saying what it counts; `data-units` rules the unit that sits over a column. Figures sit at the trailing edge of their column with the decimal point in one place, `l10n-direction` deciding which edge that is and `type-strings` supplying the tabular figures that hold it there. Where a genuine grid is the product, editable or read only, it is its own screen with a leading identifier column pinned, a visible cut at the trailing edge so the row is seen to continue, and its own selection model, and `STACK.md` records it as an exception rather than a component reused elsewhere.
+
+## `data-subject-shape` A subject with a shape is drawn, not only tabulated
+
+`data-chart-earns-it` below is a gate: it decides whether a chart may sit beside the content. It never asks the question that comes before it, which is whether the content has a shape at all. Many subjects do: a course over time, a position in space, a level between two bounds, a distribution across a set, a run of days kept and broken. A reader takes the shape of one of those in a glance, and takes the same fact, set as figures down a column, one row at a time.
+
+Where the subject has a shape, drawing it is a candidate for being the screen rather than for a card inside it. A screen that renders its subject at the size the subject deserves, with the controls over it and the exact figure beside the point being asked about, has answered with the thing. A screen that renders rows of figures with a small chart in a corner has described it instead. Both pass every other rule in this file, which is why this one exists.
+
+- The test is what the reader came for. Someone asking how it is going is asking for the shape and is answered by drawing it. Someone asking what it was on a particular day is asking for a value and is answered by a list, which is what `data-chart-earns-it` protects and this rule does not overrule.
+- Drawing the subject is not licence to invent an encoding. The marks stay the ones that need no explanation, and the exact figure stays reachable at the point the drawing is read.
+- A subject with no shape is not given one. A balance, a name, a setting, a single reading: nothing to plot, and a sparkline under each of them is decoration arriving disguised as data, which is `icon-depicts`.
 
 ## `data-chart-earns-it` A chart shows a relationship, or it is a number wearing a costume
 
@@ -112,6 +124,7 @@ Review answers each of these against the code, pointing at the line:
 
 - No figure reaches a view through a raw float or a default string conversion, each quantity's rounding lives in one named place, and anything rounded that could be acted on says so and offers a route to the exact value. `data-precision`
 - No tabular data scrolls sideways: it is cut to two or three labelled columns, opened as a detail, or reshaped; figures align on the trailing edge; and any genuine grid is its own screen with a pinned leading column and a recorded exception. `data-table-shape`
+- Where the screen's subject has a shape over time, space or a range, that shape is drawn at a size it can be read at, with the exact figure reachable from it, rather than left as figures in rows; and where the subject has no shape, nothing was plotted to fill the space. `data-subject-shape`
 - Every chart shows a trend, a comparison or a part to whole; a single value in a range is a labelled number or a gauge; and any unfamiliar chart shape ships with the sentence that explains it. `data-chart-earns-it`
 - Units appear once, ticks follow a recognisable sequence, the axis lower bound is a stated decision, series are labelled on the plot and separable without hue, and the chart still reads at the largest text step. `data-chart-scale`
 - The headline figure is in text without interaction, the scrub target is the plot area at the touch floor, and the marks carry accessibility labels with values and context in a tree that was actually built. `data-chart-reach`
@@ -122,3 +135,20 @@ Review answers each of these against the code, pointing at the line:
 - Zero, unknown and not applicable render as three different things with the dash reserved for the last of them, unknown says why where it matters, and aggregates over incomplete sets declare their coverage. `data-empty-null-zero`
 
 Run `data-precision`, `data-time-relative` and `data-empty-null-zero` against real records rather than the mock ones. Seeded data has no nulls, no zeros, no thirteen digit floats and no timestamps from last year, which is exactly why the screen looks finished.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-name`
+- `heuristics/colors.md`: `color-not-alone`
+- `heuristics/copy.md`: `copy-numbers`
+- `heuristics/forms.md`: `form-input`
+- `heuristics/icons-and-imagery.md`: `icon-depicts`, `icon-alt`
+- `heuristics/lists.md`: `list-row`
+- `heuristics/localization.md`: `l10n-format`, `l10n-direction`
+- `heuristics/scrolling.md`: `scroll-affordance`
+- `heuristics/sharing.md`: `share-copy`
+- `heuristics/states.md`: `state-stale`, `state-empty`
+- `heuristics/touch.md`: `touch-floor`
+- `heuristics/typography.md`: `type-strings`, `type-scaling`

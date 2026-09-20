@@ -2,7 +2,9 @@
 
 A phone loses the network as a normal condition of use: lifts, tunnels, basements, aircraft, rural roads, a hotel portal that answers every request with its own login page, and a full bar of signal attached to nothing. Sessions that start, end or spend their middle in one of those are a predictable share of all sessions, not an edge case.
 
-This file is about the copy the app keeps on the device: what is stored, for how long, what is deliberately never stored, what happens to a write made while disconnected, and what the app becomes when that copy is gone. The request itself, its timeout and its retry, is `heuristics/network.md`. How the screen says offline, pending or stale is `state-offline`, `state-queued` and `state-stale`. Everything here is the layer underneath those three.
+This file is about the copy the app keeps on the device: what is stored, for how long, what is deliberately never stored, what happens to a write made while disconnected, and what the app becomes when that copy is gone. The request itself, its timeout and its retry, is `platform/network.md`. How the screen says offline, pending or stale is `state-offline`, `state-queued` and `state-stale`. Everything here is the layer underneath those three.
+
+Rules in this file, in order: `off-local-first`, `off-sync-scope`, `off-fresh-marks`, `off-cache-policy`, `off-reclaimable`, `off-write-mode`, `off-queue`, `off-session`, `off-destructive-offline`, `off-conflict`, `off-no-cache`.
 
 ## `off-local-first` The screen reads the store, and the network writes to the store
 
@@ -65,7 +67,7 @@ Decide per action, in the code that performs it:
 
 A screen where every mutation is optimistic will eventually tell someone in a tunnel that their transfer went through.
 
-## `off-queue` The queue is durable, identified, and drained by the platform's own scheduler
+## `off-queue` The queue is durable, identified, and drained by the platform's own scheduler [P0]
 
 - **Durable.** Rows in the database. Not an array in a view model, and not a cache directory, which `off-reclaimable` can empty between the write and the drain.
 - **Identified.** The device generates the entry's id before the first attempt and reuses it on every retry, so a reply lost on the way back becomes one order rather than two.
@@ -122,3 +124,14 @@ Review answers each of these against the code, pointing at the line:
 - Clearing app storage lands on the same screen as a first launch, and that screen shows bundled content rather than a blank. `off-no-cache`
 
 Test the last five with the device actually offline. Airplane mode on a warm app, a write made in it, a force quit, then reconnect, is the one pass that exercises the store, the queue and the drain together. What it proves differs by platform, so read the result accordingly: WorkManager carries on with the app gone, while a kill by the user on iOS stops background transfers until the app is opened again, which is `net-upload`, so there the pass is that the drain resumes at the next launch with nothing lost.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/buttons.md`: `button-state`
+- `heuristics/states.md`: `state-offline`, `state-queued`, `state-stale`, `state-loading`, `state-empty`
+- `heuristics/touch.md`: `touch-destructive`
+- `platform/background-work.md`: `bg-periodic`
+- `platform/network.md`: `net-prefetch`, `net-reachability`, `net-backoff`, `net-upload`
+- `platform/performance.md`: `perf-memory`
