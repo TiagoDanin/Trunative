@@ -8,7 +8,7 @@ Before anything else, write one line saying whether this task establishes or cha
 
 That line is written, not recalled. Unwritten, the answer is always the same one, because code is what this step is for and the pull is toward starting it.
 
-**When the screen has a brief**, at `.trunative/screens/<name>.md`, read it and build what it says. The job, the hierarchy, the one primary action, the six states and the scope were settled and approved in `flow/spec.md`, and rederiving them here is the context this step exists to save. Where the brief and the request disagree, the brief is stale: go back to `flow/spec.md` and change it rather than building against a file that now lies.
+**When the screen has a brief**, at `.trunative/screens/<name>.md`, read it and build what it says. The person's goal and the moment they are in, the hierarchy, the primary action, the six states and the scope were settled in `flow/spec.md`, and the composition was chosen between alternatives in `flow/explore.md`. Rederiving them here is the context this step exists to save. Build the composition that won, as it was drawn: the pull while writing code is back toward the stock arrangement the framework's widgets suggest, and a screen that quietly reverts to a bar over equal cards has thrown the choice away, which review reports as drift and scores under `comp-context`. Where the brief and the request disagree, the brief is stale: go back to `flow/spec.md` and change it rather than building against a file that now lies.
 
 **When it has none**, and the line above says the task touches none of the four, state in one or two lines before writing code:
 
