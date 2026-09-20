@@ -50,7 +50,25 @@ Those five lines are provisional and say so. They go to the user to confirm into
 - Apply the heuristics as you write, not as a pass afterwards.
 - Where a heuristic cannot be met, leave the code correct and record the conflict for review. Do not silently drop the rule.
 
-## 4. Hand off
+## 4. Look at it
+
+The screen has been written, not seen. Everything above this line is source: the token reached for, the rule applied as the line went down, the conflict recorded. None of that is the screen, and the defects that survive a correct diff are the ones that only exist once something is drawn: a region that depicts nothing, a hierarchy that reads flat at arm's length, a control that sinks into the surface behind it, an identity that is named in `DESIGN.md` and absent from the render.
+
+So render it and look at it yourself, before anyone else does, the way `flow/spec.md` already looks at its own wireframe. How this project renders a screen is what `STACK.md` is for.
+
+<If agent="claude">
+Open the capture with the Read tool and read it as a picture, not as a file that was produced.
+</If>
+
+<If agent="codex,antigravity,opencode,other">
+Open the capture however this harness shows an image, and read it as a picture rather than as a file that was produced.
+</If>
+
+Then say where the reference behind the identity is visible on the screen. One named thing a stranger could point at is enough. A reference that cannot be found anywhere in the render was a caption rather than a derivation, which is the failure `color-derived` names one level down, arriving here instead.
+
+This pass is cheap and it is not the review. It catches what the author can still fix in the same turn, which is the half of `flow/review.md` that would otherwise come back as a violation and spend a second pass on it. When the screen cannot be rendered here at all, say so in the hand-off instead of reporting it as looked at: a screen nobody has seen reaches review as a screen nobody has seen, and review is told that rather than left to discover it.
+
+## 5. Hand off
 
 Say which heuristics files you applied and which you deliberately skipped, with the reason, and name the triggers that opened the extra ones. When this screen had to settle an identity because `DESIGN.md` did not, the five lines go in the hand-off, marked provisional. Name the brief you built against, or say the change was not structural and had none. Then run `flow/review.md`. Build is never the last step.
 
