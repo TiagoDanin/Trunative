@@ -18,7 +18,23 @@ interface Finding {
 }
 
 /** The keys a screen brief carries, and no others. */
-const FIELDS = ['target', 'primary_action', 'states', 'scope']
+const FIELDS = ['target', 'user_goal', 'context', 'primary_action', 'states', 'scope']
+
+/**
+ * The eight things about the moment of use that change a composition. Fixed for
+ * the reason the state keys are: a brief that picks its own context keys leaves
+ * out the one that would have argued with the layout it already had in mind.
+ */
+const CONTEXT = [
+	'environment',
+	'posture',
+	'hands',
+	'attention',
+	'session_length',
+	'frequency',
+	'interruption',
+	'urgency',
+]
 
 /** The six `state-set` names, which are the six keys, always all six. */
 const STATES = ['loading', 'empty', 'error', 'offline', 'partial', 'permission']
@@ -118,7 +134,7 @@ function map(children: string[]): { key: string; value: string; line: number }[]
 	return found
 }
 
-const PREFIX_ROW = /\|\s*`heuristics\/([a-z0-9-]+)\.md`\s*\|\s*`([a-z0-9-]+)`\s*\|/
+const PREFIX_ROW = /\|\s*`(?:heuristics|platform)\/([a-z0-9-]+)\.md`\s*\|\s*`([a-z0-9-]+)`\s*\|/
 
 /**
  * Every spelling of an extra file, resolved to its stem. The Extra table prints
@@ -227,6 +243,29 @@ async function checkBrief(
 		}
 	}
 
+	const goal = head.get('user_goal')
+	if (goal && !goal.value) {
+		add('user goal', 'empty, say what the person is trying to get done, in their words', brief.offset + goal.line)
+	}
+
+	const context = head.get('context')
+	if (context) {
+		const declared = map(context.children)
+		for (const name of CONTEXT) {
+			if (!declared.some((entry) => entry.key === name)) {
+				add('context', `${name} is missing, and all eight context keys are required`, brief.offset + context.line)
+			}
+		}
+		for (const entry of declared) {
+			const at = brief.offset + context.line + 1 + entry.line
+			if (!CONTEXT.includes(entry.key)) {
+				add('context', `${entry.key} is not one of the eight context keys`, at)
+			} else if (!entry.value) {
+				add('context', `${entry.key} is empty, write "unknown" when nobody knows`, at)
+			}
+		}
+	}
+
 	const states = head.get('states')
 	if (states) {
 		const declared = map(states.children)
@@ -258,9 +297,23 @@ async function checkBrief(
 		const openAt = parts.find((entry) => entry.key === 'open')
 		const closedAt = parts.find((entry) => entry.key === 'closed')
 
-		const openChildren = scope.children.slice((openAt?.line ?? -1) + 1, closedAt?.line ?? undefined)
-		const open = openAt ? list(openAt.value, openChildren) : []
-		const closed = closedAt ? map(scope.children.slice(closedAt.line + 1)) : []
+		const excludedAt = parts.find((entry) => entry.key === 'auto_excluded')
+
+		// The lines under one key run until the next key at the same depth.
+		const under = (from: { line: number }): string[] => {
+			const next = parts.map((entry) => entry.line).filter((line) => line > from.line)
+			return scope.children.slice(from.line + 1, next.length > 0 ? Math.min(...next) : undefined)
+		}
+
+		const open = openAt ? list(openAt.value, under(openAt)) : []
+		const closed = closedAt ? map(under(closedAt)) : []
+		const excluded = excludedAt ? list(excludedAt.value, under(excludedAt)) : []
+
+		for (const entry of parts) {
+			if (!['open', 'closed', 'auto_excluded'].includes(entry.key)) {
+				add('scope', `${entry.key} is not open, closed or auto_excluded`, at + 1 + entry.line)
+			}
+		}
 
 		if (!openAt) {
 			add('scope', 'no open list, name the extra files this screen touches', at)
@@ -289,6 +342,16 @@ async function checkBrief(
 			}
 			if (!entry.value) {
 				add('scope', `${entry.key} is closed with no reason`, line)
+			}
+		}
+		// A row the screen plainly has nothing of is excluded by name and owes no
+		// sentence. The sentence is kept for the near misses, under `closed`.
+		for (const stem of excluded) {
+			const canonical = extra.get(stem)
+			if (!canonical) {
+				add('scope', `${stem} is not a file in the Extra table`, at)
+			} else if (opened.has(canonical)) {
+				add('scope', `${stem} is both open and auto_excluded`, at)
 			}
 		}
 	}

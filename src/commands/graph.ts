@@ -1,6 +1,7 @@
 import { basename } from 'node:path'
 
 import { readGraph, type Graph } from '../graph.js'
+import { isRuleFile } from '../heuristics.js'
 
 export interface GraphOptions {
 	/** File stems to expand down to their rules. Empty keeps it at file level. */
@@ -20,7 +21,7 @@ function crossReferences(graph: Graph): Map<string, number> {
 	const edges = new Map<string, number>()
 
 	for (const mention of graph.mentions) {
-		if (!mention.file.startsWith('heuristics/')) {
+		if (!isRuleFile(mention.file)) {
 			continue
 		}
 		const from = basename(mention.file, '.md')
@@ -69,7 +70,7 @@ function mermaid(graph: Graph, only: string[]): string {
 	for (const file of graph.index.references) {
 		const linked = new Set(
 			graph.links
-				.filter((link) => link.target === file && link.file.startsWith('heuristics/'))
+				.filter((link) => link.target === file && isRuleFile(link.file))
 				.map((link) => basename(link.file, '.md')),
 		)
 		lines.push(`  ${id(file)}(["${file}"])`)
