@@ -72,6 +72,13 @@ function retitle(source: string, stack: string | undefined): string {
 const HEURISTICS = 'heuristics/'
 /** A backticked token, the same shape `lint` reads a citation as. */
 const CITATION = /`([a-z0-9][a-z0-9-]*)`/g
+/**
+ * The line that says what a Reaches section is. It is a constant because the
+ * flattened copy carries forty of these sections in one document and says it
+ * once at the top instead, and a sentence written twice drifts once.
+ */
+const REACHES_NOTE =
+	'The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.'
 
 /**
  * Which file owns each rule id. Built through the one parser that walks rule
@@ -128,7 +135,7 @@ function withCrossReferences(text: string, file: string, owner: Map<string, stri
 		.sort(([left], [right]) => (left < right ? -1 : 1))
 		.map(([home, ids]) => `- \`${home}\`: ${ids.map((id) => `\`${id}\``).join(', ')}`)
 
-	return `${text.trimEnd()}\n\n## Reaches\n\nThe rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.\n\n${lines.join('\n')}\n`
+	return `${text.trimEnd()}\n\n## Reaches\n\n${REACHES_NOTE}\n\n${lines.join('\n')}\n`
 }
 
 /** One variant, resolved in memory. Markdown is compiled, anything else copied. */
@@ -231,13 +238,22 @@ export function flatten(files: Map<string, Buffer>): Map<string, Buffer> {
 		'',
 		'Every file this skill is made of is inlined below, each under a heading that is its path. A line pointing at `heuristics/colors.md` or `flow/build.md` is pointing at a section of this document, so nothing here has to be opened and nothing is missing. The tiered copy, where a rule is read only once a screen touches it, is the one a project installs; this one is for a context that gets filled once and cannot read files.',
 		'',
+		'Two lists are generated rather than written. Each rule file opens with its own rule ids in order, and closes with a Reaches section naming the ids it cites and the file that holds each one, which here is the section that holds it.',
+		'',
 		parsed?.[2]?.trim() ?? entry.trim(),
 	]
 
 	for (const file of flattenOrder(files)) {
 		const content = files.get(file)!.toString('utf8').trim()
 		const body = file.endsWith('.md')
-			? demote(content)
+			? // The note under every Reaches section is identical, and forty copies
+				// of one sentence in a single document is the sentence being read as
+				// content. It is stated once in the preamble above instead.
+				demote(content)
+					.split(/\r?\n/)
+					.filter((line) => line.trim() !== REACHES_NOTE)
+					.join('\n')
+					.replace(/\n{3,}/g, '\n\n')
 			: ['```' + file.split('.').pop(), content, '```'].join('\n')
 		parts.push('', `# ${file}`, '', body)
 	}
