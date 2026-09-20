@@ -21,6 +21,17 @@ A row that shows up on two screens carries the same style in both, or the produc
 
 Line height is a property of the role, not of the paragraph: near 1.2 where the type is display sized, 1.4 to 1.5 for body. The ratio has to widen as the type gets smaller, which is why one global multiplier comes out wrong at both ends.
 
+## <Rule id="type-hierarchy" description="Four roles a reader cannot tell apart is one role" />
+
+`type-roles` asks for about four roles and `type-weight` takes weight out of the running for most of them, which leaves size carrying the structure. Neither says how far apart those sizes have to be, and the screen that exposes the gap passes both: a title two points above a section head, a section head one above body, a caption below it. Four roles, five sizes, nothing hardcoded, every rule in this file satisfied, and a reader at arm's length sees one grey block.
+
+The published ramps are far apart on purpose: a display or large-title role runs near twice body, not a step above it. A screen drawing only from the middle of the ramp has chosen the stretch where the roles stop being distinguishable, and it reads as a wireframe that was never promoted.
+
+- The test is the glance, before a word is read. The subject of the screen and the start of its content separate, or they do not. Look at it from across the room or out of focus: what survives is the hierarchy, and when nothing survives there was none.
+- The gap is optical rather than numeric. The same two steps that separate under one face collapse under another, and they collapse again in the other appearance, which is what `type-dark` is about.
+- Spending the range is not using more of it. `type-roles` still caps the count; this is about the distance between the few, never about adding a sixth.
+- A ramp that has to stay compressed, for density, for a table, for something worked in all day, says what carries the hierarchy instead: weight, space, a rule line, or colour (`color-assigned`). Unwritten, the compression was not a decision.
+
 ## <Rule id="type-weight" description="Weight is structure, and the user has a say in it" />
 
 Both systems let someone ask for heavier text: Bold Text on iOS, `fontWeightAdjustment` from API 31 on Android. Styles that come from the theme respond by themselves. A weight typed into a component (`weight: .semibold`, `FontWeight.Bold`) does not, so the preference gets dropped in silence and nothing in the build says a word about it.
@@ -87,6 +98,7 @@ Where a screen carries real reading, compensate in the dark theme only: one step
 
 <Verify rule="type-scale">Text styles trace back to the platform scale or to a written-down extension of it, no component carries a literal size, and Android text is in `sp`.</Verify>
 <Verify rule="type-roles">The screen works from about four named roles and carries no more than five distinct sizes, and a role that repeats across screens is identical every time.</Verify>
+<Verify rule="type-hierarchy">The screen's subject and the start of its content separate at a glance rather than sitting a step apart, the ramp reaches its display end instead of staying in the middle, and a ramp kept compressed names what carries the hierarchy in its place.</Verify>
 <Verify rule="type-weight">Nothing below 400, no weight hardcoded outside a theme style, and every weight step jumps a grade. Weight is distributed across the screen, with most text on the regular cut and the heavy cut spent on a few elements.</Verify>
 <Verify rule="type-face">The typeface choice can be stated as a reason, a brand face stays in the display roles, and any custom face scales.</Verify>
 <Verify rule="type-measure">Body copy runs 40 to 60 characters per line.</Verify>
