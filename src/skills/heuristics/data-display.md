@@ -27,6 +27,16 @@ A horizontal scroll inside a vertical list moves the columns it hides off screen
 
 Column headings are nouns or short noun phrases, and a single column of figures still needs a label saying what it counts; `data-units` rules the unit that sits over a column. Figures sit at the trailing edge of their column with the decimal point in one place, `l10n-direction` deciding which edge that is and `type-strings` supplying the tabular figures that hold it there. Where a genuine grid is the product, editable or read only, it is its own screen with a leading identifier column pinned, a visible cut at the trailing edge so the row is seen to continue, and its own selection model, and `STACK.md` records it as an exception rather than a component reused elsewhere.
 
+## <Rule id="data-subject-shape" description="A subject with a shape is drawn, not only tabulated" />
+
+`data-chart-earns-it` below is a gate: it decides whether a chart may sit beside the content. It never asks the question that comes before it, which is whether the content has a shape at all. Many subjects do: a course over time, a position in space, a level between two bounds, a distribution across a set, a run of days kept and broken. A reader takes the shape of one of those in a glance, and takes the same fact, set as figures down a column, one row at a time.
+
+Where the subject has a shape, drawing it is a candidate for being the screen rather than for a card inside it. A screen that renders its subject at the size the subject deserves, with the controls over it and the exact figure beside the point being asked about, has answered with the thing. A screen that renders rows of figures with a small chart in a corner has described it instead. Both pass every other rule in this file, which is why this one exists.
+
+- The test is what the reader came for. Someone asking how it is going is asking for the shape and is answered by drawing it. Someone asking what it was on a particular day is asking for a value and is answered by a list, which is what `data-chart-earns-it` protects and this rule does not overrule.
+- Drawing the subject is not licence to invent an encoding. The marks stay the ones that need no explanation, and the exact figure stays reachable at the point the drawing is read.
+- A subject with no shape is not given one. A balance, a name, a setting, a single reading: nothing to plot, and a sparkline under each of them is decoration arriving disguised as data, which is `icon-depicts`.
+
 ## <Rule id="data-chart-earns-it" description="A chart shows a relationship, or it is a number wearing a costume" />
 
 If the user needs the values themselves, a list beats a chart: the figures are exact and the reader can move through them. A chart is for a trend over time, a comparison across categories, or a part against a whole. One value inside a known range is a labelled number or a gauge, and a gauge states its current value and both endpoints.
@@ -110,6 +120,7 @@ They are three different facts and they must not render as the same glyph. Zero 
 
 <Verify rule="data-precision">No figure reaches a view through a raw float or a default string conversion, each quantity's rounding lives in one named place, and anything rounded that could be acted on says so and offers a route to the exact value.</Verify>
 <Verify rule="data-table-shape">No tabular data scrolls sideways: it is cut to two or three labelled columns, opened as a detail, or reshaped; figures align on the trailing edge; and any genuine grid is its own screen with a pinned leading column and a recorded exception.</Verify>
+<Verify rule="data-subject-shape">Where the screen's subject has a shape over time, space or a range, that shape is drawn at a size it can be read at, with the exact figure reachable from it, rather than left as figures in rows; and where the subject has no shape, nothing was plotted to fill the space.</Verify>
 <Verify rule="data-chart-earns-it">Every chart shows a trend, a comparison or a part to whole; a single value in a range is a labelled number or a gauge; and any unfamiliar chart shape ships with the sentence that explains it.</Verify>
 <Verify rule="data-chart-scale">Units appear once, ticks follow a recognisable sequence, the axis lower bound is a stated decision, series are labelled on the plot and separable without hue, and the chart still reads at the largest text step.</Verify>
 <Verify rule="data-chart-reach">The headline figure is in text without interaction, the scrub target is the plot area at the touch floor, and the marks carry accessibility labels with values and context in a tree that was actually built.</Verify>

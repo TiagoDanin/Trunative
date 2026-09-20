@@ -14,6 +14,18 @@ The frequent interactions are already animated, and the two platforms want diffe
 
 The count is per screen, and at rest means no work outstanding, no gesture in progress and no media playing. In that condition nothing moves, with one exception: an indicator saying work is still happening, which is `state-loading`.
 
+## <Rule id="motion-answered" description="The three questions are obligations, not only permissions" />
+
+`motion-job` reads as a gate: point at an animation and name which of the three it serves. Read only that way it leaves the opposite case unexamined, and the screen that satisfies every rule in this file with nothing to point at is the one where a change happened and none of the three was answered. A row is there and then it is not. A value is one number and then another. A panel is shut and then open. Nothing moved, so nothing broke a rule, and the reader is left to work out from the after what the before became.
+
+The obligation runs the same three ways the permission does:
+
+- **Continuity** is owed by a change of place. What opens from a point, expands into a screen, or leaves toward somewhere, does it from where that thing actually is. One surface replaced outright by another has had the relationship between them deleted, and the reader rebuilds it from memory every time.
+- **Acknowledgement** is owed by a touch that commits something, and the floor for it is `touch-feedback`.
+- **Latency** is owed by anything the user waits on, and its shape is `state-loading`.
+
+This is not licence to animate. At rest nothing moves, which `motion-job` settles, and an animation serving none of the three is still deleted. What changes is that a change arriving with nothing answered is a finding rather than a screen that happened to be quiet.
+
 ## <Rule id="motion-platform" description="The transition between screens is not yours to write" />
 
 Push, sheet, cover and dismissal come with motion attached. Where the container ends through a gesture, which is the interactive pop, the sheet drag and predictive back, that motion is interruptible and driven by the finger rather than played at it. A custom route transition replaces it with a fixed animation that runs to the end, and one that never reads the gesture's progress leaves the system drawing a back preview the transition itself ignores. Driving it from that progress instead is `touch-gestures`.
@@ -98,6 +110,7 @@ Motion is also never the only carrier of a change. Anything that says its piece 
 <Check>
 
 <Verify rule="motion-job">Every animation on the screen serves continuity, latency or acknowledgement; and separately, with no work outstanding, no gesture in progress and no media playing, the only thing still moving is a latency indicator.</Verify>
+<Verify rule="motion-answered">Every change of place, every commit and every wait leaves its own question answered, and no surface is swapped for another without the two being connected.</Verify>
 <Verify rule="motion-platform">No custom transition replaces a platform push, sheet, cover or dismissal without a written reason.</Verify>
 <Verify rule="motion-model">iOS motion is expressed as springs reached from one named set, Android motion through the scheme or the tokens, and no duration, curve or stiffness is a literal at a call site.</Verify>
 <Verify rule="motion-duration">Routine transitions finish under 300ms, nothing an interaction waits on exceeds 400ms, and larger movements take longer than smaller ones.</Verify>
