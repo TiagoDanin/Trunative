@@ -94,7 +94,15 @@ The brief preserves the decision. It does not let anyone see it. A hierarchy lis
 
 So the brief gets rendered before it gets approved, and the rendering is a page the agent writes.
 
-Write `.trunative/screens/<name>.wireframe.html` from the brief. The frame, the greyscale palette and the placeholder conventions are in `references/wireframe-frame.md`, which is a skeleton to copy rather than a thing to reinvent per screen.
+Before it is a page, it needs a shape. Handed a hierarchy and a primary action and nothing else, an agent reaches for the same shape every time: a bar over a stack of equal-height cards, because that shape is the most common answer to almost every screen it has ever read. Landing there is not wrong by itself; landing there because it was the only shape considered is what the rest of this section stops.
+
+1. Read the hierarchy and the primary action from the brief, and name two or three shapes from `references/wireframe-frame.md` that could carry them, one line each: which shape, and where the primary action lands in it.
+2. Cut a candidate that would screenshot the same as another except for spacing, wording, or which box holds the cross. That is one hypothesis counted twice, not two.
+3. Check what survives against the defaults in the same file, and against the shapes already approved for other screens in this project: glance at `.trunative/screens/*.wireframe.html`. A candidate that lands on a listed default, or that has already won there twice or more, needs a reason beyond "it fits." A list that only ever compares against itself goes stale; comparing against what a project actually shipped keeps it honest without anyone having to remember to revise it.
+4. Pick the shape that survives, and write in one line why it beats the runner-up for this screen's density and primary action.
+5. Only then draw it.
+
+Write `.trunative/screens/<name>.wireframe.html` from the brief. The frame, the greyscale palette, the placeholder conventions and the shape vocabulary are in `references/wireframe-frame.md`, which is a skeleton and a vocabulary to copy rather than a thing to reinvent per screen.
 
 - Greyscale, outlines, placeholders, a cross for an image, one system typeface, hierarchy by size.
 - Never a brand colour, a gradient, a shadow, a real photograph, an icon set, or any token from `DESIGN.md`. The wireframe settles structure, and a wireframe carrying identity collects an approval nobody asked for.

@@ -8,6 +8,31 @@ The skeleton every wireframe copies, so two screens in the same project come out
 
 Everything is greyscale by construction: four greys, one ink, and nothing else. A wireframe that acquires a colour has stopped being a wireframe, and `flow/spec.md` says why.
 
+## Shapes
+
+`flow/spec.md` sends the agent here before it opens the HTML file, to name a shape rather than fall into one. This list is a set of starting points, not a closed vocabulary: a screen calling for a shape absent from it still gets drawn, named in its own words.
+
+- **stack**: a single vertical column, one full-width block after another. The shape almost anything defaults to; not forbidden, but it owes a reason when it wins.
+- **rail**: a horizontally scrolling strip of equal items, anchored inside a vertical flow around it.
+- **hero-split**: one dominant region, sized to what it actually needs, over a visibly different second region below it.
+- **grid-wall**: a symmetric grid of equal tiles filling most of the frame.
+- **timeline**: a single column where every item anchors to a line or marker running through it, order carrying meaning.
+- **bottom-sheet**: chrome and controls anchored low, over content running full-bleed behind them, instead of a top bar.
+- **tab-cluster**: content split into switchable panes at the same position, not one continuous scroll.
+- **split-focus**: two unequal regions, one persistent (a map, a preview, a player) and one scrollable that acts on it.
+- **canvas-overlay**: a full-bleed background with controls floating over it, instead of content sitting inside bounded cards.
+
+## Known defaults
+
+A wireframe that lands on one of these without a reason recorded is not a choice, it is the shape nobody chose:
+
+- A top bar over a stack of equal-height cards, on a screen whose brief names a hierarchy: the stack flattens a lead item, a highlighted item or a different-shaped item into the same row as everything else.
+- A symmetric grid of equal tiles as the whole content of a screen whose brief names an order or a lead item: the grid has no way to hold one.
+- The primary action as a full-width button pinned to the bottom, when the brief's hierarchy puts it mid-scroll or beside the thing it acts on.
+- A hero sized to a fixed familiar fraction of the frame, independent of what the screen's hierarchy actually needs the fold for.
+
+None of these are banned; a screen can genuinely be a stack. What the ladder in `flow/spec.md` stops is arriving at one of them with nothing else considered and no reason recorded for why it won.
+
 ## The skeleton
 
 Save as `.trunative/screens/<name>.wireframe.html`, one file, no imports, no CDN, no framework.
