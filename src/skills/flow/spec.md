@@ -68,7 +68,7 @@ A screen driving a camera, a microphone, location, a motion sensor or a radio ow
 In this order, and nothing else:
 
 1. **Purpose.** One sentence, the job the screen does, from `PRODUCT.md`.
-2. **Hierarchy.** Numbered, top to bottom, in reading order.
+2. **Hierarchy.** What wins the screen, in one line, before anything is listed: the one thing a reader lands on, and what every other region is subordinate to. Then the order, numbered, top to bottom. Written without that line it comes out as an inventory of the request's own clauses, which is what this step produces whenever nobody composes anything: each clause becomes a region, the regions stack in the order the clauses were written, and the screen is a transcript of what was asked for rather than an answer to it.
 3. **Components.** What is on the screen, named as the thing it is.
 4. **Primary action.** The action and where the thumb reaches it.
 5. **Interactions.** One line per gesture, as target then result.

@@ -62,7 +62,7 @@ Four badges in four pastels, three avatars in three gradients, a tint cycling by
 
 - Hue that varies across repeated items encodes a difference the reader can name: the category, the status, the account, the series on the chart. Otherwise every item in the set wears the same surface.
 - Where the difference is real, the mapping is fixed and written down once, so the same category is the same colour on every screen it appears on. A colour assigned by index changes the moment the list reorders.
-- Generated-per-item colour is legitimate in exactly one place, the avatar fallback, where it is derived from a stable identifier and stands in for a photograph: `icon-avatar`.
+- Generated-per-item colour is legitimate in exactly one place, the avatar fallback for a person or an account, where it is derived from a stable identifier and stands in for a photograph: `icon-avatar`. Artwork carrying a subject of its own never reaches that exception, and a row of filled rectangles tinted one hue each is the defect this rule is about wearing a fallback's clothes. What belongs there is the picture, which is `icon-depicts`.
 - Variety that is genuinely wanted is a job for the artwork, not for the interface. Illustrations carry as many colours as they need; the rows around them do not.
 
 ## <Rule id="color-gradient" description="A gradient has to be doing a job" />

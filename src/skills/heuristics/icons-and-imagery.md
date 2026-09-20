@@ -98,6 +98,8 @@ A single-colour glyph needs no dark variant, because it is tinted from a theme r
 
 Most accounts have no photo, so the fallback is the state to design first and the one that will be on screen most.
 
+It works because a person has no subject to draw: an initial or a generated shape identifies them, and there was never a picture of something to show instead. Artwork that does have a subject is `icon-depicts`, whatever it stands in for, and a letter on a filled square in its place abbreviates a picture rather than identifying an account.
+
 - Initials from the name, or a shape generated from a stable identifier, so the same person keeps the same avatar between sessions and between devices. One shared silhouette for every user is decoration, and a list of them carries no information at all.
 - The fallback fills the same box the photo would, so a list of people keeps its rhythm while photos load.
 - Never a broken image frame, an alt-text box, or the platform's missing-asset glyph. At the size an avatar is actually drawn that is a dark square with a question mark in it, repeated down the list.
