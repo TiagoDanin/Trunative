@@ -6,13 +6,19 @@ Sections, in order: The frame, Shapes, Known defaults, The skeleton, Rules the s
 
 ## The frame
 
-393 by 852 is the reference phone. The status bar occupies the first 59 points and the home indicator the last 34, and both are drawn as occupied area rather than as margin, because the point of the frame is that content cannot use them.
+393 by 852 is a reference canvas for structure. It is not a device specification, and it stands for no platform: the project may ship on Android, on iOS or on the mobile web, and the same canvas is used for all of them, because what gets compared between two wireframes is structure and that needs one constant frame.
+
+Two things are kept apart here that a drawing tends to merge.
+
+**The canvas** is the rectangle and its proportions: a tall, narrow frame about the shape of a phone in one hand. That is all it claims.
+
+**System chrome and insets** belong to the device and are read at runtime, which is `layout-insets`. The canvas reserves a band at the top and a band at the bottom only to say that content cannot use those edges. Their heights in the skeleton are placeholders for "some system area", never the height of any real status bar, cutout, gesture area or navigation bar, and no number from this file goes into a layout. A screen that has to hold on a device with a larger cutout or a three-button bar is checked for that on the device in `flow/review.md`, not here.
 
 Everything is greyscale by construction: four greys, one ink, and nothing else. A wireframe that acquires a colour has stopped being a wireframe, and `flow/spec.md` says why.
 
 ## Shapes
 
-`flow/spec.md` sends the agent here before it opens the HTML file, to name a shape rather than fall into one. This list is a set of starting points, not a closed vocabulary: a screen calling for a shape absent from it still gets drawn, named in its own words.
+`flow/explore.md` sends the agent here while it writes candidates, to name a shape rather than fall into one. The list is a set of prompts, not a set of templates and not a closed vocabulary. When none of these gives the screen a composition of its own, invent one and name it in two words, the way these were named: a line everything hangs from became `timeline`, and a screen built around one ring of progress might be `focus-ring`, a control surface under a live ground `command-deck`. The name is what lets the next screen in the project refer to it. The relations a new shape is assembled from are in `references/design-grammars.md`.
 
 - **stack**: a single vertical column, one full-width block after another. The shape almost anything defaults to; not forbidden, but it owes a reason when it wins.
 - **rail**: a horizontally scrolling strip of equal items, anchored inside a vertical flow around it.
@@ -33,11 +39,13 @@ A wireframe that lands on one of these without a reason recorded is not a choice
 - The primary action as a full-width button pinned to the bottom, when the brief's hierarchy puts it mid-scroll or beside the thing it acts on.
 - A hero sized to a fixed familiar fraction of the frame, independent of what the screen's hierarchy actually needs the fold for.
 
-None of these are banned; a screen can genuinely be a stack. What the ladder in `flow/spec.md` stops is arriving at one of them with nothing else considered and no reason recorded for why it won.
+None of these are banned; a screen can genuinely be a stack. What `flow/explore.md` stops is arriving at one of them with nothing else considered and no reason recorded for why it won, which is `comp-chosen`.
 
 ## The skeleton
 
 Save as `.trunative/screens/<name>.wireframe.html`, one file, no imports, no CDN, no framework.
+
+What is copied from below is the canvas, the greys and the drawing conventions: the cross, the text bar, the label. The classes for a card, a chip, a button and a tab bar are a convenience for drawing those things quickly when the composition has them, and every size in them is a drawing size. None of them is a component specification, none of their numbers reaches the build, and none of them is a reason for a screen to contain a card, a chip row or a tab bar. A composition that needs a block of another proportion, an uneven split, something overlapping a ground or a form no class here draws writes its own few lines of CSS in the same greys. The example screen shows the conventions in use. It is not a layout to start from, and a wireframe that begins by editing it has skipped `flow/explore.md`.
 
 ```html
 <!doctype html>

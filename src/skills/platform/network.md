@@ -6,7 +6,9 @@ Online and slow is the problem this file exists for, and it is a different probl
 
 This file owns the request and the radio: deadlines, retries, cancellation, how many calls a screen makes and how many bytes each one costs. What is stored on the device and what is queued while disconnected is `heuristics/offline.md`. What the screen shows while any of it happens is `state-loading`, `state-offline` and `state-stale`.
 
-## <Rule id="net-timeout" evidence="device" description="Every request carries a deadline the app chose" />
+Platform versions named in this file run up to Android API 35. Each rule states a behaviour first and an API second. On a release newer than that, the behaviour still binds and the API name is the part to check against the platform's current documentation.
+
+## <Rule id="net-timeout" grade="binary" evidence="device" description="Every request carries a deadline the app chose" />
 
 `state-loading` owns what the screen draws when a deadline is reached. This rule owns the deadline itself, which no stack sets on the app's behalf.
 

@@ -4,6 +4,8 @@ The moment the app leaves the screen its own execution is on a countdown. iOS su
 
 This file covers whether work may run at all and under what constraint. What sits in the pending queue is `off-queue`, what the work costs in battery and heat is `perf-power`, and how the notification attached to it is written is `notifications.md`. Audio that keeps playing while the app is away is `media-background`, and a transfer the user started and is watching is `net-upload`.
 
+Platform versions named in this file run up to Android 16 and iOS 26. Each rule states a behaviour first and an API second. On a release newer than those, the behaviour still binds and the API name is the part to check against the platform's current documentation.
+
 ## <Rule id="bg-not-running" description="The app is not running, so nothing the app schedules by itself will fire" />
 
 A timer, an interval, a countdown or a polling loop only runs while the process is alive, and the process is not alive. So none of those is ever the mechanism. Work meant to happen while the user is elsewhere is handed to something the platform owns and wakes on its own terms. The scheduler is the default of those, `WorkManager` on Android and `BGTaskScheduler` on iOS, whichever of the two the cross-platform wrapper reaches. The others are named as they come up: a transfer session (`net-upload`), a queue the system drains (`off-queue`), a push that wakes the app (`bg-wake-push`), a location trigger (`bg-location`), a media session (`media-background`), a foreground service where nothing narrower fits (`bg-service-last`).

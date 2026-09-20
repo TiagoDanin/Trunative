@@ -4,7 +4,9 @@ A phone runs the app on a battery, in one hand, on hardware picked for a price, 
 
 The device this fails on is never the device it was built on. It is a few years old, its storage is slow, its memory is shared with everything else the user left open, and it has been warm since before the app launched.
 
-Row recycling is `list-virtualise`. Which properties an animation may move is `motion-cheap`. Request weight, timeouts and retries are `heuristics/network.md`. What a sensor or a location subscription is allowed to do, and what stops it, is `heuristics/sense.md`; this file owns only what holding one costs. What the screen shows while any of this is happening is `state-loading`, and the launch surface is `splash-system`.
+Row recycling is `list-virtualise`. Which properties an animation may move is `motion-cheap`. Request weight, timeouts and retries are `platform/network.md`. What a sensor or a location subscription is allowed to do, and what stops it, is `heuristics/sense.md`; this file owns only what holding one costs. What the screen shows while any of this is happening is `state-loading`, and the launch surface is `splash-system`.
+
+Platform versions named in this file run up to Android API 34. Each rule states a behaviour first and an API second. On a release newer than that, the behaviour still binds and the API name is the part to check against the platform's current documentation.
 
 ## <Rule id="perf-cold-start" description="Only what the first screen draws happens before the first screen draws" />
 

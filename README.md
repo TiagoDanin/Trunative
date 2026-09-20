@@ -95,11 +95,12 @@ Use the trunative skill on src/screens/Checkout.tsx
 The agent then:
 
 1. **Detects the stack** and maps the rules to that framework's primitives (`SafeAreaView`, `SafeArea`, `WindowInsets`, `env(safe-area-inset-*)`, …).
-2. **Settles the structure first**, when the task moves hierarchy, actions, states or navigation. It writes a screen brief to `.trunative/screens/`, draws it as a greyscale wireframe, and asks once before any code exists. Approving a picture costs a fraction of rewriting a screen, and a cosmetic change skips this entirely.
-3. **Applies the design principles** below while writing the code.
-4. **Audits the result** against the checklist and reports what it could not satisfy, instead of silently shipping it.
+2. **Settles the structure first**, when the task moves hierarchy, actions, states or navigation. It writes a screen brief to `.trunative/screens/`, with what the person is trying to get done and the situation they are in, not only what the screen shows. A cosmetic change skips this entirely.
+3. **Explores before it chooses.** The first layout that comes to mind is the most familiar one, not necessarily the best one. So the agent names the layout the screen would get by default, writes three candidates that differ in structure (where things sit and how they are operated, never spacing or colour), checks they are far enough apart to be worth comparing, and only then judges them against the rules. The winner is drawn as a greyscale wireframe that settles composition and nothing else, and you are asked when the structure is a real decision. Approving a picture costs a fraction of rewriting a screen.
+4. **Applies the design principles** below while writing the code.
+5. **Audits the result** against the checklist and reports what it could not satisfy, instead of silently shipping it.
 
-That audit scores every rule that applies from 1 to 5, and a 1 or a 2 sends the agent back to fix it before the work is handed over.
+That audit scores every rule that applies from 1 to 5, each level with a test the agent has to be able to point at, or pass or fail where a rule is not a matter of degree. A 1, a 2 or a fail sends the agent back to fix it before the work is handed over. Rules carry a severity from P0 to P3, and a failure on a P0 or P1 rule blocks the screen whatever the overall percentage is: 92% with a control nobody can name is not a 92% screen.
 
 The same review runs heavier on a screen that already exists, asked for by name:
 
@@ -111,7 +112,7 @@ It drives the app instead of reading the diff, separates what was read in the so
 
 ## Design Principles
 
-The rules the skill enforces. Each is a hard constraint, not a preference, and each carries a stable id the agent reports against. `src/skills/heuristics/` is the source of truth; this is the summary.
+The rules the skill enforces. Most are defaults: what is right unless the job or the person argues otherwise, with the exception and the reason it owes written into the rule. A few are requirements with no exception, the ones that decide whether a person can use the screen at all. Each carries a stable id the agent reports against. `src/skills/heuristics/` and `src/skills/platform/` are the source of truth; this is the summary.
 
 Ten files open on every screen, because every screen has colour, text, targets, a layout, states, at least one action, words, something that moves and something drawn.
 
