@@ -2,7 +2,7 @@ import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { dirname, join, relative, sep } from 'node:path'
 
 import { compile, type Target } from './compile.js'
-import { parseHeuristic } from './heuristics.js'
+import { isRuleFile, parseHeuristic } from './heuristics.js'
 import { packagedSkillDir, variantName } from './paths.js'
 import { narrowReferences } from './references.js'
 import { isSkillFile } from './skill.js'
@@ -69,7 +69,6 @@ function retitle(source: string, stack: string | undefined): string {
 		)
 }
 
-const HEURISTICS = 'heuristics/'
 /** A backticked token, the same shape `lint` reads a citation as. */
 const CITATION = /`([a-z0-9][a-z0-9-]*)`/g
 /**
@@ -89,10 +88,10 @@ function ownership(sources: Sources): Map<string, string> {
 	const owner = new Map<string, string>()
 
 	for (const [file, content] of sources) {
-		if (!file.startsWith(HEURISTICS) || !file.endsWith('.md')) {
+		if (!isRuleFile(file) || !file.endsWith('.md')) {
 			continue
 		}
-		const stem = file.slice(HEURISTICS.length, -'.md'.length)
+		const stem = file.slice(file.indexOf('/') + 1, -'.md'.length)
 		for (const rule of parseHeuristic(stem, file, content.toString('utf8'), []).rules) {
 			if (rule.id && !owner.has(rule.id)) {
 				owner.set(rule.id, file)
@@ -156,7 +155,7 @@ export function resolve(sources: Sources, target: Target): Map<string, Buffer> {
 			: compiled
 		// The citation map is built from ids, so it lands after the tags carrying
 		// them have been resolved into prose.
-		const linked = file.startsWith(HEURISTICS)
+		const linked = isRuleFile(file)
 			? withCrossReferences(resolved, file, owner)
 			: resolved
 		out.set(file, Buffer.from(file === 'SKILL.md' ? retitle(linked, target.stack) : linked, 'utf8'))
@@ -166,7 +165,7 @@ export function resolve(sources: Sources, target: Target): Map<string, Buffer> {
 }
 
 /** Flow files lead, in the order the flow runs rather than alphabetically. */
-const FLOW_ORDER = ['flow/init.md', 'flow/spec.md', 'flow/build.md', 'flow/review.md']
+const FLOW_ORDER = ['flow/init.md', 'flow/spec.md', 'flow/explore.md', 'flow/build.md', 'flow/review.md']
 
 /**
  * Every heading one level down, so an inlined file sits under the heading
@@ -208,6 +207,7 @@ function flattenOrder(files: Map<string, Buffer>): string[] {
 		...FLOW_ORDER.filter((file) => flow.includes(file)),
 		...flow.filter((file) => !FLOW_ORDER.includes(file)),
 		...pick('heuristics/'),
+		...pick('platform/'),
 		...pick('references/'),
 	]
 }

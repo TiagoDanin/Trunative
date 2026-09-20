@@ -138,7 +138,13 @@ function collapse(lines: string[]): string[] {
 function heading(tag: Tag): string {
 	const id = tag.attributes['id'] ?? ''
 	const description = tag.attributes['description'] ?? ''
-	return `${tag.prefix}\`${id}\` ${description}`.trimEnd()
+	// Severity and the pass or fail grade travel with the heading, so a reader
+	// of the shipped copy knows what a failure here costs without the rubric.
+	const marks = [
+		tag.attributes['severity'] ? tag.attributes['severity'].toUpperCase() : '',
+		tag.attributes['grade'] === 'binary' ? 'pass or fail' : '',
+	].filter(Boolean)
+	return `${tag.prefix}\`${id}\` ${description}${marks.length > 0 ? ` [${marks.join(', ')}]` : ''}`.trimEnd()
 }
 
 /** A compiled rule heading, "## `id` description". */

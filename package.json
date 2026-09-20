@@ -40,6 +40,7 @@
     "build": "tsc && node dist/cli.js build",
     "typecheck": "tsc --noEmit",
     "lint": "tsx src/cli.ts lint",
+    "test": "tsx --test test/skill.test.ts",
     "graph": "tsx src/cli.ts graph",
     "prepublishOnly": "yarn build"
   },

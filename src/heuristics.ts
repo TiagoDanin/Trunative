@@ -23,6 +23,35 @@ export interface Rule {
 	 * settle the rule. "source" otherwise.
 	 */
 	evidence: 'source' | 'device'
+	/**
+	 * What the rule costs the person using the app when it fails. "p0" and "p1"
+	 * block a screen whatever the percentage says. "p2" when the heading says nothing.
+	 */
+	severity: Severity
+	/**
+	 * "binary" when the heading carries grade="binary": the rule is met or it is
+	 * not, and a 1 to 5 on it would be precision nobody measured. "scale" otherwise.
+	 */
+	grade: 'scale' | 'binary'
+}
+
+/**
+ * The directories that hold rules. `heuristics/` is what the person should
+ * experience, and `platform/` is the engineering underneath it: transport,
+ * scheduling, performance. Same tags, same parser, same review, different shelf.
+ */
+export const RULE_DIRS = ['heuristics', 'platform'] as const
+
+/** True for a path such as "heuristics/touch.md" or "platform/network.md". */
+export function isRuleFile(file: string): boolean {
+	return RULE_DIRS.some((dir) => file.startsWith(`${dir}/`))
+}
+
+export const SEVERITIES =['p0', 'p1', 'p2', 'p3'] as const
+export type Severity = (typeof SEVERITIES)[number]
+
+function severity(value: string | undefined): Severity {
+	return (SEVERITIES as readonly string[]).includes(value ?? '') ? (value as Severity) : 'p2'
 }
 
 /** One heuristics file, in the order its rules appear. */
@@ -103,7 +132,7 @@ export async function readAlwaysInScope(skillDir: string): Promise<string[]> {
 export async function readIndexFiles(skillDir: string, of: string): Promise<string[]> {
 	const stems: string[] = []
 	for (const line of await readIndex(skillDir, of)) {
-		for (const match of line.matchAll(/`heuristics\/([a-z0-9-]+)\.md`/g)) {
+		for (const match of line.matchAll(/`(?:heuristics|platform)\/([a-z0-9-]+)\.md`/g)) {
 			if (!stems.includes(match[1]!)) {
 				stems.push(match[1]!)
 			}
@@ -143,6 +172,8 @@ export function parseHeuristic(
 			line: index + 1,
 			checkLine: 0,
 			evidence: attrs['evidence'] === 'device' ? 'device' : 'source',
+			severity: severity(attrs['severity']),
+			grade: attrs['grade'] === 'binary' ? 'binary' : 'scale',
 		}
 		rules.push(rule)
 		order.set(rule.id, rule)
@@ -177,6 +208,8 @@ export function parseHeuristic(
 			line: 0,
 			checkLine: token.tag.line + 1,
 			evidence: 'source',
+			severity: 'p2',
+			grade: 'scale',
 		}
 		rules.push(rule)
 		order.set(id, rule)
@@ -211,6 +244,8 @@ export function parseHeuristic(
 						line: 0,
 						checkLine: index + 1,
 						evidence: 'source',
+						severity: 'p2',
+						grade: 'scale',
 					}
 					rules.push(rule)
 					order.set(id, rule)
@@ -226,21 +261,25 @@ export function parseHeuristic(
 	return { file, path, title, rules, device: device.join(' ') }
 }
 
-/** Every heuristics file in the skill, in filename order. */
+/** Every rule file in the skill, from every rule directory, in filename order. */
 export async function readHeuristics(skillDir: string): Promise<Heuristic[]> {
-	const dir = join(skillDir, 'heuristics')
-	const names = (await readdir(dir))
-		.filter((name) => name.endsWith('.md'))
-		.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
-
 	const always = await readAlwaysInScope(skillDir)
 	const heuristics: Heuristic[] = []
 
-	for (const name of names) {
-		const source = await readFile(join(dir, name), 'utf8')
-		const file = basename(name, '.md')
-		heuristics.push(parseHeuristic(file, `heuristics/${name}`, source, always))
+	for (const folder of RULE_DIRS) {
+		const dir = join(skillDir, folder)
+		let names: string[]
+		try {
+			names = (await readdir(dir)).filter((name) => name.endsWith('.md'))
+		} catch {
+			// A copy with no platform files in it is still a whole skill.
+			continue
+		}
+		for (const name of names) {
+			const source = await readFile(join(dir, name), 'utf8')
+			heuristics.push(parseHeuristic(basename(name, '.md'), `${folder}/${name}`, source, always))
+		}
 	}
 
-	return heuristics
+	return heuristics.sort((a, b) => (a.file < b.file ? -1 : a.file > b.file ? 1 : 0))
 }

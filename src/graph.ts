@@ -2,7 +2,15 @@ import { readdir, readFile } from 'node:fs/promises'
 import { basename, join } from 'node:path'
 
 import { AGENTS, STACKS } from './compile.js'
-import { parseHeuristic, readIndex, type Heuristic, type Rule } from './heuristics.js'
+import {
+	isRuleFile,
+	parseHeuristic,
+	readIndex,
+	RULE_DIRS,
+	SEVERITIES,
+	type Heuristic,
+	type Rule,
+} from './heuristics.js'
 import { tokenize, values, type Tag } from './mdx.js'
 import { packagedSkillDir } from './paths.js'
 
@@ -46,7 +54,9 @@ export interface Graph {
 
 const BACKTICKED = /`([a-z0-9][a-z0-9-]*)`/g
 const REFERENCE = /`(references\/[a-z0-9-]+\.(?:md|json))`/g
-const PREFIX_ROW = /\|\s*`heuristics\/([a-z0-9-]+)\.md`\s*\|\s*`([a-z0-9-]+)`\s*\|/
+const PREFIX_ROW = /\|\s*`(?:heuristics|platform)\/([a-z0-9-]+)\.md`\s*\|\s*`([a-z0-9-]+)`\s*\|/
+/** Both rule directories, as one alternation for an index pattern. */
+const RULES = `(?:${RULE_DIRS.join('|')})`
 
 async function listDir(skillDir: string, dir: string): Promise<string[]> {
 	try {
@@ -88,7 +98,7 @@ function prefixes(lines: string[]): Map<string, string> {
 export async function readGraph(skillDir = packagedSkillDir): Promise<Graph> {
 	const files = {
 		flow: await listDir(skillDir, 'flow'),
-		heuristics: await listDir(skillDir, 'heuristics'),
+		heuristics: (await Promise.all(RULE_DIRS.map((dir) => listDir(skillDir, dir)))).flat(),
 		references: await listDir(skillDir, 'references'),
 	}
 
@@ -96,8 +106,8 @@ export async function readGraph(skillDir = packagedSkillDir): Promise<Graph> {
 	const extraLines = await readIndex(skillDir, 'extra')
 	const index = {
 		flow: indexed(await readIndex(skillDir, 'flow'), 'flow'),
-		base: indexed(baseLines, 'heuristics'),
-		extra: indexed(extraLines, 'heuristics'),
+		base: indexed(baseLines, RULES),
+		extra: indexed(extraLines, RULES),
 		references: indexed(await readIndex(skillDir, 'references'), 'references'),
 	}
 
@@ -189,10 +199,10 @@ interface CheckInput {
 
 /** Where each tag is allowed to appear, by directory. */
 const PLACEMENT: Record<string, (file: string) => boolean> = {
-	Rule: (file) => file.startsWith('heuristics/'),
-	Check: (file) => file.startsWith('heuristics/'),
-	Verify: (file) => file.startsWith('heuristics/'),
-	Device: (file) => file.startsWith('heuristics/'),
+	Rule: isRuleFile,
+	Check: isRuleFile,
+	Verify: isRuleFile,
+	Device: isRuleFile,
 	If: (file) => file.startsWith('flow/') || file.startsWith('references/'),
 	Ask: (file) => file.startsWith('flow/'),
 	Option: (file) => file.startsWith('flow/'),
@@ -200,7 +210,7 @@ const PLACEMENT: Record<string, (file: string) => boolean> = {
 }
 
 const ATTRIBUTES: Record<string, string[]> = {
-	Rule: ['id', 'evidence', 'description'],
+	Rule: ['id', 'evidence', 'severity', 'grade', 'description'],
 	Check: ['against'],
 	Verify: ['rule'],
 	Device: [],
@@ -220,20 +230,22 @@ function check(input: CheckInput): Finding[] {
 	}
 
 	const ids = new Set(input.rules.map((rule) => rule.id))
+	const paths = new Map(input.heuristics.map((heuristic) => [heuristic.file, heuristic.path]))
+	const pathOf = (rule: Rule): string => paths.get(rule.file) ?? `heuristics/${rule.file}.md`
 
 	for (const rule of input.rules) {
 		if (rule.line === 0) {
-			add('check without rule', `\`${rule.id}\` is verified but never defined`, `heuristics/${rule.file}.md`, rule.checkLine)
+			add('check without rule', `\`${rule.id}\` is verified but never defined`, pathOf(rule), rule.checkLine)
 		}
 		if (rule.checkLine === 0) {
-			add('rule without check', `\`${rule.id}\` has no Verify line`, `heuristics/${rule.file}.md`, rule.line)
+			add('rule without check', `\`${rule.id}\` has no Verify line`, pathOf(rule), rule.line)
 		}
 		if (!rule.title) {
-			add('rule without description', `\`${rule.id}\``, `heuristics/${rule.file}.md`, rule.line)
+			add('rule without description', `\`${rule.id}\``, pathOf(rule), rule.line)
 		}
 		const prefix = input.declared.get(rule.file)
 		if (prefix && !rule.id.startsWith(prefix)) {
-			add('prefix', `\`${rule.id}\` does not start with \`${prefix}\``, `heuristics/${rule.file}.md`, rule.line)
+			add('prefix', `\`${rule.id}\` does not start with \`${prefix}\``, pathOf(rule), rule.line)
 		}
 	}
 
@@ -338,6 +350,12 @@ function check(input: CheckInput): Finding[] {
 
 		if (tag.name === 'Rule' && tag.attributes['evidence'] && tag.attributes['evidence'] !== 'device') {
 			add('Rule', `evidence="${tag.attributes['evidence']}" is not a value`, file, tag.line + 1)
+		}
+		if (tag.name === 'Rule' && tag.attributes['severity'] && !(SEVERITIES as readonly string[]).includes(tag.attributes['severity'])) {
+			add('Rule', `severity="${tag.attributes['severity']}" is not a value`, file, tag.line + 1)
+		}
+		if (tag.name === 'Rule' && tag.attributes['grade'] && tag.attributes['grade'] !== 'binary') {
+			add('Rule', `grade="${tag.attributes['grade']}" is not a value`, file, tag.line + 1)
 		}
 
 		if (tag.kind === 'open') {
