@@ -48,6 +48,8 @@ Weight is relative, which means it gets judged across the whole screen and never
 
 This is countable. Take the distinct text elements on the screen and look at how the weights fall across them. Most of them at 400 with two or three above it is a distributed hierarchy. Most of them above 400 is a flat screen wearing a heavy coat, and the fix is to take weight away rather than to add more of it somewhere else.
 
+The distribution has a floor as well as a ceiling, and the floor is the one this rule is usually read without. Most of the screen at 400 with two or three things above it is the target; every single thing at 400 is not the restrained version of that, it is a screen where nothing was promoted. Something on the screen is what the reader came for, and on a screen with no heavy cut anywhere the reader finds it by reading rather than by looking, which is the cost this rule exists to avoid paying.
+
 Build the hierarchy from weight and space before size. The reader has a slider for size and none for the others: at 200% a 24pt title and 17pt body are both large, and the distance that structured the screen at 100% is doing much less of the work.
 
 ## <Rule id="type-face" description="A typeface nobody chose" />
@@ -99,7 +101,7 @@ Where a screen carries real reading, compensate in the dark theme only: one step
 <Verify rule="type-scale">Text styles trace back to the platform scale or to a written-down extension of it, no component carries a literal size, and Android text is in `sp`.</Verify>
 <Verify rule="type-roles">The screen works from about four named roles and carries no more than five distinct sizes, and a role that repeats across screens is identical every time.</Verify>
 <Verify rule="type-hierarchy">The screen's subject and the start of its content separate at a glance rather than sitting a step apart, the ramp reaches its display end instead of staying in the middle, and a ramp kept compressed names what carries the hierarchy in its place.</Verify>
-<Verify rule="type-weight">Nothing below 400, no weight hardcoded outside a theme style, and every weight step jumps a grade. Weight is distributed across the screen, with most text on the regular cut and the heavy cut spent on a few elements.</Verify>
+<Verify rule="type-weight">Nothing below 400, no weight hardcoded outside a theme style, and every weight step jumps a grade. Weight is distributed across the screen, with most text on the regular cut and the heavy cut spent on a few elements, and something on the screen does carry it.</Verify>
 <Verify rule="type-face">The typeface choice can be stated as a reason, a brand face stays in the display roles, and any custom face scales.</Verify>
 <Verify rule="type-measure">Body copy runs 40 to 60 characters per line.</Verify>
 <Verify rule="type-scaling">The screen was rendered at the largest accessibility step, and nothing clips, overlaps or truncates into ambiguity.</Verify>

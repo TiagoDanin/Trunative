@@ -76,6 +76,17 @@ The blurred oval behind the form, the glow under the logo tile, the three gradie
 - Texture is not subject. A pattern, a grain pass or a wash over artwork that already shows something is treatment. The same wash on its own is the defect.
 - Abstract is allowed where the product is abstract, and the test does not care about style: somebody who has not seen the app can say what the picture shows.
 
+## <Rule id="icon-stand-in" description="A domain with pictures in it gets pictures" />
+
+Some products are mostly text and some are not. Where the thing the screen is about has a look, what it looks like is content: the dish, the movement, the place, the garment, the room, the face of the person the row is about. A screen that replaces those with a glyph centred in a filled rectangle has not drawn its content, it has labelled the absence of it, and a column of those is the screen saying it has nothing to show. That is `icon-depicts` in the form it takes most often, because a glyph is easy and a picture is not.
+
+The absence of real bytes is not the reason. A screen drawn before its backend exists still has to be judged, and it is judged on what a picture does to the weight, the reading order and the density around it, which a grey block does not do.
+
+- Stand in with a photograph, seeded from the item's stable identifier so it stays attached to its row, or draw the subject as vector. The services and their costs are in `references/icon-and-image-assets.md`, and sample imagery is sample content under the same fence as the rest of it: `copy-sample-data`.
+- What stands in does not ship. A build pointing at somebody else's photo service carries a third-party request per row (`priv-instrument`) and a payload nobody budgeted (`net-payload`, `net-metered`), and the licence to the picture is not the product's.
+- A glyph is right where the thing genuinely has no appearance: a category, a setting, a state, an action. Those are labels and the glyph is the label.
+- The picture keeps the edge its medium gives it (`layout-shape`). A decorative rule or a coloured frame added around content artwork is treatment standing where the subject should be, and it reads as a sticker.
+
 ## <Rule id="icon-alt" description="A picture is content or it is decoration, and it says which" />
 
 Content describes what it shows. Decoration is hidden instead of described, which is `a11y-hidden`. Nothing sits between the two, both answers compile, and a screen where every image says nothing looks identical to one where every image is right.
@@ -127,6 +138,7 @@ The app icon is drawn at about the size of a fingertip, beside twenty others, in
 <Verify rule="icon-reserve">Every remote image outside a list takes its dimensions from the layout before the request is made, and nothing below it moves when it lands.</Verify>
 <Verify rule="icon-crop">Each image surface names one aspect ratio, or a fixed short list of them, plus one fill mode, and images crop rather than stretch or letterbox.</Verify>
 <Verify rule="icon-depicts">Every region larger than a touch target that is not text, a control or data depicts something nameable in the product, and no glow, blob, wash or abstract gradient stands where an image belongs.</Verify>
+<Verify rule="icon-stand-in">Everything the screen is about that has an appearance is shown as a photograph or a drawing of its subject, seeded so it stays with its item, rather than as a glyph on a filled rectangle; nothing that stands in for missing bytes ships; and no content artwork carries an added decorative frame.</Verify>
 <Verify rule="icon-alt">Every image either describes what it shows or is hidden as decoration, and no description is a file name or the word image.</Verify>
 <Verify rule="icon-dark">Every asset that cannot be tinted has a dark counterpart selected by the asset system, and no asset carries an opaque light background.</Verify>
 <Verify rule="icon-avatar">The avatar has a generated fallback at the same size, stable per user, covering the missing name, carrying no drawn human face, and no path renders a broken image.</Verify>

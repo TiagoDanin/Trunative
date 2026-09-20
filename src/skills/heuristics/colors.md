@@ -40,6 +40,17 @@ That check runs once, on whichever appearance gets designed first, and it has to
 - Generate three candidate references before judging any of them, each from a different source: one from what the product's job actually involves handling, the object, the document or the surface it puts in front of someone; one from where it gets used, the room, the light, the material underfoot; one from what it replaces or descends from, the paper form, the printed ticket, the physical dial it moved off of. Three sources is what stops the first idea being the only one considered, the same reason a wireframe's shape gets picked from more than one candidate. Pick the one that could not be swapped for another app's without also swapping what it evokes. An adjective survives that swap every time, so modern, friendly and premium derive nothing.
 - Look at the neutrals alone before handing off. Greys that all lean toward the accent were generated from the accent instead of chosen.
 
+## <Rule id="color-constructed" description="A palette is built, not collected" />
+
+Naming a reference settles where the colours come from. It does not produce them, and a reference read straight off into hex values, one at a time, by eye, is how five products derived from five different references arrive at the same screen: a ground a step from white, an ink near black, one accent muted enough to be inoffensive anywhere. Every value below is a number somebody can check, and the construction is in `references/color-construction.md`.
+
+- **Chroma is the tell, and the accent is where it is missing.** An accent under roughly 0.06 chroma in OKLCH is a grey that happens to lean, and a screen built on one reads as uncoloured no matter how many roles were assigned. Ground and surface hold chroma low by design, around 0.02 and under; above about 0.03 a ground has become a pale wash of the accent, which is the pastel screen nobody chose.
+- **Every hue after the first stands in a stated relationship to it**, analogous, complementary, split complementary or triadic, written down as that word. Two hues a reader must tell apart sit at least 30 degrees from each other. A second colour that arrived because the screen needed one is the reflex under another name.
+- **Status hues keep their band and the accent moves.** Where an accent lands within 30 degrees of a status meaning, the accent is the one that changes, because a user can be taught a brand colour and cannot be taught that this red means something else.
+- **The neutral ramp holds one hue and walks lightness** (`color-ramp-hsl`), and it is checked on its own: greys leaning toward the accent by more than the ground's own chroma were generated from the accent rather than chosen.
+
+A palette that cannot state these numbers has not been constructed, it has been collected, and a collection is what the reflex looks like once it has a reference attached.
+
 ## <Rule id="color-ramp-hsl" description="Move one axis at a time" />
 
 Build the ramp in HSL: hold the hue, walk the lightness. Lightness is the axis contrast lives on, so every step becomes something you can defend. Surfaces go up, text and borders go down, and the family stays recognisable because H never moved.
@@ -135,6 +146,7 @@ On Android 12 and up, Material You builds the scheme from the user's wallpaper. 
 
 <Verify rule="color-roles">No component holds a raw hex, and every color arrives through a token or a platform role.</Verify>
 <Verify rule="color-derived">The palette is derived from a named material or reference this product evokes, chosen among three candidates from three different sources rather than the first one considered, never from a color-emotion pairing or a category habit, and the same screen in a competitor's app would need a different one. The neutral ramp is not tinted toward the accent. A palette in either reflex family carries the second derivation it was compared against, recorded as a short table, and the reason this one survived, checked separately for whichever appearance was built from the other. Each family verdict quotes the ground's chroma and the ink's lightness rather than asserting a family from impression.</Verify>
+<Verify rule="color-constructed">The palette states the lightness and chroma of each role, the accent carries at least about 0.10 chroma in OKLCH and never under 0.06, ground and surface stay under about 0.03, every hue past the first names its relationship to the accent, no two hues a reader must separate sit within 30 degrees, and the neutral ramp does not lean toward the accent.</Verify>
 <Verify rule="color-ramp-hsl">Ramp steps hold the hue and shed saturation toward both ends.</Verify>
 <Verify rule="color-one-accent">The accent marks what is interactive and nothing else, and no grey sits on a colored surface.</Verify>
 <Verify rule="color-assigned">Colour is assigned to the screen's states and surfaces rather than to the primary action alone, the neutral steps were chosen rather than inherited, and rendering the screen in greyscale loses something a reader can name.</Verify>
