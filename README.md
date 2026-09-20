@@ -67,7 +67,7 @@ The skills.sh CLI works too, without the lockfile and the version check:
 npx skills add TiagoDanin/Trunative --skill trunative
 ```
 
-The repository carries seven copies: `trunative` covers every stack, and `trunative-flutter`, `trunative-expo`, `trunative-react-native`, `trunative-swiftui`, `trunative-compose` and `trunative-web` are the same skill with the other frameworks' instructions removed. Pick one with `--skill`, or list them with `-l`. `npx trunative install` needs none of this: it reads the stack from `STACK.md` and resolves the copy itself.
+The repository carries eight copies. `trunative` covers every stack, and `trunative-flutter`, `trunative-expo`, `trunative-react-native`, `trunative-swiftui`, `trunative-compose` and `trunative-web` are the same skill with the other frameworks' instructions removed. `trunative-full` is the whole skill in a single file, every rule and procedure inlined, for a context that gets pasted into once rather than read from disk. Pick one with `--skill`, or list them with `-l`. `npx trunative install` needs none of this: it reads the stack from `STACK.md` and resolves the copy itself.
 
 To install manually, copy one of those folders into your agent's skills directory:
 

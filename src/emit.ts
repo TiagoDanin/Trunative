@@ -158,6 +158,93 @@ export function resolve(sources: Sources, target: Target): Map<string, Buffer> {
 	return out
 }
 
+/** Flow files lead, in the order the flow runs rather than alphabetically. */
+const FLOW_ORDER = ['flow/init.md', 'flow/spec.md', 'flow/build.md', 'flow/review.md']
+
+/**
+ * Every heading one level down, so an inlined file sits under the heading
+ * naming its path. Fenced blocks pass untouched: a hex value at the start of a
+ * CSS line is not a heading, and neither is anything else inside a fence.
+ */
+function demote(text: string): string {
+	const out: string[] = []
+	let fence = ''
+
+	for (const line of text.split(/\r?\n/)) {
+		const opener = /^\s*(```|~~~)/.exec(line)
+		if (fence) {
+			if (opener && line.trim().startsWith(fence)) {
+				fence = ''
+			}
+			out.push(line)
+			continue
+		}
+		if (opener) {
+			fence = opener[1]!
+			out.push(line)
+			continue
+		}
+		out.push(/^#{1,5} /.test(line) ? `#${line}` : line)
+	}
+
+	return out.join('\n')
+}
+
+/** The order the flattened copy lays the skill out in. */
+function flattenOrder(files: Map<string, Buffer>): string[] {
+	const rest = [...files.keys()].filter((file) => file !== 'SKILL.md')
+	const pick = (prefix: string) =>
+		rest.filter((file) => file.startsWith(prefix)).sort((a, b) => (a < b ? -1 : 1))
+
+	const flow = pick('flow/')
+	return [
+		...FLOW_ORDER.filter((file) => flow.includes(file)),
+		...flow.filter((file) => !FLOW_ORDER.includes(file)),
+		...pick('heuristics/'),
+		...pick('references/'),
+	]
+}
+
+/**
+ * One file holding the whole skill. The tiered copy is the one a project
+ * installs, because opening a rule only when a screen touches it is the point
+ * of the tiers. This one exists for the cases where there is nothing to open:
+ * a context window that gets pasted into once, a harness with no file access, a
+ * reviewer reading the whole thing end to end. Every path the text cites
+ * becomes the heading of a section here, so a citation still navigates.
+ */
+export function flatten(files: Map<string, Buffer>): Map<string, Buffer> {
+	const entry = files.get('SKILL.md')?.toString('utf8') ?? ''
+	const parsed = /^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/.exec(entry)
+	const frontmatter = (parsed?.[1] ?? '')
+		.replace(/^name:\s*(.+)$/m, (_, name: string) => `name: ${name.trim()}-full`)
+		.replace(
+			/^description:\s*(.+)$/m,
+			(_, text: string) =>
+				`description: ${text.trim()} This copy carries every rule, procedure and reference inline, in one file.`,
+		)
+
+	const parts = [
+		'---',
+		frontmatter,
+		'---',
+		'',
+		'Every file this skill is made of is inlined below, each under a heading that is its path. A line pointing at `heuristics/colors.md` or `flow/build.md` is pointing at a section of this document, so nothing here has to be opened and nothing is missing. The tiered copy, where a rule is read only once a screen touches it, is the one a project installs; this one is for a context that gets filled once and cannot read files.',
+		'',
+		parsed?.[2]?.trim() ?? entry.trim(),
+	]
+
+	for (const file of flattenOrder(files)) {
+		const content = files.get(file)!.toString('utf8').trim()
+		const body = file.endsWith('.md')
+			? demote(content)
+			: ['```' + file.split('.').pop(), content, '```'].join('\n')
+		parts.push('', `# ${file}`, '', body)
+	}
+
+	return new Map([['SKILL.md', Buffer.from(`${parts.join('\n')}\n`, 'utf8')]])
+}
+
 /** Writes a resolved variant to disk, replacing whatever was there. */
 export async function write(files: Map<string, Buffer>, destination: string): Promise<number> {
 	await rm(destination, { recursive: true, force: true })

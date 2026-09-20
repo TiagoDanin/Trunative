@@ -2,7 +2,7 @@ import { rm } from 'node:fs/promises'
 import { join, relative, sep } from 'node:path'
 
 import { AGENTS, STACKS, type Target } from '../compile.js'
-import { readSources, resolve, write } from '../emit.js'
+import { flatten, readSources, resolve, write } from '../emit.js'
 import {
 	AGENT_DIR,
 	compiledSkillsDir,
@@ -43,7 +43,16 @@ export async function build(options: BuildOptions): Promise<number> {
 		published += await write(resolve(sources, target), destination)
 	}
 
-	const names = variants.map((stack) => variantName('trunative', stack)).join(', ')
+	// One more published copy, the whole skill in a single file. It is stackless
+	// and resolved for the same agent as the others, because what it is for is a
+	// context that gets filled once rather than a project that reads files.
+	const full = variantName('trunative', 'full')
+	published += await write(
+		flatten(resolve(sources, { agent: PUBLISHED_AGENT })),
+		join(publishedSkillsDir, full),
+	)
+
+	const names = [...variants.map((stack) => variantName('trunative', stack)), full].join(', ')
 	const dirs = AGENTS.map((agent) => AGENT_DIR[agent] ?? `.${agent}`).join(', ')
 	const at = (path: string) => relative(process.cwd(), path).split(sep).join('/')
 	console.log(`built ${written} files for trunative ${options.version}`)
