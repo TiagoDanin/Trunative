@@ -79,7 +79,7 @@ It does not belong on the launch path: `perf-cold-start` puts database open and 
 - Measure it against the largest store a real user has. The first launch after an update is the one moment the biggest store meets the newest code, and an empty simulator never reproduces it.
 - Failure is a designed screen with a move (`state-error`), never a launch that hangs and never an empty screen implying the data is gone.
 
-## <Rule id="upd-no-wipe" description="A schema bump is not permission to delete what the user has" />
+## <Rule id="upd-no-wipe" severity="p0" grade="binary" description="A schema bump is not permission to delete what the user has" />
 
 The destructive escape hatches are one line each and they read like configuration: the destructive migration fallbacks delete every row in the tables, and the widespread raw SQLite upgrade that drops the tables and recreates them does the same thing by hand.
 

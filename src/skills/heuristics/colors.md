@@ -51,7 +51,7 @@ Naming a reference settles where the colours come from. It does not produce them
 
 A palette that cannot state these numbers has not been constructed, it has been collected, and a collection is what the reflex looks like once it has a reference attached.
 
-## <Rule id="color-ramp-hsl" description="Move one axis at a time" />
+## <Rule id="color-ramp-hsl" severity="p3" description="Move one axis at a time" />
 
 Build the ramp in HSL: hold the hue, walk the lightness. Lightness is the axis contrast lives on, so every step becomes something you can defend. Surfaces go up, text and borders go down, and the family stays recognisable because H never moved.
 
@@ -70,6 +70,10 @@ An accent works by being scarce. iOS gives the app a single tint and expects eve
 - When a color has to be loud, give it a whole region or a whole role instead of sprinkling it in six places.
 - Secondary text on a colored surface comes from that surface's own hue, or from opacity over it. Grey dropped onto a color reads as a rendering fault.
 - Status colors keep their jobs. Error red used for branding spends the one color a user reads without thinking.
+
+**Default.** One accent, spent on what can be touched.
+**Exception.** A product whose content is colour coded by the person or by the domain: calendars the person coloured themselves, transit lines that have had their colours for decades, categories the person assigned. That colour is data, it sits on the content and never on a control, and the accent stays the only colour meaning "touch here". How a hue per item stays a palette is `color-variety`.
+**Reason required.** Where the colours come from, and that none of them is the accent or a status colour.
 
 ## <Rule id="color-assigned" description="Restraint and absence are not the same screen" />
 
@@ -107,7 +111,7 @@ A gradient that stays brings three constraints with it:
 - A long ramp bands on an 8-bit panel, which is what a phone becomes once brightness drops.
 - Translucency stacked on translucency leaves the final ratio at the mercy of whatever happens to scroll past. Opaque values can be checked; these cannot.
 
-## <Rule id="color-dark-composed" evidence="device" description="Dark is a second design, not a switch" />
+## <Rule id="color-dark-composed" severity="p1" evidence="device" description="Dark is a second design, not a switch" />
 
 This is the part that gets done last and shows it.
 
@@ -120,7 +124,7 @@ This is the part that gets done last and shows it.
 
 Light-only ships broken, and the system setting is what the app follows by default.
 
-## <Rule id="color-contrast" evidence="device" description="Measure the pair, do not eyeball it" />
+## <Rule id="color-contrast" severity="p1" evidence="device" description="Measure the pair, do not eyeball it" />
 
 | What | Minimum |
 |---|---|
@@ -132,7 +136,7 @@ These are floors rather than targets because of where phones get used. Sunlight 
 
 Measure the pressed, selected, disabled and placeholder states as well, plus text sitting over an image, in both themes. The 14pt row is a weight rule as much as a size rule: drop that text to regular and it owes 4.5:1, without a single color having changed.
 
-## <Rule id="color-not-alone" evidence="device" description="Color never carries a meaning by itself" />
+## <Rule id="color-not-alone" severity="p1" evidence="device" description="Color never carries a meaning by itself" />
 
 Red against green is the pair that fails, and roughly one man in twelve sees them differently. Grayscale and wind-down modes take hue away from everyone else, and glare eats hue before it eats lightness.
 

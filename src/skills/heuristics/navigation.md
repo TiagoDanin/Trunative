@@ -38,7 +38,7 @@ On a phone the modal covers its parent, so there is no visible background to cli
 - Interactive dismissal is already on, so the line to look for is the one that turns it off: `interactiveDismissDisabled`, a sheet state that refuses to hide. It belongs only where dismissing loses work, and where it appears the question appears with it, which is not the same as trapping.
 - Never open a modal over a modal. The second one is a pushed screen inside the first.
 
-## <Rule id="nav-back" description="Back unwinds the stack and nothing else" />
+## <Rule id="nav-back" severity="p0" description="Back unwinds the stack and nothing else" />
 
 On Android back is a system event that reaches every screen, sheet, cover and dialog, and the components dismiss the top surface with it already. That it exists and must not be swallowed is `touch-gestures`. iOS sends no such event: a full screen cover and an alert there end only through a control the app drew, which is what `nav-container` and `nav-modal` ask for. What is left here is what back means against the stack.
 

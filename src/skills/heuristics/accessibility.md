@@ -6,7 +6,7 @@ A phone sharpens every part of it. There is no width for labels, so controls bec
 
 Four neighbours carry pieces of this and are not repeated here: `color-not-alone`, `touch-floor`, `touch-spacing` and `type-scaling`. `list-a11y` is a fifth of a different kind: it is these rules applied to a list row, so the two are read together.
 
-## <Rule id="a11y-name" description="Every control carries a name, a role and a value" />
+## <Rule id="a11y-name" severity="p1" grade="binary" description="Every control carries a name, a role and a value" />
 
 Three separate things, and the last two are the ones that go missing.
 
@@ -61,7 +61,7 @@ Almost nothing on a phone is a page load. A filter narrows the list in place, a 
 - The way out has to be reachable from inside the surface, which is `nav-modal` stated for a user who cannot perform the dismissing gesture.
 - Focus never moves unless the user asked it to. Taking it on load talks over the screen title, and taking it on every state change makes the screen impossible to read. Two moves are asked for and stay: onto the single field a screen exists for, such as search or a code (`form-input`), and onto the first failing field after a submit (`form-error`).
 
-## <Rule id="a11y-gesture" description="A gesture is never the only route" />
+## <Rule id="a11y-gesture" severity="p1" description="A gesture is never the only route" />
 
 A swipe, a long press, a drag to reorder, a pinch, anything with two fingers: none of these can be performed by someone using a reader, a switch, or a keyboard. Each one needs a named route to the same result, and where that route comes from depends on what drew the gesture.
 

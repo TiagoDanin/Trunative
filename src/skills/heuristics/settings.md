@@ -46,6 +46,10 @@ One of these is not optional. An app that asked for the notification permission 
 - A feature screen whose whole feature can be turned off carries one main switch, at the top, above everything it governs. The rows under it stay visible and disabled rather than vanishing and reflowing the screen under a thumb already on its way down, and a disabled row says what turns it back on.
 - Repeating one setting in two places is allowed when two different situations send people looking in two different places. It is one setting on one subscreen with two entry points, never two controls writing the same value, and where what is repeated is a whole feature, that one control is its main switch.
 
+**Default.** Ten rows to a screen, the rest one level down.
+**Exception.** A list of instances and not of decisions: one row per account, per device, per notification kind, per blocked contact. The count is the person's own data, the rows are all the same shape, and splitting them across subscreens hides the one being looked for. Past a screenful it takes a filter, which is `search-surface`.
+**Reason required.** That the rows are instances of one thing, and what they are instances of.
+
 ## <Rule id="set-status" description="Every row shows its current value without being opened" />
 
 Title, then the value it is currently set to, on the row itself. In one column this is the whole difference between reading the screen and opening six subscreens to find out how the app is configured.

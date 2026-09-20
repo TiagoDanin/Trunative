@@ -2,7 +2,7 @@
 
 A phone loses the network as a normal condition of use: lifts, tunnels, basements, aircraft, rural roads, a hotel portal that answers every request with its own login page, and a full bar of signal attached to nothing. Sessions that start, end or spend their middle in one of those are a predictable share of all sessions, not an edge case.
 
-This file is about the copy the app keeps on the device: what is stored, for how long, what is deliberately never stored, what happens to a write made while disconnected, and what the app becomes when that copy is gone. The request itself, its timeout and its retry, is `heuristics/network.md`. How the screen says offline, pending or stale is `state-offline`, `state-queued` and `state-stale`. Everything here is the layer underneath those three.
+This file is about the copy the app keeps on the device: what is stored, for how long, what is deliberately never stored, what happens to a write made while disconnected, and what the app becomes when that copy is gone. The request itself, its timeout and its retry, is `platform/network.md`. How the screen says offline, pending or stale is `state-offline`, `state-queued` and `state-stale`. Everything here is the layer underneath those three.
 
 ## <Rule id="off-local-first" description="The screen reads the store, and the network writes to the store" />
 
@@ -65,7 +65,7 @@ Decide per action, in the code that performs it:
 
 A screen where every mutation is optimistic will eventually tell someone in a tunnel that their transfer went through.
 
-## <Rule id="off-queue" evidence="device" description="The queue is durable, identified, and drained by the platform's own scheduler" />
+## <Rule id="off-queue" severity="p0" evidence="device" description="The queue is durable, identified, and drained by the platform's own scheduler" />
 
 - **Durable.** Rows in the database. Not an array in a view model, and not a cache directory, which `off-reclaimable` can empty between the write and the drain.
 - **Identified.** The device generates the entry's id before the first attempt and reuses it on every retry, so a reply lost on the way back becomes one order rather than two.

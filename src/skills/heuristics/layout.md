@@ -6,7 +6,7 @@ Values already written into `DESIGN.md`, the spacing scale and the screen margin
 
 Neighbouring rules own the parts that are not geometry: thumb zones are `touch-reach`, the system gesture strips are `touch-gestures`, the keyboard is `touch-keyboard`, and long collections belong to `heuristics/lists.md`.
 
-## <Rule id="layout-insets" evidence="device" description="The safe area is geometry, not padding added at the end" />
+## <Rule id="layout-insets" severity="p1" evidence="device" description="The safe area is geometry, not padding added at the end" />
 
 Read the inset at runtime and lay the screen out inside it. A constant copied off one device (34, 44, 48) is right on that phone and wrong on the next, and it is wrong on the same phone the moment a call banner or an expanded status bar changes the number.
 
@@ -54,6 +54,10 @@ A screen where a card, a photograph, a chip, a field and a button are all rounde
 ## <Rule id="layout-column" description="One column, one scrolling axis" />
 
 There is no second column to escape into, and that changes what happens when something does not fit. Two halves side by side on a 320 wide screen leave each about 140 after the margins and the gap, and at the largest text step the same pair becomes two words per line. Whatever wants a second column is a row that should stack, a table that should be a list, or content that deserves its own screen. The exception is a pair of short fields whose format fixes their length in advance, expiry beside CVC being the one everybody ships: those fit at 140 and go on fitting at the largest step. Two fields on one line is otherwise the version of this that ships most often, and `form-column` owns it.
+
+**Default.** One column of content.
+**Exception.** Items that are pictures first and text second, where a second column shows more of the thing being chosen: a photo library, a wall of covers, a grid of swatches. Also an uneven split where one region is a persistent ground and the other acts on it, which is a composition and not a second column of reading. The test for both is that no item's text has to be read across the gap to make sense.
+**Reason required.** What the person is scanning for, and that every tile still holds its label on the narrowest device at the largest text step, which is `layout-width` and `type-scaling` and not an assumption.
 
 The screen scrolls in one place and along one axis. Put a vertical scroll inside another vertical scroll and the drag has two possible owners, so the inner one, holding the content the finger was aiming at, sits still while the page moves instead. Nesting on the same axis is only ever safe under the platform contract that `scroll-nest` owns. A horizontal strip inside a vertical page needs none of that, precisely because the axes differ. Virtualising what is inside the scroll is `list-virtualise`.
 

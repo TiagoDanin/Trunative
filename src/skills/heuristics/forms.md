@@ -51,7 +51,7 @@ Each field declares what it holds, and the rest follows from that declaration. T
 - Focus a field on open only when the screen exists for that one field, such as search or a code. Anywhere else the keyboard covers the form before it has been read.
 - On mobile web the field's own text size is a layout decision. Safari on iOS zooms the page into any field it is about to focus whose text is under 16px, and it does not zoom back out, so the user finishes the form on a page wider than the screen with the submit button off to one side. Set 16px or larger on the field itself. The viewport is the wrong lever for this: Safari has ignored `user-scalable`, `minimum-scale` and `maximum-scale` on a web page since iOS 10, precisely so that a page cannot take zoom away from the user, and where those values do still apply, which is a web view embedded in an app, what they buy is a page nobody can enlarge.
 
-## <Rule id="form-autofill" evidence="device" description="The fastest field is the one the platform fills" />
+## <Rule id="form-autofill" grade="binary" evidence="device" description="The fastest field is the one the platform fills" />
 
 Both platforms will fill a whole form from the password manager, the contact card, the wallet and an arriving SMS, and none of it happens unless each field declares its content type. This is the highest value line in a form and it is the line generated code leaves out.
 
@@ -80,7 +80,7 @@ The message goes under its field, on screen at the same time as the field, with 
 - The error is not a color. It carries an icon or the message itself, per `color-not-alone`, and the label stays readable rather than being repainted red.
 - One message per field, replacing the helper text rather than stacking above it, so the row does not grow and push the submit control off screen.
 
-## <Rule id="form-persist" evidence="device" description="The form outlives the process" />
+## <Rule id="form-persist" severity="p0" evidence="device" description="The form outlives the process" />
 
 A phone form is interrupted by definition: the code arrives in another app, a call lands, the OS reclaims the process while the user is in their password manager. Returning to an empty form is the most expensive failure in this file.
 

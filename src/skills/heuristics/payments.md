@@ -36,7 +36,7 @@ The confirmation sheet exists to stop accidental purchases, and the platform is 
 
 The app's job is what comes before the sheet and what happens after it. The sheet itself is not styled, not wrapped, not preceded by a lookalike, and not dismissed programmatically.
 
-## <Rule id="pay-total" description="The total is visible before the commitment, not after it" />
+## <Rule id="pay-total" severity="p1" description="The total is visible before the commitment, not after it" />
 
 State the full amount to be billed for anything on offer, of any type. On a phone the surprise arrives late, because the screen is short and the fee lands at the bottom.
 
@@ -98,7 +98,7 @@ Strong authentication, a bank app, a wallet redirect or a browser step takes the
 - The return arrives as a link and is routed under `nav-deeplink`, landing on the outcome rather than on the home screen.
 - Design for the user who never comes back. The payment may have succeeded anyway, so the app reconciles on next launch rather than assuming failure.
 
-## <Rule id="pay-outcome" description="Pending is a real answer, and a retry must not charge twice" />
+## <Rule id="pay-outcome" severity="p0" description="Pending is a real answer, and a retry must not charge twice" />
 
 A payment has four outcomes, not two: succeeded, failed, still pending, and reversed later by a refund or a chargeback. Each gets a state under `state-set`.
 
@@ -106,7 +106,7 @@ A payment has four outcomes, not two: succeeded, failed, still pending, and reve
 - Every attempt carries an idempotency key so a retry, a double tap or a reconnect cannot bill twice. This is the payment case of `net-dedupe`, and here the cost of getting it wrong is money.
 - A receipt is reachable after the fact, from inside the app, without searching an inbox.
 
-## <Rule id="pay-honest-paywall" description="The paywall is where scam patterns get apps removed" />
+## <Rule id="pay-honest-paywall" severity="p1" description="The paywall is where scam patterns get apps removed" />
 
 Tricking someone into a subscription is grounds for removal from the store, and the patterns are well known enough to be worth naming.
 

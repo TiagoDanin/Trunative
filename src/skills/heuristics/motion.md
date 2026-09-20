@@ -52,7 +52,7 @@ Press feedback has its own deadline, which is `touch-feedback`. What this rule o
 
 Duration rises with the area covered: a chip changing tint and a full screen cover arriving do not share a number. In Material terms the short tokens (50 to 200ms) carry small in-place changes and the medium tokens (250 to 400ms) carry a transition, with a full screen change at the top of that band and nothing above it. The long and extra-long tokens start at 450ms, so they belong only to motion no interaction is waiting on.
 
-## <Rule id="motion-choreo" description="One thing leads" />
+## <Rule id="motion-choreo" severity="p3" description="One thing leads" />
 
 When several elements move at once, the eye needs one anchor. Give the change a single subject, either an element that persists across the transition (`SharedTransitionLayout` on Compose, `.navigationTransition(.zoom(sourceID:in:))` on iOS 18, `Hero` on Flutter) or one region that moves while the rest holds still. Four independent animations at four different durations is not choreography, it is four animations.
 
@@ -94,7 +94,7 @@ The test is who owns the animation, not which property moves. The framework's ow
 
 Blur, shadow and shader work stay bounded to a region, and the count of things animating at once is small enough to name.
 
-## <Rule id="motion-reduced" evidence="device" description="The reduced build still communicates, it just does not move" />
+## <Rule id="motion-reduced" severity="p1" evidence="device" description="The reduced build still communicates, it just does not move" />
 
 Reduce Motion on iOS and Remove animations on Android are settings real people turn on because motion makes them ill. Neither is answered by setting duration to zero and calling it done, and the two ask for different things, which is why one implementation cannot serve both.
 

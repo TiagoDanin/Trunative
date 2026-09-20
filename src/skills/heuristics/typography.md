@@ -4,7 +4,7 @@ Type on a phone gets read close up, in a hand that moves, in light nobody chose,
 
 `DESIGN.md` holds the families and the ramp. This file is how they land in code, and what has to hold before the screen ships. Per-role sizes, weights and line heights sit in `references/type-scales.md`, to be opened for one lookup rather than read through.
 
-## <Rule id="type-scale" description="The ramp already exists on both platforms" />
+## <Rule id="type-scale" severity="p1" grade="binary" description="The ramp already exists on both platforms" />
 
 Each platform publishes a complete role scale that is optically tuned, wired to the size setting, and understood by the screen reader. Pick the role that matches the job and adjust from there. Inventing a parallel ramp discards those three properties and returns nothing.
 
@@ -69,7 +69,7 @@ Body copy wants 40 to 60 characters per line, and the lower half of that band is
 
 The usual failure is a paragraph running edge to edge on a large phone held sideways. Cap the column instead.
 
-## <Rule id="type-scaling" evidence="device" description="Render it at maximum before calling it done" />
+## <Rule id="type-scaling" severity="p1" evidence="device" description="Render it at maximum before calling it done" />
 
 No other check in this file surfaces as many genuine defects. Turn the text size to the platform's largest accessibility step, walk every screen, and look for:
 

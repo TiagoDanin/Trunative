@@ -6,7 +6,7 @@ The phone is where the gap costs most. The connection comes and goes inside a si
 
 Every state below needs its own words and its own way forward. A generic message is the same as no state at all, because it leaves the user with nothing to do next.
 
-## <Rule id="state-set" description="Six states, named before the happy path is written" />
+## <Rule id="state-set" severity="p1" description="Six states, named before the happy path is written" />
 
 For any screen that loads, sends or stores anything, write the line it shows in each of six: **loading**, **empty**, **error**, **offline or stale**, **partial**, and **permission denied or read only**. Produce that list in `flow/spec.md`, where it is the screen brief's six state keys, before the layout exists. A screen changed without a brief produces it while framing in `flow/build.md` instead.
 
@@ -43,7 +43,7 @@ There are four failure classes and they are not interchangeable: the radio has n
 - Never dress a failure as an empty. "No messages" and "could not load messages" are opposite claims, and code that returns an empty list on failure makes them identical on screen.
 - The message lands where the failure is: at the field for a field, in the region for a region, on the screen for the screen. `heuristics/forms.md` owns field-level validation. A modal alert for something that could be said inline charges the user an interruption, and whether the message reaches a screen reader at all is `fb-reach`. How it is worded is `copy-error` and `copy-jargon`.
 
-## <Rule id="state-retry" description="A retry that loses what was typed is a second failure" />
+## <Rule id="state-retry" severity="p0" description="A retry that loses what was typed is a second failure" />
 
 - The manual retry is always present and always visible once something failed. Automatic retry does not replace it.
 - Retrying returns to the same state: the input, the selection, the scroll offset, the sheet that was open. On a phone the typed content is the expensive part, thumbed in one character at a time, and it is never recoverable from anywhere else.
@@ -92,7 +92,7 @@ The ask itself, the reason shown before it and how many chances are left belong 
 - Read only belongs here too: viewing allowed and editing not. `button-state` starts by leaving the control live and answering on tap with what is missing; where it genuinely has to be disabled, that rule's fallback applies and the reason sits beside it rather than being left to be inferred.
 - No screen is a wall that cannot be left without granting.
 
-## <Rule id="state-interrupt" evidence="device" description="The phone takes the app away mid task" />
+## <Rule id="state-interrupt" severity="p0" evidence="device" description="The phone takes the app away mid task" />
 
 A call, a notification pulled down and an app switch stop the screen without destroying it, and the OS carries what is in memory through all three for free. Two events do not, and they are the ones this rule is about: a configuration change (rotation, multi-window, and the text size and theme changes `type-scaling` sends you to go and set), and the system killing the process while the app is in the background.
 

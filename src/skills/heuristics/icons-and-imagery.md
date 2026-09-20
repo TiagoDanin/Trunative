@@ -6,7 +6,7 @@ Both fail the same way: the set was assembled rather than chosen, and the box wa
 
 Sizes, axis ranges, density buckets and asset paths are in `references/icon-and-image-assets.md`. This file is the rules.
 
-## <Rule id="icon-one-set" description="An icon set is a set, not a collection" />
+## <Rule id="icon-one-set" grade="binary" description="An icon set is a set, not a collection" />
 
 One set for the whole app, at one weight and one style. Two sets on one screen is the defect that reads from across the room: it takes no interaction to find and no expertise to name, and it is what a screen assembled out of search results looks like.
 
@@ -30,7 +30,7 @@ An icon next to text is part of that line, and every property it has is borrowed
 
 An icon rarely carries a verb on its own, so what is written next to it is `button-label` and what is spoken instead of it is `a11y-name`. Meaningful icons owe the same contrast as any other non-text mark: `color-contrast`. And the glyph is only the drawing: the target around it is a separate object with its own floor, which is `touch-floor`.
 
-## <Rule id="icon-no-emoji" description="An emoji is content, never an icon" />
+## <Rule id="icon-no-emoji" grade="binary" description="An emoji is content, never an icon" />
 
 Emoji inside a message, a reaction, or a name somebody typed is content and stays. Emoji standing in for an icon is the most reliable tell of a generated screen, and it is not a shortcut, because none of the four things an icon does survives it.
 

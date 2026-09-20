@@ -4,7 +4,7 @@ A phone carries an ordered list of languages, a separate region, a calendar and 
 
 Shipping one language today is fine. Almost everything in this file costs nothing while the app has one language and is a rewrite once it has forty screens, which is the reason it belongs in the build step rather than in a later project.
 
-## <Rule id="l10n-strings" description="No user-facing text lives in code" />
+## <Rule id="l10n-strings" grade="binary" description="No user-facing text lives in code" />
 
 Every string a person reads comes out of the catalogue under a key: a String Catalog on iOS, `strings.xml` on Android, ARB files in Flutter, locale files in a React Native or web project. A literal sitting in a widget is what this file is here to find, and it survives review because nothing on the device gives it away: the screen looks finished until the phone is set to another language and one label stays behind in English.
 

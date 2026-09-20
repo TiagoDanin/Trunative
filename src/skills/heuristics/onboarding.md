@@ -23,6 +23,10 @@ Count the full-screen panels between launching and the first real screen. Three 
 - A first run of more than one step says where the user is in it, through a pager or a progress indicator that cannot be mistaken for decoration or for something to tap. Someone who can see two steps left finishes them; someone counting an unmarked sequence quits. Where the steps are fields, `form-steps` owns the rest.
 - The panels are content, so they reflow at the largest text setting rather than clipping the button off the bottom: `type-scaling`.
 
+**Default.** Three panels at most, and none where the first screen explains itself.
+**Exception.** A first run that is setup and not explanation: pairing a device, importing an account, choosing what a feed is built from. Those steps are the product's first real action and they take as many screens as the task has steps, under `form-steps` and `onboard-resume`. The ceiling counts panels that only explain.
+**Reason required.** What each step beyond the third collects or connects, and that the app cannot do its job without it.
+
 ## <Rule id="onboard-in-place" description="A tour is what gets built when the interface does not explain itself" />
 
 Nobody remembers a slideshow about an interface they have not used yet, and a phone has no hover to hang a hint on. Teach at the control, at the moment it first matters.

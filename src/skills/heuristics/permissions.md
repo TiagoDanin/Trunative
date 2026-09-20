@@ -84,7 +84,7 @@ The user can revoke anything from system settings while the app sits in the back
 
 The screen that assumes otherwise crashes, or shows an empty list where the content used to be and blames the server.
 
-## <Rule id="perm-no-coercion" evidence="device" description="A no is an answer the app has to live with" />
+## <Rule id="perm-no-coercion" severity="p1" evidence="device" description="A no is an answer the app has to live with" />
 
 `state-permission` owns the degraded screen and the route back into system settings. What that route must not turn into:
 
