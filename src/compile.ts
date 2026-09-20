@@ -141,6 +141,42 @@ function heading(tag: Tag): string {
 	return `${tag.prefix}\`${id}\` ${description}`.trimEnd()
 }
 
+/** A compiled rule heading, "## `id` description". */
+const RULE_LINE = /^## `([a-z0-9-]+)`/
+
+/**
+ * Every heuristics file lists its own rule ids as soon as its intro ends, so a
+ * partial read finds the file's whole shape before its first paragraph of
+ * prose, the way a table of contents does for a long reference file. Generated
+ * here rather than hand-written in the source, because a hand-written list
+ * goes stale the moment a rule is added, removed or reordered, and nothing
+ * would catch that the way `lint` catches a dangling id. `<If>` and `<Ask>`
+ * never appear in `heuristics/`, so this reads the same for every target and
+ * belongs after compilation rather than before it.
+ */
+function withRuleIndex(lines: string[]): string[] {
+	const ids: string[] = []
+	let first = -1
+
+	lines.forEach((line, index) => {
+		const match = RULE_LINE.exec(line)
+		if (!match) {
+			return
+		}
+		ids.push(match[1]!)
+		if (first === -1) {
+			first = index
+		}
+	})
+
+	if (ids.length === 0) {
+		return lines
+	}
+
+	const summary = `Rules in this file, in order: ${ids.map((id) => `\`${id}\``).join(', ')}.`
+	return [...lines.slice(0, first), summary, '', ...lines.slice(first)]
+}
+
 /**
  * Turns one source file into the text a given agent reads. Every tag is either
  * resolved or rendered as prose: nothing tagged survives into the output.
@@ -276,7 +312,7 @@ export function compile(source: string, target: Target): string {
 		}
 	}
 
-	return `${collapse(out).join('\n')}\n`
+	return `${collapse(withRuleIndex(collapse(out))).join('\n')}\n`
 }
 
 /**

@@ -2,6 +2,8 @@
 
 The skeleton every wireframe copies, so two screens in the same project come out in the same drawing and a reviewer compares structure instead of style. Read it when `flow/spec.md` sends you to render a brief, and copy it rather than reinventing a set of conventions per screen.
 
+Sections, in order: The frame, Shapes, Known defaults, The skeleton, Rules the skeleton encodes, Rendering. Reading for the shape ladder stops after Known defaults; the skeleton and what follows it are only needed once a shape is picked.
+
 ## The frame
 
 393 by 852 is the reference phone. The status bar occupies the first 59 points and the home indicator the last 34, and both are drawn as occupied area rather than as margin, because the point of the frame is that content cannot use them.
