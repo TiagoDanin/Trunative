@@ -3,12 +3,13 @@ import { join } from 'node:path'
 
 import { STACKS, type Target } from '../compile.js'
 import { readSources, resolve, write } from '../emit.js'
-import { writeLock, type LockTarget } from '../lock.js'
+import { compareVersions, readLock, writeLock, type LockTarget } from '../lock.js'
 import {
 	AGENT_ROOTS,
 	DEFAULT_AGENT_ROOT,
 	agentFor,
 	briefCandidates,
+	fullName,
 	packagedSkillDir,
 	variantName,
 } from '../paths.js'
@@ -21,6 +22,8 @@ export interface InstallOptions {
 	dirs?: string[]
 	/** Stack to resolve for, overriding the one STACK.md records. */
 	stack?: string
+	/** Install even when the project's copy came from a newer trunative. */
+	force?: boolean
 }
 
 async function exists(path: string): Promise<boolean> {
@@ -50,10 +53,12 @@ async function detectAgentRoots(cwd: string): Promise<string[]> {
  * Every name this skill installs under. A project that records its stack after
  * a stackless install ends up holding two copies of the same rules, and an
  * agent that loads both reads one framework's mechanism from one and another
- * framework's from the other. Only the copy being written survives.
+ * framework's from the other. Only the copy being written survives. The
+ * single-file copy goes too: beside a tiered copy it is loaded as well, and it
+ * puts every rule in the context at once, which is what the tiers exist to avoid.
  */
 function siblings(name: string): string[] {
-	return [variantName(name), ...STACKS.map((stack) => variantName(name, stack))]
+	return [variantName(name), ...STACKS.map((stack) => variantName(name, stack)), fullName(name)]
 }
 
 /**
@@ -77,6 +82,18 @@ export async function readStack(cwd: string): Promise<string | undefined> {
 
 export async function install(options: InstallOptions): Promise<number> {
 	const { cwd, version } = options
+
+	// A copy installed by a newer trunative carries rules and flow files this
+	// package does not have, so writing over it deletes them and leaves the
+	// project's briefs failing checks the older skill never had.
+	const previous = await readLock(cwd)
+	if (previous && compareVersions(previous.version, version) > 0 && !options.force) {
+		console.error(
+			`the installed skill came from trunative@${previous.version} and this is ${version}, so installing would downgrade it.\n` +
+				`run "npx trunative@${previous.version} install" instead, or pass --force to downgrade on purpose`,
+		)
+		return 1
+	}
 
 	const name = await readSkillName(packagedSkillDir)
 	const sources = await readSources()

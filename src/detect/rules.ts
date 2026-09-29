@@ -10,6 +10,14 @@ const PRESSABLE =
 
 const SCREEN = /Scaffold|CupertinoPageScaffold/
 
+/**
+ * Sizes on a line that are not a hit area: a glyph, a stroke, a divider, or a
+ * spacer box that closes on the line it opened. Reporting them as under the
+ * floor is noise, and noise teaches the reader to discount the real findings.
+ */
+const DRAWN_SIZE =
+	/\bIcon\(|BorderSide\(|Border\.all\(|Divider\(|strokeWidth|SizedBox\(\s*(width|height):\s*[\d.]+\s*(,\s*(width|height):\s*[\d.]+\s*)?\)/
+
 /** A literal size in a Flutter text style, which the type scale should own. */
 const detectTypeScale: Detector = {
 	rule: 'type-scale',
@@ -44,7 +52,7 @@ const detectTouchFloor: Detector = {
 		const pressable = PRESSABLE.test(source)
 
 		for (const { line, text } of lines(source)) {
-			if (file.endsWith('.dart') && pressable) {
+			if (file.endsWith('.dart') && pressable && !DRAWN_SIZE.test(text)) {
 				for (const match of text.matchAll(/\b(width|height|size|minWidth|minHeight):\s*(\d+(?:\.\d+)?)/g)) {
 					const value = Number(match[2])
 					if (value > 0 && value < 48) {
@@ -208,6 +216,11 @@ const detectL10nStrings: Detector = {
 			if (!/[a-zA-Z]{3}/.test(literal) || /^\$/.test(literal)) {
 				continue
 			}
+			// A catalogue key handed to a translation call is the fix, not the defect.
+			const after = text.slice(match.index + match[0].length)
+			if (/^\s*\.(tr|i18n|plural|translate)\b/.test(after) || /^[\w-]+(\.[\w-]+)+$/.test(literal)) {
+				continue
+			}
 			found.push(
 				finding('l10n-strings', file, line, text, `"${literal.slice(0, 40)}" is user-facing text written in code`),
 			)
@@ -269,7 +282,61 @@ const detectListVirtualise: Detector = {
 	},
 }
 
+/** A pressable wired to nothing, which is either unfinished or a drawing that takes taps. */
+const detectTouchNested: Detector = {
+	rule: 'touch-nested',
+	extensions: DART,
+	run(file, source) {
+		const found: Finding[] = []
+
+		for (const { line, text } of lines(source)) {
+			if (/\b(onPressed|onTap):\s*\(\)\s*(\{\s*\}|=>\s*null)/.test(text)) {
+				found.push(
+					finding(
+						'touch-nested',
+						file,
+						line,
+						text,
+						'a control whose press does nothing; a drawn control belongs under IgnorePointer and ExcludeSemantics',
+					),
+				)
+			}
+		}
+
+		return found
+	},
+}
+
+/** Text scaled back down to fit its box, which undoes the user's text size. */
+const detectTypeScaling: Detector = {
+	rule: 'type-scaling',
+	extensions: DART,
+	run(file, source) {
+		const found: Finding[] = []
+
+		for (const { line, text, window } of occurrences(source, /\bFittedBox\(/, 300)) {
+			if (/BoxFit\.scaleDown|fit:\s*BoxFit\.contain/.test(window) || !/fit:/.test(window)) {
+				if (/\bText\(|Button\(|IconButton\(/.test(window)) {
+					found.push(
+						finding('type-scaling', file, line, text, 'a FittedBox around text or a control, shrinking it back when the text size grows'),
+					)
+				}
+			}
+		}
+
+		for (const { line, text } of lines(source)) {
+			if (/\bAutoSizeText\(|minFontSize:/.test(text)) {
+				found.push(finding('type-scaling', file, line, text, 'auto-sized text, which scales down to fit its box'))
+			}
+		}
+
+		return found
+	},
+}
+
 export const DETECTORS: Detector[] = [
+	detectTouchNested,
+	detectTypeScaling,
 	detectTypeScale,
 	detectTouchFloor,
 	detectLayoutInsets,

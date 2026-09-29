@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict'
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
 
+import { doctor } from '../src/commands/doctor.js'
+import { install } from '../src/commands/install.js'
 import { spec } from '../src/commands/spec.js'
 import { AGENTS, variantStacks } from '../src/compile.js'
 import { readSources, resolve } from '../src/emit.js'
@@ -140,22 +142,41 @@ scope:
 # Departures
 `
 
-async function project(brief: string): Promise<string> {
+const WIREFRAME = `<!-- explore
+Default      top bar, filter chips, equal cards, pinned button
+Context      standing on a platform, one hand, a glance every minute or so
+Candidates   A "timetable" (conventional), B "departure board" (spatial), C "countdown" (contextual)
+Distance     A/B 5, A/C 4, B/C 3
+Chosen       B, because the next departure is the whole job and A buries it in a list
+Lost         A reads as a schedule to study, C hides later departures behind a gesture
+-->
+<!doctype html>
+<div class="frame" style="background:#f4f4f4;color:#222"></div>
+`
+
+async function project(brief: string, wireframe: string | null = WIREFRAME): Promise<string> {
 	const cwd = await mkdtemp(join(tmpdir(), 'trunative-'))
 	await mkdir(join(cwd, 'lib'), { recursive: true })
 	await mkdir(join(cwd, '.trunative', 'screens'), { recursive: true })
 	await writeFile(join(cwd, 'lib', 'screen.dart'), '')
 	await writeFile(join(cwd, '.trunative', 'screens', 'departures.md'), brief)
+	if (wireframe !== null) {
+		await writeFile(join(cwd, '.trunative', 'screens', 'departures.wireframe.html'), wireframe)
+	}
 	return cwd
 }
 
-test('a brief with all six fields passes the checker', async () => {
-	const cwd = await project(BRIEF)
+async function checks(brief: string, wireframe?: string | null): Promise<number> {
+	const cwd = await project(brief, wireframe)
 	try {
-		assert.equal(await spec({ cwd, paths: [] }), 0)
+		return await spec({ cwd, paths: [] })
 	} finally {
 		await rm(cwd, { recursive: true, force: true })
 	}
+}
+
+test('a brief with all six fields passes the checker', async () => {
+	assert.equal(await checks(BRIEF), 0)
 })
 
 test('a brief with no context, or with a context key missing, fails it', async () => {
@@ -164,11 +185,55 @@ test('a brief with no context, or with a context key missing, fails it', async (
 		BRIEF.replace('  hands: one\n', ''),
 		BRIEF.replace('auto_excluded: [chat, camera]', 'auto_excluded: [chat, offline]'),
 	]) {
-		const cwd = await project(broken)
-		try {
-			assert.equal(await spec({ cwd, paths: [] }), 1)
-		} finally {
-			await rm(cwd, { recursive: true, force: true })
-		}
+		assert.equal(await checks(broken), 1)
+	}
+})
+
+test('a primary action is one label, two labels joined by or, or none with its reason', async () => {
+	for (const value of ['"Start" or "Stop"', 'none, the screen is read and each row opens its own detail']) {
+		assert.equal(await checks(BRIEF.replace('"Set alert"', value)), 0, value)
+	}
+	for (const value of [
+		'Set alert',
+		'none',
+		'"Open a row; the screen reads and carries no filled button"',
+		'"Start, or Stop when the machine is running"',
+	]) {
+		assert.equal(await checks(BRIEF.replace('"Set alert"', value)), 1, value)
+	}
+})
+
+test('a brief needs a wireframe carrying the explore record, every pair over the floor', async () => {
+	assert.equal(await checks(BRIEF, null), 1)
+	assert.equal(await checks(BRIEF, WIREFRAME.replace(/<!-- explore[\s\S]*?-->\n/, '')), 1)
+	assert.equal(await checks(BRIEF, WIREFRAME.replace('B/C 3', 'B/C 2')), 1)
+	assert.equal(await checks(BRIEF, WIREFRAME.replace(/^Lost .*\n/m, '')), 1)
+})
+
+test('install refuses to replace a copy a newer trunative wrote', async () => {
+	const cwd = await mkdtemp(join(tmpdir(), 'trunative-'))
+	try {
+		await mkdir(join(cwd, '.trunative'), { recursive: true })
+		await writeFile(
+			join(cwd, '.trunative', 'skill.lock'),
+			JSON.stringify({ version: '999.0.0', skill: 'trunative', hash: '', installedAt: '', targets: [] }),
+		)
+		assert.equal(await install({ cwd, version: '1.0.0' }), 1)
+	} finally {
+		await rm(cwd, { recursive: true, force: true })
+	}
+})
+
+test('install removes a full copy beside the one it writes, and doctor flags one', async () => {
+	const cwd = await mkdtemp(join(tmpdir(), 'trunative-'))
+	try {
+		const full = join(cwd, '.claude', 'skills', 'trunative-full')
+		await mkdir(full, { recursive: true })
+		await writeFile(join(full, 'SKILL.md'), '')
+		assert.equal(await doctor({ cwd, version: '1.0.0' }), 1)
+		assert.equal(await install({ cwd, version: '1.0.0' }), 0)
+		await assert.rejects(stat(full))
+	} finally {
+		await rm(cwd, { recursive: true, force: true })
 	}
 })

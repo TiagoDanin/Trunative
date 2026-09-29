@@ -36,6 +36,22 @@ const CONTEXT = [
 	'urgency',
 ]
 
+/**
+ * Longer than this, a quoted primary action is a sentence about the control
+ * rather than the words on it, which is what `button-label` judges.
+ */
+const LABEL_WORDS = 6
+
+/**
+ * The lines `flow/explore.md` hands back, kept in a comment at the top of the
+ * wireframe so a skipped explore step is visible to this checker and not only
+ * to whoever read the response it was written into.
+ */
+const EXPLORE = ['Default', 'Context', 'Candidates', 'Distance', 'Chosen', 'Lost']
+
+/** The floor on how many of the nine relations each pair of candidates differs in. */
+const DISTANCE_FLOOR = 3
+
 /** The six `state-set` names, which are the six keys, always all six. */
 const STATES = ['loading', 'empty', 'error', 'offline', 'partial', 'permission']
 
@@ -174,6 +190,58 @@ async function exists(path: string): Promise<boolean> {
 	}
 }
 
+/**
+ * The explore record at the top of a wireframe: the lines `flow/explore.md`
+ * hands back, inside an `<!-- explore ... -->` comment. Only what can be
+ * counted is checked, three candidates and every pair over the floor, since
+ * whether the winner is right is the gate's question and not this checker's.
+ */
+function checkExplore(drawing: string, wireframe: string): Finding[] {
+	const findings: Finding[] = []
+	const add = (detail: string, line: number): void => {
+		findings.push({ kind: 'explore', detail, file: wireframe, line })
+	}
+
+	const start = drawing.indexOf('<!-- explore')
+	if (start === -1) {
+		add('no <!-- explore --> record, flow/explore.md writes its hand-back there', 1)
+		return findings
+	}
+	const end = drawing.indexOf('-->', start)
+	const at = drawing.slice(0, start).split(/\r?\n/).length
+	const lines = drawing.slice(start, end === -1 ? undefined : end).split(/\r?\n/)
+	const value = (key: string): string | undefined =>
+		lines
+			.map((line) => new RegExp(`^\\s*${key}\\s{2,}(.+)$`).exec(line)?.[1]?.trim())
+			.find((found) => found !== undefined)
+
+	for (const key of EXPLORE) {
+		if (!value(key)) {
+			add(`the explore record has no ${key} line`, at)
+		}
+	}
+
+	const candidates = value('Candidates')
+	if (candidates && (candidates.match(/\b[A-C]\b/g) ?? []).length < 3) {
+		add('the explore record names fewer than three candidates', at)
+	}
+
+	const distance = value('Distance')
+	if (distance) {
+		const pairs = [...distance.matchAll(/\b([A-C])\s*\/\s*([A-C])\s+(\d+)/g)]
+		if (pairs.length < 3) {
+			add('Distance must count all three pairs, as A/B, A/C and B/C', at)
+		}
+		for (const pair of pairs) {
+			if (Number(pair[3]) < DISTANCE_FLOOR) {
+				add(`${pair[1]}/${pair[2]} differ in ${pair[3]} relations, under the floor of ${DISTANCE_FLOOR}`, at)
+			}
+		}
+	}
+
+	return findings
+}
+
 async function checkBrief(
 	cwd: string,
 	file: string,
@@ -227,19 +295,37 @@ async function checkBrief(
 		if (!target.value) {
 			add('target', 'empty, name the file that implements the screen', brief.offset + target.line)
 		} else if (!(await exists(join(cwd, target.value)))) {
-			add('target', `${target.value} is not on disk`, brief.offset + target.line)
+			add(
+				'target',
+				`${target.value} is not on disk, point it at the file that renders the screen now`,
+				brief.offset + target.line,
+			)
 		}
 	}
 
 	const action = head.get('primary_action')
 	if (action) {
-		const quoted = /^"(.+)"$/.exec(action.value)
-		if (!quoted) {
+		const at = brief.offset + action.line
+		const none = /^none\b[\s,.:;-]*(.*)$/i.exec(action.value)
+		const labels = /^"[^"]+"(\s+or\s+"[^"]+")?$/.test(action.value)
+			? [...action.value.matchAll(/"([^"]+)"/g)].map((match) => match[1]!)
+			: undefined
+		if (none) {
+			if (!none[1]) {
+				add('primary action', 'none with no reason, say what the screen is for when nothing on it is pressed', at)
+			}
+		} else if (!labels) {
 			add(
 				'primary action',
-				'must be the label the user reads, in quotes, not an identifier',
-				brief.offset + action.line,
+				'must be the label the user reads in quotes, two labels joined by "or", or none with the reason',
+				at,
 			)
+		} else {
+			for (const label of labels) {
+				if (label.includes(';') || label.split(/\s+/).length > LABEL_WORDS) {
+					add('primary action', `"${label}" reads as a sentence, not as the label on the control`, at)
+				}
+			}
 		}
 	}
 
@@ -322,7 +408,7 @@ async function checkBrief(
 		const opened = new Set<string>()
 		for (const stem of open) {
 			if (base.includes(stem)) {
-				add('scope', `${stem} is a base file, which is opened on every screen`, at)
+				add('scope', `${stem} is a base file, opened on every screen and never declared, remove it from open`, at)
 				continue
 			}
 			const canonical = extra.get(stem)
@@ -357,8 +443,11 @@ async function checkBrief(
 	}
 
 	const wireframe = file.replace(/\.md$/, '.wireframe.html')
-	if (await exists(join(cwd, wireframe))) {
+	if (!(await exists(join(cwd, wireframe)))) {
+		add('wireframe', `no ${wireframe}, the spec step draws one before the gate`, 0)
+	} else {
 		const drawing = await readFile(join(cwd, wireframe), 'utf8')
+		findings.push(...checkExplore(drawing, wireframe))
 		drawing.split(/\r?\n/).forEach((line, index) => {
 			for (const match of line.matchAll(HEX)) {
 				if (chroma(match[0]!) > 0.1) {

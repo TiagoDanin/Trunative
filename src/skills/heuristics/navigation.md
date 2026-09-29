@@ -77,6 +77,14 @@ The frameworks disagree on the default here, so it is a decision to make rather 
 
 The stability of the destination set itself belongs to `button-tabs`.
 
+## <Rule id="nav-cross-tab" description="An item reached from another section opens where the person already is" />
+
+Data does not respect the sections of an app. An order lists the product, a thread names the contact, a project holds its members, and each of those has a home under another top-level destination. Tapping one from here pushes its detail onto the current stack: the selected destination does not change, and back returns to the screen that was left, with its scroll and its filters intact.
+
+Switching the tab to show the item in its home section is the tempting version, because the route already exists there. It costs the person twice. Back now lands on that section's list, which they never visited, and the screen they came from is one tab away in a state they have to rebuild. It also rewrites the other section's stack under the person who had left it somewhere on purpose, which is what `nav-tab-stack` protects.
+
+A jump to another section is right only when the action is itself navigation to that section, "Show all in Library", and the control says so in its label.
+
 ## <Rule id="nav-drawer" description="A drawer is not primary navigation on a phone" />
 
 Navigation behind a hamburger costs a tap before it can even be read, and what people cannot see they do not use. The trigger also lives in the top corner, which is the hardest point on the screen to reach one-handed: `touch-reach`. iOS has no drawer convention at all, so a drawer there reads as a port.
@@ -107,6 +115,7 @@ The cutoff is a decision rather than a default. Restore the exact place when the
 <Verify rule="nav-location">Every route builder sets a title, and a back control with more than one origin names where it returns to.</Verify>
 <Verify rule="nav-deeplink">Every deep link target opens from a killed process with a full stack above it, survives a sign in, and fails onto a real screen.</Verify>
 <Verify rule="nav-tab-stack">Each top-level destination keeps its own stack across a switch, and re-selecting the current one pops it to its root.</Verify>
+<Verify rule="nav-cross-tab">An item whose home is another top-level destination opens on the current stack, the selected destination does not change, and back returns to the screen it was opened from, unless the control is labelled as a move to that section.</Verify>
 <Verify rule="nav-drawer">Primary destinations are visible without a tap, and every job named in `PRODUCT.md` is reachable without opening a drawer.</Verify>
 <Verify rule="nav-search">A collection people come to search rather than browse either carries a search field on its own screen or is covered by an app-wide search destination that keeps its query.</Verify>
 <Verify rule="nav-restore">The destination, its stack, scroll, selection, filters and the open sheet come back after the process is killed, and the restore cutoff is a set number rather than forever.</Verify>

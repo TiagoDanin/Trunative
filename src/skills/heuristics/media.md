@@ -84,11 +84,14 @@ Rotation is a configuration change, which is `state-interrupt`, and the shape of
 - Never bake letterbox or pillarbox bars into the asset. One phone plays the same file full screen, embedded in a list, rotated and inside a picture in picture window, and baked padding is visible in three of those four.
 - Where a custom transport picks the gravity itself, follow what the system player already does with the ratio: fill for 2:1 through 2.40:1, fit for 4:3, 16:9 and anything up to 2:1, and fit again above 2.40:1. Through the system view there is nothing to write.
 
-## <Rule id="media-awake" description="Keep the screen on for video only, and let it go when playback stops" />
+## <Rule id="media-awake" description="Keep the screen on while it is being watched, and let it go when nobody is" />
 
-This is a window flag on the player's own screen, `FLAG_KEEP_SCREEN_ON` or `android:keepScreenOn` on Android and `isIdleTimerDisabled` on iOS. It is not a wake lock, and a service cannot hold it.
+This is a window flag on the watched screen itself, `FLAG_KEEP_SCREEN_ON` or `android:keepScreenOn` on Android and `isIdleTimerDisabled` on iOS. It is not a wake lock, and a service cannot hold it.
+
+Video is the common case and not the only one. A screen whose job is to be read from a distance or between touches, a running timer, a recipe step while the hands are busy, a boarding pass at the gate, directions on a dashboard mount, a presenter's notes, dims and locks at the worst moment when it does not hold the flag, and the person has to put down what they are doing to wake it. Those screens hold it while the thing they show is live, and the same screens are where hiding the system bars, with the platform's swipe from the edge to bring them back, gives the content the whole glass.
 
 - Audio-only playback never keeps the screen on. Not needing the screen is the point of playing audio.
+- Only the watched screen holds it, and only while it is live: a stopped timer, a finished route and a closed pass release it.
 - It clears on pause, on stop, on leaving the screen and on the error branch, which is the deterministic end `perf-power` asks of anything holding hardware open. ExoPlayer's wake mode is a separate setting whose default is not the one you want in either direction, so set that one explicitly beside the service.
 
 ## <Rule id="media-start" description="One second to sound, or to a sign that sound is coming" />
@@ -122,7 +125,7 @@ Within one second of the tap, either audio is playing or something on screen say
 <Verify rule="media-pip">The picture in picture affordance is behind a support check, the window keeps the same player instance, the Android action count is read from the platform with play and pause among them, and playback that continues inside the app keeps a docked bar leading back to the player.</Verify>
 <Verify rule="media-away">Video with no picture in picture and no background capability pauses when the app leaves the foreground and resumes at the same frame, while audio the user chose keeps playing.</Verify>
 <Verify rule="media-fullscreen">One player instance survives rotation and the full-screen transition, no bars are baked into the asset, and any custom transport picks its fit mode from the aspect ratio.</Verify>
-<Verify rule="media-awake">The screen-on flag is set for video only, on the player's own screen, and cleared on pause, stop, exit and error.</Verify>
+<Verify rule="media-awake">The screen-on flag is set only on a screen that is watched rather than touched, video or otherwise, only while what it shows is live, never for audio alone, and cleared on pause, stop, exit and error.</Verify>
 <Verify rule="media-start">Sound or a preparing indicator arrives within one second of the tap, and a rebuffer leaves the controls and the position alone.</Verify>
 <Verify rule="media-quality">A metered connection has a written bitrate cap, a manual quality choice persists, and downloads wait for unmetered.</Verify>
 <Verify rule="media-live">A live stream is labelled without relying on color, shows no total duration, offers a return to the edge, and stops once its surface is left with nothing playing it.</Verify>

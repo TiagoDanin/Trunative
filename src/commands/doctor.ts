@@ -3,8 +3,8 @@ import { join, relative } from 'node:path'
 
 import { type Target } from '../compile.js'
 import { readSources, resolve } from '../emit.js'
-import { readLock } from '../lock.js'
-import { briefCandidates, packagedSkillDir } from '../paths.js'
+import { compareVersions, readLock } from '../lock.js'
+import { AGENT_ROOTS, briefCandidates, fullName, packagedSkillDir } from '../paths.js'
 import { hashFiles, hashSkill, readSkillName } from '../skill.js'
 
 export interface DoctorOptions {
@@ -95,10 +95,18 @@ async function checkSkill(cwd: string, version: string): Promise<Check[]> {
 		})
 	}
 
-	if (stale.length > 0 || lock.hash !== source) {
+	if (compareVersions(lock.version, version) > 0) {
+		// The copy is newer than this CLI, so the difference is this package and
+		// not the project. Installing from here would delete what it lacks.
+		checks.push({
+			name: 'skill up to date',
+			ok: false,
+			detail: `installed with trunative@${lock.version}, newer than this CLI (${version}): run "npx trunative@${lock.version} doctor", and never install with this one, it would downgrade the skill`,
+		})
+	} else if (stale.length > 0 || lock.hash !== source) {
 		const reason =
 			stale.length > 0
-				? `content differs in ${stale.join(', ')}`
+				? `content differs in ${stale.join(', ')}, from a hand edit, a copy taken from another project or another installer`
 				: `installed with trunative@${lock.version}, this is ${version}`
 		checks.push({
 			name: 'skill up to date',
@@ -112,6 +120,30 @@ async function checkSkill(cwd: string, version: string): Promise<Check[]> {
 	return checks
 }
 
+/**
+ * The single-file copy beside an agent's skills. It is the whole skill inlined,
+ * so an agent that loads it reads every rule, procedure and reference in one go
+ * and loses the lot at the first compaction.
+ */
+async function checkFullCopy(cwd: string): Promise<Check> {
+	const full = fullName(await readSkillName(packagedSkillDir))
+	const found: string[] = []
+	for (const root of AGENT_ROOTS) {
+		const dir = [root, 'skills', full].join('/')
+		if (await exists(join(cwd, ...dir.split('/')))) {
+			found.push(dir)
+		}
+	}
+	if (found.length === 0) {
+		return { name: 'no full copy', ok: true, detail: `no ${full} in an agent directory` }
+	}
+	return {
+		name: 'no full copy',
+		ok: false,
+		detail: `${found.join(', ')} inlines the whole skill into the context, remove it or run "npx trunative install"`,
+	}
+}
+
 export async function doctor(options: DoctorOptions): Promise<number> {
 	const { cwd, version } = options
 
@@ -120,6 +152,7 @@ export async function doctor(options: DoctorOptions): Promise<number> {
 		await checkBrief(cwd, 'DESIGN.md', 'design brief'),
 		await checkBrief(cwd, 'STACK.md', 'stack brief'),
 		...(await checkSkill(cwd, version)),
+		await checkFullCopy(cwd),
 	]
 
 	const width = Math.max(...checks.map((check) => check.name.length))

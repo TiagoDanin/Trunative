@@ -27,6 +27,10 @@ The doctor only checks that a brief exists. Whether it says anything useful is y
 
 **Skill missing or stale.** Run `npx trunative install`, then run the doctor again. Do not hand-edit the copy inside the agent directory: the hash check exists to catch exactly that, and the edit is lost on the next install.
 
+When the doctor says the installed copy is newer than the CLI running it, the CLI is what is out of date: run the version it names, and never `install` from the older one, which deletes whatever the older package lacks. When it reports a full copy beside the installed one, remove that copy; it puts the whole skill in the context at once and the tiers never get to decide what is read.
+
+A failing doctor is never an exception in `STACK.md`. That file records design decisions the user accepted, and a check nobody can make pass is a tooling fault to report to the user, not a decision.
+
 **Product brief missing.** Interview the user, then write `.trunative/PRODUCT.md`. Do not invent answers, and do not fill a template with plausible text. Ask:
 
 - who uses this, and in what situation (walking, driving, at a counter, at home)
@@ -34,9 +38,15 @@ The doctor only checks that a brief exists. Whether it says anything useful is y
 - what a session looks like: seconds or minutes, one-handed or two, foreground or interrupted
 - the constraints that are already decided: platforms, stack, minimum OS versions, offline requirements
 
+A document the user hands over, a product spec, a pitch, a prompt written for another tool, is input to this interview and not a replacement for it. Read it first, then ask what it does not answer. Such documents describe features and rarely the person: who holds the phone, where, for how long and while doing what is exactly the part they leave out, and it is the part every later composition is decided by.
+
 **Design brief missing.** `DESIGN.md` follows the [design.md specification](https://github.com/google-labs-code/design.md) from Google Labs, so any agent that already reads it gets the visual identity for free. Do not invent a second format.
 
 Read the codebase first and derive the tokens from what is actually there. Ask the user only about what the code cannot answer, and about the intent behind values the code shows but does not explain.
+
+Ask whether there is a reference to match: a mockup, a screenshot, another app, a brand sheet. When there is, it outranks both the code and any derivation, and `DESIGN.md` is read off it. Go through what a picture settles and a description loses, one by one, and write each down with the reference it came from: the ground and whether it is tinted, the ink, the accent and what it is spent on, the weight of titles against body, the icon set and whether a selected icon fills, the back glyph, how a selected item in a bar or a list is marked, what carries depth, and the radii. A token nobody wrote down from the reference gets filled in from the framework's defaults, and the user then spends the next week pointing at the difference.
+
+Ask which appearances the product ships: following the system, which builds both and is the recommendation, or one of them forced. Record the answer in the Overview. It decides what `color-dark-composed` grades, and it is the user's to decide rather than a default either way.
 
 - YAML frontmatter: `name` is required. Add `version`, `description`, and the token groups the project has: `colors`, `typography`, `rounded`, `spacing`, `components`. List what the project genuinely does not define under `omitted`, instead of inventing values to fill the schema.
 - Markdown body, in this order: Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Components, Do's and Don'ts. The body is where the reason lives. A token without a reason gets copied into the wrong place later.

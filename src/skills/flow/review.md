@@ -52,7 +52,7 @@ Anchors are not a curve. Most rules on a screen built with this skill land at 3 
 
 Review the actual code, not your memory of writing it. Open the files that changed.
 
-After a build that is the diff. On request it is the screen: the widget, view or composable that renders it plus whatever it pushes and presents, opened on a device or a simulator.
+After a build that is the diff, including a build that went straight from a one-line verdict to code: a change too small for spec is still a change someone will hold, and its review is the same file with a smaller scope, printed with its header. On request it is the screen: the widget, view or composable that renders it plus whatever it pushes and presents, opened on a device or a simulator.
 
 ## 2. Scope and checklist
 
@@ -121,7 +121,11 @@ npx trunative detect lib/screens/checkout_screen.dart
 
 It reads the files and answers the part of a `Check` line a file can settle, reporting per rule id. Three things follow from that and none of them is optional: every finding is `source` evidence, so it never settles a rule marked `[device]`; a finding is a place to look rather than a score; and its silence proves nothing, so a rule it did not answer stays with the grader. It exits 2 when it finds something, which is not a failure.
 
-Then the measurements that do need a device: both appearances on the narrowest and widest device class, the largest accessibility text step on the narrowest, hit area bounds read from the inspector rather than estimated from a screenshot, the primary flow completed with the screen reader on, the screen with the network off and after a process kill the system would have made itself, and real records rather than seed data, meaning a null, a zero, a long string, an old timestamp and an empty list.
+Then the measurements that do need a device: both appearances on the narrowest and widest device class, the largest accessibility text step on the narrowest, hit area bounds read from the inspector rather than estimated from a screenshot, the primary flow completed with the screen reader on, the screen with the network off and after a process kill the system would have made itself, and real records rather than seed data, meaning a null, a zero, a long string, an old timestamp and an empty list. When the app can reach a real account, use it: demo data was written to look right, which is the one thing real data does not do.
+
+Some defects only exist over time, and a capture of the settled screen shows none of them. Capture the screen while it loads and again once content arrives, and compare where things sit, since `state-loading` fails in the step between the two. Leave the screen open for a minute and look again: a relative time that never changes, a figure that should have refreshed, a banner that should have gone. Time the ordinary interactions, the sheet opening, the tab switching, the list returning, instead of judging them by feel.
+
+A device the user is working on is theirs. Before changing a setting on it, font scale, display size, rotation lock, theme, locale, animations, language, say which, and put every one back before the hand-off, listing what was changed and restored. A test that leaves the phone at double text size or with rotation locked has broken the next thing the user tries.
 
 How the two are kept apart depends on the harness you are running in:
 
@@ -130,7 +134,7 @@ Run them as sub-agents, spawned in one message so they work at the same time and
 </If>
 
 <If agent="other">
-Run them as sub-agents when this harness has them, spawned so that neither reads the other's output. When it does not, finish the judging pass and record it, then measure.
+When this harness can spawn sub-agents at all, run them as two, spawned so that neither reads the other's output: that is an instruction, not an option to weigh against speed. Only when it cannot, finish the judging pass and record it, then measure.
 </If>
 
 Then reconcile: the judged score stands unless a measurement contradicts it, and every score a measurement moved is printed with both numbers. The report is one table, not one pass after the other. When they could not be kept apart, the report says so on its first line.
@@ -162,7 +166,7 @@ The report goes in the response, in this order:
 1. **Header.** What was reviewed, the scope, the status first, then the violations counted by severity, the total, the percentage, the coverage, and the band when the status is `CLEAN`. `BLOCKED` names the rule ids that block.
 2. **The table.** Columns: rule, severity, score or pass and fail, evidence, finding. Print every rule at 4 or below and every one of the always-in-scope nine, then one line per file for the rest: file, rules scored, average, lowest.
 3. **Violations.** Every rule at 1, 2 or `fail`, ordered by severity and then by what it costs the person using the app, and never by how easy it is to fix. Each names the rule id, the file and line, what the user meets, and the fix. Say plainly when the screen is unusable one-handed, loses work on interruption, or has no failure state, and do not bury it under smaller findings.
-4. **Spec drift.** Only when the screen has a brief, and unscored. Each entry quotes what the brief says and what the code does: a hierarchy in a different order, a `primary_action` whose label is not the one on screen, a state declared and not implemented, a scope the brief left out. Where the divergence also breaks a rule, name the id that already scores it, such as `state-offline` for a declared state that is not there, and do not score it twice. Drift is a fact about two files disagreeing, and the moment it carries a number this file has two graders in it.
+4. **Spec drift.** Only when the screen has a brief, and unscored. Start with `npx trunative spec` on that brief, whose findings are drift already written down, then read the brief's Hierarchy, Interactions and Navigation against the code, and the screens it names against the briefs that exist. Each entry quotes what the brief says and what the code does: a hierarchy in a different order, a `primary_action` whose label is not the one on screen, a state declared and not implemented, a scope the brief left out. Where the divergence also breaks a rule, name the id that already scores it, such as `state-offline` for a declared state that is not there, and do not score it twice. Drift is a fact about two files disagreeing, and the moment it carries a number this file has two graders in it.
 5. **What moved.** Scores a measurement changed, with both numbers.
 
 If a violation is a deliberate exception recorded in `STACK.md`, it is `n/a` with that exception as the reason, not a 1 defended in prose. Whether the exception is a good one is a separate question with its own test, in `references/accepted-exceptions.md`: a rule written as a default admits a reasoned exception, a reason that fails that test is reported as a finding against `STACK.md`, and the nine always in scope and every P0 rule admit none.
@@ -171,7 +175,7 @@ Name the element, say what it costs, give the fix. Nothing in the report is an i
 
 ## 6. Record
 
-A run with nothing `unrun` is a complete measurement and gets archived. A run that left rules unchecked prints its table and stops here, naming the rules that blocked the archive, because a partial run in the history makes every later comparison lie.
+Every run gets archived, the partial ones included. A run that left rules `unrun` lists them in its frontmatter, and the trend below says so whenever that list differs from the previous run's: a partial run hidden from the history is not avoided, it is merely forgotten, and the next session starts again from nothing. Rules on a device are the ones most often left `unrun` on a working machine, so a history that only kept complete runs would stay empty.
 
 Write the report to `.trunative/review/<slug>-<YYYY-MM-DD-HHmm>.md`, one file per run, kept in version control. The slug comes from the primary file's project-relative path: lowercase it, replace every run of characters that is not a letter or a digit with a single hyphen, and drop a leading and trailing one, so `lib/screens/checkout_screen.dart` becomes `lib-screens-checkout-screen-dart`. It is computed the same way on every run and never invented, because the trend reads it.
 
@@ -192,16 +196,17 @@ max: 300
 percent: 79
 scored: 60
 na: [pay-restore: no purchases on this screen, ads-report: no Android build]
+unrun: [a11y-announce, type-scaling]
 ---
 ```
 
-`skill` is the hash in `.trunative/skill.lock`. It says which set of rules produced the numbers, which is how a later run knows the rulebook moved under it. `spec` is the screen brief this run graded against, omitted when the screen has none, so a later comparison can tell a screen that changed from a screen whose declared intent changed.
+`unrun` is empty on a complete run, and never left out. `skill` is the hash in `.trunative/skill.lock`. It says which set of rules produced the numbers, which is how a later run knows the rulebook moved under it. `spec` is the screen brief this run graded against, omitted when the screen has none, so a later comparison can tell a screen that changed from a screen whose declared intent changed.
 
 Then read the newest five archived runs with the same slug and print one line:
 
 > Trend for `lib-screens-checkout-screen-dart`: 61%, 74%, 79% (236/300 this run).
 
-The comparison is only honest when the measurement is the same, so name any of these that changed since the previous run, on the same line: the skill hash moved, so some of the difference is rules rather than the screen; the scope changed, and which files joined or left; or the `n/a` set changed, since a rule that was excused last time and scored now moved the total on its own. The scope may grow between runs and may not silently shrink: a later run covering fewer files is not a better run.
+The comparison is only honest when the measurement is the same, so name any of these that changed since the previous run, on the same line: the skill hash moved, so some of the difference is rules rather than the screen; the scope changed, and which files joined or left; or the `n/a` set or the `unrun` set changed, since a rule that was excused or skipped last time and scored now moved the total on its own. The scope may grow between runs and may not silently shrink: a later run covering fewer files is not a better run.
 
 First run: there is nothing to compare against. Say so in one line, name it the baseline, and name the file the next run will read.
 

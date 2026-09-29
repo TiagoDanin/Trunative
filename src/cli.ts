@@ -31,6 +31,7 @@ Options
   --cwd <path>   run against this project instead of the current directory
   --stack <name> install the copy resolved for this stack, instead of the one
                  the STACK.md "Stack:" line names
+  --force        let "install" replace a copy that a newer trunative wrote
   --only <name>  limit the rubric to a heuristics file ("touch"), a rule
                  prefix ("touch-") or one rule id (repeatable)
   --format <f>   rubric output: markdown (default), json, ids
@@ -62,6 +63,7 @@ async function main(): Promise<number> {
 			stack: { type: 'string' },
 			cwd: { type: 'string' },
 			check: { type: 'boolean' },
+			force: { type: 'boolean' },
 			version: { type: 'boolean', short: 'v' },
 			help: { type: 'boolean', short: 'h' },
 		},
@@ -87,7 +89,7 @@ async function main(): Promise<number> {
 		case 'doctor':
 			return doctor({ cwd, version })
 		case 'install':
-			return install({ cwd, version, dirs: values.dir, stack: values.stack })
+			return install({ cwd, version, dirs: values.dir, stack: values.stack, force: values.force })
 		case 'build':
 			return build({ version })
 		case 'lint':

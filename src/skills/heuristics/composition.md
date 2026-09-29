@@ -10,7 +10,7 @@ Searching for the arrangement is a procedure, and it lives in `flow/explore.md`.
 
 A layout with no runner-up was not picked. It is what came first, and what comes first is what has been seen most, which is a property of everything else that exists and not of this screen.
 
-So a structural screen has a record, left by `flow/explore.md`: the default it would have been, the candidates that competed, how far apart they were, and why the winner won. The record is short and it is the difference between a familiar layout somebody defended and a familiar layout nobody noticed.
+So a structural screen has a record, left by `flow/explore.md` at the top of its wireframe: the default it would have been, the candidates that competed, how far apart they were, and why the winner won. The record is short and it is the difference between a familiar layout somebody defended and a familiar layout nobody noticed.
 
 Landing on the familiar arrangement is allowed, and is sometimes right: a settings list should look like a settings list, because the person has used a hundred of them and the pattern is the affordance. What the rule asks is that the familiar one wins an argument. The burden sits on convergence, since convergence is what happens unattended, and an unusual arrangement owes no apology beyond serving the person better.
 
@@ -47,6 +47,8 @@ Four questions, answered in the brief's Purpose and Hierarchy or in the hand-off
 
 Distinctive never outranks usable. A relation that breaks `touch-reach`, `nav-back` or `a11y-gesture` to be memorable has been memorable at the person's expense.
 
+Nor does it outrank the user. An arrangement the user supplied, as a mockup or as a screen to follow, answers these questions by having been chosen by the person who owns the product, and leaving it to score better here replaces their decision with the grader's.
+
 ## <Rule id="comp-repeat" severity="p3" description="Screens of one product are related, not identical" />
 
 A product's screens should be recognisable as siblings: the same grid, the same type roles, the same way of grouping. They should not be one template with the content swapped. When the list, the detail, the profile and the summary are all a bar over equal cards, the arrangement has stopped saying what kind of screen this is, and the person reads the title to find out where they are.
@@ -62,7 +64,7 @@ Before choosing, look at what the project already approved. An arrangement that 
 <Verify rule="comp-chosen">The screen has a record of the default it would have been, the candidates considered and why the winner won, or names the platform pattern that made alternatives moot.</Verify>
 <Verify rule="comp-distance">The candidates on record differ from each other on at least three of the nine relations, and none differs only in spacing, radius, type size, wording, colour or component size.</Verify>
 <Verify rule="comp-context">The dominant element, the position of the primary action and the density follow from the brief's context block, and the arrangement would have to change if that block said something else.</Verify>
-<Verify rule="comp-distinct">Reduced to grey blocks the arrangement still says what the product does, through one deliberate relation, while navigation, back and system gestures stay conventional.</Verify>
+<Verify rule="comp-distinct">Reduced to grey blocks the arrangement still says what the product does, through one deliberate relation, while navigation, back and system gestures stay conventional, or the arrangement is the one the user supplied.</Verify>
 <Verify rule="comp-repeat">The arrangement differs from the project's other approved screens wherever the job differs, and where it repeats, the shared job is named.</Verify>
 
 </Check>

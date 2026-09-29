@@ -29,6 +29,8 @@ Destructive is not the test. Both halves have to be true before an alert stops t
 
 A common action that cannot be undone is not exempt, it is a different surface: offering the user choices about something they deliberately started is the sheet case in `fb-blocking-shape`, not a lighter alert. Discarding a draft the user just chose to abandon is that case, and it is common.
 
+Irreversible is judged by what the action does in the world, not by whether a switch can be flipped back. Stopping a live service, ending a call for everyone on it, cutting other people's sessions, sending, publishing: the control can be pressed again, and the outage, the dropped call and the message already read cannot be taken back. An action whose effect reaches other people or a running system counts as irreversible here, however easily its toggle returns.
+
 On a phone the accidental destruction arrives through a fat tap or a swipe rather than through a menu, so recovery matters more than the extra question, and `touch-destructive` already puts distance between the destructive control and the frequent one. Where the destruction is what the user deliberately chose, the button carrying it out is not styled as the destructive one: it is performing their intent, and the escape beside it is what needs the emphasis.
 
 ## <Rule id="fb-undo" description="Either the work waits inside a real window, or it lands somewhere it can be fetched back from" />
@@ -92,6 +94,8 @@ Every rung above answers something the user just did. A promotion, a paywall rai
 
 - It takes the quietest rung that can carry it and never the blocking one. A dialog is for a decision the user cannot defer, and this is one they never opened. One surface is the stated exception, and only in the shape `ads-placement` earns: a full-screen ad closing a segment the user just finished, never standing in front of the next one, carrying the exit present in its first frame that `ads-close` requires. A rewarded ad is not an exception at all, because the user tapped the offer and it is no longer uninvited (`ads-rewarded`).
 - It waits for a finished task. Firing at launch costs the user the reason they opened the app, and firing mid-flow costs them the flow.
+- A task is finished once the person has seen its result, not once the button was pressed. Nothing unprompted stands between an action and the screen that shows what it produced.
+- One per moment. Two of them never land on the same transition, an ad and then an offer, a what's new sheet and then a rating prompt, even where each one alone would be allowed there: the second arrives on a person who has just dismissed the first and is still no closer to what they came for.
 - One tap closes it, the close is the plain one and not a trick, and the dismissal is remembered for a period written in `STACK.md` rather than asked again on the next screen.
 - It never borrows the shape of a system message. An app promotion drawn as a permission prompt or a system alert is asking for a tap the user did not agree to give.
 
@@ -108,7 +112,7 @@ Use the system prompt and nothing else. The system rate limits it, at most 3 per
 
 <Verify rule="fb-ladder">Every message takes the quietest rung that works, no actionable Android message is a `Toast`, no transient message offers more than 1 action, and the only dialog standing in front of the first screen is the one `onboard-ask-order` allows. A flow raising more than one blocking dialog is reported as a problem with the flow rather than counted as a violation.</Verify>
 <Verify rule="fb-silent-success">No success message duplicates a result the screen already shows, and the ones that remain are for outcomes the screen cannot show.</Verify>
-<Verify rule="fb-confirm-test">Every alert that stops the user is both rare and irreversible, and everything else acts and offers undo.</Verify>
+<Verify rule="fb-confirm-test">Every alert that stops the user is both rare and irreversible, counting effects on other people and on running systems as irreversible, and everything else acts and offers undo.</Verify>
 <Verify rule="fb-undo">Undo either holds the work for a window written down in `STACK.md` or commits into a place the user can restore from, the message offering it never outlives that window, and it is reachable without a system gesture.</Verify>
 <Verify rule="fb-place">Each message sits at the smallest scope that contains its cause, nothing that fits beside a control is raised as a dialog, and a message that has to name its cause is inline rather than transient.</Verify>
 <Verify rule="fb-duration">Every duration is the host's named length or the one number in `STACK.md`, never a value written at a call site, the user's accessibility timeout is applied, every message is dismissible, and nothing lives only inside one.</Verify>
@@ -116,7 +120,7 @@ Use the system prompt and nothing else. The system rate limits it, at most 3 per
 <Verify rule="fb-queue">Repeats of one cause arrive as one message with a count, and a stale backlog is dropped instead of replayed.</Verify>
 <Verify rule="fb-survives">Messages and dialogs are held as state with a consumed flag, so one rotation shows them once and not twice.</Verify>
 <Verify rule="fb-blocking-shape">An alert is used only for a yes or no about one irreversible action, blocking surfaces carry at most 3 buttons, do not scroll, name their buttons by result, and never hold a progress bar.</Verify>
-<Verify rule="fb-unprompted">Nothing the user did not ask for blocks or interrupts them, apart from the segment-boundary ad `ads-placement` allows: it waits for a finished task, closes in one tap, and stays closed for a stated period.</Verify>
+<Verify rule="fb-unprompted">Nothing the user did not ask for blocks or interrupts them, apart from the segment-boundary ad `ads-placement` allows: it waits for a finished task whose result the person has already seen, never shares a transition with another unprompted surface, closes in one tap, and stays closed for a stated period.</Verify>
 <Verify rule="fb-review-prompt">The rating prompt is the system one, is not preceded by a question, is not wired to a button, and is not raised during onboarding.</Verify>
 
 </Check>

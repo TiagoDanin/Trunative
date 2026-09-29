@@ -203,7 +203,10 @@ const PLACEMENT: Record<string, (file: string) => boolean> = {
 	Check: isRuleFile,
 	Verify: isRuleFile,
 	Device: isRuleFile,
-	If: (file) => file.startsWith('flow/') || file.startsWith('references/'),
+	// A rule file branches by stack only, for the one line that names each
+	// framework's mechanism, and never by agent: a rule reads the same to every
+	// harness.
+	If: (file) => file.startsWith('flow/') || file.startsWith('references/') || isRuleFile(file),
 	Ask: (file) => file.startsWith('flow/'),
 	Option: (file) => file.startsWith('flow/'),
 	Index: (file) => file === 'SKILL.md',
@@ -319,6 +322,9 @@ function check(input: CheckInput): Finding[] {
 			}
 			if (agent.length === 0 && stack.length === 0) {
 				add('If', 'carries neither agent nor stack', file, tag.line + 1)
+			}
+			if (agent.length > 0 && isRuleFile(file)) {
+				add('If', 'a rule file branches by stack only, never by agent', file, tag.line + 1)
 			}
 			for (const value of agent) {
 				if (!(AGENTS as readonly string[]).includes(value)) {

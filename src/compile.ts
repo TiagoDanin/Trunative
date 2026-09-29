@@ -156,9 +156,9 @@ const RULE_LINE = /^## `([a-z0-9-]+)`/
  * prose, the way a table of contents does for a long reference file. Generated
  * here rather than hand-written in the source, because a hand-written list
  * goes stale the moment a rule is added, removed or reordered, and nothing
- * would catch that the way `lint` catches a dangling id. `<If>` and `<Ask>`
- * never appear in `heuristics/`, so this reads the same for every target and
- * belongs after compilation rather than before it.
+ * would catch that the way `lint` catches a dangling id. It runs after
+ * compilation, on headings a `<If stack>` never wraps, so it reads the same for
+ * every target.
  */
 function withRuleIndex(lines: string[]): string[] {
 	const ids: string[] = []

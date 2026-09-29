@@ -12,11 +12,29 @@ Add the fourth condition that belongs to the device rather than the hand: the gr
 
 The drawn control and the target are two different objects. A 24dp icon centred in a 48dp target is right; growing the icon to fill the target and shrinking the target to hug the icon are both wrong. Reach for the mechanism the stack already has:
 
-- SwiftUI: a minimum frame plus `.contentShape()`, so the padding is tappable and not just the glyph.
-- Compose: `Modifier.minimumInteractiveComponentSize()`, which Material components already apply.
-- Flutter: `MaterialTapTargetSize.padded`, or a sized box around the gesture detector with an opaque hit test behaviour.
-- React Native: `hitSlop` on the pressable.
-- Mobile web: padding on the control, never margin, since margin does not take taps.
+<If stack="swiftui">
+A minimum frame plus `.contentShape()`, so the padding is tappable and not just the glyph.
+</If>
+
+<If stack="compose">
+`Modifier.minimumInteractiveComponentSize()`, which Material components already apply.
+</If>
+
+<If stack="flutter">
+`MaterialTapTargetSize.padded`, or a sized box around the gesture detector with an opaque hit test behaviour.
+</If>
+
+<If stack="react-native">
+`hitSlop` on the pressable.
+</If>
+
+<If stack="web">
+Padding on the control, never margin, since margin does not take taps.
+</If>
+
+<If stack="other">
+Whatever the framework offers to grow a hit area past the drawn control without growing the drawing.
+</If>
 
 Two consequences that get missed. A list row is a target: full width, at least 48dp tall, and the whole row responds rather than the label inside it. And a target that is marginal at the top of the screen is worse at the bottom, where the thumb arrives at a shallow angle and the contact oval stretches.
 
@@ -27,6 +45,40 @@ The web accessibility floor is lower than the platform one and does not replace 
 Leave at least 8dp of dead space between neighbouring targets. Adjacent controls that each meet the floor still collect mis-taps, because the contact oval straddles the boundary between them and the system awards the tap to whichever one owns the centre.
 
 Watch the places it concentrates: a row of icon buttons in a toolbar, a line of chips, a close control sitting beside another control, and two swipe actions revealed on the same row. When a target has to be smaller than the floor, the distance to its neighbours has to grow to compensate, which is the same trade WCAG makes with its spacing exception.
+
+## <Rule id="touch-nested" description="One point answers to one target, and a picture of a control is not a target" />
+
+When two pressables overlap, the system hands the tap to the innermost one and the outer one never hears it. So a control placed inside a tappable card is a hole in the card: a tap there does the control's job, or nothing at all, and never the card's.
+
+That is right when the inner control is a real second action, a favourite on a row or a menu on a card. Then it is its own target, it meets `touch-floor` and `touch-spacing` against the edge of the card, and its tap does not also fire the card underneath.
+
+It is wrong when the inner control is only drawn. A theme previewed on a sample screen, a keyboard skin in a store, a widget in a gallery of widgets, a mockup of an app inside a portfolio tile: these are pictures of controls, and they are content. They are excluded from hit testing and from the accessibility tree, so the tap goes to the card and a screen reader reads the card rather than a play button that plays nothing.
+
+<If stack="flutter">
+Wrap the drawn subtree in `IgnorePointer` and `ExcludeSemantics`.
+</If>
+
+<If stack="swiftui">
+Give the drawn view `.allowsHitTesting(false)` and `.accessibilityHidden(true)`.
+</If>
+
+<If stack="compose">
+Put no `clickable` inside the drawing, and lay `Modifier.clearAndSetSemantics {}` over it.
+</If>
+
+<If stack="react-native">
+Give the drawn view `pointerEvents="none"`, with `accessibilityElementsHidden` on iOS and `importantForAccessibility="no-hide-descendants"` on Android.
+</If>
+
+<If stack="web">
+Put the `inert` attribute on the drawn subtree.
+</If>
+
+<If stack="other">
+Take the drawn subtree out of hit testing and out of the accessibility tree, with whatever the framework offers for each.
+</If>
+
+A drawn control that still takes a tap is found by pressing it: it ripples, and nothing happens.
 
 ## <Rule id="touch-reach" description="The bottom third is the only easy part of the screen" />
 
@@ -84,6 +136,7 @@ The keyboard is not an overlay that happens to the screen, it is part of the scr
 
 <Verify rule="touch-floor">Every interactive element measures at least 44pt or 48dp in its hit area, and list rows are tappable across their full width.</Verify>
 <Verify rule="touch-spacing">Adjacent targets are separated by at least 8dp of dead space.</Verify>
+<Verify rule="touch-nested">No point on the screen belongs to two targets unless the inner one is a real second action that meets the floor and does not fire the outer one, and every control drawn as content is excluded from hit testing and from the accessibility tree.</Verify>
 <Verify rule="touch-reach">Primary action and primary navigation sit in the bottom third, and the layout was checked mirrored for a left thumb.</Verify>
 <Verify rule="touch-destructive">Destructive actions sit outside the easy region, and the vehicle carrying the confirmation is the one `fb-confirm-test` selects.</Verify>
 <Verify rule="touch-feedback">Pressed state is visible under a covering finger, feedback lands within about 100ms outside the occluded area, and nothing depends on hover.</Verify>

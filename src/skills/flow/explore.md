@@ -16,6 +16,8 @@ Before any candidate, write one line describing the layout this screen would get
 Default: top bar, a row of filter chips, equal cards in one column, a full-width button pinned low.
 ```
 
+When the user supplied an arrangement, a mockup, a sketch, a screen from another app they want this one to follow, that arrangement is the conventional candidate, written off the reference and not from memory. The other two lenses still run, since the user may not have seen the alternatives, but the supplied one is what they asked for: a different winner is a departure `flow/spec.md` puts in front of them beside the reference, and `comp-distinct` is never the reason to leave it.
+
 That line is not a candidate yet. It is the thing the other candidates are measured against, and writing it down is what stops it from arriving later under a different name. It may still win in step 5, as the conventional candidate, with a reason. What it may not do is win because nothing else was on the table, or be the first thing written: when the candidates are written one after another, the spatial and the contextual ones come first and the conventional one last, so that the familiar layout is never the text the other two are written under.
 
 ## 2. Read the context
@@ -54,7 +56,7 @@ Spawn three sub-agents in one message, one per lens. Each receives the brief, th
 </If>
 
 <If agent="codex,antigravity,opencode,other">
-When this harness has sub-agents, give each lens to one, with the brief, the context line, the lens and the two reference files, and nothing else. When it does not, write the candidates one at a time, re-reading the brief before each and never quoting, comparing against or referring to a candidate already written. The comparison happens in step 4, and doing it earlier is how three candidates become one.
+When this harness can spawn sub-agents at all, spawn one per lens: that is an instruction, not an option to weigh against speed. Each gets the brief, the context line, the lens and the two reference files, and nothing else. Only when it cannot, write the candidates one at a time, re-reading the brief before each and never quoting, comparing against or referring to a candidate already written. The comparison happens in step 4, and doing it earlier is how three candidates become one.
 </If>
 
 Heuristics stay closed during this step. The one constraint a candidate carries while it is being written is the brief: the hierarchy line, the primary action, the six states and the context.
@@ -114,7 +116,7 @@ Novelty is never the criterion. The candidates were pushed apart so that the cho
 
 ## 6. Hand back
 
-Write into the response, not into the brief and not into the wireframe:
+Write it into the response, and at the top of the wireframe inside an `<!-- explore ... -->` comment, one key per line with the value after two spaces or more, never into the brief. The comment is what `npx trunative spec` reads: without it, a skipped explore step looks exactly like one that ran.
 
 ```text
 Default      top bar, filter chips, equal cards, pinned button
@@ -125,5 +127,7 @@ Default used no, it competed as A and lost
 Chosen       B, because the next departure is the whole job and A buries it in a list
 Lost         A reads as a schedule to study, C hides later departures behind a gesture
 ```
+
+`Default`, `Context`, `Candidates`, `Distance`, `Chosen` and `Lost` are required, and `Distance` counts all three pairs as `A/B`, `A/C` and `B/C`.
 
 Then return to `flow/spec.md` and draw the chosen candidate. The hierarchy in the brief is updated when the winner reordered it, since the brief is the contract and this step is allowed to change its mind.

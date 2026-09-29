@@ -26,6 +26,8 @@ Follow it in order. Never skip init, never end on build.
 5. **review**, read `flow/review.md`. Runs on the code that was just written, and again on request over a finished screen. It scores every rule in scope from 1 to 5, or pass or fail where the rule is binary. A 1, a 2 or a fail is a violation, and a violation on a P0 or P1 rule blocks the screen whatever the percentage says.
 6. **loop**, back to build while review reports violations. Stop when review comes back clean.
 
+Every hand-off after build carries the status line of the review that ran on it, or the words `review not run` with the reason. A hand-off with neither is how a skipped review passes for a finished one.
+
 Loaded by build, not a step: `flow/firebase.md`, whenever the screen touches Firebase.
 
 ## Heuristics
@@ -53,9 +55,9 @@ Opened on every screen, before writing. Every screen has colour, text, targets, 
 |---|---|---|
 | `heuristics/colors.md` | `color-` | palette roles and tokens, the default palette, ramps, the accent, colour that varies per item, gradients, dark theme, contrast, color as state |
 | `heuristics/typography.md` | `type-` | the platform type scale, roles per screen, weight and its distribution, typeface choice, measure, text scaling, real strings |
-| `heuristics/touch.md` | `touch-` | hit areas and spacing, thumb reach, where destructive actions go, press feedback, gestures and system edges, the keyboard as layout |
+| `heuristics/touch.md` | `touch-` | hit areas and spacing, controls inside controls and pictures of controls, thumb reach, where destructive actions go, press feedback, gestures and system edges, the keyboard as layout |
 | `heuristics/buttons.md` | `button-` | one primary per screen, the emphasis ladder, labels, button states, the FAB, chips, tabs and segmented controls |
-| `heuristics/layout.md` | `layout-` | insets and safe areas, the spacing scale, grouping and density, radius and shape, one column, the width range, fixed chrome and overlays, the first screenful, orientation |
+| `heuristics/layout.md` | `layout-` | insets and safe areas, the spacing scale, grouping and density, radius and shape, one column, the width range, centring between unequal groups, fixed chrome and overlays, the first screenful, orientation |
 | `heuristics/composition.md` | `comp-` | a composition chosen between alternatives, how far apart candidates have to be, the moment of use deciding the arrangement, an arrangement that could only be this product's, sibling screens that are not one template |
 | `heuristics/states.md` | `state-` | the full state set, loading and skeletons, the three empties, error classes and retry, offline and queued work, stale and partial data, permission, interruption |
 | `heuristics/motion.md` | `motion-` | what earns an animation, the platform's own transitions, springs against durations, choreography, loops, motion that blocks input, cheap properties, reduced motion |
@@ -77,7 +79,7 @@ It fails in two quiet ways. Judging by the feature closes a file that owns somet
 
 | File | Prefix | Covers |
 |---|---|---|
-| `heuristics/navigation.md` | `nav-` | how deep the hierarchy goes, choosing between screen, tab, modal and sheet, back and up, deep links, per-destination stacks, search, state after interruption |
+| `heuristics/navigation.md` | `nav-` | how deep the hierarchy goes, choosing between screen, tab, modal and sheet, back and up, deep links, per-destination stacks, an item whose home is another section, search, state after interruption |
 | `heuristics/lists.md` | `list-` | virtualisation, row density and the row as a target, separators, swipe actions, images, sections, the end of the list, refresh, selection |
 | `heuristics/forms.md` | `form-` | one column, field count, persistent labels, input type and autofill, when to validate, error recovery, what survives backgrounding, submit |
 | `heuristics/chat.md` | `chat-` | the transcript's anchor and where it opens, paging history upward, arrivals while reading, grouping and time, the row, the empty conversation, the composer's ceiling, the state of one message, attachments, presence, announcing an arrival |
@@ -95,7 +97,7 @@ It fails in two quiet ways. Judging by the feature closes a file that owns somet
 | `heuristics/auth.md` | `auth-` | the methods and their order, provider buttons, web flows, last used, code screens, biometrics over a session, expiry, re-auth, the active account, sign out, deletion |
 | `heuristics/webviews.md` | `webview-` | which surface a URL opens in, somebody else's credential field, the wrapper's own chrome, back inside the page, links that leave it, theme and text size reaching content nobody can restyle, insets and the keyboard, downloads and file pickers, the session the app cannot read, the wrapped site |
 | `heuristics/settings.md` | `set-` | a better default before a switch, settings in context, what the system owns, shape and status, controls, effect, what syncs, destructive rows, search, the account exit, diagnostics |
-| `heuristics/media.md` | `media-` | the system player, controls and scrubbing, unasked sound, audio focus, becoming noisy, background audio, remote controls, picture in picture, fullscreen, keeping awake, quality, live |
+| `heuristics/media.md` | `media-` | the system player, controls and scrubbing, unasked sound, audio focus, becoming noisy, background audio, remote controls, picture in picture, fullscreen, keeping the screen awake for anything watched rather than touched, quality, live |
 | `heuristics/maps.md` | `map-` | the first camera, who owns the drag, markers as targets, clustering, the equivalent list, following the user, legibility over tiles nobody chose, routes as text, tiles that did not arrive, the cost of a live map, attribution, the provider's contract |
 | `heuristics/privacy-ui.md` | `priv-` | the stranger beside the user, masked values, the app switcher snapshot, blocking capture and merely detecting it, the second gate, what gets instrumented, deleting data, the declaration matching the code |
 | `heuristics/sharing.md` | `share-` | the system sheet and nothing hand-rolled, the payload and its preview, a link rather than a screenshot, readiness, file access, the outcome, what the app accepts and how it arrives, clipboard and paste, invites |
@@ -127,7 +129,7 @@ Base decides what is read on every screen. These nine decide what is scored on e
 - `type-scale`, `type-scaling`: text arrives through a style with no literal size, and the screen still holds at the largest accessibility step.
 - `layout-insets`: the safe area read at runtime, on all four edges.
 - `touch-floor`, `touch-feedback`: the hit area meets the platform floor, and the press answers under the finger.
-- `color-contrast`, `color-dark-composed`: contrast measured, and both appearances actually built.
+- `color-contrast`, `color-dark-composed`: contrast measured, and both appearances actually built, or the one `DESIGN.md` records forced on every surface.
 - `a11y-name`: every control carries a name, a role and a value.
 - `motion-reduced`: anything that animates reads the system setting first.
 
@@ -137,6 +139,8 @@ A splash screen, a settings list and a chart all answer these. Open the file tha
 
 - Open every base file, then every extra file this screen touches, settled by the pass over the Extra table rather than from memory of what the folder holds. Reading all of it wastes the context the code needs, and closing a file because the screen looked simple wastes the review.
 - Read `references/` on demand, for one specific number or API. Never as background.
+- What was read is gone once the context is compacted or reset, and a summary of a rule is not the rule. After either, open this file, the flow file of the current step and the screen's brief again before the next line of work.
+- Work handed to a sub-agent, a workflow or a parallel worker carries the flow file of its step and the brief it builds against, by path, never a paraphrase of them. A worker that only received the orchestrator's summary is working without this skill.
 - This copy was built for one agent and, when its name says so, for one stack. It is not the file that was written: the branches for other harnesses and other frameworks were resolved away at build time. Never hand-edit it, and never reason about what a branch might have said.
 - The project briefs override nothing in `heuristics/`, but they decide which rules apply and record the exceptions accepted on purpose. `PRODUCT.md` is who uses this and for what, `DESIGN.md` is the visual identity in the [design.md format](https://github.com/google-labs-code/design.md), and `STACK.md` is this codebase: primitives, navigation, components, exceptions. A fourth brief is per screen rather than per project: `.trunative/screens/<name>.md` holds the structure `flow/spec.md` settled, and it records intent rather than granting an exception.
 

@@ -26,6 +26,23 @@ export interface SkillLock {
 	targets: LockTarget[]
 }
 
+/**
+ * Orders two "major.minor.patch" versions, ignoring any pre-release suffix.
+ * Negative when a is older, positive when a is newer, zero when equal.
+ */
+export function compareVersions(a: string, b: string): number {
+	const parts = (version: string) => (version.split('-')[0] ?? '').split('.').map((part) => Number(part) || 0)
+	const left = parts(a)
+	const right = parts(b)
+	for (let index = 0; index < 3; index++) {
+		const difference = (left[index] ?? 0) - (right[index] ?? 0)
+		if (difference !== 0) {
+			return difference
+		}
+	}
+	return 0
+}
+
 export function lockPath(cwd: string): string {
 	return join(cwd, CONFIG_DIR, LOCK_FILE)
 }

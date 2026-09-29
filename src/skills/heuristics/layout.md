@@ -88,6 +88,12 @@ Take it from the platform's host, because that is where the displacement is alre
 
 One at a time, and never behind something else. Two messages stacked, a toast drawn behind an open sheet, and a snackbar left under a keyboard that has just opened are the same defect: a surface positioned by hand into a stack whose heights it does not know.
 
+## <Rule id="layout-axis" description="Centred means on the screen's centre line, not in the space left over" />
+
+A title, a selector or a figure placed between a group on the leading side and a group on the trailing side is centred on the screen, whatever the two groups hold. Put it in the space the groups leave and it sits wherever their difference in width pushes it: one icon on the left and three on the right drags it left, and it moves again the moment a group gains or loses an item. The eye reads the centre of the screen, and an element slightly off it reads as a mistake rather than as a choice.
+
+The platforms already do it this way. The iOS navigation bar centres its title on the bar, and Material's centre-aligned top app bar does the same, so a stock bar is correct and a hand-built row is where it breaks. Give both flanks the width of the wider one, or lay the centred element over the full width with the groups on either side of it, and let it truncate before it moves off the axis.
+
 ## <Rule id="layout-fold" evidence="device" description="The first screenful answers what this is and what to do" />
 
 At the narrow end, at default text size, with nothing scrolled, three things are visible: what the screen is, the beginning of its real content, and the primary action. That action has two acceptable places and no third. Either it sits inside the first screenful, or it lives in a bar pinned above the bottom inset and is visible at rest, before anything has been scrolled.
@@ -106,7 +112,11 @@ The failure has a look, and only the short length shows it: a frame where the co
 
 ## <Rule id="layout-orientation" description="Turned sideways the screen loses height, not width" />
 
-A large phone held horizontally keeps a wide line and takes its portrait width as its height, about 390 to 440pt, most of which the keyboard takes when a field has focus. Two outcomes are acceptable and nothing between them: the screen locks to portrait for a reason recorded in `STACK.md`, or it reflows.
+A large phone held horizontally keeps a wide line and takes its portrait width as its height, about 390 to 440pt, most of which the keyboard takes when a field has focus. Two outcomes are acceptable and nothing between them: the screen reflows, which is the default, or it locks to one orientation because the user decided it should, recorded in `STACK.md` with that decision. A lock is a product decision about how the phone is held, and the person writing the layout does not grant it to themselves to avoid drawing a second one.
+
+Locks also hold in fewer places than they used to. From Android 16, an app targeting API 36 has its orientation and resizability restrictions ignored on displays at least 600dp wide, which covers tablets, foldables open and desktop windows, so a screen with no landscape layout meets landscape there anyway.
+
+A screen that is watched rather than held, propped on a stand or lying beside the person while they do something else, is the case that most needs its landscape composition drawn on purpose. `flow/spec.md` gives it a frame of its own.
 
 Reflowing means the primary action stays visible without hunting for it, and the reading column keeps its measure rather than running the full width (`type-measure`). A turn is also a configuration change, so what has to survive it is `state-interrupt`. The geometry is the part this rule owns.
 
@@ -122,7 +132,8 @@ Reflowing means the primary action stays visible without hunting for it, and the
 <Verify rule="layout-overlays">The snackbar comes from the platform's host slot rather than a hand-placed overlay, it clears the bottom bar and the inset, it moves the floating button rather than covering it, and one is on screen at a time.</Verify>
 <Verify rule="layout-fold">On the narrow device at default text size, the screen's subject and the start of its content are visible unscrolled, and the primary action is either in that screenful or in a bar pinned above the bottom inset and visible at rest.</Verify>
 <Verify rule="layout-short">Rendered at its shortest content, the screen holds its action against the bottom rather than centred above an empty lower third, through the same code that lets it scroll once the content grows.</Verify>
-<Verify rule="layout-orientation">Landscape is either locked with a reason recorded in `STACK.md` or reflows, with the action still visible and the measure still capped at the shorter height.</Verify>
+<Verify rule="layout-orientation">Landscape reflows, with the action still visible and the measure still capped at the shorter height, or is locked by a decision of the user recorded in `STACK.md`, and the screen still holds where the platform ignores the lock.</Verify>
+<Verify rule="layout-axis">A lone element meant to be centred between unequal groups sits on the screen's centre line, through equal flanks or an overlay across the full width.</Verify>
 
 <Device>`layout-insets`, `layout-width`, `layout-fold` and `layout-chrome` are answered on a rendered screen at the narrow end of the range, on a device using three-button navigation as well as gestures. The token table and the component tree both look correct while the bottom bar is sitting under the navigation bar. `layout-chrome` needs the screen scrolled to both ends with enough content to reach the pinned bars, because the collision is invisible until a row arrives under one of them, and the top bar hides the first row as readily as the bottom bar hides the last. `layout-short` needs the opposite render, the screen at its shortest content, which is the only length at which the action drifts into the middle.</Device>
 

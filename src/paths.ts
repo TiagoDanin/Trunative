@@ -46,6 +46,15 @@ export function variantName(name: string, stack?: string): string {
 	return stack ? `${name}-${stack}` : name
 }
 
+/**
+ * "trunative-full", the single-file copy for a context that cannot read files.
+ * It is never the copy a project installs, and one found beside the tiered
+ * copy is loaded as well, inlining every rule into the context at once.
+ */
+export function fullName(name: string): string {
+	return `${name}-full`
+}
+
 /** Where trunative keeps its own files inside a consumer project. */
 export const CONFIG_DIR = '.trunative'
 
