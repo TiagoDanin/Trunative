@@ -83,6 +83,8 @@ No other check in this file surfaces as many genuine defects. Turn the text size
 
 Layouts reflow; they do not truncate. A screen that only holds together at 100% has failed exactly the people who moved the setting.
 
+Nor do they shrink the text back. Scaling a label down to fit its box, through `FittedBox`, `minimumScaleFactor`, `adjustsFontSizeToFitWidth`, an auto-size text widget or a size computed from the width, turns the setting off exactly where it was needed, and whatever sits in the same box, an icon button included, shrinks with it under `touch-floor`. It passes a check that only looks for clipping, which is why it is named here. The exception is a single display figure whose size is the layout, a clock or a score on a screen built around it, and it is recorded as that, with every control kept outside the scaled box.
+
 ## `type-strings` The text in the layout is not the text you typed
 
 Real strings come from translators, from an API and from users, and they run longer and stranger than the ones in a mockup.
@@ -90,6 +92,7 @@ Real strings come from translators, from an API and from users, and they run lon
 - Size the labels against the longest language the product ships in, not against English. Compounds in German, Finnish and Portuguese set the minimum width.
 - Numbers stacked in a column need tabular figures, or the alignment shifts every time a value updates.
 - Names, titles and anything user-authored need a line limit and a truncation point chosen per role, settled in the design rather than discovered in production.
+- An identifier cut short, a file name, an address, a reference code, a version, a hash, has to be reachable in full on the next surface, and copyable there. The person truncated it to scan a list, not to lose it, and the part that got cut is usually the part that tells two of them apart.
 - All caps is for a short label at most. Applied to body text it removes the word shapes people actually read by.
 
 ## `type-dark` Light on dark reads lighter than it measures
@@ -108,8 +111,8 @@ Review answers each of these against the code, pointing at the line:
 - Nothing below 400, no weight hardcoded outside a theme style, and every weight step jumps a grade. Weight is distributed across the screen, with most text on the regular cut and the heavy cut spent on a few elements, and something on the screen does carry it. `type-weight`
 - The typeface choice can be stated as a reason, a brand face stays in the display roles, and any custom face scales. `type-face`
 - Body copy runs 40 to 60 characters per line. `type-measure`
-- The screen was rendered at the largest accessibility step, and nothing clips, overlaps or truncates into ambiguity. `type-scaling`
-- The longest localized string fits, numeric columns are tabular, and every truncation point was chosen deliberately. `type-strings`
+- The screen was rendered at the largest accessibility step, and nothing clips, overlaps or truncates into ambiguity, and no text is scaled back down to fit its box, except a recorded display figure with no control inside its scaled region. `type-scaling`
+- The longest localized string fits, numeric columns are tabular, every truncation point was chosen deliberately, and a truncated identifier can be read in full and copied one tap away. `type-strings`
 - Dark theme text was judged on a rendered screen. `type-dark`
 
 `type-scaling` and `type-dark` are answered with a rendered screen or they are not answered at all. Everything else gets a file and a line number.
@@ -119,3 +122,4 @@ Review answers each of these against the code, pointing at the line:
 The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
 
 - `heuristics/colors.md`: `color-assigned`
+- `heuristics/touch.md`: `touch-floor`

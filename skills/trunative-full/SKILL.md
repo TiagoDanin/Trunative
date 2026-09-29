@@ -1,6 +1,6 @@
 ---
 name: trunative-full
-description: Design and review mobile app UI for any stack (React Native, Expo, Flutter, SwiftUI, Jetpack Compose, mobile web). Use when building a screen, component, navigation flow, or form for a phone, or when reviewing existing mobile UI. This copy carries every rule, procedure and reference inline, in one file.
+description: Design and review mobile app UI for any stack (React Native, Expo, Flutter, SwiftUI, Jetpack Compose, mobile web). Use when building a screen, component, navigation flow, or form for a phone, or when reviewing existing mobile UI. This copy carries every rule, procedure and reference inline, in one file, for a context that cannot read files. Never install it in a project or beside another trunative copy: a project uses the tiered copy that "npx trunative install" writes.
 ---
 
 Every file this skill is made of is inlined below, each under a heading that is its path. A line pointing at `heuristics/colors.md` or `flow/build.md` is pointing at a section of this document, so nothing here has to be opened and nothing is missing. The tiered copy, where a rule is read only once a screen touches it, is the one a project installs; this one is for a context that gets filled once and cannot read files.
@@ -28,6 +28,8 @@ Follow it in order. Never skip init, never end on build.
 5. **review**, read `flow/review.md`. Runs on the code that was just written, and again on request over a finished screen. It scores every rule in scope from 1 to 5, or pass or fail where the rule is binary. A 1, a 2 or a fail is a violation, and a violation on a P0 or P1 rule blocks the screen whatever the percentage says.
 6. **loop**, back to build while review reports violations. Stop when review comes back clean.
 
+Every hand-off after build carries the status line of the review that ran on it, or the words `review not run` with the reason. A hand-off with neither is how a skipped review passes for a finished one.
+
 Loaded by build, not a step: `flow/firebase.md`, whenever the screen touches Firebase.
 
 ## Heuristics
@@ -53,9 +55,9 @@ Opened on every screen, before writing. Every screen has colour, text, targets, 
 |---|---|---|
 | `heuristics/colors.md` | `color-` | palette roles and tokens, the default palette, ramps, the accent, colour that varies per item, gradients, dark theme, contrast, color as state |
 | `heuristics/typography.md` | `type-` | the platform type scale, roles per screen, weight and its distribution, typeface choice, measure, text scaling, real strings |
-| `heuristics/touch.md` | `touch-` | hit areas and spacing, thumb reach, where destructive actions go, press feedback, gestures and system edges, the keyboard as layout |
+| `heuristics/touch.md` | `touch-` | hit areas and spacing, controls inside controls and pictures of controls, thumb reach, where destructive actions go, press feedback, gestures and system edges, the keyboard as layout |
 | `heuristics/buttons.md` | `button-` | one primary per screen, the emphasis ladder, labels, button states, the FAB, chips, tabs and segmented controls |
-| `heuristics/layout.md` | `layout-` | insets and safe areas, the spacing scale, grouping and density, radius and shape, one column, the width range, fixed chrome and overlays, the first screenful, orientation |
+| `heuristics/layout.md` | `layout-` | insets and safe areas, the spacing scale, grouping and density, radius and shape, one column, the width range, centring between unequal groups, fixed chrome and overlays, the first screenful, orientation |
 | `heuristics/composition.md` | `comp-` | a composition chosen between alternatives, how far apart candidates have to be, the moment of use deciding the arrangement, an arrangement that could only be this product's, sibling screens that are not one template |
 | `heuristics/states.md` | `state-` | the full state set, loading and skeletons, the three empties, error classes and retry, offline and queued work, stale and partial data, permission, interruption |
 | `heuristics/motion.md` | `motion-` | what earns an animation, the platform's own transitions, springs against durations, choreography, loops, motion that blocks input, cheap properties, reduced motion |
@@ -75,7 +77,7 @@ It fails in two quiet ways. Judging by the feature closes a file that owns somet
 
 | File | Prefix | Covers |
 |---|---|---|
-| `heuristics/navigation.md` | `nav-` | how deep the hierarchy goes, choosing between screen, tab, modal and sheet, back and up, deep links, per-destination stacks, search, state after interruption |
+| `heuristics/navigation.md` | `nav-` | how deep the hierarchy goes, choosing between screen, tab, modal and sheet, back and up, deep links, per-destination stacks, an item whose home is another section, search, state after interruption |
 | `heuristics/lists.md` | `list-` | virtualisation, row density and the row as a target, separators, swipe actions, images, sections, the end of the list, refresh, selection |
 | `heuristics/forms.md` | `form-` | one column, field count, persistent labels, input type and autofill, when to validate, error recovery, what survives backgrounding, submit |
 | `heuristics/chat.md` | `chat-` | the transcript's anchor and where it opens, paging history upward, arrivals while reading, grouping and time, the row, the empty conversation, the composer's ceiling, the state of one message, attachments, presence, announcing an arrival |
@@ -93,7 +95,7 @@ It fails in two quiet ways. Judging by the feature closes a file that owns somet
 | `heuristics/auth.md` | `auth-` | the methods and their order, provider buttons, web flows, last used, code screens, biometrics over a session, expiry, re-auth, the active account, sign out, deletion |
 | `heuristics/webviews.md` | `webview-` | which surface a URL opens in, somebody else's credential field, the wrapper's own chrome, back inside the page, links that leave it, theme and text size reaching content nobody can restyle, insets and the keyboard, downloads and file pickers, the session the app cannot read, the wrapped site |
 | `heuristics/settings.md` | `set-` | a better default before a switch, settings in context, what the system owns, shape and status, controls, effect, what syncs, destructive rows, search, the account exit, diagnostics |
-| `heuristics/media.md` | `media-` | the system player, controls and scrubbing, unasked sound, audio focus, becoming noisy, background audio, remote controls, picture in picture, fullscreen, keeping awake, quality, live |
+| `heuristics/media.md` | `media-` | the system player, controls and scrubbing, unasked sound, audio focus, becoming noisy, background audio, remote controls, picture in picture, fullscreen, keeping the screen awake for anything watched rather than touched, quality, live |
 | `heuristics/maps.md` | `map-` | the first camera, who owns the drag, markers as targets, clustering, the equivalent list, following the user, legibility over tiles nobody chose, routes as text, tiles that did not arrive, the cost of a live map, attribution, the provider's contract |
 | `heuristics/privacy-ui.md` | `priv-` | the stranger beside the user, masked values, the app switcher snapshot, blocking capture and merely detecting it, the second gate, what gets instrumented, deleting data, the declaration matching the code |
 | `heuristics/sharing.md` | `share-` | the system sheet and nothing hand-rolled, the payload and its preview, a link rather than a screenshot, readiness, file access, the outcome, what the app accepts and how it arrives, clipboard and paste, invites |
@@ -121,7 +123,7 @@ Base decides what is read on every screen. These nine decide what is scored on e
 - `type-scale`, `type-scaling`: text arrives through a style with no literal size, and the screen still holds at the largest accessibility step.
 - `layout-insets`: the safe area read at runtime, on all four edges.
 - `touch-floor`, `touch-feedback`: the hit area meets the platform floor, and the press answers under the finger.
-- `color-contrast`, `color-dark-composed`: contrast measured, and both appearances actually built.
+- `color-contrast`, `color-dark-composed`: contrast measured, and both appearances actually built, or the one `DESIGN.md` records forced on every surface.
 - `a11y-name`: every control carries a name, a role and a value.
 - `motion-reduced`: anything that animates reads the system setting first.
 
@@ -131,6 +133,8 @@ A splash screen, a settings list and a chart all answer these. Open the file tha
 
 - Open every base file, then every extra file this screen touches, settled by the pass over the Extra table rather than from memory of what the folder holds. Reading all of it wastes the context the code needs, and closing a file because the screen looked simple wastes the review.
 - Read `references/` on demand, for one specific number or API. Never as background.
+- What was read is gone once the context is compacted or reset, and a summary of a rule is not the rule. After either, open this file, the flow file of the current step and the screen's brief again before the next line of work.
+- Work handed to a sub-agent, a workflow or a parallel worker carries the flow file of its step and the brief it builds against, by path, never a paraphrase of them. A worker that only received the orchestrator's summary is working without this skill.
 - This copy was built for one agent and, when its name says so, for one stack. It is not the file that was written: the branches for other harnesses and other frameworks were resolved away at build time. Never hand-edit it, and never reason about what a branch might have said.
 - The project briefs override nothing in `heuristics/`, but they decide which rules apply and record the exceptions accepted on purpose. `PRODUCT.md` is who uses this and for what, `DESIGN.md` is the visual identity in the [design.md format](https://github.com/google-labs-code/design.md), and `STACK.md` is this codebase: primitives, navigation, components, exceptions. A fourth brief is per screen rather than per project: `.trunative/screens/<name>.md` holds the structure `flow/spec.md` settled, and it records intent rather than granting an exception.
 
@@ -171,6 +175,10 @@ The doctor only checks that a brief exists. Whether it says anything useful is y
 
 **Skill missing or stale.** Run `npx trunative install`, then run the doctor again. Do not hand-edit the copy inside the agent directory: the hash check exists to catch exactly that, and the edit is lost on the next install.
 
+When the doctor says the installed copy is newer than the CLI running it, the CLI is what is out of date: run the version it names, and never `install` from the older one, which deletes whatever the older package lacks. When it reports a full copy beside the installed one, remove that copy; it puts the whole skill in the context at once and the tiers never get to decide what is read.
+
+A failing doctor is never an exception in `STACK.md`. That file records design decisions the user accepted, and a check nobody can make pass is a tooling fault to report to the user, not a decision.
+
 **Product brief missing.** Interview the user, then write `.trunative/PRODUCT.md`. Do not invent answers, and do not fill a template with plausible text. Ask:
 
 - who uses this, and in what situation (walking, driving, at a counter, at home)
@@ -178,9 +186,15 @@ The doctor only checks that a brief exists. Whether it says anything useful is y
 - what a session looks like: seconds or minutes, one-handed or two, foreground or interrupted
 - the constraints that are already decided: platforms, stack, minimum OS versions, offline requirements
 
+A document the user hands over, a product spec, a pitch, a prompt written for another tool, is input to this interview and not a replacement for it. Read it first, then ask what it does not answer. Such documents describe features and rarely the person: who holds the phone, where, for how long and while doing what is exactly the part they leave out, and it is the part every later composition is decided by.
+
 **Design brief missing.** `DESIGN.md` follows the [design.md specification](https://github.com/google-labs-code/design.md) from Google Labs, so any agent that already reads it gets the visual identity for free. Do not invent a second format.
 
 Read the codebase first and derive the tokens from what is actually there. Ask the user only about what the code cannot answer, and about the intent behind values the code shows but does not explain.
+
+Ask whether there is a reference to match: a mockup, a screenshot, another app, a brand sheet. When there is, it outranks both the code and any derivation, and `DESIGN.md` is read off it. Go through what a picture settles and a description loses, one by one, and write each down with the reference it came from: the ground and whether it is tinted, the ink, the accent and what it is spent on, the weight of titles against body, the icon set and whether a selected icon fills, the back glyph, how a selected item in a bar or a list is marked, what carries depth, and the radii. A token nobody wrote down from the reference gets filled in from the framework's defaults, and the user then spends the next week pointing at the difference.
+
+Ask which appearances the product ships: following the system, which builds both and is the recommendation, or one of them forced. Record the answer in the Overview. It decides what `color-dark-composed` grades, and it is the user's to decide rather than a default either way.
 
 - YAML frontmatter: `name` is required. Add `version`, `description`, and the token groups the project has: `colors`, `typography`, `rounded`, `spacing`, `components`. List what the project genuinely does not define under `omitted`, instead of inventing values to fill the schema.
 - Markdown body, in this order: Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Components, Do's and Don'ts. The body is where the reason lives. A token without a reason gets copied into the wrong place later.
@@ -312,13 +326,21 @@ scope:
 
 Six fields. Nothing joins them without a consumer already reading it.
 
-**`target`** is the file that implements the screen, relative to the project root. It is what links the brief to everything else: `flow/review.md` computes its archive slug from that path, and `npx trunative detect` reads it. There is no `id` field, because the target is the identity and the filename is a convenience.
+**`target`** is the file that implements the screen, relative to the project root. It is what links the brief to everything else: `flow/review.md` computes its archive slug from that path, and `npx trunative detect` reads it. There is no `id` field, because the target is the identity and the filename is a convenience. Before the code exists it is the path build will write, and build points it at the real file when that turns out different.
+
+A screen that ships in variants, for a test between arrangements or per audience, gets one brief per variant, each with its own target and its own wireframe. One brief holding three hierarchies has no single structure to compare the code against.
 
 **`user_goal`** is what the person is trying to get done, in their terms and not the screen's. "Show today's departures" is what the screen does. "Know whether to run for this train or wait for the next" is the goal, and it produces a different screen: the first is a list and the second is one figure and a verdict. Write it as the person would say it, including the constraint they are under, because the constraint is usually what decides the layout.
 
 **`context`** is the moment of use, in eight fixed keys: `environment`, `posture`, `hands`, `attention`, `session_length`, `frequency`, `interruption`, `urgency`. Plain words, no numbers with units. Take it from `PRODUCT.md` where that file says it and from the task where it does not, and write `unknown` for a key nobody knows, which is an honest answer and a different one from leaving it out. `flow/explore.md` reads this block before it writes a candidate, and `comp-context` grades the screen against it. The keys are fixed for the same reason the state keys are: a free list leaves out the one that would have argued with the layout already in mind.
 
-**`primary_action`** is the label the user reads, in quotes, not an identifier. `button-label`, `copy-first-word` and `copy-case` all judge the visible string, and the comparison against the code only works on the string. One by default, which is what `button-one-primary` protects. A screen whose job is a choice between two outcomes of equal weight names both labels in the one string, joined by "or", and owes the reason that rule asks for.
+**`primary_action`** is the label the user reads, in quotes, not an identifier. `button-label`, `copy-first-word` and `copy-case` all judge the visible string, and the comparison against the code only works on the string. One by default, which is what `button-one-primary` protects. Three other forms exist, and nothing else:
+
+- a choice between two outcomes of equal weight names both labels, each in its own quotes, joined by `or`, and owes the reason that rule asks for;
+- a primary that changes with the state of the thing, one label while it runs and another while it is stopped, takes the same form, `"Start" or "Stop"`, and the States section of the body says which state shows which;
+- a screen with no primary action, one that is read, or whose rows each lead somewhere, writes `none` followed by the reason, the way a state writes `n/a`.
+
+A label is the words on the control, a few of them. A sentence in quotes explaining where the action lives is a note about the screen, and it belongs in the body under Primary action.
 
 **`states`** carries the six keys `state-set` names, always all six: `loading`, `empty`, `error`, `offline`, `partial`, `permission`. Each value is one line saying what the screen shows, or `n/a` followed by the reason. A missing key, an empty value, or an `n/a` with no reason is a defect in the brief.
 
@@ -326,7 +348,7 @@ The keys are fixed because a free list is a loophole. A screen that picks its ow
 
 A screen driving a camera, a microphone, location, a motion sensor or a radio owes the five further states in `sense-states` on top of these, in the body.
 
-**`scope`** names files from the Extra table in `SKILL.md`, by the stem or by the rule prefix beside it, whichever the row put in front of you: `localization` and `l10n` are the same row. Never a rule id, and never one of the nine always in scope, which are not optional and so are never declared. `open` is what build reads and what `npx trunative rubric --only` takes. `closed` carries the rows a reader would expect to be open, each with the sentence `SKILL.md` requires. Not the whole table: the near misses, which are the only ones anybody argues about later. `auto_excluded` is optional and carries stems alone, for the rows the screen plainly has nothing of. It owes no sentence, and it is there for the reviewer who wants to see that a row was looked at and not forgotten. A row in neither list is simply excluded. When in doubt whether a row is a near miss, it is one, and it goes under `closed` with its sentence.
+**`scope`** names files from the Extra table in `SKILL.md`, by the stem or by the rule prefix beside it, whichever the row put in front of you: `localization` and `l10n` are the same row. Never a rule id, and never a file from the Base table, such as `states` or `layout`: base files are opened on every screen, so declaring one says nothing. `open` is what build reads and what `npx trunative rubric --only` takes. `closed` carries the rows a reader would expect to be open, each with the sentence `SKILL.md` requires. Not the whole table: the near misses, which are the only ones anybody argues about later. `auto_excluded` is optional and carries stems alone, for the rows the screen plainly has nothing of. It owes no sentence, and it is there for the reviewer who wants to see that a row was looked at and not forgotten. A row in neither list is simply excluded. When in doubt whether a row is a near miss, it is one, and it goes under `closed` with its sentence.
 
 #### Body
 
@@ -353,6 +375,8 @@ Nobody reconstructs a codebase by hand. When a screen has no brief and a structu
 
 Derive what the code shows and nothing more. A state the code does not implement is not written as implemented: it is the `n/a` that has no reason, which is exactly the finding that sends the screen back to build.
 
+This section is for code that existed before the task. A screen written in this session gets its brief before its code, and a brief written afterwards to complete the record is not a spec step: it recorded what was built, and nobody chose it.
+
 ### 3. The wireframe
 
 The brief preserves the decision. It does not let anyone see it. A hierarchy list reads in thirty seconds and hides what an image gives away at once: the primary action stranded in an empty frame, the last row of content under the pinned bar, a hero eating a third of the height, a density that does not fit. `flow/review.md` says the same thing when it refuses to close a screen on source evidence alone.
@@ -373,6 +397,8 @@ Write `.trunative/screens/<name>.wireframe.html` from the brief. The frame, the 
 - Never a brand colour, a gradient, a shadow, a real photograph, an icon set, or any token from `DESIGN.md`. The wireframe settles structure, and a wireframe carrying identity collects an approval nobody asked for.
 - HTML even when the project ships Flutter, Compose or SwiftUI. Writing the wireframe in the project's stack is writing the screen twice, which is the cost this step exists to avoid.
 - The default state always. One more frame per state whose composition is genuinely different, which in practice is the empty one. Never all six: six frames cost more than the screen.
+- A screen that rotates, or whose job is watched from a distance on a phone set down sideways, gets a landscape frame beside the portrait one. Its composition is its own decision, not the portrait one stretched, and a screen that only ever got a portrait frame has a landscape layout nobody chose.
+- The file opens with the explore record, the lines `flow/explore.md` hands back, inside an `<!-- explore ... -->` comment. It is what lets anyone, and `npx trunative spec`, see that the composition was chosen between candidates.
 
 Then render it and look at it yourself, before anyone else does:
 
@@ -390,7 +416,15 @@ The wireframe is scaffolding, not a second contract. After approval nothing read
 
 ### 4. The gate
 
-Show the frame and five lines:
+Run the checker first:
+
+```sh
+npx trunative spec .trunative/screens/<name>.md
+```
+
+It reads the six fields, the context and state keys, the scope, the ceiling, the wireframe's greyscale and the explore record. A finding is fixed before the gate, the same way a pair under the floor stops explore: a brief that fails its own checker is not a structure anyone should approve.
+
+Then show the frame and five lines, per screen:
 
 ```text
 Memories
@@ -406,6 +440,11 @@ Approve?
 
 The approval is about hierarchy, actions, states and navigation. It is not about colour, typeface, spacing or polish, and an answer about those goes to `DESIGN.md` rather than into the brief.
 
+- One screen per question. Several screens approved in one answer are approved as a batch, and the one that needed a second look went through with the rest.
+- Rejecting is always an option, beside approving, and so is asking for a different candidate. A question whose only answers are two kinds of yes is not a gate.
+- The question is about the structure. A question about an implementation cost, a data source or a library, asked in its place, leaves the structure unapproved however it is answered.
+- When the user supplied a reference, the frame is shown beside it and every place the structure departs from it is listed, each with the reason. A departure described in a sentence under a greyscale frame is one the user cannot see, and it comes back after the build.
+
 Never grant it yourself. Writing the brief, drawing the frame and deciding it looks right is this step doing its own homework, not the gate: the gate is the one part of the step the user sees, and a step reporting "approved" with no question asked has claimed something that did not happen.
 
 Ask when the structure is a real decision, meaning any of these holds:
@@ -416,13 +455,13 @@ Ask when the structure is a real decision, meaning any of these holds:
 - the new structure contradicts one the user already approved;
 - it is the first structural task of the session, so the user sees once how this step draws.
 
-Proceed without asking when none of them holds: the request already fixed the hierarchy, the actions and the navigation, and the chosen composition is what it asked for. The brief is still written, the candidates still compared and the frame still drawn and looked at. Say in the hand-off that the gate was skipped and on what ground, show the frame and the four lines anyway, and carry on to build. That is a report and not an approval, and the user can stop it there. A loop of build, ask, wait on every component is a gate people learn to click through, which protects nothing.
+Proceed without asking when none of them holds: the request already fixed the hierarchy, the actions and the navigation, and the chosen composition is what it asked for. The brief is still written, the candidates still compared and the frame still drawn and looked at. Say in the hand-off that the gate was skipped and on what ground, show the frame and the five lines anyway, and carry on to build. That is a report and not an approval, and the user can stop it there. A loop of build, ask, wait on every component is a gate people learn to click through, which protects nothing.
 
-When the harness cannot show the user a picture, say so and put the four lines in front of them anyway. A gate answered on the text alone is weaker than one answered on the frame, and it is still the user answering.
+When the harness cannot show the user a picture, say so and put the five lines in front of them anyway. A gate answered on the text alone is weaker than one answered on the frame, and it is still the user answering.
 
 ### 5. Hand off
 
-Say what the brief settled, which extra files its scope opened and which near misses it closed, the lines `flow/explore.md` handed back, what the wireframe pass caught, and whether the gate was asked or skipped and on what ground. Then run `flow/build.md`.
+Say what the brief settled, which extra files its scope opened and which near misses it closed, the lines `flow/explore.md` handed back, what the wireframe pass caught, that `npx trunative spec` passed, and whether the gate was asked or skipped and on what ground. Then run `flow/build.md`.
 
 # flow/explore.md
 
@@ -443,6 +482,8 @@ Before any candidate, write one line describing the layout this screen would get
 ```text
 Default: top bar, a row of filter chips, equal cards in one column, a full-width button pinned low.
 ```
+
+When the user supplied an arrangement, a mockup, a sketch, a screen from another app they want this one to follow, that arrangement is the conventional candidate, written off the reference and not from memory. The other two lenses still run, since the user may not have seen the alternatives, but the supplied one is what they asked for: a different winner is a departure `flow/spec.md` puts in front of them beside the reference, and `comp-distinct` is never the reason to leave it.
 
 That line is not a candidate yet. It is the thing the other candidates are measured against, and writing it down is what stops it from arriving later under a different name. It may still win in step 5, as the conventional candidate, with a reason. What it may not do is win because nothing else was on the table, or be the first thing written: when the candidates are written one after another, the spatial and the contextual ones come first and the conventional one last, so that the familiar layout is never the text the other two are written under.
 
@@ -477,7 +518,7 @@ Operates     one tap on the figure, horizontal swipe through later departures
 
 Write each one from the brief, not from the previous candidate. A candidate written with another one in view comes out as a revision of it.
 
-When this harness has sub-agents, give each lens to one, with the brief, the context line, the lens and the two reference files, and nothing else. When it does not, write the candidates one at a time, re-reading the brief before each and never quoting, comparing against or referring to a candidate already written. The comparison happens in step 4, and doing it earlier is how three candidates become one.
+When this harness can spawn sub-agents at all, spawn one per lens: that is an instruction, not an option to weigh against speed. Each gets the brief, the context line, the lens and the two reference files, and nothing else. Only when it cannot, write the candidates one at a time, re-reading the brief before each and never quoting, comparing against or referring to a candidate already written. The comparison happens in step 4, and doing it earlier is how three candidates become one.
 
 Heuristics stay closed during this step. The one constraint a candidate carries while it is being written is the brief: the hierarchy line, the primary action, the six states and the context.
 
@@ -536,7 +577,7 @@ Novelty is never the criterion. The candidates were pushed apart so that the cho
 
 ### 6. Hand back
 
-Write into the response, not into the brief and not into the wireframe:
+Write it into the response, and at the top of the wireframe inside an `<!-- explore ... -->` comment, one key per line with the value after two spaces or more, never into the brief. The comment is what `npx trunative spec` reads: without it, a skipped explore step looks exactly like one that ran.
 
 ```text
 Default      top bar, filter chips, equal cards, pinned button
@@ -547,6 +588,8 @@ Default used no, it competed as A and lost
 Chosen       B, because the next departure is the whole job and A buries it in a list
 Lost         A reads as a schedule to study, C hides later departures behind a gesture
 ```
+
+`Default`, `Context`, `Candidates`, `Distance`, `Chosen` and `Lost` are required, and `Distance` counts all three pairs as `A/B`, `A/C` and `B/C`.
 
 Then return to `flow/spec.md` and draw the chosen candidate. The hierarchy in the brief is updated when the winner reordered it, since the brief is the contract and this step is allowed to change its mind.
 
@@ -586,6 +629,8 @@ A brief's `scope` has already made that pass. Open what `scope.open` names and r
 
 When the screen touches Firebase, in any of auth, Firestore, Storage, Messaging, Remote Config or Crashlytics, read `flow/firebase.md` as well. It is loaded here the way a heuristic is, and it is not a step.
 
+**When the user supplied a reference for this screen**, an image, a sketch, another app's screen, read it before the tokens and build what it shows. It is not a mood to be interpreted: the ground, the weights, the glyphs, the spacing between groups and how a selected item is marked are all in it, and a value the reference shows is not a gap to fill with a derivation. Where the rules and the reference disagree, build the reference, record the conflict for review, and tell the user which rule it breaks and what that costs.
+
 **When `DESIGN.md` is missing, or says nothing about a role this screen needs.** Init writes that file and `doctor` is what notices it is gone, but screens get built in the gap anyway, and what fills the gap on its own is the median of everything a model has read: a system font, a violet button, a rounded card, and a screen that would fit any other product. Settle the identity in writing before the first line of code, in five lines:
 
 - the material or reference this product evokes, named. Newsprint, film stock, enamel signage, a receipt, a ledger. An adjective is not a reference.
@@ -612,6 +657,8 @@ So render it and look at it yourself, before anyone else does, the way `flow/spe
 
 Open the capture however this harness shows an image, and read it as a picture rather than as a file that was produced.
 
+When the user supplied a reference, put the capture beside it at the same width and list every difference a person would point at: a ground that is grey where the reference is white, a title weight, a glyph, an indicator, a gap between groups, a control that moves when it is selected. Fix them or name them in the hand-off. Saying the screen matches without having looked at the two together is how the same correction comes back from the user one item at a time.
+
 Then say where the reference behind the identity is visible on the screen. One named thing a stranger could point at is enough. A reference that cannot be found anywhere in the render was a caption rather than a derivation, which is the failure `color-derived` names one level down, arriving here instead.
 
 This pass is cheap and it is not the review. It catches what the author can still fix in the same turn, which is the half of `flow/review.md` that would otherwise come back as a violation and spend a second pass on it. When the screen cannot be rendered here at all, say so in the hand-off instead of reporting it as looked at: a screen nobody has seen reaches review as a screen nobody has seen, and review is told that rather than left to discover it.
@@ -620,7 +667,11 @@ This pass is cheap and it is not the review. It catches what the author can stil
 
 Say which heuristics files you applied and which you deliberately skipped, with the reason, and name the triggers that opened the extra ones. When this screen had to settle an identity because `DESIGN.md` did not, the five lines go in the hand-off, marked provisional. Name the brief you built against, or say the change was not structural and had none. Then run `flow/review.md`. Build is never the last step.
 
-Where the code had to depart from the brief, change the brief in the same turn and say what moved. A brief left behind is what review reports as drift, and it is cheaper to correct here than to explain there.
+Where the code had to depart from the brief, change the brief in the same turn and say what moved. A brief left behind is what review reports as drift, and it is cheaper to correct here than to explain there. The same holds when the user asks for the change: a request that moves an item the brief names under Hierarchy, Interactions or Navigation, or removes a screen another brief links to, rewrites those briefs in the same turn, and a structural change also redraws the wireframe through `flow/spec.md`.
+
+Then run `npx trunative spec` over the briefs this build touched. A build renames and splits files, and a `target` pointing at a file that no longer renders the screen is a brief that joins to nothing.
+
+A plan that builds several screens builds them one at a time, each through this file and each reviewed before the next starts. Writing every screen first and the briefs afterwards, to complete the record, turns spec into paperwork about decisions nobody made.
 
 # flow/review.md
 
@@ -678,7 +729,7 @@ Anchors are not a curve. Most rules on a screen built with this skill land at 3 
 
 Review the actual code, not your memory of writing it. Open the files that changed.
 
-After a build that is the diff. On request it is the screen: the widget, view or composable that renders it plus whatever it pushes and presents, opened on a device or a simulator.
+After a build that is the diff, including a build that went straight from a one-line verdict to code: a change too small for spec is still a change someone will hold, and its review is the same file with a smaller scope, printed with its header. On request it is the screen: the widget, view or composable that renders it plus whatever it pushes and presents, opened on a device or a simulator.
 
 ### 2. Scope and checklist
 
@@ -747,11 +798,15 @@ npx trunative detect lib/screens/checkout_screen.dart
 
 It reads the files and answers the part of a `Check` line a file can settle, reporting per rule id. Three things follow from that and none of them is optional: every finding is `source` evidence, so it never settles a rule marked `[device]`; a finding is a place to look rather than a score; and its silence proves nothing, so a rule it did not answer stays with the grader. It exits 2 when it finds something, which is not a failure.
 
-Then the measurements that do need a device: both appearances on the narrowest and widest device class, the largest accessibility text step on the narrowest, hit area bounds read from the inspector rather than estimated from a screenshot, the primary flow completed with the screen reader on, the screen with the network off and after a process kill the system would have made itself, and real records rather than seed data, meaning a null, a zero, a long string, an old timestamp and an empty list.
+Then the measurements that do need a device: both appearances on the narrowest and widest device class, the largest accessibility text step on the narrowest, hit area bounds read from the inspector rather than estimated from a screenshot, the primary flow completed with the screen reader on, the screen with the network off and after a process kill the system would have made itself, and real records rather than seed data, meaning a null, a zero, a long string, an old timestamp and an empty list. When the app can reach a real account, use it: demo data was written to look right, which is the one thing real data does not do.
+
+Some defects only exist over time, and a capture of the settled screen shows none of them. Capture the screen while it loads and again once content arrives, and compare where things sit, since `state-loading` fails in the step between the two. Leave the screen open for a minute and look again: a relative time that never changes, a figure that should have refreshed, a banner that should have gone. Time the ordinary interactions, the sheet opening, the tab switching, the list returning, instead of judging them by feel.
+
+A device the user is working on is theirs. Before changing a setting on it, font scale, display size, rotation lock, theme, locale, animations, language, say which, and put every one back before the hand-off, listing what was changed and restored. A test that leaves the phone at double text size or with rotation locked has broken the next thing the user tries.
 
 How the two are kept apart depends on the harness you are running in:
 
-Run them as sub-agents when this harness has them, spawned so that neither reads the other's output. When it does not, finish the judging pass and record it, then measure.
+When this harness can spawn sub-agents at all, run them as two, spawned so that neither reads the other's output: that is an instruction, not an option to weigh against speed. Only when it cannot, finish the judging pass and record it, then measure.
 
 Then reconcile: the judged score stands unless a measurement contradicts it, and every score a measurement moved is printed with both numbers. The report is one table, not one pass after the other. When they could not be kept apart, the report says so on its first line.
 
@@ -782,7 +837,7 @@ The report goes in the response, in this order:
 1. **Header.** What was reviewed, the scope, the status first, then the violations counted by severity, the total, the percentage, the coverage, and the band when the status is `CLEAN`. `BLOCKED` names the rule ids that block.
 2. **The table.** Columns: rule, severity, score or pass and fail, evidence, finding. Print every rule at 4 or below and every one of the always-in-scope nine, then one line per file for the rest: file, rules scored, average, lowest.
 3. **Violations.** Every rule at 1, 2 or `fail`, ordered by severity and then by what it costs the person using the app, and never by how easy it is to fix. Each names the rule id, the file and line, what the user meets, and the fix. Say plainly when the screen is unusable one-handed, loses work on interruption, or has no failure state, and do not bury it under smaller findings.
-4. **Spec drift.** Only when the screen has a brief, and unscored. Each entry quotes what the brief says and what the code does: a hierarchy in a different order, a `primary_action` whose label is not the one on screen, a state declared and not implemented, a scope the brief left out. Where the divergence also breaks a rule, name the id that already scores it, such as `state-offline` for a declared state that is not there, and do not score it twice. Drift is a fact about two files disagreeing, and the moment it carries a number this file has two graders in it.
+4. **Spec drift.** Only when the screen has a brief, and unscored. Start with `npx trunative spec` on that brief, whose findings are drift already written down, then read the brief's Hierarchy, Interactions and Navigation against the code, and the screens it names against the briefs that exist. Each entry quotes what the brief says and what the code does: a hierarchy in a different order, a `primary_action` whose label is not the one on screen, a state declared and not implemented, a scope the brief left out. Where the divergence also breaks a rule, name the id that already scores it, such as `state-offline` for a declared state that is not there, and do not score it twice. Drift is a fact about two files disagreeing, and the moment it carries a number this file has two graders in it.
 5. **What moved.** Scores a measurement changed, with both numbers.
 
 If a violation is a deliberate exception recorded in `STACK.md`, it is `n/a` with that exception as the reason, not a 1 defended in prose. Whether the exception is a good one is a separate question with its own test, in `references/accepted-exceptions.md`: a rule written as a default admits a reasoned exception, a reason that fails that test is reported as a finding against `STACK.md`, and the nine always in scope and every P0 rule admit none.
@@ -791,7 +846,7 @@ Name the element, say what it costs, give the fix. Nothing in the report is an i
 
 ### 6. Record
 
-A run with nothing `unrun` is a complete measurement and gets archived. A run that left rules unchecked prints its table and stops here, naming the rules that blocked the archive, because a partial run in the history makes every later comparison lie.
+Every run gets archived, the partial ones included. A run that left rules `unrun` lists them in its frontmatter, and the trend below says so whenever that list differs from the previous run's: a partial run hidden from the history is not avoided, it is merely forgotten, and the next session starts again from nothing. Rules on a device are the ones most often left `unrun` on a working machine, so a history that only kept complete runs would stay empty.
 
 Write the report to `.trunative/review/<slug>-<YYYY-MM-DD-HHmm>.md`, one file per run, kept in version control. The slug comes from the primary file's project-relative path: lowercase it, replace every run of characters that is not a letter or a digit with a single hyphen, and drop a leading and trailing one, so `lib/screens/checkout_screen.dart` becomes `lib-screens-checkout-screen-dart`. It is computed the same way on every run and never invented, because the trend reads it.
 
@@ -812,16 +867,17 @@ max: 300
 percent: 79
 scored: 60
 na: [pay-restore: no purchases on this screen, ads-report: no Android build]
+unrun: [a11y-announce, type-scaling]
 ---
 ```
 
-`skill` is the hash in `.trunative/skill.lock`. It says which set of rules produced the numbers, which is how a later run knows the rulebook moved under it. `spec` is the screen brief this run graded against, omitted when the screen has none, so a later comparison can tell a screen that changed from a screen whose declared intent changed.
+`unrun` is empty on a complete run, and never left out. `skill` is the hash in `.trunative/skill.lock`. It says which set of rules produced the numbers, which is how a later run knows the rulebook moved under it. `spec` is the screen brief this run graded against, omitted when the screen has none, so a later comparison can tell a screen that changed from a screen whose declared intent changed.
 
 Then read the newest five archived runs with the same slug and print one line:
 
 > Trend for `lib-screens-checkout-screen-dart`: 61%, 74%, 79% (236/300 this run).
 
-The comparison is only honest when the measurement is the same, so name any of these that changed since the previous run, on the same line: the skill hash moved, so some of the difference is rules rather than the screen; the scope changed, and which files joined or left; or the `n/a` set changed, since a rule that was excused last time and scored now moved the total on its own. The scope may grow between runs and may not silently shrink: a later run covering fewer files is not a better run.
+The comparison is only honest when the measurement is the same, so name any of these that changed since the previous run, on the same line: the skill hash moved, so some of the difference is rules rather than the screen; the scope changed, and which files joined or left; or the `n/a` set or the `unrun` set changed, since a rule that was excused or skipped last time and scored now moved the total on its own. The scope may grow between runs and may not silently shrink: a later run covering fewer files is not a better run.
 
 First run: there is nothing to compare against. Say so in one line, name it the baseline, and name the file the next run will read.
 
@@ -1457,7 +1513,7 @@ The whole control is tappable, not the text inside it. A full-width primary at t
 Write the verb of the action and the object it acts on: Send, Pay 42, Delete photo. OK, Submit and Yes describe nothing, and Yes in particular forces the user back up to reread the question.
 
 - No trailing period, and never "click" on a device with no cursor.
-- Keep it short enough to survive translation and a 200% text size, and decide now what a long label does: wrap, or shrink the container, never quietly truncate the verb.
+- Keep it short enough to survive translation and a 200% text size, and decide now what a long label does: wrap onto a second line and let the control grow taller, never scale the text down to fit (`type-scaling`), never quietly truncate the verb.
 - An icon-only button carries an accessibility label saying the action, not the picture. On Android, navigation destinations always carry a visible text label as well.
 
 ### `button-state` A button has four states, and two of them are usually missing
@@ -1465,6 +1521,8 @@ Write the verb of the action and the object it acts on: Send, Pay 42, Delete pho
 Rest and pressed are covered by the touch rules. The two that get skipped:
 
 **Disabled.** A primary that starts disabled at the top of an empty form gives the user nothing to act on and no reason why. Prefer leaving it enabled and answering on tap with what is still missing, pointed at the field that is missing it. Where disabled is genuinely right, the reason has to be visible next to it, not inferred.
+
+Disabled also promises that something the person can do will enable it. A control nothing on this screen can ever enable, in the configuration the person is in, is not disabled, it is absent: a pager over a single page, a sort control over one item, a next and previous pair with nowhere to go, a range the data source does not keep. Offering an option the system cannot answer is the same defect one step later, when the person picks it and gets an empty result that looks like no data.
 
 **In flight.** The moment it is tapped, the control stops accepting taps and says that work is happening, in place, at the same width, so the layout does not jump under the finger that is still there. A button that looks identical during a three second request gets pressed again, and the second press is a duplicate order.
 
@@ -1489,7 +1547,7 @@ Four kinds, four jobs. Assist chips offer an action in context. Filter chips nar
 Three to five destinations, and they are the top level of the app rather than a place for actions. They belong at the bottom, where the thumb is.
 
 - Every destination is labelled. Icon-only navigation asks the user to guess, and the guess is wrong often enough to matter.
-- The selected destination is obvious without relying on color alone: an indicator, a filled icon variant, a weight change.
+- The selected destination is obvious without relying on color alone: an indicator, a filled icon variant, a weight change. Selection changes how an item is drawn and never where it sits: the selected icon, label and indicator occupy the same box as the resting ones, so nothing in the bar moves when the selection does.
 - The set does not change from screen to screen, and it does not vanish when a screen is pushed. Tabs that come and go stop being a map.
 - Top tabs and bottom tabs on the same screen is two navigation systems arguing. Pick one.
 - A segmented control is not a tab bar. It filters or switches the view in front of the user, it holds about three options, and past that it becomes a menu or a filter screen.
@@ -1502,14 +1560,15 @@ Review answers each of these against the code, pointing at the line:
 - Emphasis comes from the platform's ladder, one style per rank, styled in the theme rather than per call site, and the same action looks the same across screens. `button-ladder`
 - Every button's touch area reaches the platform floor even where the drawn height is smaller. `button-target`
 - Labels name the action and its object, are capitalised as `copy-case` requires, and survive the longest translation at the largest text size. `button-label`
-- Disabled states explain themselves, and every button that starts work becomes unpressable and shows it, without resizing. `button-state`
+- Disabled states explain themselves, no control is shown that nothing on the screen can enable, no option is offered that the data source cannot answer, and every button that starts work becomes unpressable and shows it, without resizing. `button-state`
 - At most one FAB, holding the screen's defining action, absent on iOS, with the list underneath padded to clear it. `button-fab`
 - Chip selection is visible without color, chip rows scroll instead of wrapping, and no chip is doing a tab's job. `button-chips`
-- Three to five labelled destinations, a selected state that is not color alone, and one navigation system per screen. `button-tabs`
+- Three to five labelled destinations, a selected state that is not color alone and moves nothing, and one navigation system per screen. `button-tabs`
 
 ### Reaches
 
 - `heuristics/copy.md`: `copy-case`
+- `heuristics/typography.md`: `type-scaling`
 
 # heuristics/camera.md
 
@@ -1850,6 +1909,8 @@ A hex written straight into a component looks like a shortcut and behaves like a
 
 Two of them show up. Indigo through violet under a gradient is the median of everything a model read, Tailwind's default button included. Warm cream with a rust accent is what appears the moment violet is forbidden: take the violet away and it comes back as cream in six screens out of ten, the same reflex in a different coat. Neither reflex is free-floating: violet echoes a decade of default component libraries, and warm rust on an off white ground echoes a real shipped assistant identity, so a model trained on the whole internet has read both defaults many times before it ever reads this file.
 
+All of what follows is for a palette nobody supplied. When the user hands over the identity, a mockup, a screenshot, a brand sheet, an existing app to match, that is the reference, and it is read rather than derived: the ground, the ink, the accent and where the accent is spent come off what was supplied, and `DESIGN.md` says which reference they came from. A departure from it is an identity change and goes to the user, as the intro of this file says, never a correction made because the supplied colours landed in a family below. Deriving three candidates over the top of a supplied identity replaces the user's decision with the model's.
+
 Neither family is banned, and the hex values are not the tell. Cream and rust pulled off film stock, in an app that edits photos, is those two colors doing work. The reflex is the same pair arriving with nothing behind it. What is banned is being unable to say, in terms of this product, why it landed there.
 
 A chart pairing blue with trust and red with urgency is not a derivation either, and citing one is no different from citing an adjective: the pairing is repeated at the same rate whether or not it holds outside the deck it was printed in, and it moves by market and by culture in exactly the way a real derivation should not. The one part of that literature worth keeping is not a color's mood, it is distance from the category: a color the two or three closest competitors do not already occupy earns more than a color chosen for what it supposedly feels like. That is a sharper version of the category-habit line below, not a separate excuse to reach for a mood board instead of a reference.
@@ -1950,7 +2011,7 @@ This is the part that gets done last and shows it.
 - **Every pair gets measured again.** Passing in light says nothing about dark.
 - **Neither appearance inherits the other's derivation.** `color-derived`'s reflex check runs again here, on whichever appearance was built from the other: shedding chroma from a hue that already escaped the reflex can still land that appearance back inside it.
 
-Light-only ships broken, and the system setting is what the app follows by default.
+Following the system setting is the default, and both appearances get built. Shipping one appearance is a product decision the user takes, recorded in `DESIGN.md`, never one this rule leaves to whoever writes the theme. Once it is taken, the rule grades the other half of it: the app forces that appearance everywhere it draws, so a phone set to the other one never produces a half-themed screen. The status bar icons, the keyboard, date and time pickers, dialogs from the platform, web content and the launch surface all follow the forced appearance, and each is checked with the system set the opposite way.
 
 ### `color-contrast` Measure the pair, do not eyeball it [P1]
 
@@ -1979,14 +2040,14 @@ On Android 12 and up, Material You builds the scheme from the user's wallpaper. 
 Review answers each of these against the code, pointing at the line:
 
 - No component holds a raw hex, and every color arrives through a token or a platform role. `color-roles`
-- The palette is derived from a named material or reference this product evokes, chosen among three candidates from three different sources rather than the first one considered, never from a color-emotion pairing or a category habit, and the same screen in a competitor's app would need a different one. The neutral ramp is not tinted toward the accent. A palette in either reflex family carries the second derivation it was compared against, recorded as a short table, and the reason this one survived, checked separately for whichever appearance was built from the other. Each family verdict quotes the ground's chroma and the ink's lightness rather than asserting a family from impression. `color-derived`
+- Where the user supplied an identity, the palette is read off it, `DESIGN.md` names the source, and every departure from it was approved by the user. Otherwise the palette is derived from a named material or reference this product evokes, chosen among three candidates from three different sources rather than the first one considered, never from a color-emotion pairing or a category habit, and the same screen in a competitor's app would need a different one. The neutral ramp is not tinted toward the accent. A palette in either reflex family carries the second derivation it was compared against, recorded as a short table, and the reason this one survived, checked separately for whichever appearance was built from the other. Each family verdict quotes the ground's chroma and the ink's lightness rather than asserting a family from impression. `color-derived`
 - The palette states the lightness and chroma of each role, the accent carries at least about 0.10 chroma in OKLCH and never under 0.06, ground and surface stay under about 0.03, every hue past the first names its relationship to the accent, no two hues a reader must separate sit within 30 degrees, and the neutral ramp does not lean toward the accent. `color-constructed`
 - Ramp steps hold the hue and shed saturation toward both ends. `color-ramp-hsl`
 - The accent marks what is interactive and nothing else, and no grey sits on a colored surface. `color-one-accent`
 - Colour is assigned to the screen's states and surfaces rather than to the primary action alone, the neutral steps were chosen rather than inherited, and rendering the screen in greyscale loses something a reader can name. `color-assigned`
 - Hue that varies across repeated items encodes a difference the reader can name, the mapping is fixed rather than positional, and nothing carries a tint picked for variety. `color-variety`
 - Every gradient does work flat color cannot: no gradient-filled text, no gradient primary button, no gradient app background, and no colored glow at zero offset standing in for elevation. `color-gradient`
-- Dark has its own ground, its own accent values and its own measurements, and the ground is not full black. Whichever appearance was built from the other was checked against `color-derived`'s reflex families on its own, not assumed clean because the first one was. `color-dark-composed`
+- Dark has its own ground, its own accent values and its own measurements, and the ground is not full black. Whichever appearance was built from the other was checked against `color-derived`'s reflex families on its own, not assumed clean because the first one was. Where `DESIGN.md` records a single appearance, the app forces it on every surface it draws or hosts, with the system set to the other appearance. `color-dark-composed`
 - Contrast is calculated for every pair, including pressed, disabled and text over images, in both themes. `color-contrast`
 - Nothing is communicated by color alone. `color-not-alone`
 - Where Dynamic Color applies there is a static fallback, and the product still reads as itself under a wallpaper-derived scheme. `color-dynamic`
@@ -2013,7 +2074,7 @@ Rules in this file, in order: `comp-chosen`, `comp-distance`, `comp-context`, `c
 
 A layout with no runner-up was not picked. It is what came first, and what comes first is what has been seen most, which is a property of everything else that exists and not of this screen.
 
-So a structural screen has a record, left by `flow/explore.md`: the default it would have been, the candidates that competed, how far apart they were, and why the winner won. The record is short and it is the difference between a familiar layout somebody defended and a familiar layout nobody noticed.
+So a structural screen has a record, left by `flow/explore.md` at the top of its wireframe: the default it would have been, the candidates that competed, how far apart they were, and why the winner won. The record is short and it is the difference between a familiar layout somebody defended and a familiar layout nobody noticed.
 
 Landing on the familiar arrangement is allowed, and is sometimes right: a settings list should look like a settings list, because the person has used a hundred of them and the pattern is the affordance. What the rule asks is that the familiar one wins an argument. The burden sits on convergence, since convergence is what happens unattended, and an unusual arrangement owes no apology beyond serving the person better.
 
@@ -2050,6 +2111,8 @@ Four questions, answered in the brief's Purpose and Hierarchy or in the hand-off
 
 Distinctive never outranks usable. A relation that breaks `touch-reach`, `nav-back` or `a11y-gesture` to be memorable has been memorable at the person's expense.
 
+Nor does it outrank the user. An arrangement the user supplied, as a mockup or as a screen to follow, answers these questions by having been chosen by the person who owns the product, and leaving it to score better here replaces their decision with the grader's.
+
 ### `comp-repeat` Screens of one product are related, not identical [P3]
 
 A product's screens should be recognisable as siblings: the same grid, the same type roles, the same way of grouping. They should not be one template with the content swapped. When the list, the detail, the profile and the summary are all a bar over equal cards, the arrangement has stopped saying what kind of screen this is, and the person reads the title to find out where they are.
@@ -2067,7 +2130,7 @@ Review answers each of these against the code, pointing at the line:
 - The screen has a record of the default it would have been, the candidates considered and why the winner won, or names the platform pattern that made alternatives moot. `comp-chosen`
 - The candidates on record differ from each other on at least three of the nine relations, and none differs only in spacing, radius, type size, wording, colour or component size. `comp-distance`
 - The dominant element, the position of the primary action and the density follow from the brief's context block, and the arrangement would have to change if that block said something else. `comp-context`
-- Reduced to grey blocks the arrangement still says what the product does, through one deliberate relation, while navigation, back and system gestures stay conventional. `comp-distinct`
+- Reduced to grey blocks the arrangement still says what the product does, through one deliberate relation, while navigation, back and system gestures stay conventional, or the arrangement is the one the user supplied. `comp-distinct`
 - The arrangement differs from the project's other approved screens wherever the job differs, and where it repeats, the shared job is named. `comp-repeat`
 
 ### Reaches
@@ -2451,6 +2514,8 @@ Destructive is not the test. Both halves have to be true before an alert stops t
 
 A common action that cannot be undone is not exempt, it is a different surface: offering the user choices about something they deliberately started is the sheet case in `fb-blocking-shape`, not a lighter alert. Discarding a draft the user just chose to abandon is that case, and it is common.
 
+Irreversible is judged by what the action does in the world, not by whether a switch can be flipped back. Stopping a live service, ending a call for everyone on it, cutting other people's sessions, sending, publishing: the control can be pressed again, and the outage, the dropped call and the message already read cannot be taken back. An action whose effect reaches other people or a running system counts as irreversible here, however easily its toggle returns.
+
 On a phone the accidental destruction arrives through a fat tap or a swipe rather than through a menu, so recovery matters more than the extra question, and `touch-destructive` already puts distance between the destructive control and the frequent one. Where the destruction is what the user deliberately chose, the button carrying it out is not styled as the destructive one: it is performing their intent, and the escape beside it is what needs the emphasis.
 
 ### `fb-undo` Either the work waits inside a real window, or it lands somewhere it can be fetched back from
@@ -2514,6 +2579,8 @@ Every rung above answers something the user just did. A promotion, a paywall rai
 
 - It takes the quietest rung that can carry it and never the blocking one. A dialog is for a decision the user cannot defer, and this is one they never opened. One surface is the stated exception, and only in the shape `ads-placement` earns: a full-screen ad closing a segment the user just finished, never standing in front of the next one, carrying the exit present in its first frame that `ads-close` requires. A rewarded ad is not an exception at all, because the user tapped the offer and it is no longer uninvited (`ads-rewarded`).
 - It waits for a finished task. Firing at launch costs the user the reason they opened the app, and firing mid-flow costs them the flow.
+- A task is finished once the person has seen its result, not once the button was pressed. Nothing unprompted stands between an action and the screen that shows what it produced.
+- One per moment. Two of them never land on the same transition, an ad and then an offer, a what's new sheet and then a rating prompt, even where each one alone would be allowed there: the second arrives on a person who has just dismissed the first and is still no closer to what they came for.
 - One tap closes it, the close is the plain one and not a trick, and the dismissal is remembered for a period written in `STACK.md` rather than asked again on the next screen.
 - It never borrows the shape of a system message. An app promotion drawn as a permission prompt or a system alert is asking for a tap the user did not agree to give.
 
@@ -2532,7 +2599,7 @@ Review answers each of these against the code, pointing at the line:
 
 - Every message takes the quietest rung that works, no actionable Android message is a `Toast`, no transient message offers more than 1 action, and the only dialog standing in front of the first screen is the one `onboard-ask-order` allows. A flow raising more than one blocking dialog is reported as a problem with the flow rather than counted as a violation. `fb-ladder`
 - No success message duplicates a result the screen already shows, and the ones that remain are for outcomes the screen cannot show. `fb-silent-success`
-- Every alert that stops the user is both rare and irreversible, and everything else acts and offers undo. `fb-confirm-test`
+- Every alert that stops the user is both rare and irreversible, counting effects on other people and on running systems as irreversible, and everything else acts and offers undo. `fb-confirm-test`
 - Undo either holds the work for a window written down in `STACK.md` or commits into a place the user can restore from, the message offering it never outlives that window, and it is reachable without a system gesture. `fb-undo`
 - Each message sits at the smallest scope that contains its cause, nothing that fits beside a control is raised as a dialog, and a message that has to name its cause is inline rather than transient. `fb-place`
 - Every duration is the host's named length or the one number in `STACK.md`, never a value written at a call site, the user's accessibility timeout is applied, every message is dismissible, and nothing lives only inside one. `fb-duration`
@@ -2540,7 +2607,7 @@ Review answers each of these against the code, pointing at the line:
 - Repeats of one cause arrive as one message with a count, and a stale backlog is dropped instead of replayed. `fb-queue`
 - Messages and dialogs are held as state with a consumed flag, so one rotation shows them once and not twice. `fb-survives`
 - An alert is used only for a yes or no about one irreversible action, blocking surfaces carry at most 3 buttons, do not scroll, name their buttons by result, and never hold a progress bar. `fb-blocking-shape`
-- Nothing the user did not ask for blocks or interrupts them, apart from the segment-boundary ad `ads-placement` allows: it waits for a finished task, closes in one tap, and stays closed for a stated period. `fb-unprompted`
+- Nothing the user did not ask for blocks or interrupts them, apart from the segment-boundary ad `ads-placement` allows: it waits for a finished task whose result the person has already seen, never shares a transition with another unprompted surface, closes in one tap, and stays closed for a stated period. `fb-unprompted`
 - The rating prompt is the system one, is not preceded by a question, is not wired to a button, and is not raised during onboarding. `fb-review-prompt`
 
 ### Reaches
@@ -2878,7 +2945,7 @@ Values already written into `DESIGN.md`, the spacing scale and the screen margin
 
 Neighbouring rules own the parts that are not geometry: thumb zones are `touch-reach`, the system gesture strips are `touch-gestures`, the keyboard is `touch-keyboard`, and long collections belong to `heuristics/lists.md`.
 
-Rules in this file, in order: `layout-insets`, `layout-grid`, `layout-grouping`, `layout-shape`, `layout-column`, `layout-width`, `layout-chrome`, `layout-overlays`, `layout-fold`, `layout-short`, `layout-orientation`.
+Rules in this file, in order: `layout-insets`, `layout-grid`, `layout-grouping`, `layout-shape`, `layout-column`, `layout-width`, `layout-chrome`, `layout-overlays`, `layout-axis`, `layout-fold`, `layout-short`, `layout-orientation`.
 
 ### `layout-insets` The safe area is geometry, not padding added at the end [P1]
 
@@ -2962,6 +3029,12 @@ Take it from the platform's host, because that is where the displacement is alre
 
 One at a time, and never behind something else. Two messages stacked, a toast drawn behind an open sheet, and a snackbar left under a keyboard that has just opened are the same defect: a surface positioned by hand into a stack whose heights it does not know.
 
+### `layout-axis` Centred means on the screen's centre line, not in the space left over
+
+A title, a selector or a figure placed between a group on the leading side and a group on the trailing side is centred on the screen, whatever the two groups hold. Put it in the space the groups leave and it sits wherever their difference in width pushes it: one icon on the left and three on the right drags it left, and it moves again the moment a group gains or loses an item. The eye reads the centre of the screen, and an element slightly off it reads as a mistake rather than as a choice.
+
+The platforms already do it this way. The iOS navigation bar centres its title on the bar, and Material's centre-aligned top app bar does the same, so a stock bar is correct and a hand-built row is where it breaks. Give both flanks the width of the wider one, or lay the centred element over the full width with the groups on either side of it, and let it truncate before it moves off the axis.
+
 ### `layout-fold` The first screenful answers what this is and what to do
 
 At the narrow end, at default text size, with nothing scrolled, three things are visible: what the screen is, the beginning of its real content, and the primary action. That action has two acceptable places and no third. Either it sits inside the first screenful, or it lives in a bar pinned above the bottom inset and is visible at rest, before anything has been scrolled.
@@ -2980,7 +3053,11 @@ The failure has a look, and only the short length shows it: a frame where the co
 
 ### `layout-orientation` Turned sideways the screen loses height, not width
 
-A large phone held horizontally keeps a wide line and takes its portrait width as its height, about 390 to 440pt, most of which the keyboard takes when a field has focus. Two outcomes are acceptable and nothing between them: the screen locks to portrait for a reason recorded in `STACK.md`, or it reflows.
+A large phone held horizontally keeps a wide line and takes its portrait width as its height, about 390 to 440pt, most of which the keyboard takes when a field has focus. Two outcomes are acceptable and nothing between them: the screen reflows, which is the default, or it locks to one orientation because the user decided it should, recorded in `STACK.md` with that decision. A lock is a product decision about how the phone is held, and the person writing the layout does not grant it to themselves to avoid drawing a second one.
+
+Locks also hold in fewer places than they used to. From Android 16, an app targeting API 36 has its orientation and resizability restrictions ignored on displays at least 600dp wide, which covers tablets, foldables open and desktop windows, so a screen with no landscape layout meets landscape there anyway.
+
+A screen that is watched rather than held, propped on a stand or lying beside the person while they do something else, is the case that most needs its landscape composition drawn on purpose. `flow/spec.md` gives it a frame of its own.
 
 Reflowing means the primary action stays visible without hunting for it, and the reading column keeps its measure rather than running the full width (`type-measure`). A turn is also a configuration change, so what has to survive it is `state-interrupt`. The geometry is the part this rule owns.
 
@@ -2998,7 +3075,8 @@ Review answers each of these against the code, pointing at the line:
 - The snackbar comes from the platform's host slot rather than a hand-placed overlay, it clears the bottom bar and the inset, it moves the floating button rather than covering it, and one is on screen at a time. `layout-overlays`
 - On the narrow device at default text size, the screen's subject and the start of its content are visible unscrolled, and the primary action is either in that screenful or in a bar pinned above the bottom inset and visible at rest. `layout-fold`
 - Rendered at its shortest content, the screen holds its action against the bottom rather than centred above an empty lower third, through the same code that lets it scroll once the content grows. `layout-short`
-- Landscape is either locked with a reason recorded in `STACK.md` or reflows, with the action still visible and the measure still capped at the shorter height. `layout-orientation`
+- Landscape reflows, with the action still visible and the measure still capped at the shorter height, or is locked by a decision of the user recorded in `STACK.md`, and the screen still holds where the platform ignores the lock. `layout-orientation`
+- A lone element meant to be centred between unequal groups sits on the screen's centre line, through equal flanks or an overlay across the full width. `layout-axis`
 
 `layout-insets`, `layout-width`, `layout-fold` and `layout-chrome` are answered on a rendered screen at the narrow end of the range, on a device using three-button navigation as well as gestures. The token table and the component tree both look correct while the bottom bar is sitting under the navigation bar. `layout-chrome` needs the screen scrolled to both ends with enough content to reach the pinned bars, because the collision is invisible until a row arrives under one of them, and the top bar hides the first row as readily as the bottom bar hides the last. `layout-short` needs the opposite render, the screen at its shortest content, which is the only length at which the action drifts into the middle.
 
@@ -3549,11 +3627,14 @@ Rotation is a configuration change, which is `state-interrupt`, and the shape of
 - Never bake letterbox or pillarbox bars into the asset. One phone plays the same file full screen, embedded in a list, rotated and inside a picture in picture window, and baked padding is visible in three of those four.
 - Where a custom transport picks the gravity itself, follow what the system player already does with the ratio: fill for 2:1 through 2.40:1, fit for 4:3, 16:9 and anything up to 2:1, and fit again above 2.40:1. Through the system view there is nothing to write.
 
-### `media-awake` Keep the screen on for video only, and let it go when playback stops
+### `media-awake` Keep the screen on while it is being watched, and let it go when nobody is
 
-This is a window flag on the player's own screen, `FLAG_KEEP_SCREEN_ON` or `android:keepScreenOn` on Android and `isIdleTimerDisabled` on iOS. It is not a wake lock, and a service cannot hold it.
+This is a window flag on the watched screen itself, `FLAG_KEEP_SCREEN_ON` or `android:keepScreenOn` on Android and `isIdleTimerDisabled` on iOS. It is not a wake lock, and a service cannot hold it.
+
+Video is the common case and not the only one. A screen whose job is to be read from a distance or between touches, a running timer, a recipe step while the hands are busy, a boarding pass at the gate, directions on a dashboard mount, a presenter's notes, dims and locks at the worst moment when it does not hold the flag, and the person has to put down what they are doing to wake it. Those screens hold it while the thing they show is live, and the same screens are where hiding the system bars, with the platform's swipe from the edge to bring them back, gives the content the whole glass.
 
 - Audio-only playback never keeps the screen on. Not needing the screen is the point of playing audio.
+- Only the watched screen holds it, and only while it is live: a stopped timer, a finished route and a closed pass release it.
 - It clears on pause, on stop, on leaving the screen and on the error branch, which is the deterministic end `perf-power` asks of anything holding hardware open. ExoPlayer's wake mode is a separate setting whose default is not the one you want in either direction, so set that one explicitly beside the service.
 
 ### `media-start` One second to sound, or to a sign that sound is coming
@@ -3589,7 +3670,7 @@ Review answers each of these against the code, pointing at the line:
 - The picture in picture affordance is behind a support check, the window keeps the same player instance, the Android action count is read from the platform with play and pause among them, and playback that continues inside the app keeps a docked bar leading back to the player. `media-pip`
 - Video with no picture in picture and no background capability pauses when the app leaves the foreground and resumes at the same frame, while audio the user chose keeps playing. `media-away`
 - One player instance survives rotation and the full-screen transition, no bars are baked into the asset, and any custom transport picks its fit mode from the aspect ratio. `media-fullscreen`
-- The screen-on flag is set for video only, on the player's own screen, and cleared on pause, stop, exit and error. `media-awake`
+- The screen-on flag is set only on a screen that is watched rather than touched, video or otherwise, only while what it shows is live, never for audio alone, and cleared on pause, stop, exit and error. `media-awake`
 - Sound or a preparing indicator arrives within one second of the tap, and a rebuffer leaves the controls and the position alone. `media-start`
 - A metered connection has a written bitrate cap, a manual quality choice persists, and downloads wait for unmetered. `media-quality`
 - A live stream is labelled without relying on color, shows no total duration, offers a return to the edge, and stops once its surface is left with nothing playing it. `media-live`
@@ -3761,7 +3842,7 @@ Then the session breaks. Someone walks away mid task, the system reclaims the pr
 
 `STACK.md` records which navigator this codebase uses and what its destinations are. This file is about the structure those choices produce. The tab bar as a control is `button-tabs`; the back gesture, the predictive animation and the system edge zones are `touch-gestures`. Container and restoration APIs per stack sit in `references/navigation-containers.md`, for one lookup rather than a read through.
 
-Rules in this file, in order: `nav-depth`, `nav-container`, `nav-modal`, `nav-back`, `nav-back-control`, `nav-location`, `nav-deeplink`, `nav-tab-stack`, `nav-drawer`, `nav-search`, `nav-restore`.
+Rules in this file, in order: `nav-depth`, `nav-container`, `nav-modal`, `nav-back`, `nav-back-control`, `nav-location`, `nav-deeplink`, `nav-tab-stack`, `nav-cross-tab`, `nav-drawer`, `nav-search`, `nav-restore`.
 
 ### `nav-depth` Three levels, and the job within two taps
 
@@ -3834,6 +3915,14 @@ The frameworks disagree on the default here, so it is a decision to make rather 
 
 The stability of the destination set itself belongs to `button-tabs`.
 
+### `nav-cross-tab` An item reached from another section opens where the person already is
+
+Data does not respect the sections of an app. An order lists the product, a thread names the contact, a project holds its members, and each of those has a home under another top-level destination. Tapping one from here pushes its detail onto the current stack: the selected destination does not change, and back returns to the screen that was left, with its scroll and its filters intact.
+
+Switching the tab to show the item in its home section is the tempting version, because the route already exists there. It costs the person twice. Back now lands on that section's list, which they never visited, and the screen they came from is one tab away in a state they have to rebuild. It also rewrites the other section's stack under the person who had left it somewhere on purpose, which is what `nav-tab-stack` protects.
+
+A jump to another section is right only when the action is itself navigation to that section, "Show all in Library", and the control says so in its label.
+
 ### `nav-drawer` A drawer is not primary navigation on a phone
 
 Navigation behind a hamburger costs a tap before it can even be read, and what people cannot see they do not use. The trigger also lives in the top corner, which is the hardest point on the screen to reach one-handed: `touch-reach`. iOS has no drawer convention at all, so a drawer there reads as a port.
@@ -3866,6 +3955,7 @@ Review answers each of these against the code, pointing at the line:
 - Every route builder sets a title, and a back control with more than one origin names where it returns to. `nav-location`
 - Every deep link target opens from a killed process with a full stack above it, survives a sign in, and fails onto a real screen. `nav-deeplink`
 - Each top-level destination keeps its own stack across a switch, and re-selecting the current one pops it to its root. `nav-tab-stack`
+- An item whose home is another top-level destination opens on the current stack, the selected destination does not change, and back returns to the screen it was opened from, unless the control is labelled as a move to that section. `nav-cross-tab`
 - Primary destinations are visible without a tap, and every job named in `PRODUCT.md` is reachable without opening a drawer. `nav-drawer`
 - A collection people come to search rather than browse either carries a search field on its own screen or is covered by an app-wide search destination that keeps its query. `nav-search`
 - The destination, its stack, scroll, selection, filters and the open sheet come back after the process is killed, and the restore cutoff is a set number rather than forever. `nav-restore`
@@ -5795,7 +5885,7 @@ It is blunt: the contact patch is an oval of 16 to 20mm for a fingertip and more
 
 Add the fourth condition that belongs to the device rather than the hand: the grip changes constantly, often within a single task, so nothing can assume the phone is being held the way it was a moment ago.
 
-Rules in this file, in order: `touch-floor`, `touch-spacing`, `touch-reach`, `touch-destructive`, `touch-feedback`, `touch-gestures`, `touch-keyboard`.
+Rules in this file, in order: `touch-floor`, `touch-spacing`, `touch-nested`, `touch-reach`, `touch-destructive`, `touch-feedback`, `touch-gestures`, `touch-keyboard`.
 
 ### `touch-floor` The target is the hit area, never the drawing [P1]
 
@@ -5803,11 +5893,29 @@ Rules in this file, in order: `touch-floor`, `touch-spacing`, `touch-reach`, `to
 
 The drawn control and the target are two different objects. A 24dp icon centred in a 48dp target is right; growing the icon to fill the target and shrinking the target to hug the icon are both wrong. Reach for the mechanism the stack already has:
 
-- SwiftUI: a minimum frame plus `.contentShape()`, so the padding is tappable and not just the glyph.
-- Compose: `Modifier.minimumInteractiveComponentSize()`, which Material components already apply.
-- Flutter: `MaterialTapTargetSize.padded`, or a sized box around the gesture detector with an opaque hit test behaviour.
-- React Native: `hitSlop` on the pressable.
-- Mobile web: padding on the control, never margin, since margin does not take taps.
+**SwiftUI**
+
+A minimum frame plus `.contentShape()`, so the padding is tappable and not just the glyph.
+
+**Jetpack Compose**
+
+`Modifier.minimumInteractiveComponentSize()`, which Material components already apply.
+
+**Flutter**
+
+`MaterialTapTargetSize.padded`, or a sized box around the gesture detector with an opaque hit test behaviour.
+
+**React Native**
+
+`hitSlop` on the pressable.
+
+**Mobile web**
+
+Padding on the control, never margin, since margin does not take taps.
+
+**Any other stack**
+
+Whatever the framework offers to grow a hit area past the drawn control without growing the drawing.
 
 Two consequences that get missed. A list row is a target: full width, at least 48dp tall, and the whole row responds rather than the label inside it. And a target that is marginal at the top of the screen is worse at the bottom, where the thumb arrives at a shallow angle and the contact oval stretches.
 
@@ -5818,6 +5926,40 @@ The web accessibility floor is lower than the platform one and does not replace 
 Leave at least 8dp of dead space between neighbouring targets. Adjacent controls that each meet the floor still collect mis-taps, because the contact oval straddles the boundary between them and the system awards the tap to whichever one owns the centre.
 
 Watch the places it concentrates: a row of icon buttons in a toolbar, a line of chips, a close control sitting beside another control, and two swipe actions revealed on the same row. When a target has to be smaller than the floor, the distance to its neighbours has to grow to compensate, which is the same trade WCAG makes with its spacing exception.
+
+### `touch-nested` One point answers to one target, and a picture of a control is not a target
+
+When two pressables overlap, the system hands the tap to the innermost one and the outer one never hears it. So a control placed inside a tappable card is a hole in the card: a tap there does the control's job, or nothing at all, and never the card's.
+
+That is right when the inner control is a real second action, a favourite on a row or a menu on a card. Then it is its own target, it meets `touch-floor` and `touch-spacing` against the edge of the card, and its tap does not also fire the card underneath.
+
+It is wrong when the inner control is only drawn. A theme previewed on a sample screen, a keyboard skin in a store, a widget in a gallery of widgets, a mockup of an app inside a portfolio tile: these are pictures of controls, and they are content. They are excluded from hit testing and from the accessibility tree, so the tap goes to the card and a screen reader reads the card rather than a button that does nothing.
+
+**Flutter**
+
+Wrap the drawn subtree in `IgnorePointer` and `ExcludeSemantics`.
+
+**SwiftUI**
+
+Give the drawn view `.allowsHitTesting(false)` and `.accessibilityHidden(true)`.
+
+**Jetpack Compose**
+
+Put no `clickable` inside the drawing, and lay `Modifier.clearAndSetSemantics {}` over it.
+
+**React Native**
+
+Give the drawn view `pointerEvents="none"`, with `accessibilityElementsHidden` on iOS and `importantForAccessibility="no-hide-descendants"` on Android.
+
+**Mobile web**
+
+Put the `inert` attribute on the drawn subtree.
+
+**Any other stack**
+
+Take the drawn subtree out of hit testing and out of the accessibility tree, with whatever the framework offers for each.
+
+A drawn control that still takes a tap is found by pressing it: it ripples, and nothing happens.
 
 ### `touch-reach` The bottom third is the only easy part of the screen
 
@@ -5877,6 +6019,7 @@ Review answers each of these against the code, pointing at the line:
 
 - Every interactive element measures at least 44pt or 48dp in its hit area, and list rows are tappable across their full width. `touch-floor`
 - Adjacent targets are separated by at least 8dp of dead space. `touch-spacing`
+- No point on the screen belongs to two targets unless the inner one is a real second action that meets the floor and does not fire the outer one, and every control drawn as content is excluded from hit testing and from the accessibility tree. `touch-nested`
 - Primary action and primary navigation sit in the bottom third, and the layout was checked mirrored for a left thumb. `touch-reach`
 - Destructive actions sit outside the easy region, and the vehicle carrying the confirmation is the one `fb-confirm-test` selects. `touch-destructive`
 - Pressed state is visible under a covering finger, feedback lands within about 100ms outside the occluded area, and nothing depends on hover. `touch-feedback`
@@ -5980,6 +6123,8 @@ No other check in this file surfaces as many genuine defects. Turn the text size
 
 Layouts reflow; they do not truncate. A screen that only holds together at 100% has failed exactly the people who moved the setting.
 
+Nor do they shrink the text back. Scaling a label down to fit its box, through `FittedBox`, `minimumScaleFactor`, `adjustsFontSizeToFitWidth`, an auto-size text widget or a size computed from the width, turns the setting off exactly where it was needed, and whatever sits in the same box, an icon button included, shrinks with it under `touch-floor`. It passes a check that only looks for clipping, which is why it is named here. The exception is a single display figure whose size is the layout, a clock or a score on a screen built around it, and it is recorded as that, with every control kept outside the scaled box.
+
 ### `type-strings` The text in the layout is not the text you typed
 
 Real strings come from translators, from an API and from users, and they run longer and stranger than the ones in a mockup.
@@ -5987,6 +6132,7 @@ Real strings come from translators, from an API and from users, and they run lon
 - Size the labels against the longest language the product ships in, not against English. Compounds in German, Finnish and Portuguese set the minimum width.
 - Numbers stacked in a column need tabular figures, or the alignment shifts every time a value updates.
 - Names, titles and anything user-authored need a line limit and a truncation point chosen per role, settled in the design rather than discovered in production.
+- An identifier cut short, a file name, an address, a reference code, a version, a hash, has to be reachable in full on the next surface, and copyable there. The person truncated it to scan a list, not to lose it, and the part that got cut is usually the part that tells two of them apart.
 - All caps is for a short label at most. Applied to body text it removes the word shapes people actually read by.
 
 ### `type-dark` Light on dark reads lighter than it measures
@@ -6005,8 +6151,8 @@ Review answers each of these against the code, pointing at the line:
 - Nothing below 400, no weight hardcoded outside a theme style, and every weight step jumps a grade. Weight is distributed across the screen, with most text on the regular cut and the heavy cut spent on a few elements, and something on the screen does carry it. `type-weight`
 - The typeface choice can be stated as a reason, a brand face stays in the display roles, and any custom face scales. `type-face`
 - Body copy runs 40 to 60 characters per line. `type-measure`
-- The screen was rendered at the largest accessibility step, and nothing clips, overlaps or truncates into ambiguity. `type-scaling`
-- The longest localized string fits, numeric columns are tabular, and every truncation point was chosen deliberately. `type-strings`
+- The screen was rendered at the largest accessibility step, and nothing clips, overlaps or truncates into ambiguity, and no text is scaled back down to fit its box, except a recorded display figure with no control inside its scaled region. `type-scaling`
+- The longest localized string fits, numeric columns are tabular, every truncation point was chosen deliberately, and a truncated identifier can be read in full and copied one tap away. `type-strings`
 - Dark theme text was judged on a rendered screen. `type-dark`
 
 `type-scaling` and `type-dark` are answered with a rendered screen or they are not answered at all. Everything else gets a file and a line number.
@@ -6014,6 +6160,7 @@ Review answers each of these against the code, pointing at the line:
 ### Reaches
 
 - `heuristics/colors.md`: `color-assigned`
+- `heuristics/touch.md`: `touch-floor`
 
 # heuristics/updates.md
 
@@ -8070,7 +8217,7 @@ Letter spacing is not listed here. It comes from the theme, and a guessed tracki
 
 The skeleton every wireframe copies, so two screens in the same project come out in the same drawing and a reviewer compares structure instead of style. Read it when `flow/spec.md` sends you to render a brief, and copy it rather than reinventing a set of conventions per screen.
 
-Sections, in order: The frame, Shapes, Known defaults, The skeleton, Rules the skeleton encodes, Rendering. Reading for the shape ladder stops after Known defaults; the skeleton and what follows it are only needed once a shape is picked.
+Sections, in order: The frame, Shapes, Known defaults, The skeleton, Rules the skeleton encodes, Landscape, Rendering. Reading for the shape ladder stops after Known defaults; the skeleton and what follows it are only needed once a shape is picked.
 
 ### The frame
 
@@ -8303,6 +8450,29 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
 - **A cross means an unchosen image**, a plain `.box` means a deliberate empty slot such as an add tile, and neither ever becomes a photograph.
 - **The label names the frame, not the thinking.** The screen and its state, in the fewest words that tell two frames apart. Which shape was picked, why it beat the runner-up, and anything else settled on the way here is reasoning that happened before this file existed. Written into the drawing it becomes part of what gets looked at, and a frame that explains itself is being defended rather than read.
 - **One frame per structurally different state.** Put a second `.shot` beside the first and set its `.label`. They sit side by side on one page, which is how a reviewer sees them in a single capture.
+- **The explore record is a comment.** It opens the file as `<!-- explore ... -->`, before the doctype, so it is in the file for `npx trunative spec` and for whoever opens it, and absent from the render, which keeps the label rule above intact.
+
+### Landscape
+
+A screen that rotates, or is watched from a phone set down on its side, gets a landscape frame as its own `.shot`, drawn as its own composition. The canvas turns, and so do the reserved bands: the cutout sits on one short edge and the home indicator along the bottom.
+
+```html
+<style>
+  .frame.land { width: 852px; height: 393px; flex-direction: row; }
+  .frame.land .status { width: 59px; height: auto; }
+  .frame.land .indicator { position: absolute; left: 0; right: 0; bottom: 0; height: 21px; }
+</style>
+<div class="shot">
+  <div class="label">Recipe step, landscape</div>
+  <div class="frame land">
+    <div class="status"></div>
+    <div class="content"><!-- the landscape composition --></div>
+    <div class="indicator"></div>
+  </div>
+</div>
+```
+
+Render a page holding a landscape frame at least 900 wide, and add 440 for each portrait frame beside it.
 
 ### Rendering
 

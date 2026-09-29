@@ -54,7 +54,7 @@ The whole control is tappable, not the text inside it. A full-width primary at t
 Write the verb of the action and the object it acts on: Send, Pay 42, Delete photo. OK, Submit and Yes describe nothing, and Yes in particular forces the user back up to reread the question.
 
 - No trailing period, and never "click" on a device with no cursor.
-- Keep it short enough to survive translation and a 200% text size, and decide now what a long label does: wrap, or shrink the container, never quietly truncate the verb.
+- Keep it short enough to survive translation and a 200% text size, and decide now what a long label does: wrap onto a second line and let the control grow taller, never scale the text down to fit (`type-scaling`), never quietly truncate the verb.
 - An icon-only button carries an accessibility label saying the action, not the picture. On Android, navigation destinations always carry a visible text label as well.
 
 ## `button-state` A button has four states, and two of them are usually missing
@@ -62,6 +62,8 @@ Write the verb of the action and the object it acts on: Send, Pay 42, Delete pho
 Rest and pressed are covered by the touch rules. The two that get skipped:
 
 **Disabled.** A primary that starts disabled at the top of an empty form gives the user nothing to act on and no reason why. Prefer leaving it enabled and answering on tap with what is still missing, pointed at the field that is missing it. Where disabled is genuinely right, the reason has to be visible next to it, not inferred.
+
+Disabled also promises that something the person can do will enable it. A control nothing on this screen can ever enable, in the configuration the person is in, is not disabled, it is absent: a pager over a single page, a sort control over one item, a next and previous pair with nowhere to go, a range the data source does not keep. Offering an option the system cannot answer is the same defect one step later, when the person picks it and gets an empty result that looks like no data.
 
 **In flight.** The moment it is tapped, the control stops accepting taps and says that work is happening, in place, at the same width, so the layout does not jump under the finger that is still there. A button that looks identical during a three second request gets pressed again, and the second press is a duplicate order.
 
@@ -86,7 +88,7 @@ Four kinds, four jobs. Assist chips offer an action in context. Filter chips nar
 Three to five destinations, and they are the top level of the app rather than a place for actions. They belong at the bottom, where the thumb is.
 
 - Every destination is labelled. Icon-only navigation asks the user to guess, and the guess is wrong often enough to matter.
-- The selected destination is obvious without relying on color alone: an indicator, a filled icon variant, a weight change.
+- The selected destination is obvious without relying on color alone: an indicator, a filled icon variant, a weight change. Selection changes how an item is drawn and never where it sits: the selected icon, label and indicator occupy the same box as the resting ones, so nothing in the bar moves when the selection does.
 - The set does not change from screen to screen, and it does not vanish when a screen is pushed. Tabs that come and go stop being a map.
 - Top tabs and bottom tabs on the same screen is two navigation systems arguing. Pick one.
 - A segmented control is not a tab bar. It filters or switches the view in front of the user, it holds about three options, and past that it becomes a menu or a filter screen.
@@ -99,13 +101,14 @@ Review answers each of these against the code, pointing at the line:
 - Emphasis comes from the platform's ladder, one style per rank, styled in the theme rather than per call site, and the same action looks the same across screens. `button-ladder`
 - Every button's touch area reaches the platform floor even where the drawn height is smaller. `button-target`
 - Labels name the action and its object, are capitalised as `copy-case` requires, and survive the longest translation at the largest text size. `button-label`
-- Disabled states explain themselves, and every button that starts work becomes unpressable and shows it, without resizing. `button-state`
+- Disabled states explain themselves, no control is shown that nothing on the screen can enable, no option is offered that the data source cannot answer, and every button that starts work becomes unpressable and shows it, without resizing. `button-state`
 - At most one FAB, holding the screen's defining action, absent on iOS, with the list underneath padded to clear it. `button-fab`
 - Chip selection is visible without color, chip rows scroll instead of wrapping, and no chip is doing a tab's job. `button-chips`
-- Three to five labelled destinations, a selected state that is not color alone, and one navigation system per screen. `button-tabs`
+- Three to five labelled destinations, a selected state that is not color alone and moves nothing, and one navigation system per screen. `button-tabs`
 
 ## Reaches
 
 The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
 
 - `heuristics/copy.md`: `copy-case`
+- `heuristics/typography.md`: `type-scaling`

@@ -52,7 +52,7 @@ When two pressables overlap, the system hands the tap to the innermost one and t
 
 That is right when the inner control is a real second action, a favourite on a row or a menu on a card. Then it is its own target, it meets `touch-floor` and `touch-spacing` against the edge of the card, and its tap does not also fire the card underneath.
 
-It is wrong when the inner control is only drawn. A theme previewed on a sample screen, a keyboard skin in a store, a widget in a gallery of widgets, a mockup of an app inside a portfolio tile: these are pictures of controls, and they are content. They are excluded from hit testing and from the accessibility tree, so the tap goes to the card and a screen reader reads the card rather than a play button that plays nothing.
+It is wrong when the inner control is only drawn. A theme previewed on a sample screen, a keyboard skin in a store, a widget in a gallery of widgets, a mockup of an app inside a portfolio tile: these are pictures of controls, and they are content. They are excluded from hit testing and from the accessibility tree, so the tap goes to the card and a screen reader reads the card rather than a button that does nothing.
 
 <If stack="flutter">
 Wrap the drawn subtree in `IgnorePointer` and `ExcludeSemantics`.

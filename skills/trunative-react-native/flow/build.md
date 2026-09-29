@@ -32,6 +32,8 @@ A brief's `scope` has already made that pass. Open what `scope.open` names and r
 
 When the screen touches Firebase, in any of auth, Firestore, Storage, Messaging, Remote Config or Crashlytics, read `flow/firebase.md` as well. It is loaded here the way a heuristic is, and it is not a step.
 
+**When the user supplied a reference for this screen**, an image, a sketch, another app's screen, read it before the tokens and build what it shows. It is not a mood to be interpreted: the ground, the weights, the glyphs, the spacing between groups and how a selected item is marked are all in it, and a value the reference shows is not a gap to fill with a derivation. Where the rules and the reference disagree, build the reference, record the conflict for review, and tell the user which rule it breaks and what that costs.
+
 **When `DESIGN.md` is missing, or says nothing about a role this screen needs.** Init writes that file and `doctor` is what notices it is gone, but screens get built in the gap anyway, and what fills the gap on its own is the median of everything a model has read: a system font, a violet button, a rounded card, and a screen that would fit any other product. Settle the identity in writing before the first line of code, in five lines:
 
 - the material or reference this product evokes, named. Newsprint, film stock, enamel signage, a receipt, a ledger. An adjective is not a reference.
@@ -58,6 +60,8 @@ So render it and look at it yourself, before anyone else does, the way `flow/spe
 
 Open the capture however this harness shows an image, and read it as a picture rather than as a file that was produced.
 
+When the user supplied a reference, put the capture beside it at the same width and list every difference a person would point at: a ground that is grey where the reference is white, a title weight, a glyph, an indicator, a gap between groups, a control that moves when it is selected. Fix them or name them in the hand-off. Saying the screen matches without having looked at the two together is how the same correction comes back from the user one item at a time.
+
 Then say where the reference behind the identity is visible on the screen. One named thing a stranger could point at is enough. A reference that cannot be found anywhere in the render was a caption rather than a derivation, which is the failure `color-derived` names one level down, arriving here instead.
 
 This pass is cheap and it is not the review. It catches what the author can still fix in the same turn, which is the half of `flow/review.md` that would otherwise come back as a violation and spend a second pass on it. When the screen cannot be rendered here at all, say so in the hand-off instead of reporting it as looked at: a screen nobody has seen reaches review as a screen nobody has seen, and review is told that rather than left to discover it.
@@ -66,4 +70,8 @@ This pass is cheap and it is not the review. It catches what the author can stil
 
 Say which heuristics files you applied and which you deliberately skipped, with the reason, and name the triggers that opened the extra ones. When this screen had to settle an identity because `DESIGN.md` did not, the five lines go in the hand-off, marked provisional. Name the brief you built against, or say the change was not structural and had none. Then run `flow/review.md`. Build is never the last step.
 
-Where the code had to depart from the brief, change the brief in the same turn and say what moved. A brief left behind is what review reports as drift, and it is cheaper to correct here than to explain there.
+Where the code had to depart from the brief, change the brief in the same turn and say what moved. A brief left behind is what review reports as drift, and it is cheaper to correct here than to explain there. The same holds when the user asks for the change: a request that moves an item the brief names under Hierarchy, Interactions or Navigation, or removes a screen another brief links to, rewrites those briefs in the same turn, and a structural change also redraws the wireframe through `flow/spec.md`.
+
+Then run `npx trunative spec` over the briefs this build touched. A build renames and splits files, and a `target` pointing at a file that no longer renders the screen is a brief that joins to nothing.
+
+A plan that builds several screens builds them one at a time, each through this file and each reviewed before the next starts. Writing every screen first and the briefs afterwards, to complete the record, turns spec into paperwork about decisions nobody made.

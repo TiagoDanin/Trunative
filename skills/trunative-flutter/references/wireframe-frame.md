@@ -2,7 +2,7 @@
 
 The skeleton every wireframe copies, so two screens in the same project come out in the same drawing and a reviewer compares structure instead of style. Read it when `flow/spec.md` sends you to render a brief, and copy it rather than reinventing a set of conventions per screen.
 
-Sections, in order: The frame, Shapes, Known defaults, The skeleton, Rules the skeleton encodes, Rendering. Reading for the shape ladder stops after Known defaults; the skeleton and what follows it are only needed once a shape is picked.
+Sections, in order: The frame, Shapes, Known defaults, The skeleton, Rules the skeleton encodes, Landscape, Rendering. Reading for the shape ladder stops after Known defaults; the skeleton and what follows it are only needed once a shape is picked.
 
 ## The frame
 
@@ -235,6 +235,29 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
 - **A cross means an unchosen image**, a plain `.box` means a deliberate empty slot such as an add tile, and neither ever becomes a photograph.
 - **The label names the frame, not the thinking.** The screen and its state, in the fewest words that tell two frames apart. Which shape was picked, why it beat the runner-up, and anything else settled on the way here is reasoning that happened before this file existed. Written into the drawing it becomes part of what gets looked at, and a frame that explains itself is being defended rather than read.
 - **One frame per structurally different state.** Put a second `.shot` beside the first and set its `.label`. They sit side by side on one page, which is how a reviewer sees them in a single capture.
+- **The explore record is a comment.** It opens the file as `<!-- explore ... -->`, before the doctype, so it is in the file for `npx trunative spec` and for whoever opens it, and absent from the render, which keeps the label rule above intact.
+
+## Landscape
+
+A screen that rotates, or is watched from a phone set down on its side, gets a landscape frame as its own `.shot`, drawn as its own composition. The canvas turns, and so do the reserved bands: the cutout sits on one short edge and the home indicator along the bottom.
+
+```html
+<style>
+  .frame.land { width: 852px; height: 393px; flex-direction: row; }
+  .frame.land .status { width: 59px; height: auto; }
+  .frame.land .indicator { position: absolute; left: 0; right: 0; bottom: 0; height: 21px; }
+</style>
+<div class="shot">
+  <div class="label">Recipe step, landscape</div>
+  <div class="frame land">
+    <div class="status"></div>
+    <div class="content"><!-- the landscape composition --></div>
+    <div class="indicator"></div>
+  </div>
+</div>
+```
+
+Render a page holding a landscape frame at least 900 wide, and add 440 for each portrait frame beside it.
 
 ## Rendering
 
