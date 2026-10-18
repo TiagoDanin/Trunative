@@ -16,13 +16,14 @@ A fourth level is usually a filter wearing a screen. If the new screen is the pr
 
 ## <Rule id="nav-container" description="The container comes from the relationship, not from convenience" />
 
-Five containers, five different relationships to what is underneath them:
+Six containers, six different relationships to what is underneath them:
 
 | Container | What it means | How it ends |
 |---|---|---|
 | Pushed screen | more about the thing that was tapped | back |
 | Top-level destination | another section of the app, always available | selecting another one |
 | Bottom sheet | a short task or a set of options belonging to the screen under it | swipe down, scrim, back |
+| Persistent sheet | a second layer of the same screen, resized by the person, with the layer under it still live | it does not end: it collapses to its smallest height, which is `nav-sheet` |
 | Full screen cover | a self-contained task that needs the whole screen | an explicit Cancel and a named commit |
 | Alert or dialog | one decision that genuinely cannot wait | choosing an answer, and on Android a back dismiss unless that was turned off on purpose |
 
@@ -38,6 +39,41 @@ On a phone the modal covers its parent, so there is no visible background to cli
 - Interactive dismissal is already on, so the line to look for is the one that turns it off: `interactiveDismissDisabled`, a sheet state that refuses to hide. It belongs only where dismissing loses work, and where it appears the question appears with it, which is not the same as trapping.
 - Never open a modal over a modal. The second one is a pushed screen inside the first.
 - A modal whose action leads somewhere else closes itself first, then navigates. A dialog left open while its button pushes a new destination outlives the flow that opened it: back lands on the stale dialog, its action can fire twice, and on some stacks it sits over the new screen. The modal ends the task, and the parent does the navigation.
+
+## <Rule id="nav-sheet" evidence="device" description="A sheet that stays is part of the screen, and the layer under it stays live" />
+
+Results over a map, a queue over a player, the steps of a route over the route: the lower layer is the subject, and the sheet is a second layer of the same screen that the person resizes. It is not a task stacked on top, and the exits `nav-modal` asks for do not apply to it. Built from the modal sheet component it gets a scrim, a swipe down that dismisses and a background that ignores taps, which are three wrong answers here.
+
+- The layer under it keeps taking touches at every height where it is visible: the map pans, a marker opens. A scrim appears, if ever, only at the tallest height, where the sheet has become the screen.
+- It rests at two or three heights, and the smallest still shows something useful, a title and a count of what is inside, rather than a handle on an empty strip. Swiping down at the smallest height does nothing, because there is nothing to leave.
+- The height is state. It survives rotation and process death (`nav-restore`), and it does not snap back to a default each time the content under it changes.
+- The layer under it frames its content inside the part the sheet leaves uncovered: a map recentres with padding equal to the sheet's current height (`map-camera`), and a list underneath ends above it (`layout-chrome`).
+- Resizing the sheet and scrolling inside it are one gesture with a handoff. A drag grows the sheet until its tallest height, then scrolls the content, and at the content's top a downward drag shrinks the sheet again (`scroll-nest`).
+- Back on Android collapses an expanded sheet to its resting height before it leaves the screen, which is back unwinding what is on top (`nav-back`). Every height can also be reached without the drag (`a11y-gesture`).
+
+<If stack="swiftui">
+A `.sheet` with `.presentationDetents`, `.presentationBackgroundInteraction(.enabled(upThrough:))` naming the largest height at which the layer under it stays live, and `.interactiveDismissDisabled()` so the smallest height is a floor rather than an exit.
+</If>
+
+<If stack="compose">
+`BottomSheetScaffold` with a `sheetPeekHeight`. `ModalBottomSheet` is the modal one.
+</If>
+
+<If stack="flutter">
+A `DraggableScrollableSheet` in a `Stack` over the content, with `snap` and `snapSizes`. `showModalBottomSheet` is the modal one.
+</If>
+
+<If stack="react-native">
+The non-modal sheet of the sheet library `STACK.md` records, such as `BottomSheet` rather than `BottomSheetModal` in `@gorhom/bottom-sheet`, with snap points and no backdrop at the lower ones.
+</If>
+
+<If stack="web">
+An element fixed to the bottom edge with snap heights, inside the page. A `<dialog>` is modal.
+</If>
+
+<If stack="other">
+The framework's non-modal sheet, or a panel in the screen's own layout with resting heights, never its modal sheet.
+</If>
 
 ## <Rule id="nav-back" severity="p0" description="Back unwinds the stack and nothing else" />
 
@@ -59,6 +95,17 @@ Keep the system control. Where a custom one has to replace it, restore the inter
 There is no window title and no breadcrumb, so a screen that names nothing leaves its position to be inferred from the content. That inference fails fastest where it costs most: three levels down, on the screen a notification just opened, in an app that was closed a second ago.
 
 Every pushed destination carries a title naming what it is, and every top-level destination carries its own. Where more than one screen leads to this one, the back control names the destination it returns to instead of showing a bare arrow. Which top-level destination is selected stays visible throughout, which is `button-tabs`.
+
+## <Rule id="nav-scope" severity="p1" description="What scopes the whole screen is on it, and changing it changes everything" />
+
+Some values decide the meaning of every row on a screen without being any one of them: the address things are delivered to, the branch whose stock is shown, delivery against collection, the day a plan is for, the currency prices are in. Every price, time and availability below is true only for that value, and a person who cannot see it cannot tell the screen is answering a question other than theirs.
+
+- The scope sits at the top of every screen it governs, as text showing its current value, and that text is the control that changes it. A setting two levels deep is not that.
+- Changing it re-scopes everything at once: lists, prices, availability, counts and anything already chosen. What cannot carry over, a basket from the previous branch, items not offered at the new address, is named before the change goes through rather than discovered after it, and `fb-confirm-test` decides whether that takes a question.
+- A value the app picked, the last address, a detected position, the first account, says it was picked and stays visible until the person confirms or changes it. A position from a stale fix carries its accuracy (`sense-accuracy`) and is never presented as where the person is.
+- Where the scope is a date, today is one tap away from any other day, and the screen says which day it shows in words, not only through a highlighted number in a strip.
+- The identity acting is the same shape, and `auth-active-account` owns it.
+- The value survives the process like the rest of the place (`nav-restore`).
 
 ## <Rule id="nav-deeplink" evidence="device" description="Arriving in the middle still needs everything above it" />
 
@@ -111,9 +158,11 @@ The cutoff is a decision rather than a default. Restore the exact place when the
 <Verify rule="nav-depth">Hierarchy runs at most three levels below a top-level destination, or the fourth is recorded in `STACK.md` with its reason, and the app's main job is within two taps of one.</Verify>
 <Verify rule="nav-container">Nothing that is a place in the app is presented modally: a surface a deep link resolves to, or one that appears in the destination list, belongs in a pushed screen or a destination.</Verify>
 <Verify rule="nav-modal">Every modal names both exits, turns interactive dismissal off only where work would be lost and asks there, no modal opens over another, and a modal whose action navigates closes before the navigation runs.</Verify>
+<Verify rule="nav-sheet">A sheet that stays over a live layer is the non-modal component, the layer under it takes touches below the tallest height, it rests at a few heights with a useful smallest one that is a floor rather than an exit, its height survives restoration, the layer under it frames content in the uncovered part, the drag hands off between resizing and scrolling, and back collapses it before leaving.</Verify>
 <Verify rule="nav-back">Back pops the surface on top, is not bound to a sideways or forward move, resolves every interception, and does not exit the app from a destination that is not the start destination.</Verify>
 <Verify rule="nav-back-control">No screen hides or replaces the system back control without restoring the interactive pop gesture alongside it.</Verify>
 <Verify rule="nav-location">Every route builder sets a title, and a back control with more than one origin names where it returns to.</Verify>
+<Verify rule="nav-scope">Every value that scopes the screen is shown at its top as the control that changes it, a change re-scopes everything and names what cannot carry over before it happens, a value the app picked says so, a date scope reaches today in one tap and names the day in words, and the value survives the process.</Verify>
 <Verify rule="nav-deeplink">Every deep link target opens from a killed process with a full stack above it, survives a sign in, and fails onto a real screen.</Verify>
 <Verify rule="nav-tab-stack">Each top-level destination keeps its own stack across a switch, and re-selecting the current one pops it to its root.</Verify>
 <Verify rule="nav-cross-tab">An item whose home is another top-level destination opens on the current stack, the selected destination does not change, and back returns to the screen it was opened from, unless the control is labelled as a move to that section.</Verify>
@@ -121,6 +170,6 @@ The cutoff is a decision rather than a default. Restore the exact place when the
 <Verify rule="nav-search">A collection people come to search rather than browse either carries a search field on its own screen or is covered by an app-wide search destination that keeps its query.</Verify>
 <Verify rule="nav-restore">The destination, its stack, scroll, selection, filters and the open sheet come back after the process is killed, and the restore cutoff is a set number rather than forever.</Verify>
 
-<Device>`nav-deeplink` and `nav-restore` are answered by killing the process and launching from a link, not by reading the router. A graph that looks correct in the file is exactly the one that loses the stack on a cold link.</Device>
+<Device>`nav-deeplink` and `nav-restore` are answered by killing the process and launching from a link, not by reading the router. A graph that looks correct in the file is exactly the one that loses the stack on a cold link. `nav-sheet` is answered by touching the layer under the sheet at each resting height and by dragging from inside the sheet's own scroll, because a modal sheet styled to look persistent passes every static check.</Device>
 
 </Check>

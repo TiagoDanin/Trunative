@@ -96,6 +96,15 @@ Content describes what it shows. Decoration is hidden instead of described, whic
 - A chart, a diagram, or the illustration holding an empty state's meaning owes the sentence it is making rather than an inventory of its parts.
 - An icon that is the only label on a control is not this rule. What is spoken there is the action, which is `a11y-name`.
 
+## <Rule id="icon-lettered" description="Words go over the picture as text, never into its pixels" />
+
+A promotional banner, an offer tile, an onboarding illustration with its headline drawn in: the words are part of the bitmap, so they cannot be translated, do not grow with the reader's text size, are not read by the screen reader, do not follow the dark appearance, and cannot be corrected without producing a new image. A banner one column wide also shrinks its lettering with it, so the words drawn into it are usually the smallest text on the screen.
+
+- The headline, the price, the date and the call to action are text laid over the artwork from the string table (`l10n-strings`), with room for the longest translation (`l10n-expansion`) and a ground that keeps their contrast over every part of the picture they can land on (`color-contrast`).
+- Artwork that arrives from a server, a campaign tile, a partner's banner, brings its words as fields beside the image, and the app sets them. Where only the picture arrives, its words are its description (`icon-alt`), and the tile is never the only route to what it advertises.
+- A figure that changes, a price, a discount, a date, a countdown, is text in every case.
+- Lettering that is itself the artwork, a wordmark, a hand-drawn title, ships one asset per locale where it is translated and carries its words as its accessible name (`a11y-name`).
+
 ## <Rule id="icon-dark" evidence="device" description="Artwork that cannot be tinted needs a second asset" />
 
 A single-colour glyph needs no dark variant, because it is tinted from a theme role and follows it. Everything else does.
@@ -165,6 +174,7 @@ Whatever the build sets as the display name on each platform, checked on the hom
 <Verify rule="icon-depicts">Every region larger than a touch target that is not text, a control or data depicts something nameable in the product, and no glow, blob, wash or abstract gradient stands where an image belongs.</Verify>
 <Verify rule="icon-stand-in">Everything the screen is about that has an appearance is shown as a photograph or a drawing of its subject, seeded so it stays with its item, rather than as a glyph on a filled rectangle; nothing that stands in for missing bytes ships; and no content artwork carries an added decorative frame.</Verify>
 <Verify rule="icon-alt">Every image either describes what it shows or is hidden as decoration, and no description is a file name or the word image.</Verify>
+<Verify rule="icon-lettered">No headline, price, date or call to action is painted into a bitmap: words are text over the artwork with room for translation and a measured ground, server-sent artwork carries its words as fields or as its description, and lettering that is the artwork ships per locale with an accessible name.</Verify>
 <Verify rule="icon-dark">Every asset that cannot be tinted has a dark counterpart selected by the asset system, and no asset carries an opaque light background.</Verify>
 <Verify rule="icon-avatar">The avatar has a generated fallback at the same size, stable per user, covering the missing name, carrying no drawn human face, and no path renders a broken image.</Verify>
 <Verify rule="icon-app">The app icon carries no text, ships unmasked layers with no baked effects, keeps its mark inside the safe box, and supplies the monochrome layer on Android and the dark and tinted appearances on iOS rather than letting the system invent them. The launcher label is the product's display name, not a package identifier or project slug, and it is not truncated on the home screen.</Verify>

@@ -86,7 +86,7 @@ An unlocked phone is regularly in someone else's hands, which is why a live sess
 A phone has no window title and no persistent chrome to keep an avatar in, so on a device carrying a work account and a personal one, the identity has to be on the screen where the action happens.
 
 - Anything that posts, pays, sends, uploads or shares under an identity shows which identity in the surface that confirms it, before the tap and not in a settings screen two levels away.
-- Switching accounts happens in one place and states what is changing.
+- Switching accounts happens in one place and states what is changing. The account is one case of a value that scopes the whole screen, and the rest of that shape is `nav-scope`.
 - After a switch, nothing from the previous account remains on screen: cached lists, badges, avatars and the contents of the outgoing queue in `off-queue` all belong to the account that made them.
 
 ## <Rule id="auth-signout" description="Nobody is signed out quietly" />

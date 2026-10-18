@@ -134,7 +134,7 @@ In a game the soundtrack is part of the product rather than interface sound, and
 
 ## <Rule id="game-lettered-art" description="Words are text drawn over art, not letters painted into it" />
 
-A button image with its label painted in cannot be translated, cannot scale with the text setting and cannot be read by a screen reader. Games reach for it because the art style wants lettering.
+A button image with its label painted in cannot be translated, cannot scale with the text setting and cannot be read by a screen reader. That holds for any app and is `icon-lettered`. Games reach for it more than anything else because the art style wants lettering, so the game's case is spelled out here.
 
 - Draw the word as text over the art, from the string table (`l10n-strings`), with room for longer translations (`l10n-expansion`).
 - Where the lettering is the art (a title, a logo), ship one asset per supported locale and give the image the accessible name it shows (`a11y-name`).

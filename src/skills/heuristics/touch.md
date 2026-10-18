@@ -133,6 +133,41 @@ A gesture that starts at a screen edge is competing with the OS and will lose. O
 
 Content runs underneath the system bars on current Android targets, so a control pinned to the bottom edge without inset handling ends up beneath the gesture strip: visible, and not tappable. The inset geometry itself is `layout-insets`.
 
+## <Rule id="touch-long-press" description="A long press opens the platform's menu, and nothing lives only there" />
+
+Holding a finger on a message, a row or a photo is where both platforms put the occasional actions on the thing under it: reply, copy, share, react, move, delete. It suits actions that belong to one item and are wanted now and then, and it is the wrong home for anything someone needs, because nothing on the screen says it exists.
+
+- The press answers with the platform's own menu, anchored to the item, with the item lifted or previewed so it is clear which one the menu is about. A popover drawn by hand over a dimmed screen loses the system haptic, the drag-to-choose gesture and the screen reader's actions at once.
+- Items are ordered by how often they are used, with destructive actions last, set apart, in the destructive role and never the first item under the finger (`touch-destructive`).
+- A quick row above the menu, reactions or the one verb used most, is part of the menu rather than a second gesture.
+- Every action in the menu is reachable without the long press: an overflow control on the item or on its detail screen for the sighted, and the same set as named actions for the screen reader (`a11y-gesture`, `touch-gestures`).
+- The press itself never does something irreversible, and it means the same thing on every row of one list.
+- The menu leaves on a tap outside it and on back, and its scrim covers the whole screen (`layout-overlays`).
+
+<If stack="swiftui">
+`.contextMenu`, with a `preview:` where the item needs one, and the destructive actions as `Button(role: .destructive)` in a `Section` of their own.
+</If>
+
+<If stack="compose">
+`Modifier.combinedClickable(onLongClick = ...)` opening a `DropdownMenu` anchored to the item, with `HapticFeedbackType.LongPress` performed as it opens.
+</If>
+
+<If stack="flutter">
+`CupertinoContextMenu` on iOS, and on Android a `MenuAnchor` opened from `onLongPress` with `Feedback.forLongPress`.
+</If>
+
+<If stack="react-native">
+A native menu module recorded in `STACK.md`, such as `@react-native-menu/menu` opened on long press, rather than a popover drawn in JavaScript.
+</If>
+
+<If stack="web">
+A long press on mobile web opens the browser's own menu, so the page offers a visible overflow control instead of claiming the press.
+</If>
+
+<If stack="other">
+The framework's context menu component bound to the long press, never a popover built from scratch.
+</If>
+
 ## <Rule id="touch-keyboard" description="Half the screen, arriving without warning" />
 
 The keyboard is not an overlay that happens to the screen, it is part of the screen for as long as someone is typing, and it deserves the same design attention as anything else that takes up that much room.
@@ -151,6 +186,7 @@ The keyboard is not an overlay that happens to the screen, it is part of the scr
 <Verify rule="touch-feedback">Pressed state is visible under a covering finger, feedback lands within about 100ms outside the occluded area, and nothing depends on hover.</Verify>
 <Verify rule="touch-affordance">Every element carrying a control's marks (shadow, button shape, chevron, underline, interactive colour) responds to a tap, and every element that responds carries one of them or sits in a position the platform already makes interactive.</Verify>
 <Verify rule="touch-gestures">No custom gesture starts in a system edge zone without an explicit exclusion, the system's back gesture keeps its own predictive animation, standard gestures keep their standard meaning, and every gesture has a visible equivalent on screen.</Verify>
+<Verify rule="touch-long-press">A long press opens the platform's menu anchored to a lifted or previewed item, ordered by use with destructive actions last and apart, every action is reachable another way and as a named action, nothing irreversible fires on the press, and the menu leaves on a tap outside and on back.</Verify>
 <Verify rule="touch-keyboard">With the keyboard open, the focused field is visible and the primary action is reachable.</Verify>
 
 <Device>Hit areas are measured, not estimated: read the bounds in the inspector or the layout tree. A target that looks big enough next to a 24dp icon is exactly the one that is not.</Device>

@@ -40,6 +40,18 @@ If most fields are required, mark the optional ones. If most are optional, mark 
 
 Use the word "Optional" rather than an asterisk alone. A phone form is read one field at a time, and the legend that explains the asterisk has scrolled off the top by the second question, so the mark has to carry its meaning where it stands. An asterisk is also announced as a star. The mark goes in the label, never in the placeholder, where it disappears with everything else.
 
+## <Rule id="form-choice" description="A choice group states its limit and its count" />
+
+A group of options with a rule attached, pick one, pick up to three, pick at least five, is a question the person answers one tap at a time, and the rule is the one part of it they cannot see by looking at the options.
+
+- The limit is written at the head of the group in words: "Choose 1", "Up to 3", "At least 5". This is not the mark `form-required` rations. It says how many, so it stands on every constrained group, even on a screen where every group is constrained.
+- A group that takes more than one shows the count so far beside the limit, updated on each tap, and the screen reader hears it with the selection (`a11y-announce`).
+- Exactly one is a radio group, where a tap replaces. More than one is checkboxes or filter chips (`button-chips`). A single choice drawn as checkboxes leaves the person unsure whether the second tap adds or swaps.
+- At the maximum, the remaining options say why they no longer take a tap, or the next tap swaps out the oldest pick and says that it did. Options that silently stop responding read as a frozen screen.
+- Below a minimum, the commit control answers with what is still missing and moves the person to it (`button-state`), group by group when there are several. A label that counts down what is left gives the same answer before the tap instead of after it.
+- An option that costs or saves something carries the difference on the option itself, and the total the choices produce is on the screen where the person commits (`pay-total`).
+- An option that cannot be chosen right now keeps its place, drawn as unavailable with the reason in words. One that disappears reflows the group under a finger that was already moving.
+
 ## <Rule id="form-input" description="Configure the field before the finger arrives" />
 
 Each field declares what it holds, and the rest follows from that declaration. The keyboard type and the return key it produces are `touch-keyboard`; what the field does with what arrives is here.
@@ -48,8 +60,19 @@ Each field declares what it holds, and the rest follows from that declaration. T
 - Capitalise names and street lines. Turn capitalisation and autocorrect off for email, usernames, codes and anything the dictionary will not know. Autocorrect on an email field silently substitutes a value the user believes they typed.
 - Mask and format as they type, so spaces in a card number and separators in a phone number are the field's job rather than a rejection afterwards.
 - Where the value set is closed, use a picker, a date picker or a segmented control. A closed set typed by hand is an error being manufactured for later.
+- A keypad the app draws itself, usual on a screen built around one amount, takes on everything the system keyboard did for free: paste, a hardware keyboard, the locale's decimal separator (`l10n-format`), the screen reader reading each key and the value as it grows, and a delete that repeats while held. The value it builds sits above it, with the balance or limit it is checked against on the same screen.
 - Focus a field on open only when the screen exists for that one field, such as search or a code. Anywhere else the keyboard covers the form before it has been read.
 - On mobile web the field's own text size is a layout decision. Safari on iOS zooms the page into any field it is about to focus whose text is under 16px, and it does not zoom back out, so the user finishes the form on a page wider than the screen with the submit button off to one side. Set 16px or larger on the field itself. The viewport is the wrong lever for this: Safari has ignored `user-scalable`, `minimum-scale` and `maximum-scale` on a web page since iOS 10, precisely so that a page cannot take zoom away from the user, and where those values do still apply, which is a web view embedded in an app, what they buy is a page nobody can enlarge.
+
+## <Rule id="form-slider" description="A slider is for a value whose exact number does not matter" />
+
+A drag on glass lands a few points from where it aimed, and the thumb doing the dragging covers the value it is setting. A slider fits a value chosen roughly: a volume, a search radius, an age range, a price ceiling for browsing. Where the exact number matters, an amount to transfer, a dose, a measurement, the control is a field, or a slider with a field beside it.
+
+- The current value is text beside the track, outside the area the finger covers, and it changes during the drag, not only on release.
+- The step matches the data. A continuous track over a value people say in whole numbers produces 37.4 years.
+- A range slider keeps a gap between its two thumbs, so neither can sit on the other where only one of them can be grabbed, and each thumb meets `touch-floor` on its own.
+- Each thumb is an adjustable element to the screen reader, carrying its name and its value and moving one step per swipe (`a11y-name`).
+- Both ends of the track carry their values, and an open end says so in the label: "50 or more", not 50.
 
 ## <Rule id="form-autofill" grade="binary" evidence="device" description="The fastest field is the one the platform fills" />
 
@@ -111,7 +134,9 @@ One submit per form, with its emphasis from `button-one-primary` and its in-flig
 <Verify rule="form-count">The visible fields were counted, none asks for the same value twice, six or more questions are grouped or stepped, what is known is prefilled, and every default carries the reason it is one.</Verify>
 <Verify rule="form-label">Every field has a label that stays visible, bound to it in code and positioned per platform, no placeholder is doing a label's job, and helper text stays under 100 characters.</Verify>
 <Verify rule="form-required">Required or optional is marked on the minority only, as a word, in the label.</Verify>
-<Verify rule="form-input">Capitalisation, autocorrect and any mask are set per field, closed value sets use a picker rather than free text, nothing takes focus on open except a single-field screen, and on mobile web no field's text sits under 16px.</Verify>
+<Verify rule="form-choice">Every constrained group states its limit in words, a multi-select group shows a live count the screen reader hears, single choice is a radio group, reaching a maximum or missing a minimum is explained rather than silent, priced options show their difference with the total on the commit screen, and an unavailable option keeps its place with a reason.</Verify>
+<Verify rule="form-input">Capitalisation, autocorrect and any mask are set per field, closed value sets use a picker rather than free text, nothing takes focus on open except a single-field screen, on mobile web no field's text sits under 16px, and a keypad the app draws itself accepts paste and a hardware keyboard, uses the locale's separator and is read key by key.</Verify>
+<Verify rule="form-slider">A slider sets only an approximate value or sits beside a field, its value is text outside the finger that updates during the drag, the step matches the data, range thumbs keep a gap and each meets the touch floor, each thumb is adjustable with a name and value, and both ends are labelled.</Verify>
 <Verify rule="form-autofill">Every field declares its autofill content type, credential fields are grouped and committed on submit, the one time code is a single field, and paste is blocked nowhere.</Verify>
 <Verify rule="form-validate">Nothing validates per keystroke or on focus, blur or a 500 to 1000ms pause triggers it, and accepted formats are normalised rather than rejected.</Verify>
 <Verify rule="form-error">Each message sits under its own field, names the fix in its first few words, does not depend on color, no summary stands in for those messages, and the first failure is scrolled to and focused.</Verify>

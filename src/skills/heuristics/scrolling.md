@@ -79,6 +79,19 @@ A touch becomes a scroll after a small amount of travel, 8 dp by the Android def
 - Animate only across a short distance. An animated scroll to a distant index rides through everything between and lasts as long as the distance. Jump instead, and let the destination be the first frame the user sees.
 - Reduced motion turns the animated ones into jumps (`motion-reduced`).
 
+## <Rule id="scroll-sections" evidence="device" description="A row of section labels over one scroll has two drivers, and they never fight" />
+
+A long page split into sections, a menu by course, a product by description, specifications and reviews, a shop by aisle, often grows a row of labels pinned above the scroll. It looks like tabs and it is not navigation: there is one screen and one scroll, and the row is an index into it. `button-tabs` is not the rule for it, and the row changes nothing about what back does (`nav-back`).
+
+The row has two drivers. A tap on a label scrolls the page to that section, and the page scrolled by hand changes which label is selected. Each one wired alone looks finished in a quick test.
+
+- A tap scrolls the page and the selection goes straight to the destination. It does not flicker through every label the page passes on the way.
+- Hand scrolling moves the selection when a section crosses one line just below the pinned row, written once, and the row slides sideways to keep the selected label in view without moving under a drag (`scroll-programmatic`).
+- A section lands under the pinned row, not behind it: the offset is the measured height of the row and of any bar above it (`layout-chrome`).
+- The last section is usually shorter than the screen and can never reach the line. Its label is still selected by a tap, and selected once the page reaches its end.
+- With more labels than fit, the row scrolls sideways with the next label cut by the edge (`scroll-affordance`).
+- To the screen reader the row is a set of links, and the selected one says it is selected (`a11y-name`).
+
 ## <Rule id="scroll-overscroll" description="The end-of-content effect belongs to the operating system" />
 
 Android 12 replaced the edge glow with a stretch that bounces back on drag and on fling, for every app on the device. iOS bounces elastically and expects apps to keep that behaviour. In both cases the scrolling container already provides it, so a hand-built rubber band is a second bounce arguing with the first: it starts at a different velocity and settles on a different curve, and it reads as a rendering fault rather than as a style.
@@ -106,9 +119,10 @@ Half the screen disappears with no warning, and the scrolling container has to l
 <Verify rule="scroll-restore">List items carry stable keys, the position is persisted as an item identity that survives the process, restored after the data loads, and falls back to the top when the item is gone.</Verify>
 <Verify rule="scroll-top">On iPhone exactly one scroll view per screen keeps scroll-to-top enabled; on Android any unbounded scroll offers a built return-to-top at the touch floor.</Verify>
 <Verify rule="scroll-programmatic">Every programmatic scroll is guarded against an in-progress drag, moves the minimum needed, and animates only over a short distance.</Verify>
+<Verify rule="scroll-sections">A label row over one scroll is built as an index rather than as tabs, a tap moves the selection straight to its destination, hand scrolling changes it at one written line and keeps the label in view, a section lands below the pinned row, the last section can be selected, and the row reads as links with a selected state.</Verify>
 <Verify rule="scroll-overscroll">No hand-written bounce, overscroll is not disabled, and scroll-linked effects move only transform and opacity.</Verify>
 <Verify rule="scroll-keyboard">The scroll container consumes the keyboard inset, and dragging the content dismisses the keyboard.</Verify>
 
-<Device>Check nesting, the scroll affordance, anchoring and restoration on a device with real data rather than in the layout code. All four look correct in a short mock list and fail only once the content outruns the screen.</Device>
+<Device>Check nesting, the scroll affordance, anchoring and restoration on a device with real data rather than in the layout code. All four look correct in a short mock list and fail only once the content outruns the screen. `scroll-sections` is answered the same way: fling through the page, then tap a label far from the current one, because the flicker through the labels in between and a last section that never selects show only in motion.</Device>
 
 </Check>
