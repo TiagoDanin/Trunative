@@ -13,12 +13,16 @@ The step ends with a composition chosen between alternatives, a wireframe render
 "Add Google sign-in."                 spec
 "This screen has no empty state."     spec
 "Send the row to a detail screen."    spec
+"Show a rewarded ad after a loss."    spec
+"Ask for a rating after a while."     spec
 
 "Make the button blue."               build
 "Four more points of padding."        build
 "The transition is too slow."         build
 "Rename the view model."              build
 ```
+
+A task does not have to sound like design to move structure. Wiring an ads SDK, an analytics event that triggers a rating prompt, a notification, a permission request, a paywall variant or a consent form each puts something in front of the person: a new action, a new state, a modal over the flow, a new way in. Judge it by what the person will see, never by which layer of the code the task lives in.
 
 Write the verdict in one line before anything else, naming which of the four the task touches or naming that it touches none. A verdict nobody wrote is a step nobody ran, and it fails in one direction only: writing code is the attractor, so the unwritten answer is always "straight to build".
 
@@ -86,6 +90,8 @@ A screen driving a camera, a microphone, location, a motion sensor or a radio ow
 
 **`scope`** names files from the Extra table in `SKILL.md`, by the stem or by the rule prefix beside it, whichever the row put in front of you: `localization` and `l10n` are the same row. Never a rule id, and never a file from the Base table, such as `states` or `layout`: base files are opened on every screen, so declaring one says nothing. `open` is what build reads and what `npx trunative rubric --only` takes. `closed` carries the rows a reader would expect to be open, each with the sentence `SKILL.md` requires. Not the whole table: the near misses, which are the only ones anybody argues about later. `auto_excluded` is optional and carries stems alone, for the rows the screen plainly has nothing of. It owes no sentence, and it is there for the reviewer who wants to see that a row was looked at and not forgotten. A row in neither list is simply excluded. When in doubt whether a row is a near miss, it is one, and it goes under `closed` with its sentence.
 
+Scope is a fact about the screen as it is now, not as it was on the day of the brief. A change that adds a capability the brief excluded reopens that row in the same change: an ads SDK reached from the screen reopens `ads`, a scheduled or pushed message reopens `notifications`, a rating prompt reopens `feedback`, a purchase reopens `payments`, a camera, a map or a second shipped locale reopens its own row. The row moves to `open`, the change is reviewed against it, and a row left in `closed` or `auto_excluded` while its capability sits in the target is a brief that lies. `npx trunative spec` reports a target that imports a capability its brief excluded.
+
 ### Body
 
 In this order, and nothing else:
@@ -112,6 +118,10 @@ Nobody reconstructs a codebase by hand. When a screen has no brief and a structu
 Derive what the code shows and nothing more. A state the code does not implement is not written as implemented: it is the `n/a` that has no reason, which is exactly the finding that sends the screen back to build.
 
 This section is for code that existed before the task. A screen written in this session gets its brief before its code, and a brief written afterwards to complete the record is not a spec step: it recorded what was built, and nobody chose it.
+
+`npx trunative spec --coverage` lists the screen files in the project that no brief targets, so a screen without one is found before a structural change lands on it rather than after.
+
+A brief also goes stale from the other side, when a fix lands on its screen and moves hierarchy, actions, states or navigation without touching the brief. The fix updates the brief in the same change. `npx trunative spec` reports a target that changed after its brief did, which is a question to answer, not a defect by itself: a change that moved none of the four leaves the brief as it was, and says so.
 
 ## 3. The wireframe
 
@@ -154,7 +164,7 @@ What the wireframe settles: the first screenful (`layout-fold`), content collidi
 
 What it does not settle, and does not try: contrast, the dark appearance, text at the accessibility steps, measured hit areas, the screen reader, motion. Those are the nine always in scope, they are answered on a device in `flow/review.md`, and they are why the gate below approves structure rather than a finished screen.
 
-The wireframe is scaffolding, not a second contract. After approval nothing reads it: review does not open it, drift does not consult it, and no check validates it. It stays in the repository as the record of what was approved, and a later structural change rewrites it from the brief instead of patching it. One contract, brief against code, and no second surface to diverge.
+The wireframe is scaffolding, not a second contract. After approval nothing reads its drawing: review does not open it, drift does not consult it, and no check compares it with the code. The one part read later is the explore record at its top, which `npx trunative spec` checks and whose `Gate` line `flow/build.md` reads. It stays in the repository as the record of what was approved, and a later structural change rewrites it from the brief instead of patching it. One contract, brief against code, and no second surface to diverge.
 
 ## 4. The gate
 
@@ -195,12 +205,25 @@ Ask when the structure is a real decision, meaning any of these holds:
 - the screen changes what the product does: a new destination, a changed navigation model, a job moved from one screen to another;
 - an interaction is irreversible or costs money, and the structure decides how easy it is to reach;
 - the new structure contradicts one the user already approved;
+- the structure departs from a reference the user supplied and `PRODUCT.md` or `DESIGN.md` records, in any of the things that reference was recorded as deciding;
+- the change replaces something the person already knows the product by: the launcher icon, the launch surface, the display name under the icon, or anything `DESIGN.md` names as signature;
 - it is the first structural task of the session, so the user sees once how this step draws.
+
+The last two are never skipped on the ground that the request implied them. A departure from a reference is shown as the frame beside the reference, and a replaced icon, launch surface, name or signature element as the current one beside the proposed one. Neither ships on an approval the agent gave itself, and a request that only said "improve" or "polish" did not approve a new icon.
 
 Proceed without asking when none of them holds: the request already fixed the hierarchy, the actions and the navigation, and the chosen composition is what it asked for. The brief is still written, the candidates still compared and the frame still drawn and looked at. Say in the hand-off that the gate was skipped and on what ground, show the frame and the five lines anyway, and carry on to build. That is a report and not an approval, and the user can stop it there. A loop of build, ask, wait on every component is a gate people learn to click through, which protects nothing.
 
 When the harness cannot show the user a picture, say so and put the five lines in front of them anyway. A gate answered on the text alone is weaker than one answered on the frame, and it is still the user answering.
 
+Write the outcome into the explore record at the top of the wireframe, as one more line under the ones `flow/explore.md` wrote:
+
+```text
+Gate         approved by the user, 2026-10-18
+Gate         skipped, the request fixed hierarchy, actions and navigation
+```
+
+An `approved` line is what makes a structure approved on disk rather than in a session nobody can read back: `flow/build.md` reads it before changing the screen, and the gate trigger above about contradicting an approved structure applies to every screen that carries one. A `skipped` line approves nothing, and only the user writes, or asks for, an `approved` one.
+
 ## 5. Hand off
 
-Say what the brief settled, which extra files its scope opened and which near misses it closed, the lines `flow/explore.md` handed back, what the wireframe pass caught, that `npx trunative spec` passed, and whether the gate was asked or skipped and on what ground. Then run `flow/build.md`.
+Say what the brief settled, which extra files its scope opened and which near misses it closed, which rows a new capability reopened, the lines `flow/explore.md` handed back, what the wireframe pass caught, that `npx trunative spec` passed, and whether the gate was asked or skipped and on what ground. Then run `flow/build.md`.

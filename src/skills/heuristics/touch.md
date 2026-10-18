@@ -112,6 +112,15 @@ Every touch gets an acknowledgement inside about 100ms, before the work behind i
 
 The touch state set is its own thing: rest, pressed, long press where the element has one, dragging where it moves, plus disabled, loading, error and empty. `hover` does not exist here, and `focus` belongs to a hardware keyboard or switch control rather than to a finger. Nothing may hide behind either.
 
+## <Rule id="touch-affordance" description="What looks pressable presses, and nothing else looks it" />
+
+A finger cannot hover to find out, so the look of an element is the only promise it makes before the tap. Both ways of breaking that promise cost the same: a tap on something that does nothing reads as a broken app, and a control nobody recognises as one is a feature nobody uses.
+
+- Nothing that ignores a tap wears the marks of a control: a raised shadow, a button shape, a filled pill, a chevron at the end of a row, an underline, the accent colour reserved for interactive text. A decorative card styled like a tappable one, a status shown as a chip, a heading in link blue, all invite a tap with nothing behind it.
+- Everything that takes a tap carries one of those marks, or sits where the platform has already taught that position to act: a list row, a tab, a bar item. A tappable line of plain body text, a card with no edge or chevron that opens a detail, or an image that is secretly the only way into a screen is found by accident.
+- A row that opens something shows it, with a chevron on iOS or the full-width ripple on Android, and a row that only displays a value does not borrow the chevron.
+- One element, one promise. Where a tap on part of a surface acts and the rest does not, the acting part is drawn as its own control, which is `touch-nested`.
+
 ## <Rule id="touch-gestures" description="The edges belong to the operating system" />
 
 A gesture that starts at a screen edge is competing with the OS and will lose. On iOS that is back from the left edge, the shade from the top left, the control panel from the top right, and home from the bottom. On Android it is back from either side, home from the bottom, and the shade from the top. Where a drag genuinely has to begin at an edge, claim the strip explicitly through the system's gesture exclusion mechanism and keep it as small as possible.
@@ -140,6 +149,7 @@ The keyboard is not an overlay that happens to the screen, it is part of the scr
 <Verify rule="touch-reach">Primary action and primary navigation sit in the bottom third, and the layout was checked mirrored for a left thumb.</Verify>
 <Verify rule="touch-destructive">Destructive actions sit outside the easy region, and the vehicle carrying the confirmation is the one `fb-confirm-test` selects.</Verify>
 <Verify rule="touch-feedback">Pressed state is visible under a covering finger, feedback lands within about 100ms outside the occluded area, and nothing depends on hover.</Verify>
+<Verify rule="touch-affordance">Every element carrying a control's marks (shadow, button shape, chevron, underline, interactive colour) responds to a tap, and every element that responds carries one of them or sits in a position the platform already makes interactive.</Verify>
 <Verify rule="touch-gestures">No custom gesture starts in a system edge zone without an explicit exclusion, the system's back gesture keeps its own predictive animation, standard gestures keep their standard meaning, and every gesture has a visible equivalent on screen.</Verify>
 <Verify rule="touch-keyboard">With the keyboard open, the focused field is visible and the primary action is reachable.</Verify>
 

@@ -10,15 +10,37 @@ Neighbouring rules own the parts that are not geometry: thumb zones are `touch-r
 
 Read the inset at runtime and lay the screen out inside it. A constant copied off one device (34, 44, 48) is right on that phone and wrong on the next, and it is wrong on the same phone the moment a call banner or an expanded status bar changes the number.
 
-- SwiftUI respects the safe area already. `.ignoresSafeArea()` belongs to a background fill or an image and never to text or a control, and a pinned bar takes `safeAreaInset(edge:)` so the content behind it scrolls clear.
-- Compose: `enableEdgeToEdge()` with `Scaffold`, which insets its own bars, plus `WindowInsets.safeDrawing` on anything drawn outside it.
-- Flutter: `MediaQuery.paddingOf(context)`, or `SafeArea` with the edges named.
-- React Native: the safe area context hook, read per render, rather than a stored constant.
-- Mobile web inside a shell: `viewport-fit=cover` plus `env(safe-area-inset-*)`, which report zero until that meta tag is set.
+<If stack="swiftui">
+SwiftUI respects the safe area already. `.ignoresSafeArea()` belongs to a background fill or an image and never to text or a control, and a pinned bar takes `safeAreaInset(edge:)` so the content behind it scrolls clear. Status bar icons follow `.preferredColorScheme` or `.toolbarColorScheme` per screen.
+</If>
+
+<If stack="compose">
+`enableEdgeToEdge()` with `Scaffold`, which insets its own bars, plus `WindowInsets.safeDrawing` on anything drawn outside it. Bar icon brightness comes from `WindowInsetsControllerCompat.isAppearanceLightStatusBars` and `isAppearanceLightNavigationBars`, set per screen.
+</If>
+
+<If stack="flutter">
+`MediaQuery.paddingOf(context)`, or `SafeArea` with the edges named. Bar icon brightness is an `AnnotatedRegion<SystemUiOverlayStyle>` per screen, with `statusBarIconBrightness`, `systemNavigationBarColor` and `systemNavigationBarIconBrightness` all set. In a Flame game, put the `GameWidget` inside the safe area or give the camera viewport and the HUD components the padding read from `MediaQuery`, since the canvas knows nothing of insets.
+</If>
+
+<If stack="react-native">
+The safe area context hook, read per render, rather than a stored constant. `StatusBar` sets the top bar's icons, and the navigation bar needs its own call, `expo-navigation-bar` or the native module, or it keeps the default.
+</If>
+
+<If stack="web">
+Mobile web inside a shell: `viewport-fit=cover` plus `env(safe-area-inset-*)`, which report zero until that meta tag is set, and a `theme-color` meta per appearance.
+</If>
+
+<If stack="other">
+Whatever the framework reports as the safe area, read per frame. In Unity, apply `Screen.safeArea` to a panel at the root of every canvas and put the HUD inside that panel, since a `CanvasScaler` alone scales into the cutout.
+</If>
+
+Both system bars, not one. The status bar and the navigation bar each have a colour and an icon brightness, set per screen against the background that screen draws under them. Setting only the status bar leaves the navigation bar on its default, which is a strip of the wrong colour or icons that disappear into the ground, and a screen with its own dark or light ground has to say so again for both.
 
 On a current Android target there is no opt out, since the manifest flag that used to disable edge to edge is ignored, so the inset is a runtime measurement on every build. Nor is it one number: a three-button device reports a taller bottom inset than the same phone using gestures. What a pinned control does when that measurement is skipped is `touch-gestures`.
 
-A pinned bar carries the inset inside itself: its own height for the controls, plus the bottom inset underneath them, in one component. Padding the bar from outside leaves a strip of the wrong background color under it, and a sheet or a dialog opened over the screen owes the same treatment, since it becomes the bottom of the screen while it is up.
+A pinned bar carries the inset inside itself: its own height for the controls, plus the bottom inset underneath them, in one component. Padding the bar from outside leaves a strip of the wrong background color under it, and a sheet or a dialog opened over the screen owes the same treatment, since it becomes the bottom of the screen while it is up. A sheet that grows to full height owes the top inset as well: its content scrolls under the status bar otherwise.
+
+A screen that hides the system bars, a player, a game, a camera, still keeps the cutout inset for anything read or tapped, and it restores the bars when the person leaves it. Hidden bars that stay hidden on the next screen are a defect on a screen that never asked for them.
 
 Four edges, not one. The top holds the status bar and the cutout or Dynamic Island. The bottom holds the home indicator or the navigation bar. The side insets are zero in portrait and stop being zero once the phone is turned, where they are applied to both sides and the cutout is on one of them. Scrolling content may pass under any of them and often should, because the content ending in a hard line above the bar wastes the screen. Anything read or tapped may not, and that includes the last row of a list, the buttons inside a sheet, and a snackbar.
 
@@ -88,6 +110,8 @@ Take it from the platform's host, because that is where the displacement is alre
 
 One at a time, and never behind something else. Two messages stacked, a toast drawn behind an open sheet, and a snackbar left under a keyboard that has just opened are the same defect: a surface positioned by hand into a stack whose heights it does not know.
 
+A modal follows the same order with a scrim under it. The scrim sits on the topmost layer, above every nested canvas, platform view, map, video surface and overlay on the screen, so nothing behind it stays bright or takes a tap. A scrim drawn inside one of those layers dims only that layer, and a native view embedded in the screen usually draws over anything the framework puts on top of it unless the modal goes through the root overlay. The panel itself is opaque: content showing through it competes with the text it holds.
+
 ## <Rule id="layout-axis" description="Centred means on the screen's centre line, not in the space left over" />
 
 A title, a selector or a figure placed between a group on the leading side and a group on the trailing side is centred on the screen, whatever the two groups hold. Put it in the space the groups leave and it sits wherever their difference in width pushes it: one icon on the left and three on the right drags it left, and it moves again the moment a group gains or loses an item. The eye reads the centre of the screen, and an element slightly off it reads as a mistake rather than as a choice.
@@ -122,14 +146,14 @@ Reflowing means the primary action stays visible without hunting for it, and the
 
 <Check>
 
-<Verify rule="layout-insets">The screen takes its insets from the framework's inset source rather than from a constant, and nothing readable or tappable sits outside them.</Verify>
+<Verify rule="layout-insets">The screen takes its insets from the framework's inset source rather than from a constant, and nothing readable or tappable sits outside them. Both the status bar and the navigation bar have a colour and icon brightness set against this screen's own background, a full-height sheet clears the top inset as well as the bottom one, and a screen that hides the bars keeps the cutout inset and restores the bars on exit.</Verify>
 <Verify rule="layout-grid">Every gap is a multiple of 4, and of 8 above 16, the text column starts at the same margin on every screen outside full-bleed content and the platform list containers, and the screen uses about five distinct vertical gaps rather than a new one per component.</Verify>
 <Verify rule="layout-grouping">Grouping comes from space before containers, no container is nested inside another that already groups the same content, and the row height and section gap are the numbers this kind of screen uses everywhere else.</Verify>
 <Verify rule="layout-shape">Radius comes from the shape language rather than per component, the screen holds at most three radius values, a nested surface curves less than the one around it, and depth arrives through one of shadow, outline or fill rather than all three.</Verify>
 <Verify rule="layout-column">One column, no same-axis nesting outside what `scroll-nest` permits, and nothing side by side that would leave either half under about 140 wide apart from short fixed-format fields.</Verify>
 <Verify rule="layout-width">No content container carries a fixed width, and the screen was rendered at its own width and again at 320dp with nothing cut at an edge and nothing overflowing sideways.</Verify>
 <Verify rule="layout-chrome">Bars sit in the platform's bar slot, hand-placed chrome derives its padding from the measured bar plus the inset instead of a typed number, no more than two persistent bars stand besides the system ones, and on a rendered screen no line of content sits under a pinned bar, at the top edge or at the bottom one.</Verify>
-<Verify rule="layout-overlays">The snackbar comes from the platform's host slot rather than a hand-placed overlay, it clears the bottom bar and the inset, it moves the floating button rather than covering it, and one is on screen at a time.</Verify>
+<Verify rule="layout-overlays">The snackbar comes from the platform's host slot rather than a hand-placed overlay, it clears the bottom bar and the inset, it moves the floating button rather than covering it, and one is on screen at a time. A modal's scrim covers every layer of the screen, nested canvases and platform views included, and the modal panel is opaque.</Verify>
 <Verify rule="layout-fold">On the narrow device at default text size, the screen's subject and the start of its content are visible unscrolled, and the primary action is either in that screenful or in a bar pinned above the bottom inset and visible at rest.</Verify>
 <Verify rule="layout-short">Rendered at its shortest content, the screen holds its action against the bottom rather than centred above an empty lower third, through the same code that lets it scroll once the content grows.</Verify>
 <Verify rule="layout-orientation">Landscape reflows, with the action still visible and the measure still capped at the shorter height, or is locked by a decision of the user recorded in `STACK.md`, and the screen still holds where the platform ignores the lock.</Verify>

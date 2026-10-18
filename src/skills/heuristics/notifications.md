@@ -85,8 +85,19 @@ Only a live event holds a permanent place in the shade: playback, a call, naviga
 
 - The work runs in a foreground service posting under a non-zero id, on a channel that follows `notify-level`.
 - From Android 14 the user can swipe that notification away while the service keeps running. Dismissal is not a stop signal and not a crash: the work continues, the notification is reposted when the state changes, and the app never treats its presence as where the state is stored.
+- Updates the person drives are coalesced to the latest value. Android rate limits how often one app may post or update a notification and drops the posts over the limit, so a notification refreshed on every tap, every score change or every tick ends on whichever update got through rather than the last one. Post the current state once per short interval, and always post the final one.
 - A journey with a start and an end shows how far along it is rather than repeating one static line. Android 16 has `Notification.ProgressStyle` for exactly this, which is the delivery, the ride and the route.
 - iOS does this job with a Live Activity, which can only be started while the app is in the foreground. It stays active for up to eight hours and on the Lock Screen for up to twelve, so it carries a `staleDate` for the point its content stops being trustworthy and an `ActivityUIDismissalPolicy` for how it leaves. End it when the work ends instead of letting the ceiling end it.
+
+## <Rule id="notify-occurrence" description="Each scheduled occurrence is its own notification with its own life" />
+
+A reminder that repeats, a dose three times a day, a bill every month, a lesson every evening, is not one notification firing many times. Each firing is an occurrence the person can act on, miss or ignore, and the schedule is the list of them.
+
+- Every occurrence carries its own identifier, derived from the item and the instant it is for, so cancelling, updating or confirming one names that one. A single id reused for the series, or a cancel that clears every pending request for the item, takes tomorrow's reminders with today's.
+- An occurrence has a lifecycle the app tracks: upcoming, due, and then done or missed. Due lasts a grace window written in `STACK.md`, so an occurrence does not turn missed at the exact minute it fires while the person is reaching for the phone.
+- Acting on one occurrence touches that occurrence only. Confirming, snoozing or skipping it leaves every other one scheduled as it was, and a follow-up reminder belongs to the occurrence that raised it.
+- Nothing is scheduled for an instant already past or before the item existed. An item created at 15:00 with a daily time of 08:00 starts tomorrow, and a schedule rebuilt after an edit drops the instants that have gone by instead of firing them all at once.
+- The platforms cap pending local notifications, 64 on iOS, so a long schedule keeps a rolling window filled ahead and tops it up, rather than registering a year of occurrences once.
 
 ## <Rule id="notify-badge" description="A badge is a count of things waiting, or it is nothing" />
 
@@ -112,7 +123,8 @@ Notifications are off by default for new installs on Android 13 and above, and i
 <Verify rule="notify-destination">The payload carries a destination and a subject id reached through `setContentIntent()`, the routing runs on a cold launch from a killed process, and the tap clears the notification.</Verify>
 <Verify rule="notify-actions">No more than two actions are relied on and none exceeds the platform's ceiling, the first is non-destructive, conversations use `MessagingStyle` with direct reply, and completing an action from the shade updates the notification and the badge.</Verify>
 <Verify rule="notify-shade">Related notifications share a group or thread with a summary, children alert with `GROUP_ALERT_SUMMARY`, repeat events update in place, and anything handled elsewhere or no longer true is cancelled or times out.</Verify>
-<Verify rule="notify-ongoing">Anything persistent is a real ongoing event, the app keeps working when the user dismisses it, and a Live Activity carries a stale date and an explicit end.</Verify>
+<Verify rule="notify-ongoing">Anything persistent is a real ongoing event, the app keeps working when the user dismisses it, updates driven by the person are coalesced with the final state always posted, and a Live Activity carries a stale date and an explicit end.</Verify>
+<Verify rule="notify-occurrence">Each scheduled occurrence has its own identifier and a tracked state with a grace window before missed, acting on one never cancels or alters another, nothing is scheduled in the past or before the item existed, and long schedules stay under the platform's pending limit.</Verify>
 <Verify rule="notify-badge">The badge counts something the user can act on, matches what the app shows, and reaches zero through normal use.</Verify>
 <Verify rule="notify-inapp">Every notification the app sends has an in-app equivalent that works with notifications denied, and a foreground arrival lands in the content instead of presenting as a banner.</Verify>
 

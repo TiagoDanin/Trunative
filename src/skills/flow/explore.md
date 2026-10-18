@@ -128,6 +128,6 @@ Chosen       B, because the next departure is the whole job and A buries it in a
 Lost         A reads as a schedule to study, C hides later departures behind a gesture
 ```
 
-`Default`, `Context`, `Candidates`, `Distance`, `Chosen` and `Lost` are required, and `Distance` counts all three pairs as `A/B`, `A/C` and `B/C`.
+`Default`, `Context`, `Candidates`, `Distance`, `Chosen` and `Lost` are required, and `Distance` counts all three pairs as `A/B`, `A/C` and `B/C`. The gate in `flow/spec.md` adds a `Gate` line under them once it has been asked or skipped.
 
 Then return to `flow/spec.md` and draw the chosen candidate. The hierarchy in the brief is updated when the winner reordered it, since the brief is the contract and this step is allowed to change its mind.

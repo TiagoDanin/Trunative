@@ -1,6 +1,6 @@
 ---
 name: trunative
-description: Design and review mobile app UI for any stack (React Native, Expo, Flutter, SwiftUI, Jetpack Compose, mobile web). Use when building a screen, component, navigation flow, or form for a phone, or when reviewing existing mobile UI.
+description: Design and review mobile app UI for any stack (React Native, Expo, Flutter, SwiftUI, Jetpack Compose, mobile web). Use when building a screen, component, navigation flow, or form for a phone, or when reviewing existing mobile UI. Also use when a change adds something the person sees without asking for a screen: an ad placement, a notification, a review or rating prompt, a permission request, a paywall, or a dialog or sheet raised by analytics or remote config.
 ---
 
 # Trunative
@@ -25,6 +25,8 @@ Follow it in order. Never skip init, never end on build.
 4. **build**, read `flow/build.md`. One screen, one component, or one flow at a time.
 5. **review**, read `flow/review.md`. Runs on the code that was just written, and again on request over a finished screen. It scores every rule in scope from 1 to 5, or pass or fail where the rule is binary. A 1, a 2 or a fail is a violation, and a violation on a P0 or P1 rule blocks the screen whatever the percentage says.
 6. **loop**, back to build while review reports violations. Stop when review comes back clean.
+
+A task does not have to be called UI work to be UI work. A change that adds a system prompt, a dialog or a sheet, an ad placement, a notification, a review or rating prompt, a permission request, a paywall, or anything an analytics event or a remote flag puts on screen changes what the person sees and when, so it takes this flow from init, with spec deciding as it would for a screen, and review running on every screen it can appear over.
 
 Every hand-off after build carries the status line of the review that ran on it, or the words `review not run` with the reason. A hand-off with neither is how a skipped review passes for a finished one.
 
@@ -109,6 +111,9 @@ It fails in two quiet ways. Judging by the feature closes a file that owns somet
 | `heuristics/sound.md` | `sound-` | the inventory, being silenced by the switch and the ringer, mixing with other audio, system sounds, never sound alone, unasked sound, the off switch |
 | `heuristics/payments.md` | `pay-` | which rail the item legally takes, linking out by storefront, the wallet first, the system sheet, the total, where the price comes from, subscription terms, cancelling, restore, card entry, leaving and returning, pending and idempotency, the honest paywall |
 | `heuristics/ads.md` | `ads-` | labelled as advertising, the close control, placement, frequency, reserved space, adjacency to a real action, rewarded and consent flows, reporting, accessibility, the paid-to-remove entitlement, cost, children |
+| `heuristics/game.md` | `game-` | a play surface and its HUD, what shows per game state, the centre of the play area, control zones, pausing on lost attention and held touches, the result of a round and the offers on it, locked levels, when a rewarded offer appears, progress across process death, music and effects, words painted into art |
+| `heuristics/economy.md` | `econ-` | virtual currency, lives, energy, daily caps and unlock costs: the cost on the control, contents and odds, affordability, a gate shown at the entry, a disabled buy control, bundles already owned, currency bought with money |
+| `heuristics/learning.md` | `learn-` | lessons, quizzes, drills and flashcards: teaching before testing, defining terms, feedback after an answer, items that come back, how much a wrong answer weighs, committing a choice, scores before the first answer, a lesson resumed after the process dies |
 
 **Platform and engineering.** Same tier and same pass as the rows above, kept in `platform/` because they are a different kind of rule. Everything in `heuristics/` says what the person experiences. These three say how the code underneath has to behave for that experience to hold: transport, scheduling, the frame budget. They name more APIs than any other file, which makes them the part that ages, so read them for the behaviour they require and treat each API as today's way of getting it. A rule here is opened, scored and blocks exactly like any other.
 

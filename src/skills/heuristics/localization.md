@@ -96,6 +96,31 @@ Both platforms let someone point a single app at a language of its own, so the a
 ## <Rule id="l10n-change" description="The language can change while the app is running" />
 
 - The locale is read where it is used. A `Locale` captured at launch, a formatter built once inside a singleton, or a string preformatted into a cache leaves the screen rendering half in each language after the switch.
+- So does a string lookup that does not subscribe to the change. A static accessor, a translator object cached in a field, or a lookup that reads the catalogue without going through what rebuilds on a locale change returns the right word at first build and the old one forever after, and a fix applied to the screens someone looked at leaves it on the ones nobody did.
+
+<If stack="flutter">
+Look strings up from the `BuildContext` on every build, `AppLocalizations.of(context)` or the package's context extension, so the widget depends on the locale and rebuilds. A static `tr()` or a translation map held in a service does not rebuild anything.
+</If>
+
+<If stack="swiftui">
+Pass `LocalizedStringKey` to the view, or read `@Environment(\.locale)` where a string is built in code; a `String(localized:)` computed into a stored property keeps its first value.
+</If>
+
+<If stack="compose">
+`stringResource()` inside the composable, which follows the configuration. A string read from the application `Context` into a view model keeps the launch language.
+</If>
+
+<If stack="react-native">
+The i18n library's hook, such as `useTranslation()`, inside the component, so the change re-renders it. A module-level call to `t()` runs once at import.
+</If>
+
+<If stack="web">
+Re-render from the current locale held in state, and set `lang` on the document when it changes.
+</If>
+
+<If stack="other">
+Whatever the framework offers to make a string lookup depend on the current locale, so the change rebuilds what shows it.
+</If>
 - Changing the app or the system language recreates the screen on Android the way a rotation does, so what the user had on it comes back with it, which is `state-interrupt`.
 - Anything told the locale once is told it again: the push token registration, the requests that return user-facing text, and any preference the backend stores.
 
@@ -120,7 +145,7 @@ Most of this is findable without a translator, on a device, before any string is
 <Verify rule="l10n-personal">One full-name field unless an outside format demands the split and `STACK.md` names it, address fields chosen after the country, and no single mask applied to every phone number.</Verify>
 <Verify rule="l10n-collate">Lists sort and section through a locale collator, and search ignores case and accents.</Verify>
 <Verify rule="l10n-per-app">The shipped locales are declared to the system, resources sit at the widest correct dialect, and no language picker bypasses the platform API.</Verify>
-<Verify rule="l10n-change">No locale is cached at launch, a language change keeps what was on the screen, and everything told the locale once is told it again.</Verify>
+<Verify rule="l10n-change">No locale is cached at launch, no string lookup bypasses what rebuilds on a locale change, every visible string switches language without a restart, a language change keeps what was on the screen, and everything told the locale once is told it again.</Verify>
 <Verify rule="l10n-pseudo">Both passes were taken, the expanding one and the mirrored one, by whichever mechanism the stack provides, and the screen was seen under each.</Verify>
 
 <Device>`l10n-direction`, `l10n-no-mirror`, `l10n-expansion`, `l10n-script` and `l10n-pseudo` are answered on a rendered screen rather than in the resource files. A catalogue can be complete, a formatter correct and a plural resource well formed while the screen itself still clips, mirrors the wrong element, or falls back to a face that has no glyphs.</Device>

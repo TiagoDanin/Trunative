@@ -52,7 +52,7 @@ Anchors are not a curve. Most rules on a screen built with this skill land at 3 
 
 Review the actual code, not your memory of writing it. Open the files that changed.
 
-After a build that is the diff, including a build that went straight from a one-line verdict to code: a change too small for spec is still a change someone will hold, and its review is the same file with a smaller scope, printed with its header. On request it is the screen: the widget, view or composable that renders it plus whatever it pushes and presents, opened on a device or a simulator.
+After a build that is the diff, including a build that went straight from a one-line verdict to code: a change too small for spec is still a change someone will hold, and its review is the same file with a smaller scope, printed with its header. That holds for a change that did not look like screen work: an analytics event that also fires a review prompt, an ad integration, a notification, a permission request, a paywall variant. What the person sees is reviewed whoever thought they were writing it. On request it is the screen: the widget, view or composable that renders it plus whatever it pushes and presents, opened on a device or a simulator.
 
 ## 2. Scope and checklist
 
@@ -63,6 +63,20 @@ An identity the build had to settle because `DESIGN.md` did not carry one is par
 Name the screen first, the same way build does, and derive the scope from the name. A build that named it wrong took the wrong files with it, and a review that inherits the build's list inherits the mistake. Where your pass reaches a file the build never opened, its rules are in scope all the same and every one of them is `unrun` until it is checked: a rule nobody looked at is not a rule that passed.
 
 A screen brief at `.trunative/screens/<name>.md` does not change that. Its `scope` is what the spec step decided and what the rubric was generated from, and it may widen your scope and never shrink it. Where your own pass reaches a file the brief left out, grade it and report the difference as drift.
+
+A play surface in a game, the screen where the game itself runs under a HUD, is graded with the review profile `heuristics/game.md` states: that file says which families close on a play surface and why, so the rows it closes are `n/a` with its reason rather than a hundred rows argued one at a time. Menus, settings, shops and result screens in the same game are ordinary screens and get the ordinary scope.
+
+### A follow-up review
+
+A screen that already passed a full review, then changed, does not need every row graded again to know whether the change held. The scope of a follow-up run is:
+
+- the nine always-in-scope rules, every time;
+- every rule whose Check line names something the diff added, changed or removed: a control, a string, a colour, a state, a sheet, a route, a request;
+- every rule of an Extra file the diff brought into scope for the first time, such as a screen that gained an ad, a notification, a review prompt or a second locale. A file newly in scope is graded whole, because nothing about it was ever seen.
+
+Every other row carries its grade from the last full review, marked carried, with the date of that run. A carried grade is not a fresh one, and the report counts it apart.
+
+The follow-up is the same review with a narrower scope, never a second procedure. It is not available for a new screen, for a change spec judged structural, or when the last full run is older than the skill hash in `.trunative/skill.lock`: those run the full scope. Choosing the follow-up to avoid a row that would fail is choosing the scope after the scores, which the paragraph above already forbids.
 
 ```sh
 npx trunative rubric --only forms --only search
@@ -88,6 +102,32 @@ Every row gets a score, one line of finding, and its evidence:
 
 A rule the checklist prints `[device]` on may not take `source`: its own file has already said a diff cannot settle it, so a number from the source alone is a guess wearing a score. The paragraph that file closes its Check section with, printed under the group as `Not from a diff`, says why. Those rules are `device`, `source+device`, or `unrun`. A rule without the mark can be graded from the source, and is still worth seeing on a device.
 
+Where no screen reader can be driven, a dump of the accessibility tree taken from the running app is `device` evidence for the rules about names, roles, reading order and grouping: what each node is called, which nodes merged, and in what order they come. It is not evidence for announcements, focus moves or gestures, which only exist while a screen reader is running, and those stay `unrun` without one. The dump is attached to the report beside the capture.
+
+<If stack="flutter">
+On Android run `adb-agent ui dump --json` against the running app: it reads the tree the platform received from the engine, which is the one TalkBack reads, so it is the evidence that counts. `debugDumpSemanticsTree()` from a debug session, or `tester.getSemantics(finder)` in a widget test with `ensureSemantics()` on, shows what Flutter meant to send, and a node there that is missing from the platform tree is a finding. On iOS open the Accessibility Inspector in Xcode against the simulator.
+</If>
+
+<If stack="react-native">
+On Android run `adb-agent ui dump --json` and read the elements, or `--raw` for the XML, and on iOS open the Accessibility Inspector in Xcode against the simulator.
+</If>
+
+<If stack="swiftui">
+Open the Accessibility Inspector in Xcode against the simulator and walk the hierarchy, or read `XCUIApplication().debugDescription` in a UI test.
+</If>
+
+<If stack="compose">
+Run `adb-agent ui dump --json` against the running app and read the elements, or `--raw` for the XML, or call `composeTestRule.onRoot().printToLog("a11y")` with the merged tree in a UI test.
+</If>
+
+<If stack="web">
+Read the accessibility tree in the browser devtools, or run axe against the page and keep its output.
+</If>
+
+<If stack="other">
+Use the platform's own inspector for the accessibility tree: on Android `adb-agent ui dump --json`, on iOS the Accessibility Inspector in Xcode. An engine that draws its own canvas exposes only what it registers with the platform, so a tree with one node for the whole screen is itself the finding.
+</If>
+
 A screen is never closed on `source` alone. Render it, look at it, and keep the capture beside the report. What the file hides and the picture shows in a second: the last row of content sitting under a pinned bar, the primary action stranded in the middle of an empty frame, a hero occupying a third of the height and depicting nothing, placeholder text standing in as the content. None of that is arguable from code, and all of it is what a person sees first.
 
 <If stack="web">
@@ -99,7 +139,7 @@ chrome --headless --window-size=402,874 --screenshot=screen.png file:///absolute
 <If stack="flutter,react-native,swiftui,compose">
 ```sh
 xcrun simctl io booted screenshot screen.png   # iOS simulator
-adb exec-out screencap -p > screen.png         # Android emulator or device
+adb-agent screen shot --out screen.png         # Android emulator or device
 ```
 </If>
 
@@ -122,6 +162,45 @@ npx trunative detect lib/screens/checkout_screen.dart
 It reads the files and answers the part of a `Check` line a file can settle, reporting per rule id. Three things follow from that and none of them is optional: every finding is `source` evidence, so it never settles a rule marked `[device]`; a finding is a place to look rather than a score; and its silence proves nothing, so a rule it did not answer stays with the grader. It exits 2 when it finds something, which is not a failure.
 
 Then the measurements that do need a device: both appearances on the narrowest and widest device class, the largest accessibility text step on the narrowest, hit area bounds read from the inspector rather than estimated from a screenshot, the primary flow completed with the screen reader on, the screen with the network off and after a process kill the system would have made itself, and real records rather than seed data, meaning a null, a zero, a long string, an old timestamp and an empty list. When the app can reach a real account, use it: demo data was written to look right, which is the one thing real data does not do.
+
+<If stack="flutter,react-native,compose,other">
+On an Android emulator or device, drive all of it with `adb-agent`, the shell counterpart of an Android debug bridge server: every command answers `--json`, exits non zero on failure, and reads the screen by label instead of by guessed coordinates. When it is not on the path, `npx -p android-debug-bridge-mcp adb-agent` runs it, and `adb-agent skills get adb-cli` prints its full guide. Run `adb-agent doctor` once before the first measurement, since a run that cannot reach `uiautomator` produces no tree and the rows it was meant to settle stay `unrun`.
+
+```sh
+adb-agent test folder checkout                        # one folder of artifacts per run
+adb-agent system deeplink "myapp://checkout" --package com.example.app
+adb-agent ui wait "Pay"                               # wait for content, never for a clock
+adb-agent ui dump --json                              # labels, bounds, clickable, order
+adb-agent screen shot --test checkout --step default
+adb-agent input scroll down --amount 0.9              # then capture again, at the end of the content
+
+adb-agent system setting get system font_scale        # the value to put back
+adb-agent system setting put system font_scale 2.0    # largest text step, then capture
+adb-agent system shell cmd uimode night yes           # the other appearance, then capture
+adb-agent system shell wm size 720x1280               # narrowest class, wm size reset after
+adb-agent system shell cmd overlay enable com.android.internal.systemui.navbar.threebutton
+adb-agent system shell cmd overlay enable com.android.internal.systemui.navbar.gestural
+
+adb-agent system airplane on                          # network off, then off again after
+adb-agent input key HOME
+adb-agent system shell am kill com.example.app        # the kill the system makes in the background
+adb-agent input key RECENTS                           # return the way a person does, then dump
+
+adb-agent system logcat --package com.example.app --priority E --lines 100
+adb-agent test artifacts checkout                     # what the report attaches
+```
+
+What each answer settles, and what it does not:
+
+- **Hit areas** come from the `bounds` of each element in `ui dump --json`, in pixels. Divide by the density over 160, read with `adb-agent system shell wm density`, to get dp, and compare against `touch-floor`. That is the inspector reading step 3 asks for, never an estimate off a capture.
+- **Names, roles and order** come from the same dump: an element with an empty label that is `clickable` is an `a11y-name` failure with its bounds attached, and the order of `elements` is the order TalkBack walks.
+- **The dump has no z-order.** An element under a pinned bar still reports its full bounds, so a dump never settles `layout-chrome` or `layout-insets`: the capture at the end of the content does, in both navigation modes.
+- **A WebView or an engine canvas is often one node.** That single node is the finding for every name and order rule inside it, and coordinates for driving it come from the capture.
+- **The screen reader.** Turning TalkBack on is `adb-agent system setting put secure enabled_accessibility_services com.google.android.marvin.talkback/com.google.android.marvin.talkback.TalkBackService` on an image that ships it. On one that does not, the dump stands for names, roles and order as above, and announcements and focus stay `unrun`.
+- **Crashes and errors** a flow raised without showing them are in the logcat read, cleared first with `adb-agent system clear-logcat`, and an error there during the primary flow is a finding even when the screen looked fine.
+
+Every `put`, `night`, `wm size`, overlay and airplane change above is a setting on the person's device, so the paragraph below holds: `setting get` before each `put` is the value to restore, and the hand-off lists each one put back, `wm size reset` and the original navigation mode included. Never run `adb-agent app clear` on a device you did not set up for the test, because it wipes the account and the data on it, and `app restart` gives the fresh process without that.
+</If>
 
 Some defects only exist over time, and a capture of the settled screen shows none of them. Capture the screen while it loads and again once content arrives, and compare where things sit, since `state-loading` fails in the step between the two. Leave the screen open for a minute and look again: a relative time that never changes, a figure that should have refreshed, a banner that should have gone. Time the ordinary interactions, the sheet opening, the tab switching, the list returning, instead of judging them by feel.
 
@@ -188,6 +267,7 @@ slug: lib-screens-checkout-screen-dart
 spec: .trunative/screens/checkout.md
 date: 2026-09-08T14:22
 skill: sha256:6f0a...
+mode: full
 scope: [touch, forms, states, layout, typography, colors, motion, accessibility]
 status: VIOLATIONS
 violations: [p0: 0, p1: 0, p2: 2, p3: 1]
@@ -200,7 +280,7 @@ unrun: [a11y-announce, type-scaling]
 ---
 ```
 
-`unrun` is empty on a complete run, and never left out. `skill` is the hash in `.trunative/skill.lock`. It says which set of rules produced the numbers, which is how a later run knows the rulebook moved under it. `spec` is the screen brief this run graded against, omitted when the screen has none, so a later comparison can tell a screen that changed from a screen whose declared intent changed.
+`mode` is `full` or `follow-up`. A follow-up run adds `carried`, the date of the full run its carried grades come from, and the trend line below names a follow-up as one, since its percentage mixes fresh grades with carried ones. `unrun` is empty on a complete run, and never left out. `skill` is the hash in `.trunative/skill.lock`. It says which set of rules produced the numbers, which is how a later run knows the rulebook moved under it. `spec` is the screen brief this run graded against, omitted when the screen has none, so a later comparison can tell a screen that changed from a screen whose declared intent changed.
 
 Then read the newest five archived runs with the same slug and print one line:
 
@@ -222,6 +302,8 @@ First run: there is nothing to compare against. Say so in one line, name it the 
   4. every rule the checklist marks `[device]`, and every one of the nine always in scope, has been checked on the evidence it requires, so none of them is `unrun`.
 
   Then report what was built, what was checked, what was excused and what was not seen. A run that meets the first three and not the fourth has not closed the screen: it says which checks are outstanding and what would run them.
+
+  `layout-insets` is the check most often left for later and the one whose failure is on every screen of every session, so it is never the outstanding one: a run with it `unrun` is reported as not closed, never as passed, whatever else it covered. Both navigation modes the platform offers, gesture and buttons, and a sheet or dialog open over the screen, are what it takes.
 
 Two consecutive reviews finding the same violation means the fix is not working. Say so and ask the user, instead of looping a third time.
 

@@ -128,6 +128,31 @@ The app icon is drawn at about the size of a fingertip, beside twenty others, in
 - Respect the launcher's geometry, which fails at both ends. On Android the outer band of the canvas belongs to the mask and to the parallax effect, so a mark drawn to the edge loses its edge to whatever shape that launcher applies; a mark drawn too small floats in the middle of a canvas everyone else fills. The safe box has a floor as well as a ceiling, and both are in the reference.
 - Ship the monochrome layer on Android, and the dark and tinted appearances on iOS. Both systems generate any variant that is not supplied, so the choice is not whether the app has one, it is whether anybody drew it. An alternate app icon needs its own full set.
 - The mark is the product's own. System symbols may not be used in an app icon or a logo, and platform hardware may not be drawn inside one.
+- The label under the icon is part of it. It is the product's display name, localised where the name is translated, never the package identifier, the project folder or a slug with underscores that a template left in the manifest or the bundle settings, and it fits the launcher without being cut: a long store title gets a short label of its own.
+
+<If stack="flutter">
+`android:label` in `AndroidManifest.xml` and `CFBundleDisplayName` in `Info.plist`; neither is read from `pubspec.yaml`.
+</If>
+
+<If stack="swiftui">
+`CFBundleDisplayName`, localised in `InfoPlist.strings`, rather than the target name.
+</If>
+
+<If stack="compose">
+`android:label` on the application and the launcher activity, pointing at a string resource.
+</If>
+
+<If stack="react-native">
+`android:label` and `CFBundleDisplayName` in the native projects, or `name` in the Expo config, which writes both.
+</If>
+
+<If stack="web">
+`short_name` in the web app manifest, which is what the home screen shows.
+</If>
+
+<If stack="other">
+Whatever the build sets as the display name on each platform, checked on the home screen of a device rather than in the project settings.
+</If>
 
 <Check>
 
@@ -142,7 +167,7 @@ The app icon is drawn at about the size of a fingertip, beside twenty others, in
 <Verify rule="icon-alt">Every image either describes what it shows or is hidden as decoration, and no description is a file name or the word image.</Verify>
 <Verify rule="icon-dark">Every asset that cannot be tinted has a dark counterpart selected by the asset system, and no asset carries an opaque light background.</Verify>
 <Verify rule="icon-avatar">The avatar has a generated fallback at the same size, stable per user, covering the missing name, carrying no drawn human face, and no path renders a broken image.</Verify>
-<Verify rule="icon-app">The app icon carries no text, ships unmasked layers with no baked effects, keeps its mark inside the safe box, and supplies the monochrome layer on Android and the dark and tinted appearances on iOS rather than letting the system invent them.</Verify>
+<Verify rule="icon-app">The app icon carries no text, ships unmasked layers with no baked effects, keeps its mark inside the safe box, and supplies the monochrome layer on Android and the dark and tinted appearances on iOS rather than letting the system invent them. The launcher label is the product's display name, not a package identifier or project slug, and it is not truncated on the home screen.</Verify>
 
 <Device>Check `icon-dark`, `icon-avatar` and `icon-app` on a rendered screen in dark appearance, and `icon-weight` at the largest text step. All four pass a light-theme, default-size screenshot.</Device>
 

@@ -14,12 +14,14 @@ The user chooses. A recommendation is a default worth stating, not a decision al
 npx trunative doctor
 ```
 
-It checks four things and exits non-zero if any fails:
+It checks these and exits non-zero if any fails:
 
 - the product brief, at `.trunative/PRODUCT.md` or `PRODUCT.md`
 - the design brief, at `.trunative/DESIGN.md` or `DESIGN.md`
 - the stack brief, at `.trunative/STACK.md` or `STACK.md`
+- every rule id the stack brief cites, so an exception names a rule that exists
 - the installed skill, against the hash in `.trunative/skill.lock`
+- no full copy of the skill sitting beside the installed one
 
 The doctor only checks that a brief exists. Whether it says anything useful is your job, here in init.
 
@@ -44,7 +46,9 @@ A document the user hands over, a product spec, a pitch, a prompt written for an
 
 Read the codebase first and derive the tokens from what is actually there. Ask the user only about what the code cannot answer, and about the intent behind values the code shows but does not explain.
 
-Ask whether there is a reference to match: a mockup, a screenshot, another app, a brand sheet. When there is, it outranks both the code and any derivation, and `DESIGN.md` is read off it. Go through what a picture settles and a description loses, one by one, and write each down with the reference it came from: the ground and whether it is tinted, the ink, the accent and what it is spent on, the weight of titles against body, the icon set and whether a selected icon fills, the back glyph, how a selected item in a bar or a list is marked, what carries depth, and the radii. A token nobody wrote down from the reference gets filled in from the framework's defaults, and the user then spends the next week pointing at the difference.
+Ask whether there is a reference to match: a mockup, a screenshot, a board, another app, a design file, a brand sheet. When there is, it outranks both the code and any derivation, and `DESIGN.md` is read off it.
+
+Record the reference as an input, not as a mood. In the Overview of `DESIGN.md`, write where it lives, as a path in the repository or a link, and what it decides: arrangement, palette, type, iconography, motion, or a named subset. A reference for particular screens is recorded the same way in `PRODUCT.md` against those screens. What is recorded is what `flow/spec.md` holds the structure to, and leaving it raises the gate there: a reference the agent drifted away from without asking is the most expensive correction there is, because the owner makes it one screen at a time. The nine always in scope still hold over a reference, and any other rule it overrides gets its exception in `STACK.md`, with the reference as the reason. Go through what a picture settles and a description loses, one by one, and write each down with the reference it came from: the ground and whether it is tinted, the ink, the accent and what it is spent on, the weight of titles against body, the icon set and whether a selected icon fills, the back glyph, how a selected item in a bar or a list is marked, what carries depth, and the radii. A token nobody wrote down from the reference gets filled in from the framework's defaults, and the user then spends the next week pointing at the difference.
 
 Ask which appearances the product ships: following the system, which builds both and is the recommendation, or one of them forced. Record the answer in the Overview. It decides what `color-dark-composed` grades, and it is the user's to decide rather than a default either way.
 

@@ -37,6 +37,7 @@ On a phone the modal covers its parent, so there is no visible background to cli
 - Name both exits. Cancel abandons, and the commit is the verb of the task. A lone X leaves the user guessing whether the work was kept.
 - Interactive dismissal is already on, so the line to look for is the one that turns it off: `interactiveDismissDisabled`, a sheet state that refuses to hide. It belongs only where dismissing loses work, and where it appears the question appears with it, which is not the same as trapping.
 - Never open a modal over a modal. The second one is a pushed screen inside the first.
+- A modal whose action leads somewhere else closes itself first, then navigates. A dialog left open while its button pushes a new destination outlives the flow that opened it: back lands on the stale dialog, its action can fire twice, and on some stacks it sits over the new screen. The modal ends the task, and the parent does the navigation.
 
 ## <Rule id="nav-back" severity="p0" description="Back unwinds the stack and nothing else" />
 
@@ -109,7 +110,7 @@ The cutoff is a decision rather than a default. Restore the exact place when the
 
 <Verify rule="nav-depth">Hierarchy runs at most three levels below a top-level destination, or the fourth is recorded in `STACK.md` with its reason, and the app's main job is within two taps of one.</Verify>
 <Verify rule="nav-container">Nothing that is a place in the app is presented modally: a surface a deep link resolves to, or one that appears in the destination list, belongs in a pushed screen or a destination.</Verify>
-<Verify rule="nav-modal">Every modal names both exits, turns interactive dismissal off only where work would be lost and asks there, and no modal opens over another.</Verify>
+<Verify rule="nav-modal">Every modal names both exits, turns interactive dismissal off only where work would be lost and asks there, no modal opens over another, and a modal whose action navigates closes before the navigation runs.</Verify>
 <Verify rule="nav-back">Back pops the surface on top, is not bound to a sideways or forward move, resolves every interception, and does not exit the app from a destination that is not the start destination.</Verify>
 <Verify rule="nav-back-control">No screen hides or replaces the system back control without restoring the interactive pop gesture alongside it.</Verify>
 <Verify rule="nav-location">Every route builder sets a title, and a back control with more than one origin names where it returns to.</Verify>

@@ -64,13 +64,14 @@ The mechanism is `auth-biometric-session`: a device prompt re-authorizes a sessi
 - **What it does not cover.** A gate with no `priv-switcher` cover is read straight off the switcher thumbnail of the screen behind it. Both, or neither is worth having.
 - The way out stays open when the check cannot run. Sign out, deletion and support are reachable with the sensor unavailable or unenrolled, which is `sense-biometric`.
 
-## <Rule id="priv-instrument" description="Nothing the user typed leaves the device in a log, a crash report or an event" />
+## <Rule id="priv-instrument" description="Nothing the user typed, imported or received leaves the device in a log, a crash report or an event" />
 
 Apple requires explicit consent and a clear visual or audible indication when an app records or logs user activity, and names screen recordings and other user inputs in that requirement. Session replay is therefore a store rule before it is a taste question.
 
 - Write the event schema down and name every field. No field carries free text, the contents of a masked value, a token, a precise coordinate, or a full identifier where a stable hash does the job.
 - Analytics and crash SDKs capture screens, taps and the view hierarchy by default, and that default is the whole failure. Put the sensitive views in the SDK's redaction list at the same moment the screen decides to mask them, and confirm it by replaying a captured session rather than by reading the configuration.
-- A crash report carries state with it. Strip request bodies, credential bearing headers and every field the screen masks before it is sent.
+- Typed is the narrow case. A file the person imported, a chat export, a contact card, a message someone sent them and a document opened from another app are their content too, and nobody typed a word of it.
+- A crash report carries state with it. Strip request bodies, credential bearing headers and every field the screen masks before it is sent. The channels nobody thinks of as data are the ones that carry it: an exception message that quotes the line it failed to parse, a model's `toString` printed into a stack trace or a breadcrumb, a logged request or response body. Errors name the field and the position, never the value, and a model printed for debugging prints its type and its id.
 - The debug log ships. A line that prints a response body is a leak the moment the phone is plugged into a laptop, and it is the cheapest of these to remove.
 - Whether any of it crosses to another company is `perm-tracking`. The answer to that prompt does not change what is inside the payload.
 
@@ -103,7 +104,7 @@ Both stores require this and both require it to be accurate, and each asks for t
 <Verify rule="priv-capture-block">Capture blocking is scoped to the screen that needs it, is not relied on as a guarantee, and no screen puts two halves of one secret together.</Verify>
 <Verify rule="priv-capture-detect">Capture detection is used as a notice the user was warned about, never as protection, and the live mirroring signal is read on both platforms and answered by hiding the region rather than by ending the session.</Verify>
 <Verify rule="priv-gate">The gate covers an area rather than the app, re-locks on background and idle, and ships together with the switcher cover.</Verify>
-<Verify rule="priv-instrument">No log, crash report, analytics event or replay session carries typed text, masked values, tokens or full identifiers.</Verify>
+<Verify rule="priv-instrument">No log, crash report, analytics event or replay session carries typed text, imported or received content, masked values, tokens or full identifiers, and no exception message, model `toString` or logged body quotes the content it was handling.</Verify>
 <Verify rule="priv-delete-data">Data deletion exists separately from account deletion, removes the row rather than hiding it, says which copies went, names what is retained and why, and reaches the on device leftovers.</Verify>
 <Verify rule="priv-declared">`STACK.md` records what both stores were told, that record matches the dependency list and the requests in the diff, and the in-app disclosure and the policy route both exist.</Verify>
 

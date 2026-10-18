@@ -71,6 +71,7 @@ Sound follows a touch. Launching, arriving at a screen, a card scrolling into vi
 - Where a soundtrack or an ambient loop is genuinely the point, it starts from a control the user reaches on the first screen, not before it, and stopping it is one step from anywhere it can be heard.
 - Audio that does start by itself owes a control that stops it, or its own volume separate from the system's. On the web that is an accessibility floor rather than a courtesy, and WCAG puts the line at anything running past 3 seconds. Native publishes no number, so take the same 3 seconds as the working one, and it applies to a splash animation and a game menu alike.
 - Whether a media surface may start by itself is `motion-autoplay`, and claiming the speaker at launch is `media-unasked-sound`. The addition here is that outside a player there is no case for it at all.
+- A game whose soundtrack is part of the product is the one case that may start it without a tap, under the conditions in `game-audio`: never over audio the person was already playing, and yielding to it.
 
 ## <Rule id="sound-off-switch" description="One switch, in the place that already owns the sound" />
 
@@ -78,6 +79,7 @@ An app-level control is right only where nothing above it can turn the sound off
 
 - Samples the app plays itself are the case that needs one: a single switch for the app's own sound, sitting beside what it affects, read by every play site (`set-wired`), and persisted across launches.
 - One switch for the whole set, not one per event. A set small enough to defend under `sound-inventory` is small enough to turn off as a unit, and a sound settings screen with six rows is the inventory admitting it is too long.
+- A game carrying both a soundtrack and effects is the exception to one switch: music and effects are two controls, because people keep one and silence the other, which is `game-audio`.
 - A better default is cheaper than a switch (`set-default-first`). Where the sound is decoration rather than a signal, that default is off, and the switch exists for the people who want it back.
 
 <Check>

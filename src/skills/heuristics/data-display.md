@@ -114,6 +114,8 @@ They are three different facts and they must not render as the same glyph. Zero 
 - Unknown says so in a word, and where it matters, why: not synced yet, not recorded, only available on the paid plan. A blank cell is indistinguishable from a rendering failure.
 - Not applicable is the one case where a dash is the right mark, because there is no value to report and never was one. It never shares its glyph with unknown, and where a screen uses a dash for both, unknown is the one that changes.
 - A total or an average over an incomplete set says how many values it covers. Silently treating unknown as zero moves the average, and nothing on screen says it moved.
+- Empty is drawn only from a response that says there is nothing. A missing key, a field of the wrong type or a payload that fails to decode is an error, and a parser that falls back to an empty list on any of them turns a broken contract into "nothing here", which is the confusion `state-error` forbids, made one layer down where no screen can see it.
+- A history of something that was supposed to happen, a dose, a payment, a habit, a scheduled check, is built from the occurrences that were expected and then matched against the records written. Listing only the records makes a missed one vanish instead of showing as missed, and the missed ones are usually what the person opened the history to find.
 - Zero as a whole screen is a different thing again, and `state-empty` rules it.
 
 <Check>
@@ -128,7 +130,7 @@ They are three different facts and they must not render as the same glyph. Zero 
 <Verify rule="data-time-instant">Instants are stored with a zone where the zone is a fact, calendar dates are never zone converted, the clock setting is read on Android, and no formatted string is parsed or asserted against.</Verify>
 <Verify rule="data-units">One measurement system per screen, converted at the display edge without gaining precision, and no figure reaches the screen without its unit on it or over its column.</Verify>
 <Verify rule="data-date-entry">Near dates use the platform picker and far dates a keyboard entry mode, ranges use a range picker, minute intervals divide into sixty, durations never use a time of day picker, the time picker takes the system clock setting, and no calendar grid is hand built.</Verify>
-<Verify rule="data-empty-null-zero">Zero, unknown and not applicable render as three different things with the dash reserved for the last of them, unknown says why where it matters, and aggregates over incomplete sets declare their coverage.</Verify>
+<Verify rule="data-empty-null-zero">Zero, unknown and not applicable render as three different things with the dash reserved for the last of them, unknown says why where it matters, and aggregates over incomplete sets declare their coverage. A missing key or a decode failure reaches the screen as an error, never as empty, and a history of expected events shows the missed ones.</Verify>
 
 <Device>Run `data-precision`, `data-time-relative` and `data-empty-null-zero` against real records rather than the mock ones. Seeded data has no nulls, no zeros, no thirteen digit floats and no timestamps from last year, which is exactly why the screen looks finished.</Device>
 

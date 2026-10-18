@@ -106,6 +106,8 @@ Use the system prompt and nothing else. The system rate limits it, at most 3 per
 - No question in front of it. Asking whether the user is enjoying the app and routing only the happy ones onward is banned outright on Play, which allows nothing to be asked before or while the card is shown, and it costs the app the negative feedback it needed while spending the moment the system prompt was timing for itself.
 - Not on a button. Both platforms say the ask does not follow from something the user tapped, and the prompt may not appear when it is called anyway, which leaves a control that does nothing. A deliberate ask opens the store listing on its write-a-review route instead.
 - Not during a task, not during the first run, and not while something is being fixed. It goes after a moment that went well: `onboard-defer`.
+- The trigger is a count of core tasks the person has finished, read at the moment the latest one shows its result. A launch counter, a session counter or a timer started at launch measures that the app was opened, not that it worked, and on the third cold start it lands on someone who has not done anything yet.
+- Never over another modal. A consent form, a paywall, an ad or a what's new sheet already holds the moment, and `fb-unprompted` allows one per transition.
 - The card is shown as the system draws it, with nothing over it, around it, or removing it once it appears.
 
 <Check>
@@ -121,6 +123,6 @@ Use the system prompt and nothing else. The system rate limits it, at most 3 per
 <Verify rule="fb-survives">Messages and dialogs are held as state with a consumed flag, so one rotation shows them once and not twice.</Verify>
 <Verify rule="fb-blocking-shape">An alert is used only for a yes or no about one irreversible action, blocking surfaces carry at most 3 buttons, do not scroll, name their buttons by result, and never hold a progress bar.</Verify>
 <Verify rule="fb-unprompted">Nothing the user did not ask for blocks or interrupts them, apart from the segment-boundary ad `ads-placement` allows: it waits for a finished task whose result the person has already seen, never shares a transition with another unprompted surface, closes in one tap, and stays closed for a stated period.</Verify>
-<Verify rule="fb-review-prompt">The rating prompt is the system one, is not preceded by a question, is not wired to a button, and is not raised during onboarding.</Verify>
+<Verify rule="fb-review-prompt">The rating prompt is the system one, is not preceded by a question, is not wired to a button, and is not raised during onboarding. It is raised after a moment that went well, by a count of completed core tasks: a launch counter, a session counter or a timer since launch as the trigger is a fail, and so is a prompt raised while a consent form, paywall or ad is on screen.</Verify>
 
 </Check>

@@ -29,6 +29,18 @@ An exception is good when all four are true:
 
 `STACK.md` grants exceptions, and nothing else does. A screen brief records intent and never grants one, and an `n/a` in a brief is a claim review checks. In review, a rule with a recorded exception is `n/a` with that exception as the reason. It is never a low score defended in prose, and never a high score awarded for the quality of the excuse.
 
+Every exception names the rule it excepts by its id, in backticks. A name that is not a rule id excepts nothing, and `npx trunative doctor` reports it, since a rule renamed or never spelled right leaves an exception that looks granted and covers no rule at all.
+
+When the exception covers a part of the code rather than a screen, content the product renders as its output, a template, an artwork drawn with widgets, a game board, write it in the one shape tools can read, a list item with the rule ids, then `in`, then the paths, then the reason after a colon:
+
+```text
+- `type-scale`, `touch-nested` in `lib/templates/**`: the templates are artwork the person exports, not interface they operate.
+```
+
+`**` crosses folders, `*` stays inside one, and a path with no wildcard covers a file or everything under a folder. `npx trunative detect` drops its findings for those rules under those paths and counts what it dropped, so the exception stays visible. Point 3 of the test still applies: a glob covering the whole source tree is an exception for the app, and it fails.
+
+A reference the user supplied can be the reason. When the user asked for a screen to match an image, and the image breaks a rule that is a default, the exception names the reference, where it lives, and which rule it overrides, so the next review reads a decision instead of a violation. The nine always in scope and every P0 rule are not overridden by a reference either: build the look the reference shows with the requirement met.
+
 ## Worked examples
 
 These show the shape. None of them is a licence: the same words on a different screen can fail the test.

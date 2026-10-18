@@ -18,7 +18,8 @@ const USAGE = `trunative, a mobile-only design skill for AI coding agents
 Usage
   npx trunative doctor            check the project before the agent starts
   npx trunative install [--dir]   copy the skill into the agent directories
-  npx trunative spec [paths]      check the screen briefs, exits 1 on a finding
+  npx trunative spec [paths]      check the screen briefs (files or folders),
+                                  exits 1 on a finding
   npx trunative rubric [--only]   print the review checklist, one row per rule
   npx trunative build             resolve the skill once per agent and stack
   npx trunative lint              check the written skill, exits 1 on a finding
@@ -36,6 +37,7 @@ Options
                  prefix ("touch-") or one rule id (repeatable)
   --format <f>   rubric output: markdown (default), json, ids
   --check        accepted on "spec", which only ever checks
+  --coverage     on "spec": list the screen files no brief targets, exits 0
   -v, --version  print the version
   -h, --help     print this help
 
@@ -63,6 +65,7 @@ async function main(): Promise<number> {
 			stack: { type: 'string' },
 			cwd: { type: 'string' },
 			check: { type: 'boolean' },
+			coverage: { type: 'boolean' },
 			force: { type: 'boolean' },
 			version: { type: 'boolean', short: 'v' },
 			help: { type: 'boolean', short: 'h' },
@@ -95,7 +98,7 @@ async function main(): Promise<number> {
 		case 'lint':
 			return lint({ cwd })
 		case 'spec':
-			return spec({ cwd, paths: positionals.slice(1) })
+			return spec({ cwd, paths: positionals.slice(1), coverage: values.coverage })
 		case 'detect':
 			return detect({
 				cwd,
