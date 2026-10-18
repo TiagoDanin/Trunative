@@ -17,6 +17,34 @@ It builds the patterns large consumer apps use to move those numbers. Most of th
 
 Each entry: what to **build**, what it **moves**, what keeps it **shippable**, and the rules it **departs from**.
 
+### Targeting and experiments
+
+The patterns below the first four read who the person is. These four are what they read from.
+
+**Return probability.** A per person estimate of coming back tomorrow, recomputed every day, that decides which intervention each person gets.
+- Build: features from the last weeks of use (sessions per day, how each session started, from a notification or from the icon, mistakes or failures in the last session, a crash since the last open, days since the last purchase), a model trained on whether the person came back the next day, a score stored per person, and the previous score kept beside it so a drop is visible. Below a threshold, the person gets the cheapest intervention that works for their segment: an easier session, a reminder, a streak freeze, a discount.
+- Moves: next day retention, and the cost of keeping each person.
+- Shippable: the signals used are declared in the store privacy answers, and nothing the person typed is a feature.
+- Departs from: `priv-instrument`, when crash and mistake counts become features.
+
+**Ad value per player.** Each player's worth to the ad network estimated, and ad formats and offers allocated by it.
+- Build: a value table by device model and country, kept as remote config; the player's own history (rewarded ads watched to the end, revenue reported per impression); high value players get more rewarded offers and the high paying placements; a player who has finished several rewarded ads gets offers when a high paying ad is loaded; low value players are steered toward the purchase that removes ads.
+- Moves: ad revenue per daily user.
+- Shippable: personalised ads only with the consent state the request reads, and no tracking identifier on iOS without the system permission; device model and country need neither.
+- Departs from: none.
+
+**Offer bandit.** Every offer with several variants, and an algorithm moving traffic toward the one that works.
+- Build: variants as arms (the length of a revive countdown, the size of a reward, the discount, the hour of a reminder), success measured per show (a revive taken, an offer accepted), allocation by a multi-armed bandit, and a small fixed holdout that never sees the offer so its total effect can be measured.
+- Moves: whatever the offer is for, and how fast the best variant is found.
+- Shippable: every arm is one this file would ship on its own.
+- Departs from: none.
+
+**Remote rule set.** Each pattern a named rule the server turns on, targets and tests without a release.
+- Build: one module per pattern with a stable name, a remote config entry per rule holding its switch, its parameters and its targeting (country, device, segment, return probability, days since install), assignment to experiments by the same system, and every analytics event tagged with the rules active when it fired.
+- Moves: the speed of every experiment above.
+- Shippable: the default with no config fetched is the safe one, and the screen is correct before any value arrives.
+- Departs from: none.
+
 ### Paywalls and subscriptions
 
 **Paywall at peak intent.** The paywall right after onboarding, before the first use of the product, when interest is highest.
@@ -49,7 +77,7 @@ Each entry: what to **build**, what it **moves**, what keeps it **shippable**, a
 - Departs from: none.
 
 **Member price framing.** The price the person would pay without the membership, shown beside what they pay with it.
-- Build: "with membership you pay X" on the basket and the checkout, the difference highlighted, and a running total of what the membership saved this month.
+- Build: the member price beside the regular one on every price the person sees (item cards, the basket, the checkout), member only coupons shown in the coupon wallet as locked with a join button on them, "with the membership this order would have cost X" on the tracking screen of a non member's order, and for members a running total of what the membership saved this month.
 - Moves: membership sign ups and their retention.
 - Shippable: both figures computed from the same basket, with every fee the member still pays included in the member figure.
 - Departs from: none.
@@ -89,10 +117,10 @@ Each entry: what to **build**, what it **moves**, what keeps it **shippable**, a
 ### Reputation
 
 **Review at the high point.** The system review prompt timed to the moment the person is happiest.
-- Build: a trigger after a success the product can detect (a level cleared, an order delivered on time, a goal reached), only after several sessions and never after an error.
+- Build: one of two moments. After a success the product can detect (a level cleared, an order delivered on time, a goal reached), or during anticipation, while the person waits for something they want and nothing has gone wrong yet (an order on its way, a match being found, a download nearly done). Only after several sessions, and never after an error.
 - Moves: store rating and ranking.
 - Shippable: the system prompt is called unconditionally at that moment, with no question asked before it, plus a feedback entry that is always available elsewhere.
-- Departs from: none, when built this way under `fb-review-prompt`.
+- Departs from: `fb-review-prompt` for the anticipation moment, which is during a task rather than after it.
 
 **Social proof inside the app.** The store rating, real reviews and friends' activity shown where decisions are made.
 - Build: the live store rating on the paywall, recent real reviews, "N of your contacts use this" with consent.
@@ -131,6 +159,12 @@ Each entry: what to **build**, what it **moves**, what keeps it **shippable**, a
 - Shippable: video starts muted unless the person turned sound on; for accounts that may belong to a minor, autoplay can be switched off, and in the EU the largest platforms owe a feed that is not personalised.
 - Departs from: `list-end`.
 
+**Weekly league.** A small group of players ranked by activity for one week, with promotion and relegation.
+- Build: groups of about thirty people with similar activity, points from the product's core action, the top places promoted to the next league and the bottom places relegated, the week's end held on the server, and notifications when someone overtakes the person or the week is about to close.
+- Moves: weekly actives and actions per active user.
+- Shippable: every name in the group is a real person or is labelled as a computer player, and the notifications are opt in.
+- Departs from: `notify-earns-it`.
+
 **Daily reward.** A reward for coming back, growing with consecutive days.
 - Build: a reward calendar with a bigger prize on day 7, every prize shown in advance, and a reminder when the reward is ready.
 - Moves: daily actives.
@@ -147,6 +181,12 @@ Each entry: what to **build**, what it **moves**, what keeps it **shippable**, a
 - Build: a difficulty input fed by recent results, session length and a churn score; pieces or enemies chosen to give a near win after a run of losses.
 - Moves: session length and day one retention.
 - Shippable: not in games with paid entry or cash prizes, where an outcome tuned by anything but skill is fraud, and not in apps declared for children.
+- Departs from: none.
+
+**Boost, then pressure at the ad.** The run is carried close to the player's record, and the pressure arrives when a rewarded ad is ready.
+- Build: the sequence generator reads the player's record, the current score, and whether a rewarded ad is loaded and how much it pays; below the record it gives pieces that clear lines and build combos, and once the score nears the record with a valuable ad ready it gives a sequence that is hard to place, so the loss lands where the revive offer is worth the most. Each threshold is a parameter of the remote rule set and tuned by the offer bandit.
+- Moves: rewarded ad views per session and ad revenue per daily user.
+- Shippable: the same lines as difficulty that adapts, plus the revive offer as built under revive for an ad.
 - Departs from: none.
 
 **Revive for an ad.** At the moment of losing, the offer to continue from where the player was.
