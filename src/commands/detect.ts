@@ -3,6 +3,7 @@ import { extname, join, relative, sep } from 'node:path'
 
 import { DETECTORS } from '../detect/rules.js'
 import { type Finding } from '../detect/types.js'
+import { matchesGlob, pathExceptions, readStack } from '../exceptions.js'
 
 export interface DetectOptions {
 	cwd: string
@@ -95,6 +96,24 @@ export async function detect(options: DetectOptions): Promise<number> {
 		}
 	}
 
+	// A path-scoped exception in STACK.md takes its rules off those paths. What
+	// it removed is still counted, so an exception is never mistaken for silence.
+	const stack = await readStack(cwd)
+	const scoped = stack ? pathExceptions(stack.text) : []
+	const excepted: Finding[] = []
+	const kept = findings.filter((found) => {
+		const covered = scoped.some(
+			(exception) =>
+				exception.rules.includes(found.rule) && exception.globs.some((glob) => matchesGlob(found.file, glob)),
+		)
+		if (covered) {
+			excepted.push(found)
+		}
+		return !covered
+	})
+	findings.length = 0
+	findings.push(...kept)
+
 	findings.sort((a, b) => (a.file === b.file ? a.line - b.line : a.file < b.file ? -1 : 1))
 
 	if (options.format === 'json') {
@@ -104,6 +123,7 @@ export async function detect(options: DetectOptions): Promise<number> {
 					scanned: files.length,
 					rules: detectors.map((detector) => detector.rule),
 					findings,
+					excepted: excepted.length,
 				},
 				undefined,
 				'\t',
@@ -119,6 +139,9 @@ export async function detect(options: DetectOptions): Promise<number> {
 	console.log(
 		`\n${findings.length} finding(s) in ${files.length} file(s), from ${detectors.length} detector(s).`,
 	)
+	if (excepted.length > 0) {
+		console.log(`${excepted.length} more excepted by a path-scoped exception in ${stack!.file}.`)
+	}
 	console.log('Source evidence only: a finding is a place to look, and silence is not a pass.')
 	return findings.length > 0 ? 2 : 0
 }

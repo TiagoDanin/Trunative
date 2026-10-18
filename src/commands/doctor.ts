@@ -3,6 +3,8 @@ import { join, relative } from 'node:path'
 
 import { type Target } from '../compile.js'
 import { readSources, resolve } from '../emit.js'
+import { readStack } from '../exceptions.js'
+import { readHeuristics } from '../heuristics.js'
 import { compareVersions, readLock } from '../lock.js'
 import { AGENT_ROOTS, briefCandidates, fullName, packagedSkillDir } from '../paths.js'
 import { hashFiles, hashSkill, readSkillName } from '../skill.js'
@@ -144,13 +146,48 @@ async function checkFullCopy(cwd: string): Promise<Check> {
 	}
 }
 
+/**
+ * Every rule id STACK.md cites, against the rules this package ships. An
+ * exception naming an id that does not exist grants nothing, and the rule it
+ * meant is still being graded as if nothing had been written. A backticked
+ * token counts as a citation when it starts with a prefix some rule uses.
+ */
+export async function checkStackCitations(cwd: string): Promise<Check | undefined> {
+	const stack = await readStack(cwd)
+	if (!stack) {
+		return undefined
+	}
+
+	const ids = (await readHeuristics(packagedSkillDir)).flatMap((heuristic) => heuristic.rules.map((rule) => rule.id))
+	const known = new Set(ids)
+	const prefixes = new Set(ids.map((id) => id.split('-')[0]!))
+	const unknown = [
+		...new Set(
+			[...stack.text.matchAll(/`([a-z0-9]+(?:-[a-z0-9]+)+)`/g)]
+				.map((match) => match[1]!)
+				.filter((id) => prefixes.has(id.split('-')[0]!) && !known.has(id)),
+		),
+	]
+
+	if (unknown.length === 0) {
+		return { name: 'stack citations', ok: true, detail: `every rule id in ${stack.file} exists` }
+	}
+	return {
+		name: 'stack citations',
+		ok: false,
+		detail: `${unknown.join(', ')} in ${stack.file} ${unknown.length === 1 ? 'is not a rule id' : 'are not rule ids'}, so the exception grants nothing: cite the id of the rule it means`,
+	}
+}
+
 export async function doctor(options: DoctorOptions): Promise<number> {
 	const { cwd, version } = options
 
+	const citations = await checkStackCitations(cwd)
 	const checks: Check[] = [
 		await checkBrief(cwd, 'PRODUCT.md', 'product brief'),
 		await checkBrief(cwd, 'DESIGN.md', 'design brief'),
 		await checkBrief(cwd, 'STACK.md', 'stack brief'),
+		...(citations ? [citations] : []),
 		...(await checkSkill(cwd, version)),
 		await checkFullCopy(cwd),
 	]

@@ -1,12 +1,15 @@
 import assert from 'node:assert/strict'
+import { execFileSync } from 'node:child_process'
 import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
 
-import { doctor } from '../src/commands/doctor.js'
+import { detect } from '../src/commands/detect.js'
+import { checkStackCitations, doctor } from '../src/commands/doctor.js'
 import { install } from '../src/commands/install.js'
-import { spec } from '../src/commands/spec.js'
+import { spec, uncovered } from '../src/commands/spec.js'
+import { matchesGlob } from '../src/exceptions.js'
 import { AGENTS, variantStacks } from '../src/compile.js'
 import { readSources, resolve } from '../src/emit.js'
 import { readGraph } from '../src/graph.js'
@@ -208,6 +211,169 @@ test('a brief needs a wireframe carrying the explore record, every pair over the
 	assert.equal(await checks(BRIEF, WIREFRAME.replace(/<!-- explore[\s\S]*?-->\n/, '')), 1)
 	assert.equal(await checks(BRIEF, WIREFRAME.replace('B/C 3', 'B/C 2')), 1)
 	assert.equal(await checks(BRIEF, WIREFRAME.replace(/^Lost .*\n/m, '')), 1)
+})
+
+/** A project from the passing brief, changed by setup, checked by run, then removed. */
+async function inProject<T>(
+	setup: (cwd: string) => Promise<void>,
+	run: (cwd: string) => Promise<T>,
+	brief = BRIEF,
+): Promise<T> {
+	const cwd = await project(brief)
+	try {
+		await setup(cwd)
+		return await run(cwd)
+	} finally {
+		await rm(cwd, { recursive: true, force: true })
+	}
+}
+
+const nothing = async (): Promise<void> => {}
+
+test('a folder argument stands for the briefs inside it', async () => {
+	await inProject(nothing, async (cwd) => {
+		assert.equal(await spec({ cwd, paths: ['.trunative/screens'] }), 0)
+		assert.equal(await spec({ cwd, paths: ['.trunative/screens/'] }), 0)
+	})
+	await inProject(
+		nothing,
+		async (cwd) => assert.equal(await spec({ cwd, paths: ['.trunative/screens'] }), 1),
+		BRIEF.replace('"Set alert"', 'Set alert'),
+	)
+})
+
+test('coverage lists the screen files no brief targets, and never fails', async () => {
+	await inProject(
+		async (cwd) => {
+			await mkdir(join(cwd, 'lib', 'settings'), { recursive: true })
+			await mkdir(join(cwd, 'test'), { recursive: true })
+			await writeFile(join(cwd, 'lib', 'settings', 'settings_screen.dart'), '')
+			await writeFile(join(cwd, 'lib', 'settings', 'settings_screen.g.dart'), '')
+			await writeFile(join(cwd, 'lib', 'row_tile.dart'), '')
+			await writeFile(join(cwd, 'test', 'home_screen.dart'), '')
+		},
+		async (cwd) => {
+			const briefs = ['.trunative/screens/departures.md']
+			assert.deepEqual(await uncovered(cwd, briefs), ['lib/settings/settings_screen.dart'])
+			assert.equal(await spec({ cwd, paths: [], coverage: true }), 0)
+
+			await writeFile(
+				join(cwd, '.trunative', 'screens', 'settings.md'),
+				BRIEF.replace('lib/screen.dart', 'lib/settings/settings_screen.dart'),
+			)
+			assert.deepEqual(await uncovered(cwd, [...briefs, '.trunative/screens/settings.md']), [])
+		},
+	)
+})
+
+function git(cwd: string, args: string[], date?: string): void {
+	execFileSync('git', ['-c', 'user.name=test', '-c', 'user.email=test@example.com', '-c', 'commit.gpgsign=false', ...args], {
+		cwd,
+		stdio: 'ignore',
+		env: date ? { ...process.env, GIT_AUTHOR_DATE: date, GIT_COMMITTER_DATE: date } : process.env,
+	})
+}
+
+test('a target committed after its brief is reported stale', async () => {
+	await inProject(
+		async (cwd) => {
+			git(cwd, ['init', '-q'])
+			git(cwd, ['add', '.'])
+			git(cwd, ['commit', '-q', '--no-verify', '-m', 'brief'], '2026-01-01T00:00:00Z')
+		},
+		async (cwd) => {
+			assert.equal(await spec({ cwd, paths: [] }), 0)
+			await writeFile(join(cwd, 'lib', 'screen.dart'), '// changed\n')
+			git(cwd, ['commit', '-q', '--no-verify', '-am', 'screen'], '2026-01-02T00:00:00Z')
+			assert.equal(await spec({ cwd, paths: [] }), 1)
+		},
+	)
+})
+
+test('an import that reaches an extra file the brief shut reopens it', async () => {
+	// The brief auto-excludes camera.
+	await inProject(
+		(cwd) => writeFile(join(cwd, 'lib', 'screen.dart'), "import 'package:camera/camera.dart';\n"),
+		async (cwd) => assert.equal(await spec({ cwd, paths: [] }), 1),
+	)
+	// One level down, through the widget the screen delegates to.
+	await inProject(
+		async (cwd) => {
+			await mkdir(join(cwd, 'lib', 'widgets'), { recursive: true })
+			await writeFile(join(cwd, 'lib', 'screen.dart'), "import 'widgets/scanner.dart';\n")
+			await writeFile(join(cwd, 'lib', 'widgets', 'scanner.dart'), "import 'package:mobile_scanner/mobile_scanner.dart';\n")
+		},
+		async (cwd) => assert.equal(await spec({ cwd, paths: [] }), 1),
+	)
+	// A capability the brief never shut is no finding.
+	await inProject(
+		(cwd) => writeFile(join(cwd, 'lib', 'screen.dart'), "import 'package:share_plus/share_plus.dart';\n"),
+		async (cwd) => assert.equal(await spec({ cwd, paths: [] }), 0),
+	)
+})
+
+test('a brief that shuts localisation fails once the project ships two locales', async () => {
+	const brief = BRIEF.replace('auto_excluded: [chat, camera]', 'auto_excluded: [chat, camera, l10n]')
+	const translations = async (cwd: string, names: string[]): Promise<void> => {
+		await mkdir(join(cwd, 'assets', 'translations'), { recursive: true })
+		for (const name of names) {
+			await writeFile(join(cwd, 'assets', 'translations', name), '{}')
+		}
+	}
+	await inProject(
+		(cwd) => translations(cwd, ['en.json']),
+		async (cwd) => assert.equal(await spec({ cwd, paths: [] }), 0),
+		brief,
+	)
+	await inProject(
+		(cwd) => translations(cwd, ['en.json', 'pt-BR.json']),
+		async (cwd) => assert.equal(await spec({ cwd, paths: [] }), 1),
+		brief,
+	)
+})
+
+test('doctor fails a STACK.md that cites a rule id that does not exist', async () => {
+	const cwd = await mkdtemp(join(tmpdir(), 'trunative-'))
+	try {
+		await mkdir(join(cwd, '.trunative'), { recursive: true })
+		const stack = join(cwd, '.trunative', 'STACK.md')
+		await writeFile(stack, 'Stack: flutter\n\n## Accepted exceptions\n\n- `type-scaling` capped on the board.\n')
+		assert.equal((await checkStackCitations(cwd))?.ok, true)
+
+		await writeFile(stack, 'Stack: flutter\n\n## Accepted exceptions\n\n- `l10n-hardcoded` on the debug screen.\n')
+		const check = await checkStackCitations(cwd)
+		assert.equal(check?.ok, false)
+		assert.match(check!.detail, /l10n-hardcoded/)
+	} finally {
+		await rm(cwd, { recursive: true, force: true })
+	}
+})
+
+test('detect leaves out what a path-scoped exception excepts, and nothing else', async () => {
+	assert.ok(matchesGlob('lib/templates/cover.dart', 'lib/templates/**'))
+	assert.ok(matchesGlob('lib/templates/cover.dart', 'lib/templates'))
+	assert.ok(matchesGlob('lib/b.dart', 'lib/**/b.dart'))
+	assert.ok(matchesGlob('lib/a/c/b.dart', 'lib/**/b.dart'))
+	assert.ok(!matchesGlob('lib/screens/home.dart', 'lib/templates/**'))
+	assert.ok(!matchesGlob('lib/templates/a/cover.dart', 'lib/templates/*.dart'))
+
+	const cwd = await mkdtemp(join(tmpdir(), 'trunative-'))
+	try {
+		await mkdir(join(cwd, 'lib', 'templates'), { recursive: true })
+		await writeFile(join(cwd, 'lib', 'templates', 'cover.dart'), 'final style = TextStyle(fontSize: 14);\n')
+		assert.equal(await detect({ cwd, only: ['type-scale'] }), 2)
+
+		await writeFile(
+			join(cwd, 'STACK.md'),
+			'Stack: flutter\n\n- `type-scale` in `lib/templates/**`: the covers are artwork, the chrome around them scales.\n',
+		)
+		assert.equal(await detect({ cwd, only: ['type-scale'] }), 0)
+
+		await writeFile(join(cwd, 'lib', 'home.dart'), 'final style = TextStyle(fontSize: 14);\n')
+		assert.equal(await detect({ cwd, only: ['type-scale'] }), 2)
+	} finally {
+		await rm(cwd, { recursive: true, force: true })
+	}
 })
 
 test('install refuses to replace a copy a newer trunative wrote', async () => {
