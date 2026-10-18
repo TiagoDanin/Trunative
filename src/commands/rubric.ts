@@ -84,8 +84,8 @@ function markdown(
 		'Score each rule 1 to 5, or answer pass or fail where the row asks for that,',
 		'or mark it n/a with a reason, or unrun. A row marked [device] may not be',
 		'graded from the source alone. A failure on a p0 or a p1 row blocks the screen',
-		'whatever the percentage is. The anchors, the evidence values and what happens',
-		'to the denominator are in `flow/review.md`.',
+		'whatever the percentage is. The anchors, the evidence values, the weight each',
+		'severity carries and the denominator are in `flow/review.md`.',
 	]
 
 	if (missing.length > 0) {

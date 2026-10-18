@@ -100,7 +100,7 @@ The agent then:
 4. **Applies the design principles** below while writing the code.
 5. **Audits the result** against the checklist and reports what it could not satisfy, instead of silently shipping it.
 
-That audit scores every rule that applies from 1 to 5, each level with a test the agent has to be able to point at, or pass or fail where a rule is not a matter of degree. A 1, a 2 or a fail sends the agent back to fix it before the work is handed over. Rules carry a severity from P0 to P3, and a failure on a P0 or P1 rule blocks the screen whatever the overall percentage is: 92% with a control nobody can name is not a 92% screen.
+That audit scores every rule that applies from 1 to 5, each level with a test the agent has to be able to point at, or pass or fail where a rule is not a matter of degree. A 1, a 2 or a fail sends the agent back to fix it before the work is handed over. Rules carry a severity from P0 to P3, and a failure on a P0 or P1 rule blocks the screen whatever the overall percentage is: 92% with a control nobody can name is not a 92% screen. The percentage itself weighs each rule by its severity, a P0 four times a P3, so a pile of polished details cannot carry the number past a rule about exclusion.
 
 The same review runs heavier on a screen that already exists, asked for by name:
 

@@ -26,7 +26,7 @@ Some rules are not a matter of degree. A control has an accessible name or it do
 - **`fail`**: it is not.
 - **`n/a`** and **`unrun`**, as below.
 
-A `pass` counts as 5 out of 5 and a `fail` as 1 out of 5 in the total, so the percentage still reads across runs.
+A `pass` counts as a 5 and a `fail` as a 1 in the total, each times the rule's weight from section 4, so the percentage still reads across runs.
 
 A **violation** is a 1, a 2 or a `fail`. The build loop continues while there is one. Nothing at 3 or above blocks a build, which does not make it finished.
 
@@ -40,6 +40,8 @@ Every row carries a severity, from the rule's own heading:
 - **P3**: polish.
 
 The overall score cannot outvote a severe failure. When any P0 or P1 rule is a violation, the status of the screen is `BLOCKED`, and it is printed in the header beside the percentage, never in place of it: `92%, BLOCKED by a11y-name` is a legitimate header, and it means what it says. Ninety-nine rules at 5 and one P0 at 1 is a screen somebody cannot use. The band in section 4 is not printed for a blocked screen, because "Nothing structural left" above a P0 failure is false.
+
+Severity does a second job, and it is a different one: it weighs each rule in the total, in section 4. Blocking says whether the screen may ship at all. The weight says how much each rule moves the number of a screen that does not block. Neither stands in for the other.
 
 Two answers that are not scores. Not applicable is written `n/a` and never 0, because a zero in a table of scores reads as the worst one and ends up in somebody's sum:
 
@@ -220,9 +222,22 @@ Then reconcile: the judged score stands unless a measurement contradicts it, and
 
 ## 4. The numbers
 
-The maximum is 5 times the number of rules actually scored from 1 to 5. Nothing else is in it.
+Every scored rule counts with the weight of its severity, so the total says how much of what matters held, not how many rules did:
 
-- The denominator is never the size of the scope. A scope of 74 rules with 9 `n/a` and 5 `unrun` scores out of 300, not out of 440.
+| Severity | Weight |
+|---|---|
+| P0 | 4 |
+| P1 | 3 |
+| P2 | 2 |
+| P3 | 1 |
+
+A rule's points are its score times its weight. The total is the sum of the points, and the maximum is 5 times the sum of the weights of the rules actually scored, from 1 to 5 or as `pass` and `fail`. Nothing else is in it.
+
+Unweighted, a scope that is mostly P2 and P3 lets polish carry the number: forty small rules at 5 hide two P1 rules at 3 the same way an average hides one rule at 1. The weights make a 3 on a rule about exclusion cost three times what a 3 on a rule about polish costs.
+
+- The denominator is never the size of the scope. A scope of 74 rules with 9 `n/a` and 5 `unrun` leaves 60 scored. At 6 P1, 50 P2 and 4 P3, their weights add to 6 × 3 + 50 × 2 + 4 × 1 = 122, so the maximum is 610: not 5 times 74, and not 5 times 60.
+- A weight comes from the severity on the rule's own heading, as the checklist prints it, and a run never assigns one. A rule whose weight looks wrong has the wrong severity, and that is fixed in `heuristics/`, where every later run picks it up.
+- A carried grade in a follow-up run keeps its rule's current weight, so a severity changed since the full run moves the carried points too, and the trend line says the skill hash moved.
 - Report coverage beside the total: scored, `n/a` and `unrun`, out of the scope. A run that skipped the device work does not come out ahead of one that did it.
 - Record which ids were `n/a` and which were `unrun`. A later comparison against a run that hid them is a comparison of two different measurements.
 
@@ -243,7 +258,7 @@ Bands read off the percentage, since the maximum moves with the scope:
 The report goes in the response, in this order:
 
 1. **Header.** What was reviewed, the scope, the status first, then the violations counted by severity, the total, the percentage, the coverage, and the band when the status is `CLEAN`. `BLOCKED` names the rule ids that block.
-2. **The table.** Columns: rule, severity, score or pass and fail, evidence, finding. Print every rule at 4 or below and every one of the always-in-scope nine, then one line per file for the rest: file, rules scored, average, lowest.
+2. **The table.** Columns: rule, severity, score or pass and fail, evidence, finding. Print every rule at 4 or below and every one of the always-in-scope nine, then one line per file for the rest: file, rules scored, weighted average, lowest.
 3. **Violations.** Every rule at 1, 2 or `fail`, ordered by severity and then by what it costs the person using the app, and never by how easy it is to fix. Each names the rule id, the file and line, what the user meets, and the fix. Say plainly when the screen is unusable one-handed, loses work on interruption, or has no failure state, and do not bury it under smaller findings.
 4. **Spec drift.** Only when the screen has a brief, and unscored. Start with `npx trunative spec` on that brief, whose findings are drift already written down, then read the brief's Hierarchy, Interactions and Navigation against the code, and the screens it names against the briefs that exist. Each entry quotes what the brief says and what the code does: a hierarchy in a different order, a `primary_action` whose label is not the one on screen, a state declared and not implemented, a scope the brief left out. Where the divergence also breaks a rule, name the id that already scores it, such as `state-offline` for a declared state that is not there, and do not score it twice. Drift is a fact about two files disagreeing, and the moment it carries a number this file has two graders in it.
 5. **What moved.** Scores a measurement changed, with both numbers.
@@ -271,8 +286,8 @@ mode: full
 scope: [touch, forms, states, layout, typography, colors, motion, accessibility]
 status: VIOLATIONS
 violations: [p0: 0, p1: 0, p2: 2, p3: 1]
-total: 236
-max: 300
+total: 482
+max: 610
 percent: 79
 scored: 60
 na: [pay-restore: no purchases on this screen, ads-report: no Android build]
@@ -284,9 +299,9 @@ unrun: [a11y-announce, type-scaling]
 
 Then read the newest five archived runs with the same slug and print one line:
 
-> Trend for `lib-screens-checkout-screen-dart`: 61%, 74%, 79% (236/300 this run).
+> Trend for `lib-screens-checkout-screen-dart`: 61%, 74%, 79% (482/610 this run).
 
-The comparison is only honest when the measurement is the same, so name any of these that changed since the previous run, on the same line: the skill hash moved, so some of the difference is rules rather than the screen; the scope changed, and which files joined or left; or the `n/a` set or the `unrun` set changed, since a rule that was excused or skipped last time and scored now moved the total on its own. The scope may grow between runs and may not silently shrink: a later run covering fewer files is not a better run.
+The comparison is only honest when the measurement is the same, so name any of these that changed since the previous run, on the same line: the skill hash moved, so some of the difference is rules, or the severities that weigh them, rather than the screen; the scope changed, and which files joined or left; or the `n/a` set or the `unrun` set changed, since a rule that was excused or skipped last time and scored now moved the total on its own. The scope may grow between runs and may not silently shrink: a later run covering fewer files is not a better run.
 
 First run: there is nothing to compare against. Say so in one line, name it the baseline, and name the file the next run will read.
 
