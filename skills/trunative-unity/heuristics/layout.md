@@ -1,0 +1,158 @@
+# Layout
+
+A phone hands the app one narrow column, and the operating system takes part of it back before the first widget renders. Bars at both ends, a cutout, a gesture strip, a keyboard that arrives unannounced, and text at whatever size the reader chose. Layout here is the composition of what is left over, and the part the system reserves is a measurement read at runtime, not a margin guessed at the end.
+
+Values already written into `DESIGN.md`, the spacing scale and the screen margin among them, are settled. This file is how a screen is built inside them, and what to use for the ones the brief left unset.
+
+Neighbouring rules own the parts that are not geometry: thumb zones are `touch-reach`, the system gesture strips are `touch-gestures`, the keyboard is `touch-keyboard`, and long collections belong to `heuristics/lists.md`.
+
+Rules in this file, in order: `layout-insets`, `layout-grid`, `layout-grouping`, `layout-shape`, `layout-column`, `layout-width`, `layout-chrome`, `layout-overlays`, `layout-axis`, `layout-fold`, `layout-short`, `layout-orientation`.
+
+## `layout-insets` The safe area is geometry, not padding added at the end [P1]
+
+Read the inset at runtime and lay the screen out inside it. A constant copied off one device (34, 44, 48) is right on that phone and wrong on the next, and it is wrong on the same phone the moment a call banner or an expanded status bar changes the number.
+
+Apply `Screen.safeArea` to a `RectTransform` at the root of every `Canvas`, setting `anchorMin` and `anchorMax` from the rect divided by `Screen.width` and `Screen.height`, re-read whenever it changes, and put the HUD and every control inside it, since a `CanvasScaler` alone scales into the cutout. Whether the app draws into the cutout at all is the Render Outside Safe Area option in the Android Player Settings. The engine sets no colour or icon brightness for the system bars: either hide them for the whole session in the Player Settings and keep the cutout inset, or set both bars per screen through a call to the Android window from a plugin in `Assets/Plugins/Android`.
+
+Both system bars, not one. The status bar and the navigation bar each have a colour and an icon brightness, set per screen against the background that screen draws under them. Setting only the status bar leaves the navigation bar on its default, which is a strip of the wrong colour or icons that disappear into the ground, and a screen with its own dark or light ground has to say so again for both.
+
+On a current Android target there is no opt out, since the manifest flag that used to disable edge to edge is ignored, so the inset is a runtime measurement on every build. Nor is it one number: a three-button device reports a taller bottom inset than the same phone using gestures. What a pinned control does when that measurement is skipped is `touch-gestures`.
+
+A pinned bar carries the inset inside itself: its own height for the controls, plus the bottom inset underneath them, in one component. Padding the bar from outside leaves a strip of the wrong background color under it, and a sheet or a dialog opened over the screen owes the same treatment, since it becomes the bottom of the screen while it is up. A sheet that grows to full height owes the top inset as well: its content scrolls under the status bar otherwise.
+
+A screen that hides the system bars, a player, a game, a camera, still keeps the cutout inset for anything read or tapped, and it restores the bars when the person leaves it. Hidden bars that stay hidden on the next screen are a defect on a screen that never asked for them.
+
+Four edges, not one. The top holds the status bar and the cutout or Dynamic Island. The bottom holds the home indicator or the navigation bar. The side insets are zero in portrait and stop being zero once the phone is turned, where they are applied to both sides and the cutout is on one of them. Scrolling content may pass under any of them and often should, because the content ending in a hard line above the bar wastes the screen. Anything read or tapped may not, and that includes the last row of a list, the buttons inside a sheet, and a snackbar.
+
+## `layout-grid` One spacing scale, and every gap sits on it
+
+Every value is a multiple of 4, and a multiple of 8 once it is above 16: 4, 8, 12, 16, then 24, 32, 40, 48, 56, 64. A 22 or a 35 landing between those steps is not a fine adjustment, it is a value that came from nudging one component until it looked right, and the next person has nothing to reuse.
+
+Where `DESIGN.md` leaves the margin token unset, the default is 16 on both platforms. It applies to the leading edge of the text column and it holds across screens, because two screens whose text starts at different distances from the edge read as two products. Full-bleed content is exempt by definition: a hero image, a map, a media player and a carousel that runs off the edge are meant to reach it. So are the platform list containers, which carry their own row insets (SwiftUI `Form` and `List`, Material `ListItem`) and are not corrected back to 16 by hand.
+
+Spacing carries more weight on a phone than anywhere else: in a column around 360 wide it is the only grouping tool available, and there is no spare whitespace to absorb an odd value the way a wide layout does.
+
+This is countable. List the distinct vertical gaps on the screen. Four or five is a rhythm. Eleven of them is a screen assembled one component at a time.
+
+## `layout-grouping` Space groups content, a border only draws around it
+
+Set proximity first and reach for a container only when space alone cannot carry the relationship. Related rows tighten, unrelated blocks separate, and a heading takes more space above it than below so it belongs to what follows it.
+
+Every container costs width the phone does not have. A card padded 16 inside a screen margin of 16 pushes its text 32 in from each edge, which on a 320 wide device spends a fifth of the line on nothing. Nested cards, a border plus a divider plus a shadow around the same group, and a card wrapped around the entire screen are all the same move: structure that space was supposed to express.
+
+Density follows the situation in `PRODUCT.md`: an app used while walking wants fewer things per screen and larger intervals, a tool someone works in seated can hold more. Fix it as numbers rather than as an intention. One row height and one section gap per kind of screen, written once and identical everywhere that kind appears, so a screen that is generous at the top and cramped at the bottom shows up as two different gaps instead of as a feeling.
+
+## `layout-shape` Radius, edge and crop are one decision
+
+Corner radius is identity, the same way the palette and the typeface are. `DESIGN.md` carries it as `rounded` and in its Shapes section, and a component that picks its own number is a component that voted on the brand.
+
+A screen where a card, a photograph, a chip, a field and a button are all rounded to the same number has no shape language. It has one habit applied nine times, which is the reason so many generated screens read as the same app.
+
+- The radii come from the shape language: a small one for controls, a larger one for surfaces, a full round for what is meant to read as a pill or a circle. Three values on a screen is a system, nine is a reflex.
+- A square edge is a choice available to every surface. Photographs, thumbnails, tables and anything that reads as printed are frequently better with the edge the medium gives them, and a hairline rule does work that a rounded card cannot.
+- The radius of a nested surface is smaller than the one containing it, by the padding between them, or the two curves fight along the same corner.
+- Elevation is part of the same decision. Shadow, outline and fill are three ways to lift a surface, and a screen that reaches for all three at once has not decided how depth works.
+
+## `layout-column` One column, one scrolling axis
+
+There is no second column to escape into, and that changes what happens when something does not fit. Two halves side by side on a 320 wide screen leave each about 140 after the margins and the gap, and at the largest text step the same pair becomes two words per line. Whatever wants a second column is a row that should stack, a table that should be a list, or content that deserves its own screen. The exception is a pair of short fields whose format fixes their length in advance, expiry beside CVC being the one everybody ships: those fit at 140 and go on fitting at the largest step. Two fields on one line is otherwise the version of this that ships most often, and `form-column` owns it.
+
+**Default.** One column of content.
+**Exception.** Items that are pictures first and text second, where a second column shows more of the thing being chosen: a photo library, a wall of covers, a grid of swatches. Also an uneven split where one region is a persistent ground and the other acts on it, which is a composition and not a second column of reading. The test for both is that no item's text has to be read across the gap to make sense.
+**Reason required.** What the person is scanning for, and that every tile still holds its label on the narrowest device at the largest text step, which is `layout-width` and `type-scaling` and not an assumption.
+
+The screen scrolls in one place and along one axis. Put a vertical scroll inside another vertical scroll and the drag has two possible owners, so the inner one, holding the content the finger was aiming at, sits still while the page moves instead. Nesting on the same axis is only ever safe under the platform contract that `scroll-nest` owns. A horizontal strip inside a vertical page needs none of that, precisely because the axes differ. Virtualising what is inside the scroll is `list-virtualise`.
+
+## `layout-width` The narrow device is the one that breaks
+
+Design against a range. Supported iPhones run about 375 to 440pt wide, the narrow end being installed base rather than anything still on sale, and Android compact devices report from about 320dp upward. The small end is where a layout fails first, and it is on far fewer desks than it is in hands.
+
+- Nothing holding content carries a fixed width. Let it fill and constrain it with a maximum, so the same row survives both ends of the range.
+- A row of three fixed cards, a horizontal group of buttons and a label paired with a value are the three that overflow first. Check them at 320dp before anything else.
+- A fixed height is the same defect turned ninety degrees. A container sized to hold two lines holds one and a half as soon as the string is translated or the text scale moves, so heights follow content and only maximums are pinned.
+- Width and text size fail together. Recheck the narrow device at the largest accessibility step, which is `type-scaling`.
+
+## `layout-chrome` Anything pinned covers the content underneath it
+
+A bar sitting in the platform's own bar slot is already handled: a Compose `Scaffold` reports the padding its top and bottom bars take, for the content to apply, and a SwiftUI `TabView` or `safeAreaInset(edge:)` extends the scroll view's safe area itself. Use the slot and there is no number to invent.
+
+Current iOS draws the tab bar floating and translucent over the content, with search as a separate button at its trailing end, an accessory slot above it for a player or a status, and a bar that can shrink while the content scrolls. All of it comes from the system tab view and its modifiers, which also report the bar's height to the scroll. A floating pill rebuilt by hand gets none of that: rows sit readable under it at rest because nothing reported its height, the player lands under it or across it, and it keeps its full size while the person reads. Which modifier does which part, per stack, is in `references/navigation-containers.md`.
+
+Hand-placed chrome is the case that bites: an overlay dropped into a `Box` or a `ZStack`, a floating button, a mini player, a standing banner. It sits on top of the scroll rather than shortening it, so the last row lives underneath and can be read only by overscrolling. Nothing in the code looks wrong, and the screen looks correct until the data is long enough to reach the bottom, which is why it survives review so often. The floating button is `button-fab` and the bottom of a collection is `list-end`.
+
+The padding is derived, not typed. Measure the bar, add the inset, and let the scroll read that value, because a hardcoded 80 goes stale the first time the bar gains a second line or the device has a taller gesture area.
+
+Chrome is rationed as well as cleared. Besides the system bars, a phone screen carries at most two persistent bars, and each one earns its height by doing something on every screen it appears on. A third is the sign that navigation, a banner and a player are all claiming the same edge, and the one to cut is the one that does nothing on the screen currently in front of the user.
+
+## `layout-overlays` A transient surface stacks above the pinned ones
+
+A snackbar, a toast or an undo bar arrives over a screen that already has a bottom bar, a floating button, and an inset under both. The stacking order is the whole rule: the transient surface sits above every pinned bar and above the bottom inset, and it pushes the floating button up rather than covering it.
+
+Take it from the platform's host, because that is where the displacement is already written: the `snackbarHost` slot of a `Scaffold`, or the equivalent presentation the stack provides. One hand-placed in a `Box` renders under the bottom bar or over the button, and that is the version that ships.
+
+One at a time, and never behind something else. Two messages stacked, a toast drawn behind an open sheet, and a snackbar left under a keyboard that has just opened are the same defect: a surface positioned by hand into a stack whose heights it does not know.
+
+A modal follows the same order with a scrim under it. The scrim sits on the topmost layer, above every nested canvas, platform view, map, video surface and overlay on the screen, so nothing behind it stays bright or takes a tap. A scrim drawn inside one of those layers dims only that layer, and a native view embedded in the screen usually draws over anything the framework puts on top of it unless the modal goes through the root overlay. The panel itself is opaque: content showing through it competes with the text it holds.
+
+## `layout-axis` Centred means on the screen's centre line, not in the space left over
+
+A title, a selector or a figure placed between a group on the leading side and a group on the trailing side is centred on the screen, whatever the two groups hold. Put it in the space the groups leave and it sits wherever their difference in width pushes it: one icon on the left and three on the right drags it left, and it moves again the moment a group gains or loses an item. The eye reads the centre of the screen, and an element slightly off it reads as a mistake rather than as a choice.
+
+The platforms already do it this way. The iOS navigation bar centres its title on the bar, and Material's centre-aligned top app bar does the same, so a stock bar is correct and a hand-built row is where it breaks. Give both flanks the width of the wider one, or lay the centred element over the full width with the groups on either side of it, and let it truncate before it moves off the axis.
+
+## `layout-fold` The first screenful answers what this is and what to do
+
+At the narrow end, at default text size, with nothing scrolled, three things are visible: what the screen is, the beginning of its real content, and the primary action. That action has two acceptable places and no third. Either it sits inside the first screenful, or it lives in a bar pinned above the bottom inset and is visible at rest, before anything has been scrolled.
+
+Scrolling costs more here than the wheel costs on a desk, because it takes the hand that is holding the phone, so the first screenful is the one thing the user gets without paying for it. A header that spends it on promotion or decoration, an illustration, a stack of marketing cards, a brand banner, has pushed the first row of real content past the edge for nothing. Where the media is the subject, a photo detail screen, a listing, an artist page, a full-bleed onboarding screen, the hero is both the subject and the start of the content, and the rule is already met.
+
+Where content continues below, saying so is `scroll-affordance`. Everything past that line is a decision the user has to earn, so order the screen by what the job needs first, not by what the API returned first.
+
+## `layout-short` Content that does not fill the height still has a bottom
+
+Every rule above assumes the screen scrolls. The other case, a three-field form, an empty state, a detail screen holding two rows, is where a bottom action drifts: centred into the empty middle at one content length, and scrolled out of sight as soon as one more field arrives. There is no viewport height to fall back on the way a page has one.
+
+Both lengths run the same code. The scaffold's bottom bar slot pins it outright. Where the action belongs to the scrolling content instead, give the scroll a fill-height frame and a spacer that pushes the action down, so short content holds it against the bottom edge and long content lets it scroll away with the rest.
+
+The failure has a look, and only the short length shows it: a frame where the content stops a third of the way down, the action floats in the middle, and the bottom of the screen is empty. Nothing in the source says so, because the source is the long case.
+
+## `layout-orientation` Turned sideways the screen loses height, not width
+
+A large phone held horizontally keeps a wide line and takes its portrait width as its height, about 390 to 440pt, most of which the keyboard takes when a field has focus. Two outcomes are acceptable and nothing between them: the screen reflows, which is the default, or it locks to one orientation because the user decided it should, recorded in `STACK.md` with that decision. A lock is a product decision about how the phone is held, and the person writing the layout does not grant it to themselves to avoid drawing a second one.
+
+Locks also hold in fewer places than they used to. From Android 16, an app targeting API 36 has its orientation and resizability restrictions ignored on displays at least 600dp wide, which covers tablets, foldables open and desktop windows, so a screen with no landscape layout meets landscape there anyway.
+
+A screen that is watched rather than held, propped on a stand or lying beside the person while they do something else, is the case that most needs its landscape composition drawn on purpose. `flow/spec.md` gives it a frame of its own.
+
+Reflowing means the primary action stays visible without hunting for it, and the reading column keeps its measure rather than running the full width (`type-measure`). A turn is also a configuration change, so what has to survive it is `state-interrupt`. The geometry is the part this rule owns.
+
+## Check
+
+Review answers each of these against the code, pointing at the line:
+
+- The screen takes its insets from the framework's inset source rather than from a constant, and nothing readable or tappable sits outside them. Both the status bar and the navigation bar have a colour and icon brightness set against this screen's own background, a full-height sheet clears the top inset as well as the bottom one, and a screen that hides the bars keeps the cutout inset and restores the bars on exit. `layout-insets`
+- Every gap is a multiple of 4, and of 8 above 16, the text column starts at the same margin on every screen outside full-bleed content and the platform list containers, and the screen uses about five distinct vertical gaps rather than a new one per component. `layout-grid`
+- Grouping comes from space before containers, no container is nested inside another that already groups the same content, and the row height and section gap are the numbers this kind of screen uses everywhere else. `layout-grouping`
+- Radius comes from the shape language rather than per component, the screen holds at most three radius values, a nested surface curves less than the one around it, and depth arrives through one of shadow, outline or fill rather than all three. `layout-shape`
+- One column, no same-axis nesting outside what `scroll-nest` permits, and nothing side by side that would leave either half under about 140 wide apart from short fixed-format fields. `layout-column`
+- No content container carries a fixed width, and the screen was rendered at its own width and again at 320dp with nothing cut at an edge and nothing overflowing sideways. `layout-width`
+- Bars sit in the platform's bar slot, a floating tab bar with its search button and accessory comes from the system tab view rather than a hand-built pill, hand-placed chrome derives its padding from the measured bar plus the inset instead of a typed number, no more than two persistent bars stand besides the system ones, and on a rendered screen no line of content sits under a pinned bar, at the top edge or at the bottom one. `layout-chrome`
+- The snackbar comes from the platform's host slot rather than a hand-placed overlay, it clears the bottom bar and the inset, it moves the floating button rather than covering it, and one is on screen at a time. A modal's scrim covers every layer of the screen, nested canvases and platform views included, and the modal panel is opaque. `layout-overlays`
+- On the narrow device at default text size, the screen's subject and the start of its content are visible unscrolled, and the primary action is either in that screenful or in a bar pinned above the bottom inset and visible at rest. `layout-fold`
+- Rendered at its shortest content, the screen holds its action against the bottom rather than centred above an empty lower third, through the same code that lets it scroll once the content grows. `layout-short`
+- Landscape reflows, with the action still visible and the measure still capped at the shorter height, or is locked by a decision of the user recorded in `STACK.md`, and the screen still holds where the platform ignores the lock. `layout-orientation`
+- A lone element meant to be centred between unequal groups sits on the screen's centre line, through equal flanks or an overlay across the full width. `layout-axis`
+
+`layout-insets`, `layout-width`, `layout-fold` and `layout-chrome` are answered on a rendered screen at the narrow end of the range, on a device using three-button navigation as well as gestures. The token table and the component tree both look correct while the bottom bar is sitting under the navigation bar. `layout-chrome` needs the screen scrolled to both ends with enough content to reach the pinned bars, because the collision is invisible until a row arrives under one of them, and the top bar hides the first row as readily as the bottom bar hides the last. `layout-short` needs the opposite render, the screen at its shortest content, which is the only length at which the action drifts into the middle.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/buttons.md`: `button-fab`
+- `heuristics/forms.md`: `form-column`
+- `heuristics/lists.md`: `list-virtualise`, `list-end`
+- `heuristics/scrolling.md`: `scroll-nest`, `scroll-affordance`
+- `heuristics/states.md`: `state-interrupt`
+- `heuristics/touch.md`: `touch-reach`, `touch-gestures`, `touch-keyboard`
+- `heuristics/typography.md`: `type-scaling`, `type-measure`

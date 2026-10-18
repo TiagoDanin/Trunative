@@ -8,7 +8,7 @@ Row recycling is `list-virtualise`. Which properties an animation may move is `m
 
 Platform versions named in this file run up to Android API 34. Each rule states a behaviour first and an API second. On a release newer than that, the behaviour still binds and the API name is the part to check against the platform's current documentation.
 
-Rules in this file, in order: `perf-cold-start`, `perf-main-thread`, `perf-frame`, `perf-overdraw`, `perf-decode`, `perf-memory`, `perf-power`, `perf-size`, `perf-measure`.
+Rules in this file, in order: `perf-cold-start`, `perf-main-thread`, `perf-frame`, `perf-overdraw`, `perf-decode`, `perf-memory`, `perf-power`, `perf-size`, `perf-measure`, `perf-release`.
 
 ## `perf-cold-start` Only what the first screen draws happens before the first screen draws
 
@@ -98,6 +98,14 @@ Then the reading is compared against something. `STACK.md` names that device and
 - **React Native:** the performance monitor, with the JS frame rate and the UI frame rate read as two separate numbers.
 - **Mobile web inside the app:** 2.5s to the largest contentful paint, 200ms interaction to next paint, and 0.1 of cumulative layout shift, each measured at the 75th percentile rather than as an average.
 
+## `perf-release` The build that ships is a different program, so one pass runs on it [P1]
+
+A debug build and a release build differ in more than speed, and every difference is a way for the shipped app to fail where the tested one did not. The manifest is merged from different source sets, so a permission declared only for debug is missing from the release. Code shrinking and obfuscation strip classes reached only by reflection, a serializer, a plugin, a model read by name. Assertions that guarded a mistake in debug are compiled out, and so is the debug-only configuration: the test ad unit, the staging endpoint, the verbose log, the developer menu, the sample products in a store fixture.
+
+So before review closes, one working pass runs on a release build installed on a device: launch, the primary task end to end, one network request, one purchase or ad path where the app has one, and a look at the final merged manifest for the permissions and the exported components it actually declares. Everything that should only exist in debug is confirmed absent there, and everything the app needs is confirmed present.
+
+`flutter build apk --release` or `--profile`, installed on the device. The `INTERNET` permission sits in the debug and profile manifests that the template creates and is absent from `main` until someone adds it, so a release build of a new project has no network at all. Release builds run R8 by default, so a plugin reached by reflection needs its keep rules.
+
 ## Check
 
 Review answers each of these against the code, pointing at the line:
@@ -111,8 +119,9 @@ Review answers each of these against the code, pointing at the line:
 - Every repeating timer, scanning subscription, wake lock and background assertion names the interval it defends and has exactly one path that ends it, including the failure path, and sustained work reads the thermal level. `perf-power`
 - The shipped build sends one density and one architecture per device rather than a universal binary, only the font weights the type scale names, and nothing large that the first session does not open. `perf-size`
 - `STACK.md` names the slowest supported device and a budget for cold start, for frames on the longest list, and for memory after a few screens. `perf-measure`
+- One working pass ran on a release build on a device, covering launch, the primary task, a network request and any purchase or ad path, the merged release manifest declares every permission the app uses, and no debug-only configuration, fixture or endpoint is reachable in it. `perf-release`
 
-`perf-measure` is the one answered by whether the budgets exist at all, and a missing budget is the violation rather than a slow number. `perf-frame` and `perf-power` are answered in the source first, where a hardcoded 16ms and a subscription with no stop are both visible, and then again on hardware that has been working long enough to get warm, because thermal behaviour and sustained frame pacing exist nowhere else.
+`perf-measure` is the one answered by whether the budgets exist at all, and a missing budget is the violation rather than a slow number. `perf-frame` and `perf-power` are answered in the source first, where a hardcoded 16ms and a subscription with no stop are both visible, and then again on hardware that has been working long enough to get warm, because thermal behaviour and sustained frame pacing exist nowhere else. `perf-release` is answered by installing the release build and using it; reading the build configuration is where the pass starts, not what settles it.
 
 ## Reaches
 

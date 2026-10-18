@@ -4,7 +4,7 @@ A phone plays media in a pocket, on a commute, on a battery, on a connection som
 
 Here: the player surface, the transport controls, full screen and rotation, picture in picture, background audio, the lock screen, and what happens when something else on the device wants the speaker. Captions and anything an audio track carries alone are `a11y-media`. Whether a clip may start by itself is `motion-autoplay`. Sound the app makes outside a player is not playback and is not here.
 
-Rules in this file, in order: `media-system-player`, `media-controls`, `media-scrub`, `media-unasked-sound`, `media-focus`, `media-noisy`, `media-background`, `media-remote`, `media-resume`, `media-pip`, `media-away`, `media-fullscreen`, `media-awake`, `media-start`, `media-quality`, `media-live`.
+Rules in this file, in order: `media-system-player`, `media-controls`, `media-scrub`, `media-unasked-sound`, `media-focus`, `media-noisy`, `media-background`, `media-remote`, `media-resume`, `media-pip`, `media-away`, `media-fullscreen`, `media-awake`, `media-start`, `media-quality`, `media-offline`, `media-live`.
 
 ## `media-system-player` Play through the platform's engine, and finish any transport you draw yourself
 
@@ -108,6 +108,17 @@ Within one second of the tap, either audio is playing or something on screen say
 - A manual quality choice outlives the item it was made on, and switching quality keeps the position rather than restarting playback.
 - Downloading for later waits for an unmetered connection by default and is queued rather than tied to the screen (`off-queue`); preloading the next item stops entirely under the flag (`net-prefetch`).
 
+## `media-offline` A download is something the person owns, with a size, a place and an end
+
+Saving an episode, a film or an album for later turns a stream into a file on a phone with finite storage. The person decides about it before the flight, and finds out whether it worked once there is no way to fix it.
+
+- The size is stated before the download starts, per item and for a whole season or album, against the free space on the device. A batch that will not fit says so before it begins, not after it has filled the disk halfway.
+- Each item shows its own state, queued, downloading with its progress, done, failed with the reason, and the set survives the app being closed (`net-upload`, `off-queue`).
+- Downloaded items are a place the person can open with no connection, reachable from the top level, and playing one never touches the network first (`off-local-first`).
+- Rights that expire say when, on the item and before they do, and an expired item says so instead of failing to play. A limit on downloads or devices is stated where the download is offered.
+- The space downloads take is shown, and one item, a set or all of them can be deleted from that place and from the item itself, with the safeguard `fb-confirm-test` picks.
+- Download quality is a choice of its own that sticks, apart from the streaming one. Whether downloads wait for an unmetered connection is `media-quality`.
+
 ## `media-live` Live has no total duration and its edge keeps moving
 
 - Live is labelled as live, and the label does not rely on color (`color-not-alone`). No total-duration text and no percentage on a stream with no end, and where seeking back exists, a control returns to the edge and says how far behind the user currently sits.
@@ -132,6 +143,7 @@ Review answers each of these against the code, pointing at the line:
 - The screen-on flag is set only on a screen that is watched rather than touched, video or otherwise, only while what it shows is live, never for audio alone, and cleared on pause, stop, exit and error. `media-awake`
 - Sound or a preparing indicator arrives within one second of the tap, and a rebuffer leaves the controls and the position alone. `media-start`
 - A metered connection has a written bitrate cap, a manual quality choice persists, and downloads wait for unmetered. `media-quality`
+- The size is stated against free space before a download starts, each item shows its state and the set survives the app closing, downloads are a place that opens with no connection, expiry and limits are stated before they apply, the space used is shown with per-item and bulk delete, and download quality is its own persistent choice. `media-offline`
 - A live stream is labelled without relying on color, shows no total duration, offers a return to the edge, and stops once its surface is left with nothing playing it. `media-live`
 
 ## Reaches
@@ -140,14 +152,15 @@ The rules this file cites and the files that hold them. Open one when a citation
 
 - `heuristics/accessibility.md`: `a11y-media`, `a11y-name`
 - `heuristics/colors.md`: `color-not-alone`
+- `heuristics/feedback.md`: `fb-confirm-test`
 - `heuristics/layout.md`: `layout-insets`, `layout-chrome`, `layout-orientation`
 - `heuristics/localization.md`: `l10n-format`
 - `heuristics/motion.md`: `motion-autoplay`
 - `heuristics/notifications.md`: `notify-ongoing`
-- `heuristics/offline.md`: `off-queue`
+- `heuristics/offline.md`: `off-queue`, `off-local-first`
 - `heuristics/sound.md`: `sound-silenced`
 - `heuristics/states.md`: `state-interrupt`, `state-loading`, `state-error`, `state-retry`
 - `heuristics/touch.md`: `touch-floor`
 - `platform/background-work.md`: `bg-service-last`, `bg-declared`
-- `platform/network.md`: `net-metered`, `net-prefetch`
+- `platform/network.md`: `net-metered`, `net-prefetch`, `net-upload`
 - `platform/performance.md`: `perf-memory`, `perf-power`

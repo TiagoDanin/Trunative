@@ -1,0 +1,59 @@
+# Capability presence, status and accuracy, per stack
+
+Lookup only. The rules live in `heuristics/sense.md`, and the grant flow lives in `heuristics/permissions.md`. Open this file for one name, not as background reading.
+
+Nothing here decides anything. Every entry answers one of three questions: does this device have the hardware, is the capability usable right now, and how good is the value it just returned.
+
+## Does the device have it
+
+| Capability | iOS | Android |
+|---|---|---|
+| Any camera | `AVCaptureDevice.DiscoverySession` returns no devices | `PackageManager.hasSystemFeature(FEATURE_CAMERA_ANY)` |
+| Front camera | discovery session with `.front` | `FEATURE_CAMERA_FRONT` |
+| Microphone | `AVCaptureDevice` for `.audio` | `FEATURE_MICROPHONE` |
+| Location hardware | always present | `FEATURE_LOCATION`, `FEATURE_LOCATION_GPS`, `FEATURE_LOCATION_NETWORK` |
+| Accelerometer, gyroscope, compass | `CMMotionManager.isGyroAvailable` and siblings | `SensorManager.getDefaultSensor()` returns null; `FEATURE_SENSOR_ACCELEROMETER`, `FEATURE_SENSOR_GYROSCOPE`, `FEATURE_SENSOR_COMPASS` |
+| Biometric reader | `LAContext.canEvaluatePolicy` plus `biometryType` | `BiometricManager.canAuthenticate()` returning `BIOMETRIC_ERROR_NO_HARDWARE`; `FEATURE_FINGERPRINT`, `FEATURE_FACE`, `FEATURE_IRIS` |
+| Vibration motor | always present | `Vibrator.hasVibrator()` |
+| Named haptic feedback | `UIImpactFeedbackGenerator`, `UINotificationFeedbackGenerator`, `UISelectionFeedbackGenerator` | `View.performHapticFeedback()` constants, then `VibrationEffect.createPredefined()` |
+| Rich haptic patterns | `CHHapticEngine` capabilities | `Vibrator.areEffectsSupported()`, `arePrimitivesSupported()` |
+
+Android's answer for a vibration effect has three values, `VIBRATION_EFFECT_SUPPORT_YES`, `_NO` and `_UNKNOWN`. Unknown means the hardware does not report its effects, so nothing will tell you whether a call produces anything.
+
+Presence and distribution are separate. `<uses-feature android:name="android.hardware.sensor.gyroscope" android:required="false" />` keeps the app installable on devices without the sensor; `required="true"` removes it from the store for them.
+
+## Is it usable right now
+
+| Question | iOS | Android |
+|---|---|---|
+| Permission status | `AVCaptureDevice.authorizationStatus(for:)`, `CLLocationManager.authorizationStatus` | `ContextCompat.checkSelfPermission()` |
+| Location services on | `CLLocationManager.locationServicesEnabled()` | `LocationManager.isProviderEnabled()` |
+| Device-wide sensor toggle | not present | `SensorPrivacyManager.supportsSensorToggle(Sensors.CAMERA / Sensors.MICROPHONE)` |
+| Hardware held or broken | `AVCaptureSession` runtime error notification | camera provider fails to bind |
+| Nothing enrolled | `LAError.biometryNotEnrolled`, `.passcodeNotSet` | `BIOMETRIC_ERROR_NONE_ENROLLED`, then `Settings.ACTION_BIOMETRIC_ENROLL` |
+| Locked out | `LAError.biometryLockout` | `BIOMETRIC_ERROR_LOCKOUT` |
+| No such device | discovery session empty | provider throws |
+| Route to system settings | `UIApplication.openSettingsURLString` | `Settings.ACTION_APPLICATION_DETAILS_SETTINGS`, `ACTION_LOCATION_SOURCE_SETTINGS` |
+
+The iOS biometric error set worth branching on: `biometryNotAvailable`, `biometryNotEnrolled`, `biometryLockout`, `passcodeNotSet`, `userCancel`, `systemCancel`, `appCancel`, `userFallback`. The last one fires when the user asks for a fallback the policy does not have.
+
+## How good is the value
+
+| What | iOS | Android |
+|---|---|---|
+| Horizontal accuracy | `CLLocation.horizontalAccuracy`, a radius in metres, negative meaning the coordinate is invalid | `Location.getAccuracy()`, a radius in metres at the 68th percentile, valid only where `hasAccuracy()` is true and zero otherwise |
+| Vertical accuracy | `verticalAccuracy` | `getVerticalAccuracyMeters()` |
+| Granted accuracy level | `CLAccuracyAuthorization.fullAccuracy` or `.reducedAccuracy` | `ACCESS_FINE_LOCATION` against `ACCESS_COARSE_LOCATION` |
+| Requested accuracy | `desiredAccuracy` | `Priority` on the location request |
+| Upgrade to precise | `requestTemporaryFullAccuracyAuthorization(withPurposeKey:)` with `NSLocationTemporaryUsageDescriptionDictionary` | request the fine and coarse pair again |
+| Compass calibration | `CLLocationManager` heading calibration display | `SensorManager.SENSOR_STATUS_ACCURACY_LOW` and siblings through `onAccuracyChanged` |
+
+The three accuracy radii are not the same measurement. A threshold in metres tuned on one platform does not transfer to another.
+
+Published figures: an approximate Android grant is accurate to roughly 3 square kilometres, a precise one usually to within about 50 metres and sometimes a few. Apple states no metric figure for reduced accuracy, so there is nothing to compare it against.
+
+## Sampling ceilings
+
+From Android 12, `SensorManager.registerListener()` is capped at 200 Hz and `SensorDirectChannel` at `RATE_NORMAL`, about 50 Hz. Going past either without `HIGH_SAMPLING_RATE_SENSORS` throws a `SecurityException`. The device-wide microphone and camera toggle rate-limits motion sensors regardless of that permission.
+
+On mobile web, `DeviceMotionEvent.requestPermission()` needs a secure context and transient activation, so it has to run inside a tap handler, and it rejects with `NotAllowedError` otherwise. `navigator.vibrate()` needs sticky user activation. Neither is available in every browser.

@@ -4,7 +4,7 @@ A phone carries an ordered list of languages, a separate region, a calendar and 
 
 Shipping one language today is fine. Almost everything in this file costs nothing while the app has one language and is a rewrite once it has forty screens, which is the reason it belongs in the build step rather than in a later project.
 
-Rules in this file, in order: `l10n-strings`, `l10n-direction`, `l10n-no-mirror`, `l10n-expansion`, `l10n-format`, `l10n-plurals`, `l10n-script`, `l10n-personal`, `l10n-collate`, `l10n-per-app`, `l10n-change`, `l10n-pseudo`.
+Rules in this file, in order: `l10n-strings`, `l10n-direction`, `l10n-no-mirror`, `l10n-expansion`, `l10n-format`, `l10n-plurals`, `l10n-script`, `l10n-personal`, `l10n-collate`, `l10n-content-language`, `l10n-per-app`, `l10n-change`, `l10n-pseudo`.
 
 ## `l10n-strings` No user-facing text lives in code [pass or fail]
 
@@ -86,6 +86,18 @@ Sorting display names by code point puts accented words after Z, splits the case
 - Section headers and the fast-scroll rail down a long list come from that collator, `UILocalizedIndexedCollation` where iOS builds the index for you, never from the first character of the string. Ch, Ñ and Ø are letters in their own right where the list is being read, and this is what `list-sections` is built from.
 - Search matches without regard to case, accents or character width, so typing `jose` finds José.
 
+## `l10n-content-language` Content in another language says which one it is, and a translation says it is one
+
+The interface speaks the app's language and the content often does not: a review left by a visitor, a message from a relative abroad, a listing from a seller in another country, a quoted post. Nothing in the string table reaches it, and the app can neither make it correct by translating it nor pretend it is already in the reader's language.
+
+- Text in a language other than the interface carries its language tag, so the screen reader speaks it in the right voice and line breaking and hyphenation follow its rules. Untagged, a paragraph in Japanese is read out in the interface's voice, one character at a time.
+- A machine translation is marked as one on the text itself, the original is one tap away, and the choice between originals and translations is remembered.
+- The body is what gets translated. Names, addresses, product codes and quoted prices stay as written.
+- Where translation is offered, the language detected for the original is named and a wrong detection can be corrected.
+- Content in a script the interface face lacks falls back to a face that has it (`l10n-script`), and right-to-left content inside a left-to-right screen keeps its own direction within its block (`l10n-direction`).
+
+`accessibilityLanguage` on the `Text`, which iOS honours. Android ignores it, so the TalkBack pass is done on a device.
+
 ## `l10n-per-app` The app language and the system language are two different facts
 
 Both platforms let someone point a single app at a language of its own, so the app cannot read the system language and assume that is what it is rendering in.
@@ -98,6 +110,10 @@ Both platforms let someone point a single app at a language of its own, so the a
 ## `l10n-change` The language can change while the app is running
 
 - The locale is read where it is used. A `Locale` captured at launch, a formatter built once inside a singleton, or a string preformatted into a cache leaves the screen rendering half in each language after the switch.
+- So does a string lookup that does not subscribe to the change. A static accessor, a translator object cached in a field, or a lookup that reads the catalogue without going through what rebuilds on a locale change returns the right word at first build and the old one forever after, and a fix applied to the screens someone looked at leaves it on the ones nobody did.
+
+The i18n library's hook, such as `useTranslation()`, inside the component, so the change re-renders it. A module-level call to `t()` runs once at import.
+
 - Changing the app or the system language recreates the screen on Android the way a rotation does, so what the user had on it comes back with it, which is `state-interrupt`.
 - Anything told the locale once is told it again: the push token registration, the requests that return user-facing text, and any preference the backend stores.
 
@@ -123,11 +139,12 @@ Review answers each of these against the code, pointing at the line:
 - The typeface covers every shipped script with a fallback chain, and the leading is a ratio rather than a point value. `l10n-script`
 - One full-name field unless an outside format demands the split and `STACK.md` names it, address fields chosen after the country, and no single mask applied to every phone number. `l10n-personal`
 - Lists sort and section through a locale collator, and search ignores case and accents. `l10n-collate`
+- Content in another language carries its language tag so the screen reader and line breaking follow it, a machine translation is marked on the text with the original one tap away and the choice remembered, names, addresses and codes stay as written, a detected language can be corrected, and other scripts and directions keep their face and direction inside their block. `l10n-content-language`
 - The shipped locales are declared to the system, resources sit at the widest correct dialect, and no language picker bypasses the platform API. `l10n-per-app`
-- No locale is cached at launch, a language change keeps what was on the screen, and everything told the locale once is told it again. `l10n-change`
+- No locale is cached at launch, no string lookup bypasses what rebuilds on a locale change, every visible string switches language without a restart, a language change keeps what was on the screen, and everything told the locale once is told it again. `l10n-change`
 - Both passes were taken, the expanding one and the mirrored one, by whichever mechanism the stack provides, and the screen was seen under each. `l10n-pseudo`
 
-`l10n-direction`, `l10n-no-mirror`, `l10n-expansion`, `l10n-script` and `l10n-pseudo` are answered on a rendered screen rather than in the resource files. A catalogue can be complete, a formatter correct and a plural resource well formed while the screen itself still clips, mirrors the wrong element, or falls back to a face that has no glyphs.
+`l10n-direction`, `l10n-no-mirror`, `l10n-expansion`, `l10n-script` and `l10n-pseudo` are answered on a rendered screen rather than in the resource files. A catalogue can be complete, a formatter correct and a plural resource well formed while the screen itself still clips, mirrors the wrong element, or falls back to a face that has no glyphs. `l10n-content-language` is answered by ear: the screen reader reading a review in another language aloud is the only test that hears an untagged run.
 
 ## Reaches
 

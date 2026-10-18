@@ -88,7 +88,7 @@ An unlocked phone is regularly in someone else's hands, which is why a live sess
 A phone has no window title and no persistent chrome to keep an avatar in, so on a device carrying a work account and a personal one, the identity has to be on the screen where the action happens.
 
 - Anything that posts, pays, sends, uploads or shares under an identity shows which identity in the surface that confirms it, before the tap and not in a settings screen two levels away.
-- Switching accounts happens in one place and states what is changing.
+- Switching accounts happens in one place and states what is changing. The account is one case of a value that scopes the whole screen, and the rest of that shape is `nav-scope`.
 - After a switch, nothing from the previous account remains on screen: cached lists, badges, avatars and the contents of the outgoing queue in `off-queue` all belong to the account that made them.
 
 ## `auth-signout` Nobody is signed out quietly
@@ -137,7 +137,7 @@ The rules this file cites and the files that hold them. Open one when a citation
 
 - `heuristics/forms.md`: `form-input`, `form-autofill`, `form-error`, `form-persist`
 - `heuristics/localization.md`: `l10n-strings`
-- `heuristics/navigation.md`: `nav-deeplink`, `nav-restore`, `nav-modal`
+- `heuristics/navigation.md`: `nav-deeplink`, `nav-restore`, `nav-modal`, `nav-scope`
 - `heuristics/offline.md`: `off-session`, `off-queue`
 - `heuristics/onboarding.md`: `onboard-look-first`, `onboard-account`
 - `heuristics/sense.md`: `sense-biometric`

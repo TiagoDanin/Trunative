@@ -27,6 +27,7 @@ Compose `Icon` is 24.dp when the painter has no intrinsic size, and is tinted wi
 | Android resources | `res/drawable-<bucket>/` | A vector drawable goes in the default `res/drawable/` with no per-density copy |
 | Flutter | `2.0x/name.png` beside `name.png` | Nominal densities 1.5x, 2.0x, 3.0x, 4.0x. List only the main asset or its folder in `pubspec.yaml` |
 | React Native | `name@2x.png` sibling files, one `require` | The closest density is picked when the exact one is missing. A `uri` source carries no dimensions |
+| Unity | One texture per image, no density variants | Import at the largest size the UI draws it, with Max Size and mipmaps set per platform in the texture importer. Sprite atlases pack UI images, and `Canvas Scaler` decides the drawn size |
 
 ## Android density buckets
 

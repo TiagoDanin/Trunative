@@ -1,6 +1,6 @@
 ---
 name: trunative-react-native
-description: Design and review mobile app UI in React Native. Use when building a screen, component, navigation flow, or form for a phone, or when reviewing existing mobile UI. Install this copy only in a React Native project.
+description: Design and review mobile app UI in React Native. Use when building a screen, component, navigation flow, or form for a phone, or when reviewing existing mobile UI. Also use when a change adds something the person sees without asking for a screen, such as an ad placement, a notification, a review or rating prompt, a permission request, a paywall, or a dialog or sheet raised by analytics or remote config. Install this copy only in a React Native project.
 ---
 
 # Trunative
@@ -24,9 +24,13 @@ Follow it in order. Never skip init, never end on build.
 5. **review**, read `flow/review.md`. Runs on the code that was just written, and again on request over a finished screen. It scores every rule in scope from 1 to 5, or pass or fail where the rule is binary. A 1, a 2 or a fail is a violation, and a violation on a P0 or P1 rule blocks the screen whatever the percentage says.
 6. **loop**, back to build while review reports violations. Stop when review comes back clean.
 
+A task does not have to be called UI work to be UI work. A change that adds a system prompt, a dialog or a sheet, an ad placement, a notification, a review or rating prompt, a permission request, a paywall, or anything an analytics event or a remote flag puts on screen changes what the person sees and when, so it takes this flow from init, with spec deciding as it would for a screen, and review running on every screen it can appear over.
+
 Every hand-off after build carries the status line of the review that ran on it, or the words `review not run` with the reason. A hand-off with neither is how a skipped review passes for a finished one.
 
 Loaded by build, not a step: `flow/firebase.md`, whenever the screen touches Firebase.
+
+Run only when the user asks for it, never by build or review: `flow/dark-ux.md`, which builds the growth patterns large apps use to move conversion, retention and revenue, and records each rule it departs from as an exception in `STACK.md`.
 
 ## Heuristics
 
@@ -51,15 +55,15 @@ Opened on every screen, before writing. Every screen has colour, text, targets, 
 |---|---|---|
 | `heuristics/colors.md` | `color-` | palette roles and tokens, the default palette, ramps, the accent, colour that varies per item, gradients, dark theme, contrast, color as state |
 | `heuristics/typography.md` | `type-` | the platform type scale, roles per screen, weight and its distribution, typeface choice, measure, text scaling, real strings |
-| `heuristics/touch.md` | `touch-` | hit areas and spacing, controls inside controls and pictures of controls, thumb reach, where destructive actions go, press feedback, gestures and system edges, the keyboard as layout |
-| `heuristics/buttons.md` | `button-` | one primary per screen, the emphasis ladder, labels, button states, the FAB, chips, tabs and segmented controls |
-| `heuristics/layout.md` | `layout-` | insets and safe areas, the spacing scale, grouping and density, radius and shape, one column, the width range, centring between unequal groups, fixed chrome and overlays, the first screenful, orientation |
+| `heuristics/touch.md` | `touch-` | hit areas and spacing, controls inside controls and pictures of controls, thumb reach, where destructive actions go, press feedback, gestures and system edges, the long press menu, the keyboard as layout |
+| `heuristics/buttons.md` | `button-` | one primary per screen, the emphasis ladder, labels, button states, the FAB, chips, tabs and segmented controls, an action standing in the tab bar |
+| `heuristics/layout.md` | `layout-` | insets and safe areas, the spacing scale, grouping and density, radius and shape, one column, the width range, centring between unequal groups, fixed chrome, the floating tab bar and overlays, the first screenful, orientation |
 | `heuristics/composition.md` | `comp-` | a composition chosen between alternatives, how far apart candidates have to be, the moment of use deciding the arrangement, an arrangement that could only be this product's, sibling screens that are not one template |
 | `heuristics/states.md` | `state-` | the full state set, loading and skeletons, the three empties, error classes and retry, offline and queued work, stale and partial data, permission, interruption |
-| `heuristics/motion.md` | `motion-` | what earns an animation, the platform's own transitions, springs against durations, choreography, loops, motion that blocks input, cheap properties, reduced motion |
+| `heuristics/motion.md` | `motion-` | what earns an animation, the platform's own transitions, springs against durations, choreography, loops, panels that advance on a clock, motion that blocks input, cheap properties, reduced motion |
 | `heuristics/accessibility.md` | `a11y-` | names, roles and values, hidden decoration, focus order, announcements, focus containment, gesture alternatives, alternative input, the system settings, media, how to test it |
 | `heuristics/copy.md` | `copy-` | the word budget, the first word, voice, error wording, jargon, one term per thing, capitalisation, what absence says, sample content and its arithmetic, numbers, figures that describe the product, rationale text |
-| `heuristics/icons-and-imagery.md` | `icon-` | one icon set, icon weight, emoji standing in for an icon, vector and density, reserving space, cropping, artwork that depicts nothing, dark variants, avatars, the app icon |
+| `heuristics/icons-and-imagery.md` | `icon-` | one icon set, icon weight, emoji standing in for an icon, vector and density, reserving space, cropping, artwork that depicts nothing, words painted into pictures and banners, dark variants, avatars, the app icon |
 
 ### Extra
 
@@ -73,34 +77,41 @@ It fails in two quiet ways. Judging by the feature closes a file that owns somet
 
 | File | Prefix | Covers |
 |---|---|---|
-| `heuristics/navigation.md` | `nav-` | how deep the hierarchy goes, choosing between screen, tab, modal and sheet, back and up, deep links, per-destination stacks, an item whose home is another section, search, state after interruption |
-| `heuristics/lists.md` | `list-` | virtualisation, row density and the row as a target, separators, swipe actions, images, sections, the end of the list, refresh, selection |
-| `heuristics/forms.md` | `form-` | one column, field count, persistent labels, input type and autofill, when to validate, error recovery, what survives backgrounding, submit |
+| `heuristics/navigation.md` | `nav-` | how deep the hierarchy goes, choosing between screen, tab, modal and sheet, a sheet that stays over a live layer, back and up, where the screen is, a value that scopes the whole screen (address, branch, day, mode), deep links, per-destination stacks, an item whose home is another section, search, state after interruption |
+| `heuristics/lists.md` | `list-` | virtualisation, row density and the row as a target, separators, swipe actions, images, sections, the end of the list, refresh, selection, saving and favourites |
+| `heuristics/forms.md` | `form-` | one column, field count, persistent labels, required marks, choice groups and their limits, input type and keypads the app draws, sliders and ranges, autofill, when to validate, error recovery, what survives backgrounding, submit |
 | `heuristics/chat.md` | `chat-` | the transcript's anchor and where it opens, paging history upward, arrivals while reading, grouping and time, the row, the empty conversation, the composer's ceiling, the state of one message, attachments, presence, announcing an arrival |
+| `heuristics/assistant.md` | `ai-` | generated answers and suggestions: following text as it streams, the wait and its named steps, stop, failure halfway, sources at the claim, generated content marked and never sent without a tap, earlier versions, quotas and cost, mode and attachments in the composer, announcing a stream once |
 | `heuristics/permissions.md` | `perm-` | the inventory, asking for less, scope, the rationale before the prompt, purpose strings, the three answers to a prompt, re-checking, coercion, tracking |
 | `heuristics/onboarding.md` | `onboard-` | the branded frame, how many screens, explaining in place, what to defer, the order of the asks, looking before signing up, account obligations, the first real action, resuming |
-| `heuristics/localization.md` | `l10n-` | no hardcoded strings, direction and what never mirrors, text expansion, locale formats, plurals, script coverage, personal data shapes, collation, per-app language, pseudolocalisation |
+| `heuristics/localization.md` | `l10n-` | no hardcoded strings, direction and what never mirrors, text expansion, locale formats, plurals, script coverage, personal data shapes, collation, content in another language and its translation, per-app language, pseudolocalisation |
 | `heuristics/notifications.md` | `notify-` | what earns an interruption, channels and categories, interruption level, quiet delivery, the lock screen, destination, actions, the shade, badges, the in-app equivalent |
 | `heuristics/widgets.md` | `widget-` | the update budget, stating what is stale, fitting a size with no scroll, per-size authoring, the tap as a deep link, signed-out and empty and error, the stranger reading it, staying on the app's own content, labels on every presentation, the Dynamic Island, the final frame, Android promotion |
 | `heuristics/sense.md` | `sense-` | a capability past the grant: absent hardware, switched off above the app, running, imprecise, failing, plus preview, biometrics, haptics and motion |
 | `heuristics/camera.md` | `cam-` | handing off to the system capture screen, the shutter and its ground, torch, lens stops and zoom, the frame that matches what is analysed, a scan resolving by itself, review and retake, a capture the app rejects, orientation and mirroring, size and destination, the limited photo grant, thermal pressure |
 | `heuristics/offline.md` | `off-` | local first, freshness marks, cache policy, reclaimable storage, write modes, the queue, destructive work offline, conflict, the empty cache |
 | `heuristics/splashscreen.md` | `splash-` | the system launch surface, the double splash, what it may contain, matching the first frame, fake progress, what may hold it, appearance, the entry it hands over to |
-| `heuristics/feedback.md` | `fb-` | the vehicle ladder, silent success, when a dialog is justified, undo, where a message lands, duration, reach, queueing, surviving rotation, the review prompt |
+| `heuristics/feedback.md` | `fb-` | the vehicle ladder, silent success and the completion screen, when a dialog is justified, undo, where a message lands, duration, reach, queueing, surviving rotation, the review prompt |
 | `heuristics/search.md` | `search-` | the two search surfaces, the stock control, placement per platform, typing and suggestions, recents, scope, filters, the result row, zero results, coming back |
 | `heuristics/auth.md` | `auth-` | the methods and their order, provider buttons, web flows, last used, code screens, biometrics over a session, expiry, re-auth, the active account, sign out, deletion |
 | `heuristics/webviews.md` | `webview-` | which surface a URL opens in, somebody else's credential field, the wrapper's own chrome, back inside the page, links that leave it, theme and text size reaching content nobody can restyle, insets and the keyboard, downloads and file pickers, the session the app cannot read, the wrapped site |
 | `heuristics/settings.md` | `set-` | a better default before a switch, settings in context, what the system owns, shape and status, controls, effect, what syncs, destructive rows, search, the account exit, diagnostics |
-| `heuristics/media.md` | `media-` | the system player, controls and scrubbing, unasked sound, audio focus, becoming noisy, background audio, remote controls, picture in picture, fullscreen, keeping the screen awake for anything watched rather than touched, quality, live |
+| `heuristics/media.md` | `media-` | the system player, controls and scrubbing, unasked sound, audio focus, becoming noisy, background audio, remote controls, picture in picture, fullscreen, keeping the screen awake for anything watched rather than touched, quality, downloads for offline use, live |
 | `heuristics/maps.md` | `map-` | the first camera, who owns the drag, markers as targets, clustering, the equivalent list, following the user, legibility over tiles nobody chose, routes as text, tiles that did not arrive, the cost of a live map, attribution, the provider's contract |
 | `heuristics/privacy-ui.md` | `priv-` | the stranger beside the user, masked values, the app switcher snapshot, blocking capture and merely detecting it, the second gate, what gets instrumented, deleting data, the declaration matching the code |
 | `heuristics/sharing.md` | `share-` | the system sheet and nothing hand-rolled, the payload and its preview, a link rather than a screenshot, readiness, file access, the outcome, what the app accepts and how it arrives, clipboard and paste, invites |
 | `heuristics/updates.md` | `upd-` | the test for blocking at all, minimum version, the gate screen, prompt shape, flexible install, restart state, migration running once and its path, never wiping, carrying work over, what changed, the store channel |
-| `heuristics/scrolling.md` | `scroll-` | nesting on one axis, the affordance that says there is more, collapsing chrome, anchoring, restoration, return to top, programmatic scrolls, overscroll, scrolling with the keyboard up |
-| `heuristics/data-display.md` | `data-` | precision that does not lie, the shape of a table that does not fit, when a chart earns its place, scale and reach, relative against absolute time, units, entering a date, empty against null against zero |
+| `heuristics/scrolling.md` | `scroll-` | nesting on one axis, the affordance that says there is more, collapsing chrome, anchoring, restoration, return to top, programmatic scrolls, a row of section labels over one long page, overscroll, scrolling with the keyboard up |
+| `heuristics/data-display.md` | `data-` | precision that does not lie, the shape of a table that does not fit, when a chart earns its place, scale and reach, relative against absolute time, units, entering a date, a code shown to be scanned (ticket, pass, payment code), empty against null against zero and values derived from an unknown |
 | `heuristics/sound.md` | `sound-` | the inventory, being silenced by the switch and the ringer, mixing with other audio, system sounds, never sound alone, unasked sound, the off switch |
-| `heuristics/payments.md` | `pay-` | which rail the item legally takes, linking out by storefront, the wallet first, the system sheet, the total, where the price comes from, subscription terms, cancelling, restore, card entry, leaving and returning, pending and idempotency, the honest paywall |
+| `heuristics/payments.md` | `pay-` | which rail the item legally takes, linking out by storefront, the wallet first, the system sheet, the total with optional charges and holds, where the price comes from, card entry, leaving and returning, pending and idempotency |
+| `heuristics/subscriptions.md` | `sub-` | the paywall and the subscription it sells: required terms, the billed amount first, struck prices and savings, the end of a trial and its reminder, choosing a plan, the way out and the offer after it, real deadlines, children, restore, cancelling |
+| `heuristics/commerce.md` | `shop-` | catalogues, product pages and carts for physical goods and services: price with its quantity and unit price, honest reductions, variants and the unavailable one, stock states and the re-check before commitment, adding in place, quantity bounds and undoable removal, a cart that survives the process and sign in, carts bound to a store or slot, suggestions that keep checkout visible, substitutions, reordering |
+| `heuristics/tracking.md` | `track-` | a process the person started running elsewhere (an order, a ride, a parcel, a transfer, a trip): named stages, estimates as windows, the age of a live status, late and stuck and waiting states, reaching the other side, changes before the cutoff, the final state and its receipt, entry from outside, the live surface agreeing with the screen, several at once |
 | `heuristics/ads.md` | `ads-` | labelled as advertising, the close control, placement, frequency, reserved space, adjacency to a real action, rewarded and consent flows, reporting, accessibility, the paid-to-remove entitlement, cost, children |
+| `heuristics/game.md` | `game-` | a play surface and its HUD, what shows per game state, the centre of the play area, control zones, pausing on lost attention and held touches, the result of a round and the offers on it, locked levels, when a rewarded offer appears, progress across process death, music and effects, words painted into art |
+| `heuristics/economy.md` | `econ-` | virtual currency, lives, energy, daily caps and unlock costs: the cost on the control, contents and odds, affordability and the smallest pack that covers it, a gate shown at the entry, a disabled buy control, bundles already owned, pack bonuses and value badges, several balances and expiring credits, currency bought with money |
+| `heuristics/learning.md` | `learn-` | lessons, quizzes, drills and flashcards: teaching before testing, defining terms, feedback after an answer, items that come back, how much a wrong answer weighs, committing a choice, scores before the first answer, a lesson resumed after the process dies |
 
 **Platform and engineering.** Same tier and same pass as the rows above, kept in `platform/` because they are a different kind of rule. Everything in `heuristics/` says what the person experiences. These three say how the code underneath has to behave for that experience to hold: transport, scheduling, the frame budget. They name more APIs than any other file, which makes them the part that ages, so read them for the behaviour they require and treat each API as today's way of getting it. A rule here is opened, scored and blocks exactly like any other.
 
@@ -110,7 +121,7 @@ It fails in two quiet ways. Judging by the feature closes a file that owns somet
 | `platform/performance.md` | `perf-` | cold start, the main thread, the frame budget, image decoding, memory, power, app size, and measuring instead of guessing |
 | `platform/background-work.md` | `bg-` | what may run at all, now or later, periodic work, visible and stoppable, the foreground service last, declared types, location, durability, exact time, push wake-ups, restriction, exemption, failing while away |
 
-Lookup material, read on demand for one value and never as background: `references/color-construction.md`, `references/type-scales.md`, `references/fonts.json`, `references/input-fields.md`, `references/navigation-containers.md`, `references/motion-tokens.md`, `references/capability-checks.md`, `references/launch-surface.md`, `references/icon-and-image-assets.md`, `references/search-controls.md`, `references/wireframe-frame.md`, `references/design-grammars.md`, `references/accepted-exceptions.md`.
+Lookup material, read on demand for one value and never as background: `references/color-construction.md`, `references/type-scales.md`, `references/fonts.json`, `references/input-fields.md`, `references/navigation-containers.md`, `references/motion-tokens.md`, `references/capability-checks.md`, `references/launch-surface.md`, `references/icon-and-image-assets.md`, `references/search-controls.md`, `references/wireframe-frame.md`, `references/design-grammars.md`, `references/accepted-exceptions.md`, `references/paywall-anatomy.md`.
 
 ## Always in scope
 

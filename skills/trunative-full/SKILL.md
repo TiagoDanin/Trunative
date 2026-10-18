@@ -1,6 +1,6 @@
 ---
 name: trunative-full
-description: Design and review mobile app UI for any stack (React Native, Expo, Flutter, SwiftUI, Jetpack Compose, mobile web). Use when building a screen, component, navigation flow, or form for a phone, or when reviewing existing mobile UI. This copy carries every rule, procedure and reference inline, in one file, for a context that cannot read files. Never install it in a project or beside another trunative copy: a project uses the tiered copy that "npx trunative install" writes.
+description: Design and review mobile app UI for any stack (React Native, Expo, Flutter, SwiftUI, Jetpack Compose, mobile web, Unity). Use when building a screen, component, navigation flow, or form for a phone, or when reviewing existing mobile UI. Also use when a change adds something the person sees without asking for a screen, such as an ad placement, a notification, a review or rating prompt, a permission request, a paywall, or a dialog or sheet raised by analytics or remote config. This copy carries every rule, procedure and reference inline, in one file, for a context that cannot read files. Never install it in a project or beside another trunative copy, since a project uses the tiered copy that "npx trunative install" writes.
 ---
 
 Every file this skill is made of is inlined below, each under a heading that is its path. A line pointing at `heuristics/colors.md` or `flow/build.md` is pointing at a section of this document, so nothing here has to be opened and nothing is missing. The tiered copy, where a rule is read only once a screen touches it, is the one a project installs; this one is for a context that gets filled once and cannot read files.
@@ -28,9 +28,13 @@ Follow it in order. Never skip init, never end on build.
 5. **review**, read `flow/review.md`. Runs on the code that was just written, and again on request over a finished screen. It scores every rule in scope from 1 to 5, or pass or fail where the rule is binary. A 1, a 2 or a fail is a violation, and a violation on a P0 or P1 rule blocks the screen whatever the percentage says.
 6. **loop**, back to build while review reports violations. Stop when review comes back clean.
 
+A task does not have to be called UI work to be UI work. A change that adds a system prompt, a dialog or a sheet, an ad placement, a notification, a review or rating prompt, a permission request, a paywall, or anything an analytics event or a remote flag puts on screen changes what the person sees and when, so it takes this flow from init, with spec deciding as it would for a screen, and review running on every screen it can appear over.
+
 Every hand-off after build carries the status line of the review that ran on it, or the words `review not run` with the reason. A hand-off with neither is how a skipped review passes for a finished one.
 
 Loaded by build, not a step: `flow/firebase.md`, whenever the screen touches Firebase.
+
+Run only when the user asks for it, never by build or review: `flow/dark-ux.md`, which builds the growth patterns large apps use to move conversion, retention and revenue, and records each rule it departs from as an exception in `STACK.md`.
 
 ## Heuristics
 
@@ -55,15 +59,15 @@ Opened on every screen, before writing. Every screen has colour, text, targets, 
 |---|---|---|
 | `heuristics/colors.md` | `color-` | palette roles and tokens, the default palette, ramps, the accent, colour that varies per item, gradients, dark theme, contrast, color as state |
 | `heuristics/typography.md` | `type-` | the platform type scale, roles per screen, weight and its distribution, typeface choice, measure, text scaling, real strings |
-| `heuristics/touch.md` | `touch-` | hit areas and spacing, controls inside controls and pictures of controls, thumb reach, where destructive actions go, press feedback, gestures and system edges, the keyboard as layout |
-| `heuristics/buttons.md` | `button-` | one primary per screen, the emphasis ladder, labels, button states, the FAB, chips, tabs and segmented controls |
-| `heuristics/layout.md` | `layout-` | insets and safe areas, the spacing scale, grouping and density, radius and shape, one column, the width range, centring between unequal groups, fixed chrome and overlays, the first screenful, orientation |
+| `heuristics/touch.md` | `touch-` | hit areas and spacing, controls inside controls and pictures of controls, thumb reach, where destructive actions go, press feedback, gestures and system edges, the long press menu, the keyboard as layout |
+| `heuristics/buttons.md` | `button-` | one primary per screen, the emphasis ladder, labels, button states, the FAB, chips, tabs and segmented controls, an action standing in the tab bar |
+| `heuristics/layout.md` | `layout-` | insets and safe areas, the spacing scale, grouping and density, radius and shape, one column, the width range, centring between unequal groups, fixed chrome, the floating tab bar and overlays, the first screenful, orientation |
 | `heuristics/composition.md` | `comp-` | a composition chosen between alternatives, how far apart candidates have to be, the moment of use deciding the arrangement, an arrangement that could only be this product's, sibling screens that are not one template |
 | `heuristics/states.md` | `state-` | the full state set, loading and skeletons, the three empties, error classes and retry, offline and queued work, stale and partial data, permission, interruption |
-| `heuristics/motion.md` | `motion-` | what earns an animation, the platform's own transitions, springs against durations, choreography, loops, motion that blocks input, cheap properties, reduced motion |
+| `heuristics/motion.md` | `motion-` | what earns an animation, the platform's own transitions, springs against durations, choreography, loops, panels that advance on a clock, motion that blocks input, cheap properties, reduced motion |
 | `heuristics/accessibility.md` | `a11y-` | names, roles and values, hidden decoration, focus order, announcements, focus containment, gesture alternatives, alternative input, the system settings, media, how to test it |
 | `heuristics/copy.md` | `copy-` | the word budget, the first word, voice, error wording, jargon, one term per thing, capitalisation, what absence says, sample content and its arithmetic, numbers, figures that describe the product, rationale text |
-| `heuristics/icons-and-imagery.md` | `icon-` | one icon set, icon weight, emoji standing in for an icon, vector and density, reserving space, cropping, artwork that depicts nothing, dark variants, avatars, the app icon |
+| `heuristics/icons-and-imagery.md` | `icon-` | one icon set, icon weight, emoji standing in for an icon, vector and density, reserving space, cropping, artwork that depicts nothing, words painted into pictures and banners, dark variants, avatars, the app icon |
 
 ### Extra
 
@@ -77,34 +81,41 @@ It fails in two quiet ways. Judging by the feature closes a file that owns somet
 
 | File | Prefix | Covers |
 |---|---|---|
-| `heuristics/navigation.md` | `nav-` | how deep the hierarchy goes, choosing between screen, tab, modal and sheet, back and up, deep links, per-destination stacks, an item whose home is another section, search, state after interruption |
-| `heuristics/lists.md` | `list-` | virtualisation, row density and the row as a target, separators, swipe actions, images, sections, the end of the list, refresh, selection |
-| `heuristics/forms.md` | `form-` | one column, field count, persistent labels, input type and autofill, when to validate, error recovery, what survives backgrounding, submit |
+| `heuristics/navigation.md` | `nav-` | how deep the hierarchy goes, choosing between screen, tab, modal and sheet, a sheet that stays over a live layer, back and up, where the screen is, a value that scopes the whole screen (address, branch, day, mode), deep links, per-destination stacks, an item whose home is another section, search, state after interruption |
+| `heuristics/lists.md` | `list-` | virtualisation, row density and the row as a target, separators, swipe actions, images, sections, the end of the list, refresh, selection, saving and favourites |
+| `heuristics/forms.md` | `form-` | one column, field count, persistent labels, required marks, choice groups and their limits, input type and keypads the app draws, sliders and ranges, autofill, when to validate, error recovery, what survives backgrounding, submit |
 | `heuristics/chat.md` | `chat-` | the transcript's anchor and where it opens, paging history upward, arrivals while reading, grouping and time, the row, the empty conversation, the composer's ceiling, the state of one message, attachments, presence, announcing an arrival |
+| `heuristics/assistant.md` | `ai-` | generated answers and suggestions: following text as it streams, the wait and its named steps, stop, failure halfway, sources at the claim, generated content marked and never sent without a tap, earlier versions, quotas and cost, mode and attachments in the composer, announcing a stream once |
 | `heuristics/permissions.md` | `perm-` | the inventory, asking for less, scope, the rationale before the prompt, purpose strings, the three answers to a prompt, re-checking, coercion, tracking |
 | `heuristics/onboarding.md` | `onboard-` | the branded frame, how many screens, explaining in place, what to defer, the order of the asks, looking before signing up, account obligations, the first real action, resuming |
-| `heuristics/localization.md` | `l10n-` | no hardcoded strings, direction and what never mirrors, text expansion, locale formats, plurals, script coverage, personal data shapes, collation, per-app language, pseudolocalisation |
+| `heuristics/localization.md` | `l10n-` | no hardcoded strings, direction and what never mirrors, text expansion, locale formats, plurals, script coverage, personal data shapes, collation, content in another language and its translation, per-app language, pseudolocalisation |
 | `heuristics/notifications.md` | `notify-` | what earns an interruption, channels and categories, interruption level, quiet delivery, the lock screen, destination, actions, the shade, badges, the in-app equivalent |
 | `heuristics/widgets.md` | `widget-` | the update budget, stating what is stale, fitting a size with no scroll, per-size authoring, the tap as a deep link, signed-out and empty and error, the stranger reading it, staying on the app's own content, labels on every presentation, the Dynamic Island, the final frame, Android promotion |
 | `heuristics/sense.md` | `sense-` | a capability past the grant: absent hardware, switched off above the app, running, imprecise, failing, plus preview, biometrics, haptics and motion |
 | `heuristics/camera.md` | `cam-` | handing off to the system capture screen, the shutter and its ground, torch, lens stops and zoom, the frame that matches what is analysed, a scan resolving by itself, review and retake, a capture the app rejects, orientation and mirroring, size and destination, the limited photo grant, thermal pressure |
 | `heuristics/offline.md` | `off-` | local first, freshness marks, cache policy, reclaimable storage, write modes, the queue, destructive work offline, conflict, the empty cache |
 | `heuristics/splashscreen.md` | `splash-` | the system launch surface, the double splash, what it may contain, matching the first frame, fake progress, what may hold it, appearance, the entry it hands over to |
-| `heuristics/feedback.md` | `fb-` | the vehicle ladder, silent success, when a dialog is justified, undo, where a message lands, duration, reach, queueing, surviving rotation, the review prompt |
+| `heuristics/feedback.md` | `fb-` | the vehicle ladder, silent success and the completion screen, when a dialog is justified, undo, where a message lands, duration, reach, queueing, surviving rotation, the review prompt |
 | `heuristics/search.md` | `search-` | the two search surfaces, the stock control, placement per platform, typing and suggestions, recents, scope, filters, the result row, zero results, coming back |
 | `heuristics/auth.md` | `auth-` | the methods and their order, provider buttons, web flows, last used, code screens, biometrics over a session, expiry, re-auth, the active account, sign out, deletion |
 | `heuristics/webviews.md` | `webview-` | which surface a URL opens in, somebody else's credential field, the wrapper's own chrome, back inside the page, links that leave it, theme and text size reaching content nobody can restyle, insets and the keyboard, downloads and file pickers, the session the app cannot read, the wrapped site |
 | `heuristics/settings.md` | `set-` | a better default before a switch, settings in context, what the system owns, shape and status, controls, effect, what syncs, destructive rows, search, the account exit, diagnostics |
-| `heuristics/media.md` | `media-` | the system player, controls and scrubbing, unasked sound, audio focus, becoming noisy, background audio, remote controls, picture in picture, fullscreen, keeping the screen awake for anything watched rather than touched, quality, live |
+| `heuristics/media.md` | `media-` | the system player, controls and scrubbing, unasked sound, audio focus, becoming noisy, background audio, remote controls, picture in picture, fullscreen, keeping the screen awake for anything watched rather than touched, quality, downloads for offline use, live |
 | `heuristics/maps.md` | `map-` | the first camera, who owns the drag, markers as targets, clustering, the equivalent list, following the user, legibility over tiles nobody chose, routes as text, tiles that did not arrive, the cost of a live map, attribution, the provider's contract |
 | `heuristics/privacy-ui.md` | `priv-` | the stranger beside the user, masked values, the app switcher snapshot, blocking capture and merely detecting it, the second gate, what gets instrumented, deleting data, the declaration matching the code |
 | `heuristics/sharing.md` | `share-` | the system sheet and nothing hand-rolled, the payload and its preview, a link rather than a screenshot, readiness, file access, the outcome, what the app accepts and how it arrives, clipboard and paste, invites |
 | `heuristics/updates.md` | `upd-` | the test for blocking at all, minimum version, the gate screen, prompt shape, flexible install, restart state, migration running once and its path, never wiping, carrying work over, what changed, the store channel |
-| `heuristics/scrolling.md` | `scroll-` | nesting on one axis, the affordance that says there is more, collapsing chrome, anchoring, restoration, return to top, programmatic scrolls, overscroll, scrolling with the keyboard up |
-| `heuristics/data-display.md` | `data-` | precision that does not lie, the shape of a table that does not fit, when a chart earns its place, scale and reach, relative against absolute time, units, entering a date, empty against null against zero |
+| `heuristics/scrolling.md` | `scroll-` | nesting on one axis, the affordance that says there is more, collapsing chrome, anchoring, restoration, return to top, programmatic scrolls, a row of section labels over one long page, overscroll, scrolling with the keyboard up |
+| `heuristics/data-display.md` | `data-` | precision that does not lie, the shape of a table that does not fit, when a chart earns its place, scale and reach, relative against absolute time, units, entering a date, a code shown to be scanned (ticket, pass, payment code), empty against null against zero and values derived from an unknown |
 | `heuristics/sound.md` | `sound-` | the inventory, being silenced by the switch and the ringer, mixing with other audio, system sounds, never sound alone, unasked sound, the off switch |
-| `heuristics/payments.md` | `pay-` | which rail the item legally takes, linking out by storefront, the wallet first, the system sheet, the total, where the price comes from, subscription terms, cancelling, restore, card entry, leaving and returning, pending and idempotency, the honest paywall |
+| `heuristics/payments.md` | `pay-` | which rail the item legally takes, linking out by storefront, the wallet first, the system sheet, the total with optional charges and holds, where the price comes from, card entry, leaving and returning, pending and idempotency |
+| `heuristics/subscriptions.md` | `sub-` | the paywall and the subscription it sells: required terms, the billed amount first, struck prices and savings, the end of a trial and its reminder, choosing a plan, the way out and the offer after it, real deadlines, children, restore, cancelling |
+| `heuristics/commerce.md` | `shop-` | catalogues, product pages and carts for physical goods and services: price with its quantity and unit price, honest reductions, variants and the unavailable one, stock states and the re-check before commitment, adding in place, quantity bounds and undoable removal, a cart that survives the process and sign in, carts bound to a store or slot, suggestions that keep checkout visible, substitutions, reordering |
+| `heuristics/tracking.md` | `track-` | a process the person started running elsewhere (an order, a ride, a parcel, a transfer, a trip): named stages, estimates as windows, the age of a live status, late and stuck and waiting states, reaching the other side, changes before the cutoff, the final state and its receipt, entry from outside, the live surface agreeing with the screen, several at once |
 | `heuristics/ads.md` | `ads-` | labelled as advertising, the close control, placement, frequency, reserved space, adjacency to a real action, rewarded and consent flows, reporting, accessibility, the paid-to-remove entitlement, cost, children |
+| `heuristics/game.md` | `game-` | a play surface and its HUD, what shows per game state, the centre of the play area, control zones, pausing on lost attention and held touches, the result of a round and the offers on it, locked levels, when a rewarded offer appears, progress across process death, music and effects, words painted into art |
+| `heuristics/economy.md` | `econ-` | virtual currency, lives, energy, daily caps and unlock costs: the cost on the control, contents and odds, affordability and the smallest pack that covers it, a gate shown at the entry, a disabled buy control, bundles already owned, pack bonuses and value badges, several balances and expiring credits, currency bought with money |
+| `heuristics/learning.md` | `learn-` | lessons, quizzes, drills and flashcards: teaching before testing, defining terms, feedback after an answer, items that come back, how much a wrong answer weighs, committing a choice, scores before the first answer, a lesson resumed after the process dies |
 
 **Platform and engineering.** Same tier and same pass as the rows above, kept in `platform/` because they are a different kind of rule. Everything in `heuristics/` says what the person experiences. These three say how the code underneath has to behave for that experience to hold: transport, scheduling, the frame budget. They name more APIs than any other file, which makes them the part that ages, so read them for the behaviour they require and treat each API as today's way of getting it. A rule here is opened, scored and blocks exactly like any other.
 
@@ -114,7 +125,7 @@ It fails in two quiet ways. Judging by the feature closes a file that owns somet
 | `platform/performance.md` | `perf-` | cold start, the main thread, the frame budget, image decoding, memory, power, app size, and measuring instead of guessing |
 | `platform/background-work.md` | `bg-` | what may run at all, now or later, periodic work, visible and stoppable, the foreground service last, declared types, location, durability, exact time, push wake-ups, restriction, exemption, failing while away |
 
-Lookup material, read on demand for one value and never as background: `references/color-construction.md`, `references/type-scales.md`, `references/fonts.json`, `references/input-fields.md`, `references/navigation-containers.md`, `references/motion-tokens.md`, `references/capability-checks.md`, `references/launch-surface.md`, `references/icon-and-image-assets.md`, `references/search-controls.md`, `references/wireframe-frame.md`, `references/design-grammars.md`, `references/accepted-exceptions.md`.
+Lookup material, read on demand for one value and never as background: `references/color-construction.md`, `references/type-scales.md`, `references/fonts.json`, `references/input-fields.md`, `references/navigation-containers.md`, `references/motion-tokens.md`, `references/capability-checks.md`, `references/launch-surface.md`, `references/icon-and-image-assets.md`, `references/search-controls.md`, `references/wireframe-frame.md`, `references/design-grammars.md`, `references/accepted-exceptions.md`, `references/paywall-anatomy.md`.
 
 ## Always in scope
 
@@ -162,12 +173,14 @@ The user chooses. A recommendation is a default worth stating, not a decision al
 npx trunative doctor
 ```
 
-It checks four things and exits non-zero if any fails:
+It checks these and exits non-zero if any fails:
 
 - the product brief, at `.trunative/PRODUCT.md` or `PRODUCT.md`
 - the design brief, at `.trunative/DESIGN.md` or `DESIGN.md`
 - the stack brief, at `.trunative/STACK.md` or `STACK.md`
+- every rule id the stack brief cites, so an exception names a rule that exists
 - the installed skill, against the hash in `.trunative/skill.lock`
+- no full copy of the skill sitting beside the installed one
 
 The doctor only checks that a brief exists. Whether it says anything useful is your job, here in init.
 
@@ -192,7 +205,9 @@ A document the user hands over, a product spec, a pitch, a prompt written for an
 
 Read the codebase first and derive the tokens from what is actually there. Ask the user only about what the code cannot answer, and about the intent behind values the code shows but does not explain.
 
-Ask whether there is a reference to match: a mockup, a screenshot, another app, a brand sheet. When there is, it outranks both the code and any derivation, and `DESIGN.md` is read off it. Go through what a picture settles and a description loses, one by one, and write each down with the reference it came from: the ground and whether it is tinted, the ink, the accent and what it is spent on, the weight of titles against body, the icon set and whether a selected icon fills, the back glyph, how a selected item in a bar or a list is marked, what carries depth, and the radii. A token nobody wrote down from the reference gets filled in from the framework's defaults, and the user then spends the next week pointing at the difference.
+Ask whether there is a reference to match: a mockup, a screenshot, a board, another app, a design file, a brand sheet. When there is, it outranks both the code and any derivation, and `DESIGN.md` is read off it.
+
+Record the reference as an input, not as a mood. In the Overview of `DESIGN.md`, write where it lives, as a path in the repository or a link, and what it decides: arrangement, palette, type, iconography, motion, or a named subset. A reference for particular screens is recorded the same way in `PRODUCT.md` against those screens. What is recorded is what `flow/spec.md` holds the structure to, and leaving it raises the gate there: a reference the agent drifted away from without asking is the most expensive correction there is, because the owner makes it one screen at a time. The nine always in scope still hold over a reference, and any other rule it overrides gets its exception in `STACK.md`, with the reference as the reason. Go through what a picture settles and a description loses, one by one, and write each down with the reference it came from: the ground and whether it is tinted, the ink, the accent and what it is spent on, the weight of titles against body, the icon set and whether a selected icon fills, the back glyph, how a selected item in a bar or a list is marked, what carries depth, and the radii. A token nobody wrote down from the reference gets filled in from the framework's defaults, and the user then spends the next week pointing at the difference.
 
 Ask which appearances the product ships: following the system, which builds both and is the recommendation, or one of them forced. Record the answer in the Overview. It decides what `color-dark-composed` grades, and it is the user's to decide rather than a default either way.
 
@@ -218,9 +233,9 @@ Ask which appearances the product ships: following the system, which builds both
 - Text scale, safe areas and semantics are first-class (`MediaQuery.textScaler`, `SafeArea`, `Semantics`), so the accessibility floor is reachable without extra packages.
 - Hot reload keeps the build and review loop short, and this flow runs that loop on every screen.
 
-**A stated constraint moves the recommendation off Flutter**, and only a stated one does. Never a preference of yours. When code already exists, or the team already ships in another stack, use what is there and do not ask at all. Otherwise:
+**A stated constraint moves the recommendation off Flutter**, and only a stated one does. Never a preference of yours. When code already exists, or the team already ships in another stack, use what is there and do not ask at all. A Unity project is recognised by `ProjectSettings/ProjectVersion.txt` beside an `Assets/` folder and `Packages/manifest.json`, and records `Stack: unity`; a game the user says is built in Unity is a stated constraint in the same way. Otherwise:
 
-**Flutter and Expo and React Native and SwiftUI and Jetpack Compose and Mobile web**
+**Flutter and Expo and React Native and SwiftUI and Jetpack Compose and Mobile web and Unity**
 
 This copy of the skill was built for one stack, which is the answer. Record it in `STACK.md` with the reason it was chosen, and do not ask.
 
@@ -232,8 +247,9 @@ Ask this in plain text, ending in a question mark, under the label "Stack", with
 - **React Native or Expo.** Right when the product is a feature inside an app that already ships in it. Two renderers, so every design decision is verified twice.
 - **SwiftUI or Jetpack Compose.** One platform only, with integration no cross-platform layer reaches: widgets, App Clips, deep system APIs. The other platform is a second product.
 - **Mobile web.** The target is a website. The browser owns gestures, insets and the keyboard, and the heuristics apply to what it leaves.
+- **Unity.** Right when the product is a game whose play surface needs a real engine: physics, 3D, a scene editor. Its canvas UI reports nothing to the platform by itself, so safe areas, text size and the screen reader are wired by hand on every screen.
 
-Write the answer into `STACK.md` as its first line, `Stack:` followed by exactly one of `flutter`, `expo`, `react-native`, `swiftui`, `compose` or `web`, because that line is what decides which copy of this skill the project installs next. Under it, the reason, naming the constraint that moved the recommendation when one did. A stack chosen off the recommendation and a stack chosen against it are different facts, and review needs to tell them apart.
+Write the answer into `STACK.md` as its first line, `Stack:` followed by exactly one of `flutter`, `expo`, `react-native`, `swiftui`, `compose`, `web` or `unity`, because that line is what decides which copy of this skill the project installs next. Under it, the reason, naming the constraint that moved the recommendation when one did. A stack chosen off the recommendation and a stack chosen against it are different facts, and review needs to tell them apart.
 
 ### 3. Check the project is not wearing another app's identity
 
@@ -277,12 +293,16 @@ The step ends with a composition chosen between alternatives, a wireframe render
 "Add Google sign-in."                 spec
 "This screen has no empty state."     spec
 "Send the row to a detail screen."    spec
+"Show a rewarded ad after a loss."    spec
+"Ask for a rating after a while."     spec
 
 "Make the button blue."               build
 "Four more points of padding."        build
 "The transition is too slow."         build
 "Rename the view model."              build
 ```
+
+A task does not have to sound like design to move structure. Wiring an ads SDK, an analytics event that triggers a rating prompt, a notification, a permission request, a paywall variant or a consent form each puts something in front of the person: a new action, a new state, a modal over the flow, a new way in. Judge it by what the person will see, never by which layer of the code the task lives in.
 
 Write the verdict in one line before anything else, naming which of the four the task touches or naming that it touches none. A verdict nobody wrote is a step nobody ran, and it fails in one direction only: writing code is the attractor, so the unwritten answer is always "straight to build".
 
@@ -350,6 +370,8 @@ A screen driving a camera, a microphone, location, a motion sensor or a radio ow
 
 **`scope`** names files from the Extra table in `SKILL.md`, by the stem or by the rule prefix beside it, whichever the row put in front of you: `localization` and `l10n` are the same row. Never a rule id, and never a file from the Base table, such as `states` or `layout`: base files are opened on every screen, so declaring one says nothing. `open` is what build reads and what `npx trunative rubric --only` takes. `closed` carries the rows a reader would expect to be open, each with the sentence `SKILL.md` requires. Not the whole table: the near misses, which are the only ones anybody argues about later. `auto_excluded` is optional and carries stems alone, for the rows the screen plainly has nothing of. It owes no sentence, and it is there for the reviewer who wants to see that a row was looked at and not forgotten. A row in neither list is simply excluded. When in doubt whether a row is a near miss, it is one, and it goes under `closed` with its sentence.
 
+Scope is a fact about the screen as it is now, not as it was on the day of the brief. A change that adds a capability the brief excluded reopens that row in the same change: an ads SDK reached from the screen reopens `ads`, a scheduled or pushed message reopens `notifications`, a rating prompt reopens `feedback`, a purchase reopens `payments`, a camera, a map or a second shipped locale reopens its own row. The row moves to `open`, the change is reviewed against it, and a row left in `closed` or `auto_excluded` while its capability sits in the target is a brief that lies. `npx trunative spec` reports a target that imports a capability its brief excluded.
+
 #### Body
 
 In this order, and nothing else:
@@ -376,6 +398,10 @@ Nobody reconstructs a codebase by hand. When a screen has no brief and a structu
 Derive what the code shows and nothing more. A state the code does not implement is not written as implemented: it is the `n/a` that has no reason, which is exactly the finding that sends the screen back to build.
 
 This section is for code that existed before the task. A screen written in this session gets its brief before its code, and a brief written afterwards to complete the record is not a spec step: it recorded what was built, and nobody chose it.
+
+`npx trunative spec --coverage` lists the screen files in the project that no brief targets, so a screen without one is found before a structural change lands on it rather than after.
+
+A brief also goes stale from the other side, when a fix lands on its screen and moves hierarchy, actions, states or navigation without touching the brief. The fix updates the brief in the same change. `npx trunative spec` reports a target that changed after its brief did, which is a question to answer, not a defect by itself: a change that moved none of the four leaves the brief as it was, and says so.
 
 ### 3. The wireframe
 
@@ -412,7 +438,7 @@ What the wireframe settles: the first screenful (`layout-fold`), content collidi
 
 What it does not settle, and does not try: contrast, the dark appearance, text at the accessibility steps, measured hit areas, the screen reader, motion. Those are the nine always in scope, they are answered on a device in `flow/review.md`, and they are why the gate below approves structure rather than a finished screen.
 
-The wireframe is scaffolding, not a second contract. After approval nothing reads it: review does not open it, drift does not consult it, and no check validates it. It stays in the repository as the record of what was approved, and a later structural change rewrites it from the brief instead of patching it. One contract, brief against code, and no second surface to diverge.
+The wireframe is scaffolding, not a second contract. After approval nothing reads its drawing: review does not open it, drift does not consult it, and no check compares it with the code. The one part read later is the explore record at its top, which `npx trunative spec` checks and whose `Gate` line `flow/build.md` reads. It stays in the repository as the record of what was approved, and a later structural change rewrites it from the brief instead of patching it. One contract, brief against code, and no second surface to diverge.
 
 ### 4. The gate
 
@@ -453,15 +479,28 @@ Ask when the structure is a real decision, meaning any of these holds:
 - the screen changes what the product does: a new destination, a changed navigation model, a job moved from one screen to another;
 - an interaction is irreversible or costs money, and the structure decides how easy it is to reach;
 - the new structure contradicts one the user already approved;
+- the structure departs from a reference the user supplied and `PRODUCT.md` or `DESIGN.md` records, in any of the things that reference was recorded as deciding;
+- the change replaces something the person already knows the product by: the launcher icon, the launch surface, the display name under the icon, or anything `DESIGN.md` names as signature;
 - it is the first structural task of the session, so the user sees once how this step draws.
+
+The last two are never skipped on the ground that the request implied them. A departure from a reference is shown as the frame beside the reference, and a replaced icon, launch surface, name or signature element as the current one beside the proposed one. Neither ships on an approval the agent gave itself, and a request that only said "improve" or "polish" did not approve a new icon.
 
 Proceed without asking when none of them holds: the request already fixed the hierarchy, the actions and the navigation, and the chosen composition is what it asked for. The brief is still written, the candidates still compared and the frame still drawn and looked at. Say in the hand-off that the gate was skipped and on what ground, show the frame and the five lines anyway, and carry on to build. That is a report and not an approval, and the user can stop it there. A loop of build, ask, wait on every component is a gate people learn to click through, which protects nothing.
 
 When the harness cannot show the user a picture, say so and put the five lines in front of them anyway. A gate answered on the text alone is weaker than one answered on the frame, and it is still the user answering.
 
+Write the outcome into the explore record at the top of the wireframe, as one more line under the ones `flow/explore.md` wrote:
+
+```text
+Gate         approved by the user, 2026-10-18
+Gate         skipped, the request fixed hierarchy, actions and navigation
+```
+
+An `approved` line is what makes a structure approved on disk rather than in a session nobody can read back: `flow/build.md` reads it before changing the screen, and the gate trigger above about contradicting an approved structure applies to every screen that carries one. A `skipped` line approves nothing, and only the user writes, or asks for, an `approved` one.
+
 ### 5. Hand off
 
-Say what the brief settled, which extra files its scope opened and which near misses it closed, the lines `flow/explore.md` handed back, what the wireframe pass caught, that `npx trunative spec` passed, and whether the gate was asked or skipped and on what ground. Then run `flow/build.md`.
+Say what the brief settled, which extra files its scope opened and which near misses it closed, which rows a new capability reopened, the lines `flow/explore.md` handed back, what the wireframe pass caught, that `npx trunative spec` passed, and whether the gate was asked or skipped and on what ground. Then run `flow/build.md`.
 
 # flow/explore.md
 
@@ -503,7 +542,7 @@ Each candidate is written through one lens. The lenses are what makes the three 
 
 The three are allowed different amounts of distance from the default, and the amounts are the point. The conventional candidate may be the default done well. The spatial candidate has to change the structure: what dominates, how things are grouped, what contains them. The contextual candidate has to change the interaction model, meaning what the hand does to get the job done: a tap where there was a form, a glance where there was a tap, a hold, a drag, a single control that replaces a screen of them. A third candidate operated exactly like the first has not used its lens.
 
-`references/design-grammars.md` holds the spatial relations a candidate can be built from, and the shape list in `references/wireframe-frame.md` holds compositions that already have names. Both are prompts. A candidate that fits none of them is drawn anyway and given a name of its own, in two words, the way `hero-split` or `canvas-overlay` were: a name is what lets the next screen refer to it.
+`references/design-grammars.md` holds the spatial relations a candidate can be built from, the shape list in `references/wireframe-frame.md` holds compositions that already have names, and `references/paywall-anatomy.md` holds the named compositions of a screen that sells. All three are prompts. A candidate that fits none of them is drawn anyway and given a name of its own, in two words, the way `hero-split` or `canvas-overlay` were: a name is what lets the next screen refer to it.
 
 A candidate is five lines and no drawing:
 
@@ -589,7 +628,7 @@ Chosen       B, because the next departure is the whole job and A buries it in a
 Lost         A reads as a schedule to study, C hides later departures behind a gesture
 ```
 
-`Default`, `Context`, `Candidates`, `Distance`, `Chosen` and `Lost` are required, and `Distance` counts all three pairs as `A/B`, `A/C` and `B/C`.
+`Default`, `Context`, `Candidates`, `Distance`, `Chosen` and `Lost` are required, and `Distance` counts all three pairs as `A/B`, `A/C` and `B/C`. The gate in `flow/spec.md` adds a `Gate` line under them once it has been asked or skipped.
 
 Then return to `flow/spec.md` and draw the chosen candidate. The hierarchy in the brief is updated when the winner reordered it, since the brief is the contract and this step is allowed to change its mind.
 
@@ -604,6 +643,12 @@ Writes or changes one screen, one component, or one flow. Never runs before init
 Before anything else, write one line saying whether this task establishes or changes hierarchy, actions, states or navigation. If it touches any of the four, stop here and run `flow/spec.md`: a new screen, a new component with state of its own, or a new flow touches all four by definition, and arriving at this file with one of those in hand means the step was skipped rather than judged.
 
 That line is written, not recalled. Unwritten, the answer is always the same one, because code is what this step is for and the pull is toward starting it.
+
+The line is about what the person will see, not about which layer the task lives in. An ads integration, an analytics event that opens a rating prompt, a notification, a permission request or a paywall variant adds an action, a state or a modal to some screen, and it comes through here like any other change to that screen.
+
+Two changes go to the gate in `flow/spec.md` however small they look: replacing the launcher icon, the launch surface, the display name or anything `DESIGN.md` names as signature, and leaving a reference the user supplied. Neither is a build decision, and doing it unasked is how a product ships with an identity its owner never saw.
+
+**When the explore record at the top of the screen's wireframe has a `Gate` line reading `approved`**, the structure is the user's, not this step's. A change that moves its hierarchy, actions, states or navigation goes back through the gate, even when the change is a fix: an approved screen altered to make a defect go away is still an approved screen altered.
 
 **When the screen has a brief**, at `.trunative/screens/<name>.md`, read it and build what it says. The person's goal and the moment they are in, the hierarchy, the primary action, the six states and the scope were settled in `flow/spec.md`, and the composition was chosen between alternatives in `flow/explore.md`. Rederiving them here is the context this step exists to save. Build the composition that won, as it was drawn: the pull while writing code is back toward the stock arrangement the framework's widgets suggest, and a screen that quietly reverts to a bar over equal cards has thrown the choice away, which review reports as drift and scores under `comp-context`. Where the brief and the request disagree, the brief is stale: go back to `flow/spec.md` and change it rather than building against a file that now lies.
 
@@ -627,9 +672,11 @@ Extra is not a feeling either. Name the screen in one line, as the thing it is r
 
 A brief's `scope` has already made that pass. Open what `scope.open` names and reuse the sentences in `scope.closed`, and run the pass yourself for anything the brief does not cover, because a screen grows between the brief and the code.
 
-When the screen touches Firebase, in any of auth, Firestore, Storage, Messaging, Remote Config or Crashlytics, read `flow/firebase.md` as well. It is loaded here the way a heuristic is, and it is not a step.
+When this change brings in a capability the brief excluded, an ads SDK, a notification, a rating prompt, a purchase, a camera, a map or another locale, open that file now and move its row to `scope.open` in the same change. The rules of a file nobody opened are the ones a new capability breaks, and a brief that still excludes it tells review not to look.
 
-**When the user supplied a reference for this screen**, an image, a sketch, another app's screen, read it before the tokens and build what it shows. It is not a mood to be interpreted: the ground, the weights, the glyphs, the spacing between groups and how a selected item is marked are all in it, and a value the reference shows is not a gap to fill with a derivation. Where the rules and the reference disagree, build the reference, record the conflict for review, and tell the user which rule it breaks and what that costs.
+When the screen touches Firebase, in any of auth, Firestore, Storage, Messaging, Remote Config, A/B Testing, In-App Messaging or Crashlytics, or sells something on a project that uses Firebase, read `flow/firebase.md` as well. It is loaded here the way a heuristic is, and it is not a step.
+
+**When the user supplied a reference for this screen**, an image, a sketch, another app's screen, read it before the tokens and build what it shows. It is not a mood to be interpreted: the ground, the weights, the glyphs, the spacing between groups and how a selected item is marked are all in it, and a value the reference shows is not a gap to fill with a derivation. Where the rules and the reference disagree, build the reference, record the conflict for review, and tell the user which rule it breaks and what that costs. A rule the reference overrides gets an exception in `STACK.md` with the reference as its reason, through the test in `references/accepted-exceptions.md`, so review reads a decision rather than a violation. The nine always in scope are the limit: a reference does not override them, and where it would, build the reference's look with the rule met and say so.
 
 **When `DESIGN.md` is missing, or says nothing about a role this screen needs.** Init writes that file and `doctor` is what notices it is gone, but screens get built in the gap anyway, and what fills the gap on its own is the median of everything a model has read: a system font, a violet button, a rounded card, and a screen that would fit any other product. Settle the identity in writing before the first line of code, in five lines:
 
@@ -669,7 +716,9 @@ Say which heuristics files you applied and which you deliberately skipped, with 
 
 Where the code had to depart from the brief, change the brief in the same turn and say what moved. A brief left behind is what review reports as drift, and it is cheaper to correct here than to explain there. The same holds when the user asks for the change: a request that moves an item the brief names under Hierarchy, Interactions or Navigation, or removes a screen another brief links to, rewrites those briefs in the same turn, and a structural change also redraws the wireframe through `flow/spec.md`.
 
-Then run `npx trunative spec` over the briefs this build touched. A build renames and splits files, and a `target` pointing at a file that no longer renders the screen is a brief that joins to nothing.
+Then run `npx trunative spec` over the briefs this build touched. A build renames and splits files, and a `target` pointing at a file that no longer renders the screen is a brief that joins to nothing. It also reports a target changed after its brief, and a capability the target imports while the brief excludes it: answer both in this turn.
+
+Before saying the work is done, run `npx trunative detect` over the files this build changed, and fix what it finds or name it in the hand-off. It answers only the part of a rule a file can settle, so its silence proves nothing, but a finding it prints is a defect review would otherwise spend a pass on. A fix is a change too: the patch that makes one defect go away is where the next one comes from, and it goes through the same run.
 
 A plan that builds several screens builds them one at a time, each through this file and each reviewed before the next starts. Writing every screen first and the briefs afterwards, to complete the record, turns spec into paperwork about decisions nobody made.
 
@@ -703,7 +752,7 @@ Some rules are not a matter of degree. A control has an accessible name or it do
 - **`fail`**: it is not.
 - **`n/a`** and **`unrun`**, as below.
 
-A `pass` counts as 5 out of 5 and a `fail` as 1 out of 5 in the total, so the percentage still reads across runs.
+A `pass` counts as a 5 and a `fail` as a 1 in the total, each times the rule's weight from section 4, so the percentage still reads across runs.
 
 A **violation** is a 1, a 2 or a `fail`. The build loop continues while there is one. Nothing at 3 or above blocks a build, which does not make it finished.
 
@@ -718,6 +767,8 @@ Every row carries a severity, from the rule's own heading:
 
 The overall score cannot outvote a severe failure. When any P0 or P1 rule is a violation, the status of the screen is `BLOCKED`, and it is printed in the header beside the percentage, never in place of it: `92%, BLOCKED by a11y-name` is a legitimate header, and it means what it says. Ninety-nine rules at 5 and one P0 at 1 is a screen somebody cannot use. The band in section 4 is not printed for a blocked screen, because "Nothing structural left" above a P0 failure is false.
 
+Severity does a second job, and it is a different one: it weighs each rule in the total, in section 4. Blocking says whether the screen may ship at all. The weight says how much each rule moves the number of a screen that does not block. Neither stands in for the other.
+
 Two answers that are not scores. Not applicable is written `n/a` and never 0, because a zero in a table of scores reads as the worst one and ends up in somebody's sum:
 
 - **`n/a`**, with the reason in the row: the feature does not exist here, the platform does not have it, or `STACK.md` records the exception. Not available for the nine rules under **Always in scope** in `SKILL.md`. An `n/a` written in a screen brief is a claim the brief's author made before the code existed, so it is checked here like any other claim, and it never arrives as an exemption. Exceptions accepted on purpose live in `STACK.md`, which is the only file that grants one.
@@ -729,7 +780,7 @@ Anchors are not a curve. Most rules on a screen built with this skill land at 3 
 
 Review the actual code, not your memory of writing it. Open the files that changed.
 
-After a build that is the diff, including a build that went straight from a one-line verdict to code: a change too small for spec is still a change someone will hold, and its review is the same file with a smaller scope, printed with its header. On request it is the screen: the widget, view or composable that renders it plus whatever it pushes and presents, opened on a device or a simulator.
+After a build that is the diff, including a build that went straight from a one-line verdict to code: a change too small for spec is still a change someone will hold, and its review is the same file with a smaller scope, printed with its header. That holds for a change that did not look like screen work: an analytics event that also fires a review prompt, an ad integration, a notification, a permission request, a paywall variant. What the person sees is reviewed whoever thought they were writing it. On request it is the screen: the widget, view or composable that renders it plus whatever it pushes and presents, opened on a device or a simulator.
 
 ### 2. Scope and checklist
 
@@ -740,6 +791,20 @@ An identity the build had to settle because `DESIGN.md` did not carry one is par
 Name the screen first, the same way build does, and derive the scope from the name. A build that named it wrong took the wrong files with it, and a review that inherits the build's list inherits the mistake. Where your pass reaches a file the build never opened, its rules are in scope all the same and every one of them is `unrun` until it is checked: a rule nobody looked at is not a rule that passed.
 
 A screen brief at `.trunative/screens/<name>.md` does not change that. Its `scope` is what the spec step decided and what the rubric was generated from, and it may widen your scope and never shrink it. Where your own pass reaches a file the brief left out, grade it and report the difference as drift.
+
+A play surface in a game, the screen where the game itself runs under a HUD, is graded with the review profile `heuristics/game.md` states: that file says which families close on a play surface and why, so the rows it closes are `n/a` with its reason rather than a hundred rows argued one at a time. Menus, settings, shops and result screens in the same game are ordinary screens and get the ordinary scope.
+
+#### A follow-up review
+
+A screen that already passed a full review, then changed, does not need every row graded again to know whether the change held. The scope of a follow-up run is:
+
+- the nine always-in-scope rules, every time;
+- every rule whose Check line names something the diff added, changed or removed: a control, a string, a colour, a state, a sheet, a route, a request;
+- every rule of an Extra file the diff brought into scope for the first time, such as a screen that gained an ad, a notification, a review prompt or a second locale. A file newly in scope is graded whole, because nothing about it was ever seen.
+
+Every other row carries its grade from the last full review, marked carried, with the date of that run. A carried grade is not a fresh one, and the report counts it apart.
+
+The follow-up is the same review with a narrower scope, never a second procedure. It is not available for a new screen, for a change spec judged structural, or when the last full run is older than the skill hash in `.trunative/skill.lock`: those run the full scope. Choosing the follow-up to avoid a row that would fail is choosing the scope after the scores, which the paragraph above already forbids.
 
 ```sh
 npx trunative rubric --only forms --only search
@@ -765,6 +830,36 @@ Every row gets a score, one line of finding, and its evidence:
 
 A rule the checklist prints `[device]` on may not take `source`: its own file has already said a diff cannot settle it, so a number from the source alone is a guess wearing a score. The paragraph that file closes its Check section with, printed under the group as `Not from a diff`, says why. Those rules are `device`, `source+device`, or `unrun`. A rule without the mark can be graded from the source, and is still worth seeing on a device.
 
+Where no screen reader can be driven, a dump of the accessibility tree taken from the running app is `device` evidence for the rules about names, roles, reading order and grouping: what each node is called, which nodes merged, and in what order they come. It is not evidence for announcements, focus moves or gestures, which only exist while a screen reader is running, and those stay `unrun` without one. The dump is attached to the report beside the capture.
+
+**Flutter**
+
+On Android run `adb-agent ui dump --json` against the running app: it reads the tree the platform received from the engine, which is the one TalkBack reads, so it is the evidence that counts. `debugDumpSemanticsTree()` from a debug session, or `tester.getSemantics(finder)` in a widget test with `ensureSemantics()` on, shows what Flutter meant to send, and a node there that is missing from the platform tree is a finding. On iOS open the Accessibility Inspector in Xcode against the simulator.
+
+**React Native**
+
+On Android run `adb-agent ui dump --json` and read the elements, or `--raw` for the XML, and on iOS open the Accessibility Inspector in Xcode against the simulator.
+
+**SwiftUI**
+
+Open the Accessibility Inspector in Xcode against the simulator and walk the hierarchy, or read `XCUIApplication().debugDescription` in a UI test.
+
+**Jetpack Compose**
+
+Run `adb-agent ui dump --json` against the running app and read the elements, or `--raw` for the XML, or call `composeTestRule.onRoot().printToLog("a11y")` with the merged tree in a UI test.
+
+**Mobile web**
+
+Read the accessibility tree in the browser devtools, or run axe against the page and keep its output.
+
+**Unity**
+
+Unity UI reaches the platform's screen reader only through what the app registers: from Unity 6, an `AccessibilityHierarchy` of `AccessibilityNode`s with labels and roles, made active through `AssistiveSupport.activeHierarchy`. On Android `adb-agent ui dump --json` against the running build shows whether those nodes arrived, and on iOS the Accessibility Inspector in Xcode does. A tree with one node for the whole screen is itself the finding, for every name and order rule on it.
+
+**Any other stack**
+
+Use the platform's own inspector for the accessibility tree: on Android `adb-agent ui dump --json`, on iOS the Accessibility Inspector in Xcode. An engine that draws its own canvas exposes only what it registers with the platform, so a tree with one node for the whole screen is itself the finding.
+
 A screen is never closed on `source` alone. Render it, look at it, and keep the capture beside the report. What the file hides and the picture shows in a second: the last row of content sitting under a pinned bar, the primary action stranded in the middle of an empty frame, a hero occupying a third of the height and depicting nothing, placeholder text standing in as the content. None of that is arguable from code, and all of it is what a person sees first.
 
 **Mobile web**
@@ -773,11 +868,11 @@ A screen is never closed on `source` alone. Render it, look at it, and keep the 
 chrome --headless --window-size=402,874 --screenshot=screen.png file:///absolute/path/screen.html
 ```
 
-**Flutter and React Native and SwiftUI and Jetpack Compose**
+**Flutter and React Native and SwiftUI and Jetpack Compose and Unity**
 
 ```sh
 xcrun simctl io booted screenshot screen.png   # iOS simulator
-adb exec-out screencap -p > screen.png         # Android emulator or device
+adb-agent screen shot --out screen.png         # Android emulator or device
 ```
 
 **Any other stack**
@@ -800,6 +895,45 @@ It reads the files and answers the part of a `Check` line a file can settle, rep
 
 Then the measurements that do need a device: both appearances on the narrowest and widest device class, the largest accessibility text step on the narrowest, hit area bounds read from the inspector rather than estimated from a screenshot, the primary flow completed with the screen reader on, the screen with the network off and after a process kill the system would have made itself, and real records rather than seed data, meaning a null, a zero, a long string, an old timestamp and an empty list. When the app can reach a real account, use it: demo data was written to look right, which is the one thing real data does not do.
 
+**Flutter and React Native and Jetpack Compose and Unity and Any other stack**
+
+On an Android emulator or device, drive all of it with `adb-agent`, the shell counterpart of an Android debug bridge server: every command answers `--json`, exits non zero on failure, and reads the screen by label instead of by guessed coordinates. When it is not on the path, `npx -p android-debug-bridge-mcp adb-agent` runs it, and `adb-agent skills get adb-cli` prints its full guide. Run `adb-agent doctor` once before the first measurement, since a run that cannot reach `uiautomator` produces no tree and the rows it was meant to settle stay `unrun`.
+
+```sh
+adb-agent test folder checkout                        # one folder of artifacts per run
+adb-agent system deeplink "myapp://checkout" --package com.example.app
+adb-agent ui wait "Pay"                               # wait for content, never for a clock
+adb-agent ui dump --json                              # labels, bounds, clickable, order
+adb-agent screen shot --test checkout --step default
+adb-agent input scroll down --amount 0.9              # then capture again, at the end of the content
+
+adb-agent system setting get system font_scale        # the value to put back
+adb-agent system setting put system font_scale 2.0    # largest text step, then capture
+adb-agent system shell cmd uimode night yes           # the other appearance, then capture
+adb-agent system shell wm size 720x1280               # narrowest class, wm size reset after
+adb-agent system shell cmd overlay enable com.android.internal.systemui.navbar.threebutton
+adb-agent system shell cmd overlay enable com.android.internal.systemui.navbar.gestural
+
+adb-agent system airplane on                          # network off, then off again after
+adb-agent input key HOME
+adb-agent system shell am kill com.example.app        # the kill the system makes in the background
+adb-agent input key RECENTS                           # return the way a person does, then dump
+
+adb-agent system logcat --package com.example.app --priority E --lines 100
+adb-agent test artifacts checkout                     # what the report attaches
+```
+
+What each answer settles, and what it does not:
+
+- **Hit areas** come from the `bounds` of each element in `ui dump --json`, in pixels. Divide by the density over 160, read with `adb-agent system shell wm density`, to get dp, and compare against `touch-floor`. That is the inspector reading step 3 asks for, never an estimate off a capture.
+- **Names, roles and order** come from the same dump: an element with an empty label that is `clickable` is an `a11y-name` failure with its bounds attached, and the order of `elements` is the order TalkBack walks.
+- **The dump has no z-order.** An element under a pinned bar still reports its full bounds, so a dump never settles `layout-chrome` or `layout-insets`: the capture at the end of the content does, in both navigation modes.
+- **A WebView or an engine canvas is often one node.** That single node is the finding for every name and order rule inside it, and coordinates for driving it come from the capture.
+- **The screen reader.** Turning TalkBack on is `adb-agent system setting put secure enabled_accessibility_services com.google.android.marvin.talkback/com.google.android.marvin.talkback.TalkBackService` on an image that ships it. On one that does not, the dump stands for names, roles and order as above, and announcements and focus stay `unrun`.
+- **Crashes and errors** a flow raised without showing them are in the logcat read, cleared first with `adb-agent system clear-logcat`, and an error there during the primary flow is a finding even when the screen looked fine.
+
+Every `put`, `night`, `wm size`, overlay and airplane change above is a setting on the person's device, so the paragraph below holds: `setting get` before each `put` is the value to restore, and the hand-off lists each one put back, `wm size reset` and the original navigation mode included. Never run `adb-agent app clear` on a device you did not set up for the test, because it wipes the account and the data on it, and `app restart` gives the fresh process without that.
+
 Some defects only exist over time, and a capture of the settled screen shows none of them. Capture the screen while it loads and again once content arrives, and compare where things sit, since `state-loading` fails in the step between the two. Leave the screen open for a minute and look again: a relative time that never changes, a figure that should have refreshed, a banner that should have gone. Time the ordinary interactions, the sheet opening, the tab switching, the list returning, instead of judging them by feel.
 
 A device the user is working on is theirs. Before changing a setting on it, font scale, display size, rotation lock, theme, locale, animations, language, say which, and put every one back before the hand-off, listing what was changed and restored. A test that leaves the phone at double text size or with rotation locked has broken the next thing the user tries.
@@ -812,9 +946,22 @@ Then reconcile: the judged score stands unless a measurement contradicts it, and
 
 ### 4. The numbers
 
-The maximum is 5 times the number of rules actually scored from 1 to 5. Nothing else is in it.
+Every scored rule counts with the weight of its severity, so the total says how much of what matters held, not how many rules did:
 
-- The denominator is never the size of the scope. A scope of 74 rules with 9 `n/a` and 5 `unrun` scores out of 300, not out of 440.
+| Severity | Weight |
+|---|---|
+| P0 | 4 |
+| P1 | 3 |
+| P2 | 2 |
+| P3 | 1 |
+
+A rule's points are its score times its weight. The total is the sum of the points, and the maximum is 5 times the sum of the weights of the rules actually scored, from 1 to 5 or as `pass` and `fail`. Nothing else is in it.
+
+Unweighted, a scope that is mostly P2 lets friction carry the number: forty P2 rules at 5 hide two P1 rules at 3 the same way an average hides one rule at 1. The weights make a 3 on a rule about exclusion cost half as much again as a 3 on a rule about friction, and a 3 on a P0 cost twice as much.
+
+- The denominator is never the size of the scope. A checkout screen scoped to the base files plus `forms`, `commerce` and `payments` holds 148 rules, and with 12 `n/a` and 8 `unrun` it leaves 128 scored. At 5 P0, 18 P1, 101 P2 and 4 P3, their weights add to 5 × 4 + 18 × 3 + 101 × 2 + 4 × 1 = 280, so the maximum is 1400: not 5 times 148, and not 5 times 128.
+- A weight comes from the severity on the rule's own heading, as the checklist prints it, and a run never assigns one. A rule whose weight looks wrong has the wrong severity, and that is fixed in `heuristics/`, where every later run picks it up.
+- A carried grade in a follow-up run keeps its rule's current weight, so a severity changed since the full run moves the carried points too, and the trend line says the skill hash moved.
 - Report coverage beside the total: scored, `n/a` and `unrun`, out of the scope. A run that skipped the device work does not come out ahead of one that did it.
 - Record which ids were `n/a` and which were `unrun`. A later comparison against a run that hid them is a comparison of two different measurements.
 
@@ -835,7 +982,7 @@ Bands read off the percentage, since the maximum moves with the scope:
 The report goes in the response, in this order:
 
 1. **Header.** What was reviewed, the scope, the status first, then the violations counted by severity, the total, the percentage, the coverage, and the band when the status is `CLEAN`. `BLOCKED` names the rule ids that block.
-2. **The table.** Columns: rule, severity, score or pass and fail, evidence, finding. Print every rule at 4 or below and every one of the always-in-scope nine, then one line per file for the rest: file, rules scored, average, lowest.
+2. **The table.** Columns: rule, severity, score or pass and fail, evidence, finding. Print every rule at 4 or below and every one of the always-in-scope nine, then one line per file for the rest: file, rules scored, weighted average, lowest.
 3. **Violations.** Every rule at 1, 2 or `fail`, ordered by severity and then by what it costs the person using the app, and never by how easy it is to fix. Each names the rule id, the file and line, what the user meets, and the fix. Say plainly when the screen is unusable one-handed, loses work on interruption, or has no failure state, and do not bury it under smaller findings.
 4. **Spec drift.** Only when the screen has a brief, and unscored. Start with `npx trunative spec` on that brief, whose findings are drift already written down, then read the brief's Hierarchy, Interactions and Navigation against the code, and the screens it names against the briefs that exist. Each entry quotes what the brief says and what the code does: a hierarchy in a different order, a `primary_action` whose label is not the one on screen, a state declared and not implemented, a scope the brief left out. Where the divergence also breaks a rule, name the id that already scores it, such as `state-offline` for a declared state that is not there, and do not score it twice. Drift is a fact about two files disagreeing, and the moment it carries a number this file has two graders in it.
 5. **What moved.** Scores a measurement changed, with both numbers.
@@ -859,25 +1006,26 @@ slug: lib-screens-checkout-screen-dart
 spec: .trunative/screens/checkout.md
 date: 2026-09-08T14:22
 skill: sha256:6f0a...
-scope: [touch, forms, states, layout, typography, colors, motion, accessibility]
+mode: full
+scope: [colors, typography, touch, buttons, layout, composition, states, motion, accessibility, copy, icons-and-imagery, forms, commerce, payments]
 status: VIOLATIONS
 violations: [p0: 0, p1: 0, p2: 2, p3: 1]
-total: 236
-max: 300
+total: 1106
+max: 1400
 percent: 79
-scored: 60
-na: [pay-restore: no purchases on this screen, ads-report: no Android build]
+scored: 128
+na: [pay-steering: physical goods, no storefront rule applies, shop-substitute: nothing is picked after the order is placed]
 unrun: [a11y-announce, type-scaling]
 ---
 ```
 
-`unrun` is empty on a complete run, and never left out. `skill` is the hash in `.trunative/skill.lock`. It says which set of rules produced the numbers, which is how a later run knows the rulebook moved under it. `spec` is the screen brief this run graded against, omitted when the screen has none, so a later comparison can tell a screen that changed from a screen whose declared intent changed.
+`mode` is `full` or `follow-up`. A follow-up run adds `carried`, the date of the full run its carried grades come from, and the trend line below names a follow-up as one, since its percentage mixes fresh grades with carried ones. `unrun` is empty on a complete run, and never left out. `skill` is the hash in `.trunative/skill.lock`. It says which set of rules produced the numbers, which is how a later run knows the rulebook moved under it. `spec` is the screen brief this run graded against, omitted when the screen has none, so a later comparison can tell a screen that changed from a screen whose declared intent changed.
 
 Then read the newest five archived runs with the same slug and print one line:
 
-> Trend for `lib-screens-checkout-screen-dart`: 61%, 74%, 79% (236/300 this run).
+> Trend for `lib-screens-checkout-screen-dart`: 61%, 74%, 79% (1106/1400 this run).
 
-The comparison is only honest when the measurement is the same, so name any of these that changed since the previous run, on the same line: the skill hash moved, so some of the difference is rules rather than the screen; the scope changed, and which files joined or left; or the `n/a` set or the `unrun` set changed, since a rule that was excused or skipped last time and scored now moved the total on its own. The scope may grow between runs and may not silently shrink: a later run covering fewer files is not a better run.
+The comparison is only honest when the measurement is the same, so name any of these that changed since the previous run, on the same line: the skill hash moved, so some of the difference is rules, or the severities that weigh them, rather than the screen; the scope changed, and which files joined or left; or the `n/a` set or the `unrun` set changed, since a rule that was excused or skipped last time and scored now moved the total on its own. The scope may grow between runs and may not silently shrink: a later run covering fewer files is not a better run.
 
 First run: there is nothing to compare against. Say so in one line, name it the baseline, and name the file the next run will read.
 
@@ -894,15 +1042,401 @@ First run: there is nothing to compare against. Say so in one line, name it the 
 
   Then report what was built, what was checked, what was excused and what was not seen. A run that meets the first three and not the fourth has not closed the screen: it says which checks are outstanding and what would run them.
 
+  `layout-insets` is the check most often left for later and the one whose failure is on every screen of every session, so it is never the outstanding one: a run with it `unrun` is reported as not closed, never as passed, whatever else it covered. Both navigation modes the platform offers, gesture and buttons, and a sheet or dialog open over the screen, are what it takes.
+
 Two consecutive reviews finding the same violation means the fix is not working. Say so and ask the user, instead of looping a third time.
 
 Do not fix and grade in the same pass. A grader that edits the code it just graded has no second opinion left for the next run.
+
+# flow/dark-ux.md
+
+## Dark UX
+
+Runs only when the user asks for it: a request that names dark UX, dark patterns, growth patterns, or a number to push (trial conversion, retention, daily actives, revenue per user, ad revenue, opt-in rate). It is never a step, and build and review do not open it on their own.
+
+It builds the patterns large consumer apps use to move those numbers. Most of them depart on purpose from defaults elsewhere in this skill, which are written for the person's convenience rather than the product's result, and that departure is what the user is asking for. Each entry names the rules it departs from so the departure is recorded instead of fought in every review.
+
+### 1. How it runs
+
+1. **Name the number.** One metric per run, said in one line, with the screens it lives on. A pattern is chosen because it moves that metric, never because it is in the list.
+2. **Pick from section 2.** Usually two or three patterns that pull the same metric from different sides: a paywall pattern and a reminder pattern, or a streak and a reward.
+3. **Build it** through `flow/build.md`, and through `flow/spec.md` first when it changes hierarchy, actions, states or navigation, which a new paywall, a cancel flow or a reward screen always does.
+4. **Record the departures.** For every rule id under **Departs from**, write an exception in `STACK.md`, scoped to the screen: the metric as the reason, and who pays the cost. `references/accepted-exceptions.md` says what a good one looks like, and review then scores that rule `n/a` instead of a violation. The nine always in scope and every P0 rule admit no exception, so the pattern is built inside them: a quieter close is still a target that meets `touch-floor` and `color-contrast`.
+5. **Build the shippable conditions with it.** Each entry lists what keeps the app in the stores and out of a regulator's file. They are part of the pattern, not advice about it, and a pattern shipped without them is the version that gets the app removed.
+6. **Ship it behind a flag and an event.** Every pattern carries the analytics event that measures it and a remote switch that turns it off, so it is tested against the metric rather than assumed to work. A pattern that sells sits on a named placement. On a Firebase project, `flow/firebase.md` says how Remote Config, A/B Testing, Cloud Functions and the stores' server notifications carry the switch, the experiment, the entitlement and the reminders without another service.
+
+### 2. The catalogue
+
+Each entry: what to **build**, what it **moves**, what keeps it **shippable**, and the rules it **departs from**.
+
+#### Targeting and experiments
+
+The patterns below the first four read who the person is. These four are what they read from.
+
+**Return probability.** A per person estimate of coming back tomorrow, recomputed every day, that decides which intervention each person gets.
+- Build: features from the last weeks of use (sessions per day, how each session started, from a notification or from the icon, mistakes or failures in the last session, a crash since the last open, days since the last purchase), a model trained on whether the person came back the next day, a score stored per person, and the previous score kept beside it so a drop is visible. Below a threshold, the person gets the cheapest intervention that works for their segment: an easier session, a reminder, a streak freeze, a discount.
+- Moves: next day retention, and the cost of keeping each person.
+- Shippable: the signals used are declared in the store privacy answers, and nothing the person typed is a feature.
+- Departs from: `priv-instrument`, when crash and mistake counts become features.
+
+**Ad value per player.** Each player's worth to the ad network estimated, and ad formats and offers allocated by it.
+- Build: a value table by device model and country, kept as remote config; the player's own history (rewarded ads watched to the end, revenue reported per impression); high value players get more rewarded offers and the high paying placements; a player who has finished several rewarded ads gets offers when a high paying ad is loaded; low value players are steered toward the purchase that removes ads.
+- Moves: ad revenue per daily user.
+- Shippable: personalised ads only with the consent state the request reads, and no tracking identifier on iOS without the system permission; device model and country need neither.
+- Departs from: none.
+
+**Offer bandit.** Every offer with several variants, and an algorithm moving traffic toward the one that works.
+- Build: variants as arms (the length of a revive countdown, the size of a reward, the discount, the hour of a reminder), success measured per show (a revive taken, an offer accepted), allocation by a multi-armed bandit, and a small fixed holdout that never sees the offer so its total effect can be measured.
+- Moves: whatever the offer is for, and how fast the best variant is found.
+- Shippable: every arm is one this file would ship on its own.
+- Departs from: none.
+
+**Remote rule set.** Each pattern a named rule the server turns on, targets and tests without a release.
+- Build: one module per pattern with a stable name, a remote config entry per rule holding its switch, its parameters and its targeting (country, device, segment, return probability, days since install), assignment to experiments by the same system, and every analytics event tagged with the rules active when it fired.
+- Moves: the speed of every experiment above.
+- Shippable: the default with no config fetched is the safe one, and the screen is correct before any value arrives.
+- Departs from: none.
+
+**Named placements.** Every moment that can sell has a stable name, and the server decides what appears there.
+- Build: one id per moment (end of onboarding, a locked feature tapped, a limit reached, a result screen, a link opened, a lapsed subscriber returning), one paywall component that takes its products, copy and layout from the remote rule set for that id, an experiment per placement with its own holdout, and the placement and variant attached to every purchase event the store confirms.
+- Moves: the speed of every paywall test, and knowing which moment earns.
+- Shippable: a placement with no config shows the default paywall or nothing, never an empty frame, and the variant does not change while it is on screen.
+- Departs from: none.
+
+**Acquisition-matched paywall.** The paywall shown to someone matches the campaign that brought them.
+- Build: the install source read once at first launch and stored, and a placement variant per source, so the promise in the ad is the first thing the paywall repeats.
+- Moves: day zero conversion from paid installs.
+- Shippable: the attribution data is declared in the store privacy answers, and on iOS anything linked to other companies' data waits for the tracking permission (`perm-tracking`).
+- Departs from: none.
+
+#### Paywalls and subscriptions
+
+**Paywall at peak intent.** The paywall right after onboarding, before the first use of the product, when interest is highest.
+- Build: the paywall as the last onboarding step, with the free path as a secondary action rather than the default.
+- Moves: trial starts and day zero conversion.
+- Shippable: what the subscription buys is described on that screen; a restore entry is on it.
+- Departs from: `onboard-look-first`, `onboard-defer`.
+
+**Annual first.** The yearly plan selected on load, with its saving against monthly as the headline.
+- Build: annual preselected and visually dominant, a "save N%" badge computed from the two real store prices, the per week or per month equivalent as secondary text under it.
+- Moves: annual share and cash up front.
+- Shippable: the amount actually billed and its period are the largest price on the screen (`sub-billed-first`), and the button says the price; the saving names the monthly plan it is measured against and is derived from the store prices (`sub-discount`).
+- Departs from: `button-ladder`.
+
+**Weekly anchor.** A short plan as the default, with the long plan sold as the saving against it.
+- Build: a weekly or monthly plan preselected, the annual beside it with its saving measured against the short plan paid for a year, and the per week equivalent of the annual under its billed price.
+- Moves: revenue per paying user, from people who keep the short plan, and annual share, from people the saving persuades.
+- Shippable: the comparison plan is on the same screen and named in the badge, and every option leads with its billed amount (`sub-discount`, `sub-billed-first`).
+- Departs from: none.
+
+**Lifetime option.** A one time purchase priced near the annual plan, beside the subscriptions.
+- Build: a non consumable product as a third option, labelled as paid once, restorable like the subscription.
+- Moves: conversion of people who refuse subscriptions, and cash up front.
+- Shippable: restore covers it (`sub-restore`), and the product is a store product, never a long subscription called lifetime.
+- Departs from: none.
+
+**Trial toggle.** A switch that turns the free trial on, on by default, so the trial reads as the obvious choice.
+- Build: the toggle above the button, the button label changing with it ("Start free trial" against "Subscribe").
+- Moves: trial starts.
+- Shippable: when the trial ends, the price that follows and the date are written next to the button, and the label and that line change with the switch (`sub-trial-end`).
+- Departs from: none.
+
+**Trial timeline.** The trial drawn as three dated steps: today, the reminder, the charge.
+- Build: a short vertical timeline above the button with the unlock today, the reminder two days before the end, and the charge with its date and amount, plus a reminder switch beside it that is on.
+- Moves: trial starts from people afraid of forgetting to cancel.
+- Shippable: the dates come from the trial length the store returns, and the reminder is real, scheduled on the server from the store's renewal data and sent through a channel the person allowed (`sub-trial-end`).
+- Departs from: none.
+
+**Trial or pay now.** The choice framed as two ways in: a free trial, or a short paid period.
+- Build: two options of equal shape, a free trial that converts to the annual plan, and a first month at a low introductory price, or a free week against a longer paid trial.
+- Moves: conversion of people who distrust a trial that converts by itself.
+- Shippable: each option says on itself what it becomes after its first period and at what price.
+- Departs from: none.
+
+**Reverse trial.** The paid tier given without a card for a set number of days, then taken back.
+- Build: premium unlocked on sign up, a visible end date from day one, a reminder before the end listing what the person used, and a paywall on the day it ends naming what goes back to the free tier.
+- Moves: conversion at the end of the period, from people who have already used the paid features.
+- Shippable: nothing is charged without a purchase the person makes, and work made with paid features stays readable after the downgrade.
+- Departs from: none.
+
+**Quota wall.** The paywall at the moment a free allowance runs out: minutes, credits, actions per day.
+- Build: the allowance shown as a meter wherever it is spent, the paywall as the placement when it reaches zero, and the time it refills stated on the paywall beside the offer.
+- Moves: conversion at the moment of highest need.
+- Shippable: the remaining allowance and its refill time are visible before it runs out (`econ-gate`, `econ-balances`), and waiting for the refill is offered as the free path.
+- Departs from: none.
+
+**Value pages before the offer.** Two or three pages of benefit and a question or two before the prices.
+- Build: a short paged sequence, a goal or use the person picks that changes the headline of the offer page, and the prices on the last page.
+- Moves: conversion, from an offer that repeats what the person just said they want.
+- Shippable: every page has the exit that `sub-exit` requires, and the pages are not counted as onboarding progress (`sub-honest`).
+- Departs from: none.
+
+**Quiet close.** The close control present but not competing with the offer.
+- Build: a small close in the top corner, in the secondary text colour, with the offer occupying the screen.
+- Moves: paywall dwell time and conversion.
+- Shippable: visible from the first frame, at least 3:1 against the rendered background behind it, and a full size target (`sub-exit`). A close that appears late or that the eye cannot find is the version that gets apps removed.
+- Departs from: `button-ladder`.
+
+**Exit offer.** Closing the paywall raises one different offer.
+- Build: on close, a sheet with a restructured offer, a longer trial, the monthly plan or a discount, shown once per decision and remembered so the next close leaves straight away.
+- Moves: conversion from people already leaving.
+- Shippable: one offer at most, and its own close leaves for good (`sub-exit`).
+- Departs from: none.
+
+**Abandoned purchase.** An offer after the person cancels the system purchase sheet.
+- Build: the cancelled result the store returns, read as its own outcome rather than an error, and one offer on it: a discount, a different plan or a single question about what stopped them.
+- Moves: recovery of purchases that were nearly made.
+- Shippable: no failure message for a cancel, one offer at most, and the paywall underneath unchanged (`sub-exit`).
+- Departs from: none.
+
+**Decline survey.** One question when someone declines, asking why.
+- Build: a single choice with four reasons and an other, shown after a close or a cancelled sheet, answers stored per placement and variant.
+- Moves: the next experiment, from the reasons people give.
+- Shippable: skippable in one tap, never blocking the way out, and never shown on the same decision as the exit offer.
+- Departs from: none.
+
+**Post-purchase upsell.** A second offer right after a purchase succeeds.
+- Build: after the success state, one offer for an upgrade, an add-on or a bundle, with the success itself shown first.
+- Moves: average revenue per buyer.
+- Shippable: the purchase just made is confirmed and usable before the offer appears, the offer is one screen, and declining lands in the product.
+- Departs from: none.
+
+**Decoy plan.** A third plan priced to make the target plan look like the obvious deal.
+- Build: three tiles, the decoy close in price to the target with clearly less in it, the target marked as most popular only if it is.
+- Moves: average order value.
+- Departs from: none.
+
+**Member price framing.** The price the person would pay without the membership, shown beside what they pay with it.
+- Build: the member price beside the regular one on every price the person sees (item cards, the basket, the checkout), member only coupons shown in the coupon wallet as locked with a join button on them, "with the membership this order would have cost X" on the tracking screen of a non member's order, and for members a running total of what the membership saved this month.
+- Moves: membership sign ups and their retention.
+- Shippable: both figures computed from the same basket, with every fee the member still pays included in the member figure.
+- Departs from: none.
+
+**Personalised offer.** A discount shown to the people most likely to leave or most likely to convert with a nudge.
+- Build: a churn score, or a purchase propensity score trained like return probability on whether the person bought in the following week, and a discount offer triggered for the segment it selects, at a moment the person is already in the app.
+- Moves: conversion of hesitant users and win back.
+- Shippable: it is a discount from the public price, never a higher price for someone; in the EU and in New York a price set from personal data says so.
+- Departs from: none.
+
+**Save offer.** An offer between "manage subscription" and the system cancel page.
+- Build: one screen with a discount or a pause option, and the cancel action on the same screen, which hands off to the system's subscription manager. Where cancelling happens in the store and not in the app, the store's server notification that auto renew was switched off, during a trial or after, queues the same single screen for the next time the app opens.
+- Moves: cancellations turned into discounts or pauses.
+- Shippable: at most one offer screen, cancel reachable on it, and the subscription row findable in settings.
+- Departs from: none, when built this way under `sub-cancel`.
+
+**Win back.** An offer to people whose subscription lapsed.
+- Build: a push, an email and an in-app banner after expiry with an introductory price for returning, each carrying a link that opens the paywall placement directly (`nav-deeplink`), and a one tap path back to the paywall.
+- Moves: reactivation.
+- Shippable: the push goes only to people who allowed promotional notifications.
+- Departs from: `notify-earns-it`.
+
+#### Urgency and scarcity, from real numbers
+
+**Expiring personal offer.** An offer that really ends.
+- Build: the end time created on the server the first time the offer is shown, a countdown drawn from that timestamp, and the offer withdrawn when it passes.
+- Moves: conversion speed.
+- Shippable: the deadline survives relaunch and reinstall, and after it passes the offer is gone. A countdown that resets is a fake one (`sub-honest`).
+- Departs from: none.
+
+**Live scarcity and live crowd.** "3 left", "128 people bought this today", "trending near you".
+- Build: counts read from inventory, orders or presence, scoped to what they count, refreshed while the screen is open.
+- Moves: conversion on product and checkout screens.
+- Shippable: the number comes from the system that knows it.
+- Departs from: none.
+
+#### Reputation
+
+**Review at the high point.** The system review prompt timed to the moment the person is happiest.
+- Build: one of two moments. After a success the product can detect (a level cleared, an order delivered on time, a goal reached), or during anticipation, while the person waits for something they want and nothing has gone wrong yet (an order on its way, a match being found, a download nearly done). Only after several sessions, and never after an error.
+- Moves: store rating and ranking.
+- Shippable: the system prompt is called unconditionally at that moment, with no question asked before it, plus a feedback entry that is always available elsewhere.
+- Departs from: `fb-review-prompt` for the anticipation moment, which is during a task rather than after it.
+
+**Social proof inside the app.** The store rating, real reviews and friends' activity shown where decisions are made.
+- Build: the live store rating on the paywall, recent real reviews, "N of your contacts use this" with consent.
+- Moves: conversion and trust.
+- Shippable: every figure is read from its source at display time, and a ranking names who ranked it (`copy-claims`).
+- Departs from: none.
+
+#### Habit and attention
+
+**Streak.** A daily count the person does not want to lose.
+- Build: the count stored on the server in the person's time zone, a visible flame or number on the home screen, a streak freeze that can be earned or bought, a repair offer within a day or two of breaking it, and friend streaks that two people keep together.
+- Moves: daily actives and day 7 and day 30 retention.
+- Shippable: on accounts that may belong to a child, no paid repair and no pressure copy.
+- Departs from: `notify-earns-it`.
+
+**Loss framed reminder.** A reminder that leads with what is about to be lost.
+- Build: "Your 41 day streak ends in 2 hours", scheduled before the end of the person's day, with the copy tested in variants.
+- Moves: daily actives and streak survival.
+- Shippable: reminders are something the person turned on, there is a quiet hours window, and each kind of reminder has its own off switch.
+- Departs from: `notify-earns-it`, `notify-level`.
+
+**Learned send time.** Each person's notification sent at the hour they are most likely to open the app.
+- Build: open times and the source of each open (notification or icon) recorded per person, a model or a simple bandit choosing the hour and the copy, with a default for new users.
+- Moves: notification open rate and daily actives.
+- Shippable: the data used is declared in the store privacy answers.
+- Departs from: `notify-earns-it`.
+
+**Context trigger.** A reminder when the person is likely free: arriving home, connecting to a known network, the phone off silent in the evening.
+- Build: a background trigger on network or location change, with the reminder sent only if the daily goal is not done yet.
+- Moves: completion of the daily action.
+- Shippable: the location or network permission is asked for with this reason, the trigger is a setting the person can switch off, and the store privacy answers declare it.
+- Departs from: `notify-earns-it`.
+
+**Endless feed.** No bottom, and the next item starts by itself.
+- Build: continuous loading a screenful ahead, autoplay of the next video, the feed ranked by predicted watch time.
+- Moves: session length and ad impressions.
+- Shippable: video starts muted unless the person turned sound on; for accounts that may belong to a minor, autoplay can be switched off, and in the EU the largest platforms owe a feed that is not personalised.
+- Departs from: `list-end`.
+
+**Weekly league.** A small group of players ranked by activity for one week, with promotion and relegation.
+- Build: groups of about thirty people with similar activity, points from the product's core action, the top places promoted to the next league and the bottom places relegated, the week's end held on the server, and notifications when someone overtakes the person or the week is about to close.
+- Moves: weekly actives and actions per active user.
+- Shippable: every name in the group is a real person or is labelled as a computer player, and the notifications are opt in.
+- Departs from: `notify-earns-it`.
+
+**Daily reward.** A reward for coming back, growing with consecutive days.
+- Build: a reward calendar with a bigger prize on day 7, every prize shown in advance, and a reminder when the reward is ready.
+- Moves: daily actives.
+- Departs from: `notify-earns-it`.
+
+**Badge as pull.** A count on the app icon for new things to see.
+- Build: the badge counting unseen items the person follows.
+- Moves: opens.
+- Departs from: `notify-badge`.
+
+#### Games
+
+**Difficulty that adapts.** The game eases off after losses and tightens after wins, so the player keeps going.
+- Build: a difficulty input fed by recent results, session length and a churn score; pieces or enemies chosen to give a near win after a run of losses.
+- Moves: session length and day one retention.
+- Shippable: not in games with paid entry or cash prizes, where an outcome tuned by anything but skill is fraud, and not in apps declared for children.
+- Departs from: none.
+
+**Boost, then pressure at the ad.** The run is carried close to the player's record, and the pressure arrives when a rewarded ad is ready.
+- Build: the sequence generator reads the player's record, the current score, and whether a rewarded ad is loaded and how much it pays; below the record it gives pieces that clear lines and build combos, and once the score nears the record with a valuable ad ready it gives a sequence that is hard to place, so the loss lands where the revive offer is worth the most. Each threshold is a parameter of the remote rule set and tuned by the offer bandit.
+- Moves: rewarded ad views per session and ad revenue per daily user.
+- Shippable: the same lines as difficulty that adapts, plus the revive offer as built under revive for an ad.
+- Departs from: none.
+
+**Revive for an ad.** At the moment of losing, the offer to continue from where the player was.
+- Build: "Continue?" with a short countdown and a rewarded ad, the board kept as it was, a score bonus or a doubled reward on return, and the offer timed to the losses that came closest to a record.
+- Moves: rewarded ad views and session length.
+- Shippable: the trade is stated before the ad, the reward is granted on the reward callback, and declining returns to the result screen.
+- Departs from: `ads-placement`.
+
+**Energy.** Lives that refill over time, with a paid or rewarded refill.
+- Build: a cap, a refill timer, an ad or a purchase to refill now, and a reminder when lives are full.
+- Moves: sessions per day and in-app purchases.
+- Shippable: the reminder is opt in like any other.
+- Departs from: `notify-earns-it`.
+
+**Premium currency.** Prices in gems or coins, sold in packs.
+- Build: pack sizes with a bonus on the larger ones, a starter pack worth more than any regular pack offered once to new players, items priced in currency.
+- Moves: average purchase and repeat purchase.
+- Shippable: bonuses computed from the smallest pack's rate and rising with size (`econ-pack-value`), the starter pack gone once bought (`econ-bundle`), and in apps for children the real money price next to the currency price.
+- Departs from: none.
+
+**Currency by subscription.** Currency or credits delivered every period for as long as the subscription runs.
+- Build: an amount credited on each renewal, a smaller daily amount for opening the app while subscribed, and the balance shown with the date of the next credit.
+- Moves: recurring revenue from players who would buy packs now and then.
+- Shippable: the amount is the same every period rather than a large first credit and little after, since Play sells a one time benefit as an in-app product and not a subscription, and whether credits outlive the subscription is stated at purchase (`econ-balances`).
+- Departs from: none.
+
+**Matchmaking for retention.** Opponents chosen so that the player is likely to come back.
+- Build: matchmaking that adds a churn score to skill and latency, giving a player on a losing run an easier match.
+- Moves: retention.
+- Shippable: opponents are real players or are labelled as computer players; no cash prizes ride on the match.
+- Departs from: none.
+
+#### Ads
+
+**More ad moments.** Ads at every natural break.
+- Build: interstitials between levels, sessions or articles, an app open ad on cold start through the network's own app open format, banners on screens that are read rather than operated, and a frequency cap tuned by experiment.
+- Moves: ad revenue.
+- Shippable: each ad is labelled, closes from the first moment the network allows, and never shares an edge with a control the thumb is aiming at.
+- Departs from: `ads-placement`, `ads-frequency`.
+
+**Rewarded everything.** A rewarded ad wherever the person wants a little more.
+- Build: double the reward, unlock for an hour, skip a wait, one more try.
+- Moves: rewarded ad views.
+- Shippable: what the ad buys is always an extra on top of the app's own function.
+- Departs from: none.
+
+**Remove ads as a product.** A purchase that removes ads, offered right after an interstitial.
+- Moves: in-app purchase conversion.
+- Shippable: the offer says what stays, such as rewarded videos the player chooses to watch, and the entitlement then removes everything else everywhere (`ads-entitlement`).
+- Departs from: none.
+
+#### Permissions and data
+
+**Primed ask.** A screen before the system prompt for notifications or tracking, shown at the moment the benefit is clearest.
+- Build: a full screen explanation with the benefit, a primary button that opens the system dialog, and a secondary "not now"; asked again later through the same screen when a new reason appears.
+- Moves: opt-in rate, and with tracking, ad revenue per user.
+- Shippable: the screen does not draw a copy of the system dialog, nothing is withheld from someone who says no, and the system prompt is never called twice after a refusal.
+- Departs from: `perm-notify-ask`, `onboard-ask-order`.
+
+**Friend graph.** Contacts used to find friends and to invite.
+- Build: contact upload during sign up with the reason given, matches shown immediately, an invite screen with suggested people, and a referral reward for both sides.
+- Moves: viral growth and early retention.
+- Shippable: the person picks who is invited, one message goes per pick, and the contact data is declared.
+- Departs from: `onboard-defer`, `onboard-ask-order`.
+
+#### Wording and emphasis
+
+**The preferred answer, emphasised.** On a commercial choice, the answer the business prefers is the filled button.
+- Build: upgrade, keep the subscription, accept the offer as the primary; the alternative as a text button.
+- Moves: conversion on every binary offer.
+- Shippable: not on consent to data processing, where the two answers have to weigh the same in the EU, in Brazil and in California.
+- Departs from: `button-ladder`.
+
+**Loss worded decline.** The decline names what is being given up: "No, I'll pay full price", "Lose my progress".
+- Moves: acceptance of offers and save offers.
+- Shippable: not on consent dialogs.
+- Departs from: `button-label`, `copy-voice`.
+
+**Repeat offer.** An offer that comes back after a no, at a new moment.
+- Build: a cooldown of days between showings, and a new trigger each time.
+- Moves: eventual conversion.
+- Departs from: `fb-unprompted`.
+
+### 3. What it does not build
+
+These are not growth patterns but misrepresentation or taking money without a clear yes. They are what gets apps removed and companies fined, and asked for by name, this command builds the lever in the right column and says it did:
+
+| Asked for | Built instead |
+|---|---|
+| A countdown that resets, invented stock or viewer counts | Expiring personal offer, live scarcity |
+| Reviews, ratings or testimonials typed into the app, a "was" price nobody paid, a saving against a price nobody is charged | Social proof inside the app, annual first, member price framing |
+| Bots or system messages presented as people | Matchmaking for retention with labelled computer players |
+| A satisfaction question that sends only happy people to the store | Review at the high point |
+| Fees revealed at the last step, a paid add-on ticked by default, a trial that converts with no date or price shown | Trial toggle, the all in price from the first screen |
+| Cancel harder than subscribe, or only outside the app; a close that appears late or cannot be seen; no account deletion | Save offer, quiet close |
+| An ad that looks like content, a close that opens the ad, an ad placed for accidental taps | More ad moments, rewarded everything |
+| Data consent ticked by default or without an equal no, a feature withheld until a permission is granted, data collected and not declared | Primed ask |
+| Outcomes tuned against the player where money or a prize is at stake, pressure to buy aimed at children | Difficulty that adapts, outside those cases |
+| Anything bought with money, or with a currency bought with money, whose contents are decided by chance: loot boxes, gacha, card packs, paid spins | Premium currency spent on items the player picks and sees before paying |
+| A struck price worked out backwards from the discount, a saving against a plan the screen does not show, a trial price drawn where the plan price goes | Weekly anchor, annual first, trial toggle |
+| "People who joined today" from a constant, a rating nobody gave, a "number one" nobody ranked | Social proof inside the app |
+| A reminder switch that cannot remind, a close that opens a chain of offers | Trial timeline, exit offer |
+| Removing ads while some still show, unannounced | Remove ads as a product, with what stays named |
+| The result of a round, a test or a quiz the person finished, held back until they pay | The offer after the result, under `game-result` |
+
+### 4. Hand-back
+
+One row per pattern built:
+
+| Pattern | Screen | Metric | Event | Flag | Exceptions written to STACK.md |
+|---|---|---|---|---|---|
+
+Under it, one line on how to read the result: the metric, the comparison group the flag makes possible, and the date it can be judged.
 
 # flow/firebase.md
 
 ## Firebase
 
-Loaded by `flow/build.md`, never as a step of its own, whenever the screen touches auth, Firestore, Storage, Messaging, Remote Config or Crashlytics.
+Loaded by `flow/build.md`, never as a step of its own, whenever the screen touches auth, Firestore, Storage, Messaging, Remote Config, A/B Testing, In-App Messaging or Crashlytics, or sells something on a project that uses Firebase.
 
 It exists because Firebase decides things this skill already has rules about. Offline persistence changes what an honest loading state is. Local writes come back before the server has seen them, so what the screen shows is a claim rather than a fact. An agent that wires it up without knowing that produces screens the heuristics then have to fight.
 
@@ -964,8 +1498,26 @@ The screen has to be correct before any value lands, which means shipped default
 - Screen names match the flow the user walks, so the funnel and the navigation graph are the same thing.
 - Nothing the user typed leaves the device in an event, a log or a crash report. That is `priv-instrument`, and it is the rule an analytics call breaks fastest.
 - What the store declaration says has to match what the SDKs actually collect: `priv-declared`.
+- A purchase event is logged from the transaction the store confirmed, never from the tap on the button. A tap counted as a sale inflates conversion and hides the pending outcome that `pay-outcome` requires, and it is the event every paywall test is judged on. It carries the placement and the variant that sold it.
 
-### 9. Setup
+### 9. Selling without another service
+
+A paywall needs four things besides the store: a way to choose what it shows, a way to test that choice, a record of who has paid, and messages around a trial. Firebase carries all four.
+
+- **What shows where.** Each moment that can sell has a stable placement name, and a Remote Config parameter per placement holds the store product ids, the copy keys and the layout variant. Conditions on that parameter target by country, platform, app version or a user property. Remote Config chooses products, never prices: the amount is read from the store's product object (`pay-price-source`), and a parameter holding a price string is a constant that ships later.
+- **Testing it.** An A/B Testing experiment on that parameter splits the audience, keeps a control group as the holdout, and is judged on the purchase event above rather than on taps. The variant is fixed when the paywall opens and does not change while it is on screen (section 7).
+- **Who has paid.** The entitlement lives in Firestore and is written only by a Cloud Function that receives the stores' server notifications (App Store Server Notifications, Real-time developer notifications from Play) and verifies the transaction. The client never writes it. Read from the persisted cache, it is the last known state that `ads-entitlement` requires on a cold start with no network, and it is what `sub-restore` finds again on a new device.
+- **Around a trial.** The same notifications carry the trial's end and an auto renew switched off. A function schedules the reminder `sub-trial-end` promises from that date and sends it through Cloud Messaging only to a token whose owner allowed notifications, or by email; a renewal switched off queues the single save offer for the next open.
+
+### 10. In-App Messaging is a surface nobody asked for
+
+A campaign that opens on launch or on an analytics event is an unprompted surface the moment it appears.
+
+- It answers to `fb-unprompted`: dismissal remembered, a plain close, and never over a task in progress.
+- A message promoting another product, a sale or a partner is a house ad under `ads-labelled`, and on launch it is the placement `ads-placement` forbids for an interstitial.
+- A campaign that opens the paywall is a placement like any other, and the paywall it opens answers to the whole `sub-` prefix.
+
+### 11. Setup
 
 Only commands and file paths live here. Every design consequence above applies whatever the stack is.
 
@@ -985,6 +1537,10 @@ Add the Firebase SDK through Swift Package Manager, put `GoogleService-Info.plis
 
 Add the Google services plugin and the Firebase BoM to Gradle, put `google-services.json` in `app/`, and let the content provider initialise Firebase rather than calling it from `Application.onCreate`. Persistence is on by default.
 
+**Unity**
+
+Import the Firebase Unity SDK packages, one per product, through the Package Manager or the `.unitypackage` files, put `google-services.json` and `GoogleService-Info.plist` anywhere under `Assets/`, and resolve the Android dependencies with the External Dependency Manager. Call `FirebaseApp.CheckAndFixDependenciesAsync()` once at startup and use no Firebase API before it reports available, keeping that wait off the first frame (`perf-cold-start`).
+
 ### What review scores this against
 
 This file adds no rules. It says what Firebase does to the screen, and review scores the result against the rules that already exist:
@@ -1000,6 +1556,11 @@ This file adds no rules. It says what Firebase does to the screen, and review sc
 | The push prompt and the denied path | `perm-notify-ask`, `perm-rationale`, `notify-inapp` |
 | Shipped Remote Config defaults and a screen that does not shift | `pay-price-source`, `icon-reserve` |
 | Screen names, and nothing typed leaving the device | `priv-instrument`, `priv-declared` |
+| Purchases counted from the confirmed transaction, with placement and variant | `pay-outcome` |
+| Paywall products chosen by Remote Config, prices from the store, variant fixed while open | `pay-price-source`, `sub-billed-first` |
+| The entitlement written by the server and read from the cache | `ads-entitlement`, `sub-restore` |
+| Trial reminders scheduled from the store's dates and sent only where allowed | `sub-trial-end`, `perm-notify-ask`, `notify-earns-it` |
+| In-App Messaging campaigns | `fb-unprompted`, `ads-labelled`, `ads-placement` |
 
 Two of them are answered on a device rather than in the router, and both pass on a warm app with a fast connection, which is the only condition the code was written against. Cold start with a stored session and watch the first two frames, then turn the network off, make a write, and look at what the row says while the server has not seen it.
 
@@ -1210,13 +1771,15 @@ AdMob's placement policy says an ad may not be placed so that it interferes with
 
 - `touch-spacing` puts 8dp between two of the app's own targets. An ad edge is worth more, because the mis-tap pays: leave at least 16dp between the ad container and the nearest control, and 24dp where that control is the screen's primary action.
 - The bottom third is where the thumb lands (`touch-reach`) and where the tab bar, the primary button and the banner all want to sit. At least one of the three moves.
-- No ad on a screen that exists for one decision: a confirmation, a payment, a permission rationale, anything destructive.
+- No ad on a screen that exists for one decision: a confirmation, a payment, a paywall, a shop where prices are tapped, a permission rationale, anything destructive.
 
 ### `ads-rewarded` The trade is stated before it starts, and the reward survives the process
 
 A rewarded ad is one of the two places an ad may interrupt honestly. The other is the end of a segment the user just finished (`ads-placement`); this one qualifies because the user chose it. Tapping the offer is the consent, so the offer has to be complete: what they get, and roughly how long it takes.
 
 - Persist the grant on the reward callback, before drawing anything. Google guarantees its own reward callback fires before its dismissal callback; no other network promises that, and a mediation adapter is where the promise goes. So the instruction has to hold without it: grant on the reward callback wherever the SDK raises one, and never on dismissal. The process can be killed while a full-screen ad is up, and the user who watched it is owed the reward either way.
+- The offer exists only while an ad is loaded. Load the one unit `ads-cost` allows before the moment the offer can appear, and show or enable the offer when the load callback says it is ready. An offer tapped with nothing loaded is either a spinner the person waits on for an unknown time or a reward handed out for nothing, and the moment it was timed for, a lost round, an empty meter, has passed by the time it fills. When the load fails, the offer is absent, not disabled with no reason.
+- Grant from the reward callback and from nothing else. A dismissal, a close button or an ad that played to its last frame is not the network saying the reward was earned, and granting there pays someone who closed the ad at its first second.
 - What is bought is always an extra. Play states that an app cannot force a user to click an ad, or submit personal information for advertising, before they can fully use it, so the app's own function never sits behind an ad.
 - No dead ends. Declining the offer returns to the screen it was made on, and the exit rules in `ads-close` apply to the rewarded unit exactly as they apply to any other full-screen ad.
 
@@ -1251,9 +1814,10 @@ One missed call site is the whole feature failing, because the user only has to 
 
 - The check lives with the ad request, in one place both the banner and the interstitial paths go through, not repeated per screen where a new screen forgets it.
 - The entitlement resolves before the first ad opportunity, including on a cold start with no network. Unknown is not treated as unentitled: a paying user offline is still a paying user, and the last known state is what the app acts on until the store answers.
-- It survives reinstall and a new device through restore, which is `pay-restore`. An entitlement that only lives in local storage is lost with the app.
+- It survives reinstall and a new device through restore, which is `sub-restore`. An entitlement that only lives in local storage is lost with the app.
 - Removing ads removes the space too. A paid user does not get the reserved slot from `ads-reserve` as a blank rectangle, and the layout closes up.
 - Anything the paid tier still shows, a house promo or a cross-sell for another app of yours, is still an ad under `ads-labelled`, and selling their removal and then showing them is the pattern users report.
+- The offer says, where it is sold, what stays: rewarded videos the person chooses to watch, house promos, one placement that remains. "No ads" with an asterisk is a claim the entitlement does not keep (`copy-claims`).
 - Apple's Developer Code of Conduct, guideline 5.6, names charging for features or content that are not delivered as conduct that terminates the developer account. An ad shown to someone who paid to remove ads is that sentence, with the receipt attached.
 
 ### `ads-cost` The ad stack is paid for in launch time, memory and the user's data
@@ -1280,12 +1844,12 @@ Review answers each of these against the code, pointing at the line:
 - No interstitial call site sits at launch, on exit, on back, inside a task or at the start of a segment, and no ad unit is built outside the app itself, in an extension, a widget, a notification, a keyboard or a watch app. `ads-placement`
 - A frequency cap with a written number and a time interval is enforced in code, not in the mediation config. `ads-frequency`
 - Every ad slot reserves its declared size before it fills, has a decided no-fill state, and shortens the scroll rather than covering it. `ads-reserve`
-- At least 16dp separates every ad container from the nearest control and 24dp from a primary action, and screens that exist for one decision carry no ad at all. `ads-adjacency`
-- A rewarded offer states what is traded, grants on the reward callback and persists it, and nothing the app is for sits behind an ad. `ads-rewarded`
+- At least 16dp separates every ad container from the nearest control and 24dp from a primary action, and screens that exist for one decision, a paywall and a shop included, carry no ad at all. `ads-adjacency`
+- A rewarded offer states what is traded, appears or enables only once its ad has loaded, grants on the reward callback and persists it, never grants on dismissal, and nothing the app is for sits behind an ad. `ads-rewarded`
 - The consent state is read at request time, the non-personalised request is the default path, `NSUserTrackingUsageDescription` is in the property list and `com.google.android.gms.permission.AD_ID` is declared where the build targets Android 13 or above, and no health, classroom or child data reaches a request. `ads-consent`
 - Targeting information and an ad report route are both reachable without leaving the app, and the unit carries a content rating ceiling matching the app's own age rating; a codebase that ships only to Android answers this not applicable. `ads-report`
 - The close control has a name, the ad contains focus and returns it on dismissal, and the creative is a single stop for the reader. `ads-a11y`
-- Where any purchase removes advertising, one entitlement check guards every ad request rather than each display, resolves before the first opportunity, treats unknown as the last known state, survives restore, and collapses the reserved slot. `ads-entitlement`
+- Where any purchase removes advertising, one entitlement check guards every ad request rather than each display, resolves before the first opportunity, treats unknown as the last known state, survives restore, collapses the reserved slot, and the offer that sold it names whatever still shows. `ads-entitlement`
 - Ad SDK initialisation is off the cold start path, the preload pool is one, and video is not prefetched on a metered connection. `ads-cost`
 - Where the app is submitted to the Kids Category or declares a child target audience, the ad configuration is per store and written into `STACK.md`. `ads-children`
 
@@ -1294,19 +1858,149 @@ Four of these are only half answerable from a diff, because the SDK draws what t
 ### Reaches
 
 - `heuristics/accessibility.md`: `a11y-focus`, `a11y-name`, `a11y-test`
+- `heuristics/copy.md`: `copy-claims`
 - `heuristics/feedback.md`: `fb-unprompted`
 - `heuristics/icons-and-imagery.md`: `icon-reserve`
 - `heuristics/layout.md`: `layout-chrome`, `layout-fold`
 - `heuristics/navigation.md`: `nav-modal`, `nav-back`
-- `heuristics/payments.md`: `pay-restore`
 - `heuristics/permissions.md`: `perm-tracking`
 - `heuristics/privacy-ui.md`: `priv-declared`
 - `heuristics/settings.md`: `set-diagnostics`
 - `heuristics/splashscreen.md`: `splash-hold`
 - `heuristics/states.md`: `state-interrupt`
+- `heuristics/subscriptions.md`: `sub-restore`
 - `heuristics/touch.md`: `touch-floor`, `touch-spacing`, `touch-reach`
 - `platform/network.md`: `net-metered`
 - `platform/performance.md`: `perf-cold-start`, `perf-memory`, `perf-size`
+
+# heuristics/assistant.md
+
+## Generated answers
+
+An answer written by a model for this person, now: an assistant thread, a summary placed over a document, a suggested reply, a drafted description. It differs from everything else the app shows in three ways. It arrives in pieces over several seconds, so the screen changes while it is being read. It can be wrong while sounding certain, so the person needs a way to check it. And it often costs something per request, in money or in a quota, so a failure or a limit takes something the person already spent.
+
+Here: following text as it arrives, the wait before it does, stopping, failing halfway, where a claim came from, generated content leaving the conversation, earlier versions, limits and cost, the composer's modes, and what the screen reader hears. The transcript as a column that grows from its bottom is `chat-anchor`, the composer's ceiling is `chat-composer` and attaching is `chat-attach`. Loading placeholders are `state-loading`, failure wording is `state-error` and keeping the input across a retry is `state-retry`. A scroll during a drag is `scroll-programmatic`. A link opened from an answer goes through `webview-surface-choice`, and an upgrade offered at a limit answers to `sub-honest`.
+
+Rules in this file, in order: `ai-stream`, `ai-waiting`, `ai-stop`, `ai-failure`, `ai-sources`, `ai-marked`, `ai-versions`, `ai-limits`, `ai-composer`, `ai-a11y`.
+
+### `ai-stream` Text arriving in pieces never moves what is being read
+
+A streamed answer grows the column under the eye several times a second, for as long as the generation runs, and the person starts reading the first sentence long before the last one exists.
+
+- The view follows the newest text only while the person is at the end of it, within a written distance of the bottom. The first drag away from the end stops following, and nothing pulls the view back down while the answer keeps growing, which is `scroll-programmatic`.
+- Once following has stopped, one control carries the person back to the end, drawn the way `chat-new-arrival` draws its pill, and it stays until it is used or the end is reached.
+- Text grows at the end of the answer and nowhere above the reading position (`scroll-anchor`). A block that resolves late inside the answer, a table, an image, a code block, a source card, reserves its box when it starts rather than when it finishes.
+- A new answer opens with its own first line at the top of the visible area once it is longer than a screen, rather than being scrolled past to its last line: the person reads an answer from the start, unlike a message they glance at.
+
+### `ai-waiting` The wait before the first word says that work is happening, and which work
+
+The gap before the first piece can be a second or a minute, and a request that runs tools, reads files or searches spends most of its time in steps the person cannot see.
+
+- The moment the request leaves, the screen shows that it was received and is being worked on, in the place the answer will appear.
+- A step that takes longer than a couple of seconds is named while it runs: reading the attachment, searching, running the calculation. The name is the step, not a generic "thinking".
+- No skeleton shaped like a finished answer, and no placeholder text that could be read as the answer. `state-loading` rules placeholders shaped like content that is known; the length and shape of an answer that does not exist yet is not known.
+- A wait past a written threshold says that it is still going and offers the stop from `ai-stop`, rather than looking identical at second two and at second ninety.
+
+### `ai-stop` A stop control is there for the whole generation, and stopping keeps what arrived
+
+The person often knows within the first lines that the answer is going the wrong way, and every further second costs their time and, where generation is metered, their quota.
+
+- Stop is visible from the moment the request leaves until the last piece arrives, in the place send occupies, at the platform target floor (`touch-floor`), with a name the screen reader reads (`a11y-name`).
+- Stopping keeps every piece that already arrived, marks the answer as stopped, and leaves the prompt editable. A stop that throws the partial answer away punishes the person for using it.
+- Send does not return while a generation is in flight unless sending again is a defined action, queued or replacing, and the control says which.
+
+### `ai-failure` A failure halfway keeps the partial answer and says it is incomplete
+
+A stream can break after forty lines: the connection drops, the request times out, the service refuses to continue. Of all the requests the app makes, this is the one most likely to fail late, after the person has started reading.
+
+- What arrived stays on screen, marked as incomplete in words, never left looking like a finished answer that happens to end mid sentence.
+- The error says what failed and does not invent why (`state-error`), and retry is offered on the answer itself.
+- Retrying never loses the prompt, its attachments or the chosen mode (`state-retry`). A retry that makes the person type the question again is a second failure.
+- A refusal by the model is not a failure of the transport, and it is not drawn as one: it is an answer, shown as text, with the next move the person has.
+
+### `ai-sources` A claim of fact says where it came from, at the place it is made [P1]
+
+A generated answer reads with the same confidence whether it is right or not, so the screen is the only place the person can tell a checked claim from a guess.
+
+- Where the answer draws on documents, pages or the person's own data, the source is attached to the sentence or the paragraph that uses it, not collected in a list at the bottom that nobody connects back.
+- Tapping a source opens it in the surface `webview-surface-choice` picks, and the person comes back to the answer at the same place.
+- An answer produced with no sources does not wear the look of one that has them: no numbered markers that lead nowhere, no source card for a page that was not read.
+- Figures, dates, prices, dosages and anything the person could act on are the claims that need it most, and an answer that offers to act on such a figure shows the figure and its source in the confirmation.
+
+### `ai-marked` Generated content stays marked as generated, and nothing leaves without the person's own tap [P1]
+
+Generated text travels: into a reply, a post, a form field, an email, an order. Once it has left the thread nothing distinguishes it from what the person wrote, and the person is the one answerable for it.
+
+- Generated content placed anywhere outside the conversation, a drafted reply in a composer, a filled field, a summary above a document, is marked as generated where it sits, until the person edits or accepts it.
+- Nothing generated is sent, posted, published, booked or paid on the model's initiative. The final step is a control the person taps, on a screen that shows exactly what will go and to whom, in their own words if they edited it.
+- An action with a cost or a recipient repeats what it will do in the confirmation (`fb-confirm-test`, `pay-total`). A suggestion is an offer, and dismissing it is one tap.
+
+### `ai-versions` Regenerating keeps the previous answer reachable
+
+A second attempt is often worse than the first, and the person cannot know that until they have read both.
+
+- Regenerating adds a version rather than replacing one, and the person can move between versions of the same answer, with the position stated (two of three).
+- Editing an earlier prompt says, before it is sent, what happens to everything after it in the thread: kept as a branch, or discarded. Discarding without saying so loses work the person did not mean to give up.
+- Copying an answer copies the version on screen, as text, without the interface around it.
+
+### `ai-limits` A limit is stated before the request, and reaching it keeps what was typed
+
+A quota, a per-message cost or a daily cap is a gate on the composer, and the worst place to learn about it is after writing a long prompt.
+
+- Where requests are counted or priced, the remaining amount is visible before sending, near the composer, in the unit the limit is counted in, as `econ-gate` asks of any gate.
+- Reaching the limit keeps the typed prompt and its attachments, says when the limit resets as a time, and names the routes that exist: wait, a smaller mode, an upgrade.
+- An upgrade offer never replaces the input field or sits on top of it. The composer stays a composer, and the offer answers to `sub-exit` and `sub-honest`.
+- A request that will cost more than the usual one, a long document, a heavier mode, says so before it is sent.
+
+### `ai-composer` Mode, model and attachments are visible state in the composer, readable before sending
+
+The same prompt gives a different answer under a different mode, and the person decides what to type based on which one is active.
+
+- The active mode or model is shown on the composer as text, not only as an icon, and changing it is one control that opens a list, never a gesture.
+- Attachments waiting to be sent are rows in the composer with their names and a remove control, as `chat-attach` rules for any pending attachment, and each one says whether it was read once the answer arrives.
+- Voice input shows that it is listening and what it heard before the text is sent, and the person can correct it in the field.
+- The composer keeps its written ceiling from `chat-composer`, and unsent text survives leaving the screen (`form-persist`).
+
+### `ai-a11y` The screen reader hears the finished answer once, not every piece
+
+A live region over a stream would speak every fragment as it lands, cutting itself off several times a second.
+
+- While the answer streams, announce that a response is being written, once. When it ends, announce that it is complete, once, and let the person read it as content. Content changing without a navigation is `a11y-announce`, and the polite level `chat-a11y` uses is the one here.
+- The stop control stays reachable and named for the whole generation, and focus is not moved onto the growing text.
+- A stopped, failed or incomplete answer says which in text the screen reader reads, not only by a colour or an icon (`color-not-alone`).
+- Each answer is one block the reader can step into and out of, with its sources and its version controls inside it (`a11y-order`).
+
+### Check
+
+Review answers each of these against the code, pointing at the line:
+
+- The view follows a streaming answer only within a written distance of its end, the first drag away stops following, one control returns to the end, late blocks reserve their box when they start, and an answer longer than a screen is presented from its first line. `ai-stream`
+- A sent request shows at once that it is being worked on, in the place the answer will appear, steps longer than a couple of seconds are named, no answer-shaped skeleton or placeholder text stands in, and a wait past a written threshold says it is still going. `ai-waiting`
+- Stop is visible and named at the target floor for the whole generation in the place of send, stopping keeps the partial answer marked as stopped with the prompt still editable, and a send during generation is either unavailable or labelled with what it does. `ai-stop`
+- A broken stream keeps its partial text marked as incomplete in words, the error names what failed, retry sits on the answer and keeps the prompt, attachments and mode, and a refusal is shown as an answer rather than as a transport error. `ai-failure`
+- Sources are attached to the sentence or paragraph that uses them, open in the right surface and return to the same place, no source marker exists without a source behind it, and an action on a figure shows the figure and its source in the confirmation. `ai-sources`
+- Generated content outside the conversation is marked as generated until edited or accepted, and nothing is sent, posted, booked or paid without the person's tap on a screen showing exactly what goes and to whom. `ai-marked`
+- Regenerating adds a version the person can move between with the position stated, editing an earlier prompt says beforehand what happens to the rest of the thread, and copy takes the version on screen as plain text. `ai-versions`
+- Remaining quota or cost is visible before sending, reaching the limit keeps the prompt and attachments and states the reset time and the routes, no offer covers or replaces the composer, and an unusually expensive request says so first. `ai-limits`
+- The active mode or model is shown as text on the composer and changed through one listed control, pending attachments are named rows with a remove control, voice input shows what it heard before sending, and unsent text survives leaving the screen. `ai-composer`
+- A streaming answer is announced once when it starts and once when it completes rather than per piece, stop stays reachable and named, focus does not follow the growing text, and stopped, failed and incomplete states are spoken in words. `ai-a11y`
+
+Two of these are settled only on a device. Start a long answer, scroll up a screenful while it is still arriving and watch whether the view is pulled back down, then use the return control (`ai-stream`). Run the same generation with the screen reader on, confirm it is announced once at the start and once at the end, and stop it from the reader alone (`ai-a11y`).
+
+### Reaches
+
+- `heuristics/accessibility.md`: `a11y-name`, `a11y-announce`, `a11y-order`
+- `heuristics/chat.md`: `chat-anchor`, `chat-composer`, `chat-attach`, `chat-new-arrival`, `chat-a11y`
+- `heuristics/colors.md`: `color-not-alone`
+- `heuristics/economy.md`: `econ-gate`
+- `heuristics/feedback.md`: `fb-confirm-test`
+- `heuristics/forms.md`: `form-persist`
+- `heuristics/payments.md`: `pay-total`
+- `heuristics/scrolling.md`: `scroll-programmatic`, `scroll-anchor`
+- `heuristics/states.md`: `state-loading`, `state-error`, `state-retry`
+- `heuristics/subscriptions.md`: `sub-honest`, `sub-exit`
+- `heuristics/touch.md`: `touch-floor`
+- `heuristics/webviews.md`: `webview-surface-choice`
 
 # heuristics/auth.md
 
@@ -1400,7 +2094,7 @@ An unlocked phone is regularly in someone else's hands, which is why a live sess
 A phone has no window title and no persistent chrome to keep an avatar in, so on a device carrying a work account and a personal one, the identity has to be on the screen where the action happens.
 
 - Anything that posts, pays, sends, uploads or shares under an identity shows which identity in the surface that confirms it, before the tap and not in a settings screen two levels away.
-- Switching accounts happens in one place and states what is changing.
+- Switching accounts happens in one place and states what is changing. The account is one case of a value that scopes the whole screen, and the rest of that shape is `nav-scope`.
 - After a switch, nothing from the previous account remains on screen: cached lists, badges, avatars and the contents of the outgoing queue in `off-queue` all belong to the account that made them.
 
 ### `auth-signout` Nobody is signed out quietly
@@ -1447,7 +2141,7 @@ Five of these do not come out of a diff. Open the sign-in screen at the largest 
 
 - `heuristics/forms.md`: `form-input`, `form-autofill`, `form-error`, `form-persist`
 - `heuristics/localization.md`: `l10n-strings`
-- `heuristics/navigation.md`: `nav-deeplink`, `nav-restore`, `nav-modal`
+- `heuristics/navigation.md`: `nav-deeplink`, `nav-restore`, `nav-modal`, `nav-scope`
 - `heuristics/offline.md`: `off-session`, `off-queue`
 - `heuristics/onboarding.md`: `onboard-look-first`, `onboard-account`
 - `heuristics/sense.md`: `sense-biometric`
@@ -1549,6 +2243,8 @@ Three to five destinations, and they are the top level of the app rather than a 
 - Every destination is labelled. Icon-only navigation asks the user to guess, and the guess is wrong often enough to matter.
 - The selected destination is obvious without relying on color alone: an indicator, a filled icon variant, a weight change. Selection changes how an item is drawn and never where it sits: the selected icon, label and indicator occupy the same box as the resting ones, so nothing in the bar moves when the selection does.
 - The set does not change from screen to screen, and it does not vanish when a screen is pushed. Tabs that come and go stop being a map.
+- An action in the middle of the bar, a raised plus, a record button, a send or a scan, is the most common way this breaks. It is a primary action standing in a destination's place: it counts under `button-one-primary` on every screen the bar appears over, it has no stack to return to, and on the one screen where it is not wanted it is still the loudest control. It belongs on the screens it acts for. Where the job is big enough to be a place, it becomes a destination whose screen opens on that action.
+- A search button set apart at the trailing end of the bar is the system's own presentation of a search destination on current iOS, not an action, and it is one of the destinations (`search-placement`).
 - Top tabs and bottom tabs on the same screen is two navigation systems arguing. Pick one.
 - A segmented control is not a tab bar. It filters or switches the view in front of the user, it holds about three options, and past that it becomes a menu or a filter screen.
 
@@ -1563,11 +2259,12 @@ Review answers each of these against the code, pointing at the line:
 - Disabled states explain themselves, no control is shown that nothing on the screen can enable, no option is offered that the data source cannot answer, and every button that starts work becomes unpressable and shows it, without resizing. `button-state`
 - At most one FAB, holding the screen's defining action, absent on iOS, with the list underneath padded to clear it. `button-fab`
 - Chip selection is visible without color, chip rows scroll instead of wrapping, and no chip is doing a tab's job. `button-chips`
-- Three to five labelled destinations, a selected state that is not color alone and moves nothing, and one navigation system per screen. `button-tabs`
+- Three to five labelled destinations, a selected state that is not color alone and moves nothing, no action standing in the bar in a destination's place, and one navigation system per screen. `button-tabs`
 
 ### Reaches
 
 - `heuristics/copy.md`: `copy-case`
+- `heuristics/search.md`: `search-placement`
 - `heuristics/typography.md`: `type-scaling`
 
 # heuristics/camera.md
@@ -2000,7 +2697,7 @@ A gradient that stays brings three constraints with it:
 - A long ramp bands on an 8-bit panel, which is what a phone becomes once brightness drops.
 - Translucency stacked on translucency leaves the final ratio at the mercy of whatever happens to scroll past. Opaque values can be checked; these cannot.
 
-### `color-dark-composed` Dark is a second design, not a switch [P1]
+### `color-dark-composed` Dark is a second design, not a switch, unless the product ships one appearance and forces it everywhere, splash, window and night resources included [P1]
 
 This is the part that gets done last and shows it.
 
@@ -2011,7 +2708,7 @@ This is the part that gets done last and shows it.
 - **Every pair gets measured again.** Passing in light says nothing about dark.
 - **Neither appearance inherits the other's derivation.** `color-derived`'s reflex check runs again here, on whichever appearance was built from the other: shedding chroma from a hue that already escaped the reflex can still land that appearance back inside it.
 
-Following the system setting is the default, and both appearances get built. Shipping one appearance is a product decision the user takes, recorded in `DESIGN.md`, never one this rule leaves to whoever writes the theme. Once it is taken, the rule grades the other half of it: the app forces that appearance everywhere it draws, so a phone set to the other one never produces a half-themed screen. The status bar icons, the keyboard, date and time pickers, dialogs from the platform, web content and the launch surface all follow the forced appearance, and each is checked with the system set the opposite way.
+Following the system setting is the default, and both appearances get built. Shipping one appearance is a product decision the user takes, recorded in `DESIGN.md`, never one this rule leaves to whoever writes the theme. Once it is taken, the rule grades the other half of it: the app forces that appearance everywhere it draws, so a phone set to the other one never produces a half-themed screen. The status bar icons, the keyboard, date and time pickers, dialogs from the platform, web content and the launch surface all follow the forced appearance, and each is checked with the system set the opposite way. The window background and the night resource set count as well: a light-only app whose night window is black flashes it before the first frame and behind every transition. A single appearance carried through all of that passes this rule, and it is not an exception to record.
 
 ### `color-contrast` Measure the pair, do not eyeball it [P1]
 
@@ -2057,6 +2754,134 @@ Check the last four on a rendered screen in both appearances rather than in the 
 ### Reaches
 
 - `heuristics/icons-and-imagery.md`: `icon-avatar`, `icon-depicts`
+
+# heuristics/commerce.md
+
+## Commerce
+
+Catalogues, product pages and carts for anything physical or consumed outside the app: food, groceries, retail, tickets, rentals. The person is comparing things on a narrow screen, one item at a time, usually in short sessions that get interrupted, and what they put together over those sessions is work. Every rule here is about the item meaning what it says, and the basket still being there.
+
+Paying is `heuristics/payments.md`: the rail, the total at the moment of commitment (`pay-total`), the four outcomes of a charge (`pay-outcome`). Where a price for store-billed goods comes from is `pay-price-source`. Counts the app spends on the person's behalf that are not money are the `econ-` prefix, and fields and choice groups are the `form-` prefix. Taking something back after a removal is `fb-undo`, and what the first screenful has to show is `layout-fold`.
+
+Rules in this file, in order: `shop-price-unit`, `shop-variant`, `shop-stock`, `shop-add`, `shop-quantity`, `shop-cart-life`, `shop-cart-scope`, `shop-upsell`, `shop-substitute`, `shop-reorder`.
+
+### `shop-price-unit` A price sits with the quantity it buys, and a reduction is measured against a price that was charged [P1]
+
+A number on its own is not a price. Two bottles of oil at different prices are only comparable once each says how much oil it is.
+
+- The quantity the price buys is printed beside it, in the same line or the line under it: the pack size, the weight, the volume, the count, the duration of a booking. A tile showing a price and a photograph leaves the person to guess from the photograph.
+- Where a list puts items side by side for comparison, each one also shows a unit price in one unit for the whole list, per kilogram or per litre or per item, converted once at the edge (`data-units`). Mixing per 100 g on one row and per kg on the next is the same as showing no unit price.
+- A struck-through reference is a price this seller charged for this item before the reduction, for a period someone could have paid it. A reference nobody paid turns the saving into a claim the screen cannot back, and the percentage badge beside it inherits the same problem.
+- A price that depends on a choice not yet made, a size, a slot, a delivery distance, says "from" and the lowest amount, and becomes the exact amount the moment the choice is made.
+
+### `shop-variant` Variants are visible choices, and the one that cannot be had says why
+
+Size, colour, flavour, pack and date are choices the person makes on the product page, and they follow `form-choice`: the group says how many it takes, and the current pick is legible without colour (`color-not-alone`).
+
+- Every variant is shown, including the ones that cannot be bought right now. An unavailable one stays in its place, drawn as unavailable with a word, and the reason sits with it or on tap: sold out, not sold in this area, back on a date. Hiding it makes the person wonder whether it exists; greying it with no word makes them tap it repeatedly.
+- The page follows the selection. The photograph, the price, the quantity line from `shop-price-unit` and the stock state all change to the chosen variant, and nothing on the page still describes the one before it.
+- A variant chosen on the list carries into the page, and back again. Opening an item in a size and landing on its default is a choice the person has to make twice.
+
+### `shop-stock` Stock is a state with words, and it is checked again before the person commits [P1]
+
+Availability changes while somebody is deciding, and it changes most for the items people want.
+
+- Four states, each with its own sentence rather than a colour: available, running low with the number where the number is real, unavailable, and expected back on a date. A count of remaining items is shown only when it is read from stock, never typed to create pressure.
+- An unavailable item stays reachable. Its page offers the nearest alternative, or a way to be told when it returns, and that notice is something the person asked for (`notify-earns-it`).
+- Stock is re-read before the order is committed. An item that ran out in the meantime is named on the screen where the person commits, with what was done about it, rather than discovered on the receipt.
+- A price that changed since the item was added is treated the same way: the item, the old price and the new one, before the commitment.
+
+### `shop-add` Adding answers on the item, and the person stays where they were
+
+Adding to the cart is the most repeated action in a catalogue, and the person is usually mid list when they do it.
+
+- The confirmation is the item itself changing: the add control becomes a quantity control showing one, which is `fb-silent-success`. A toast that says "Added" over a list that already shows the count is noise, and a jump to the cart after every add throws away the place in the list.
+- The cart's count and running total are visible on every screen of the catalogue, in a bar or on the cart entry, and they change at the same moment the item does.
+- An add control drawn on top of a product tile is its own target with its own floor, apart from the tile that opens the page (`touch-nested`). A tap meant for the plus that opens the product, or the reverse, is the failure.
+- The change is announced to the screen reader in one short phrase naming the item and the new count (`a11y-announce`).
+- An add that needs a choice first, a size or a required option, opens the choice rather than adding a default the person did not pick.
+
+### `shop-quantity` A quantity control states its bounds, and the step below the minimum is a removal that can be undone
+
+- The control shows the current number between its two buttons, and both buttons meet the touch floor even when the drawing is small.
+- The maximum is stated when it is reached: a purchase limit, the stock left, a household limit. A plus that silently stops working at nine reads as broken.
+- At the minimum, the minus changes into a remove control, drawn as removal, and the removal is undoable for a real window (`fb-undo`). A minus that deletes a line the person spent time configuring, with no way back, is the case this rule exists for.
+- A quantity that is often large, cases of water, sheets of paper, guests at an event, can also be typed, through a numeric field configured under `form-input`.
+- Changing the quantity updates the line total and the cart total in place, at the same width, so nothing moves under the finger.
+
+### `shop-cart-life` The cart outlives the process, the session and signing in [P0]
+
+A cart is often filled across several sittings. Losing it is losing the person's work, and they rarely rebuild it.
+
+- The cart is stored as soon as it changes, not when the app goes to the background, and it comes back after the process is killed (`form-persist`, `state-interrupt`).
+- Signing in merges the cart built while signed out into the account's cart, and says so when both held items. Replacing one with the other silently loses half the work.
+- On return, anything that changed since the item was added, a price, availability, a variant withdrawn, is named at the top of the cart with the item it concerns, not discovered at checkout.
+- A cart with a natural expiry, a held ticket, a reserved slot, shows the time it is held until as a time, and what happens when it lapses (`data-time-relative`).
+
+### `shop-cart-scope` A cart bound to one store, date or address says so, and nothing replaces it without warning [P1]
+
+Many carts are only valid inside one scope: one shop, one delivery slot, one cinema showing, one destination. That scope is what `nav-scope` puts at the top of the screen, and the cart has to carry it too.
+
+- The cart shows what it is bound to, in words, on the cart and on the bar that summarises it.
+- Adding an item from outside that scope does not clear the cart quietly. The screen states the consequence first, names what would be lost, and offers keeping the current cart as the default answer.
+- Changing the scope itself, the address or the slot, re-checks every line against the new one, and names the lines that no longer apply instead of dropping them.
+
+### `shop-upsell` Suggestions inside the cart never push the way to checkout off the screen
+
+The cart is where the person has already decided. Anything added to it is competing with the one action the screen exists for.
+
+- The checkout action is pinned above the bottom inset and visible at rest, whatever the suggestions above it hold (`layout-fold`, `layout-chrome`).
+- Suggestions sit below the lines the person chose, never between the lines and the total, and they are a secondary emphasis: there is one primary on the screen, and it is checkout (`button-one-primary`).
+- A suggested item added from the cart follows `shop-add`, in place, without opening a new page.
+- Something added by default, a bag fee, a tip, an extended warranty, insurance, is a line the person can see and remove, and anything that costs money starts off.
+
+### `shop-substitute` What happens to a missing item is the person's choice, made before ordering, and reported line by line [P1]
+
+Some orders are assembled by someone else after they are placed: a grocery picker, a kitchen, a warehouse. Between the order and the delivery, items run out.
+
+- Before the order is committed, the person chooses what happens to each item that might be missing: replace it with something similar, ask first, or leave it out and refund it. A default applies to the whole order, and any line can override it.
+- When an item is replaced, the person sees the replacement, its price and the reason, and has a way to refuse it while the order can still change.
+- After the order, what arrived is reported item by item: delivered as ordered, replaced with what, missing and refunded. A total that simply came out lower leaves the person to work out which line went.
+
+### `shop-reorder` Ordering again shows what changed before it fills the cart
+
+Repeating a past order is the shortest path in a catalogue, and the one most likely to bring back something that no longer exists.
+
+- Before the cart is filled, the screen lists what is different from last time: items no longer sold, items now unavailable, prices that moved, options that were withdrawn.
+- The items that can still be had go into the cart, the ones that cannot are named rather than dropped, and the nearest alternative is offered where one exists.
+- A reorder into a cart that already holds items adds to it, or asks, under `shop-cart-scope`. It never replaces what is there.
+
+### Check
+
+Review answers each of these against the code, pointing at the line:
+
+- Every price shows the quantity it buys, comparable items share a unit price in one unit, a price that depends on an open choice says "from", and every struck-through reference is a price this seller actually charged. `shop-price-unit`
+- Every variant is shown, an unavailable one is labelled with its reason rather than hidden or greyed alone, and photo, price, quantity and stock all follow the chosen variant, carried between list and page. `shop-variant`
+- Available, low, unavailable and back on a date each have words, a remaining count appears only when read from stock, an unavailable item offers an alternative or a notice, and stock and price are re-read with any change named before the person commits. `shop-stock`
+- Adding turns the add control into a quantity control on the item, the cart count and total update on the same frame, no navigation or redundant toast follows, the add target is separate from the tile, the change is announced, and an item needing a choice opens the choice. `shop-add`
+- The quantity control shows its value, meets the touch floor on both buttons, states its maximum when reached, turns the minus into an undoable remove at the minimum, offers typed entry where large quantities are common, and updates totals without resizing. `shop-quantity`
+- The cart is stored on every change and survives process death, a sign in merges rather than replaces it, changes since adding are named on return, and a held cart shows when the hold ends. `shop-cart-life`
+- A scoped cart names its scope, adding from outside it states the loss and defaults to keeping the cart, and changing the scope names the lines that stop applying. `shop-cart-scope`
+- Checkout stays pinned and visible at rest, suggestions sit below the chosen lines at secondary emphasis, adding from them happens in place, and every default line is visible, removable and off when it costs money. `shop-upsell`
+- Where items can go missing after ordering, the substitution preference is set before commitment with a per line override, replacements show item, price and reason and can be refused, and the outcome is reported per line. `shop-substitute`
+- A reorder lists what changed since the last order before filling the cart, names what cannot be had with an alternative where one exists, and never replaces an existing cart. `shop-reorder`
+
+`shop-add` is answered with the screen reader on and with a thumb on a narrow device: the add target has to be hit without opening the tile, and the announcement has to name the item. `shop-cart-life` needs the process killed with items in the cart, and a sign in performed with a cart already built while signed out. `shop-upsell` is a rendered cart at the narrow end with a long suggestion block, where the checkout action has to be visible without scrolling.
+
+### Reaches
+
+- `heuristics/accessibility.md`: `a11y-announce`
+- `heuristics/buttons.md`: `button-one-primary`
+- `heuristics/colors.md`: `color-not-alone`
+- `heuristics/data-display.md`: `data-units`, `data-time-relative`
+- `heuristics/feedback.md`: `fb-undo`, `fb-silent-success`
+- `heuristics/forms.md`: `form-choice`, `form-input`, `form-persist`
+- `heuristics/layout.md`: `layout-fold`, `layout-chrome`
+- `heuristics/navigation.md`: `nav-scope`
+- `heuristics/notifications.md`: `notify-earns-it`
+- `heuristics/payments.md`: `pay-total`, `pay-outcome`, `pay-price-source`
+- `heuristics/states.md`: `state-interrupt`
+- `heuristics/touch.md`: `touch-nested`
 
 # heuristics/composition.md
 
@@ -2274,6 +3099,7 @@ What it looks like in a real codebase: the same quantity living as a literal ins
 - Where it genuinely cannot be derived, it lives in one named place that the domain code also reads, never inline in a component.
 - A cap the product enforces is stated as the cap, not as the theoretical maximum. Advertising a ceiling that a limit elsewhere prevents anyone from reaching is a false claim, and it is the version that reaches a store reviewer.
 - Store listing text, screenshots and onboarding repeat these figures. When one changes, they are part of the change.
+- Figures about the product's popularity are claims too: a star rating, a count of users or reviews, "N people joined today", a ranking. The rating is the store's current one, read rather than typed; a count is a query over the system that knows it; a ranking names who ranked it and when. A daily count written as a constant reads the same on every day anyone opens the screen, which is how it gets disproved.
 
 Grep the view layer for digits inside display strings. Each hit is a claim, and each claim has an owner in the code or it is a defect.
 
@@ -2300,7 +3126,7 @@ Review answers each of these against the code, pointing at the string:
 - Field hints show a format, each line standing in for missing content names its cause and the 2 empties with a next move end on the verb of the control that takes it, and 0 waiting lines claim unmeasured progress. `copy-absence`
 - Every string and figure belongs to the product's domain, the screen shows at least one concrete value a reader would recognise, and the figures on it reconcile with each other. `copy-sample-data`
 - Numbers are numerals, destructive strings state the exact count and object, and formatting and plurals come from the locale. `copy-numbers`
-- Every figure that describes what the product delivers is interpolated from the constant the behaviour uses, or lives in one named place the domain also reads, and no advertised ceiling is unreachable because of a limit elsewhere. `copy-claims`
+- Every figure that describes what the product delivers is interpolated from the constant the behaviour uses, or lives in one named place the domain also reads, and no advertised ceiling is unreachable because of a limit elsewhere; every rating, count and ranking about the product is read from its source, with the ranker named. `copy-claims`
 - Every usage description is 1 sentence-case sentence ending in a full stop, the control that opens the system dialog reads Continue or Next, and any data disclosure says why, what and how before the dialog with nothing unrelated bundled into it. `copy-rationale`
 
 Read the strings in the running app, not in the catalogue. Terminology drift only shows up when the screens are walked in the order the user walks them, and a string that is correct in the file can still be the wrong length once the device's text size is applied to it.
@@ -2334,7 +3160,7 @@ Two failures produce most of the damage. The first is precision the data does no
 
 Neither platform will stop either one. Android ships no chart component and no data table component, in Material or in androidx, and iOS publishes no guidance for a sortable multicolumn table on a phone. Every grid and every chart on a phone is something someone decided to build from nothing.
 
-Rules in this file, in order: `data-precision`, `data-table-shape`, `data-subject-shape`, `data-chart-earns-it`, `data-chart-scale`, `data-chart-reach`, `data-time-relative`, `data-time-instant`, `data-units`, `data-date-entry`, `data-empty-null-zero`.
+Rules in this file, in order: `data-precision`, `data-table-shape`, `data-subject-shape`, `data-chart-earns-it`, `data-chart-scale`, `data-chart-reach`, `data-time-relative`, `data-time-instant`, `data-units`, `data-date-entry`, `data-code-scan`, `data-empty-null-zero`.
 
 ### `data-precision` Never show more digits than the value carries
 
@@ -2436,6 +3262,46 @@ Near dates go in the platform picker: a compact field or inline calendar on iOS,
 - Do not open a new screen just to show a picker, and do not build a calendar grid by hand: it will miss the locale's first day of week, its week numbering and its non Gregorian calendars.
 - `form-input` rules that a closed value set gets a picker at all. This rule is which picker, and in which direction the entry is going.
 
+### `data-code-scan` A code shown to be scanned is drawn for the scanner, and it works without a network [P1]
+
+A boarding pass, an entry ticket, a membership card, a payment code, an address to receive funds, a pickup code at a counter. The reader is a machine held by a stranger, often in hard light and often where the signal is worst, and for those seconds the screen has one job: be read by it.
+
+- The code is as large as the column allows, with its quiet zone clear: no rounded mask, no frame drawn into the margin, and no logo over the middle beyond what the error correction level was chosen to absorb.
+- Dark modules on a light ground in both appearances. A code inverted for the dark appearance fails on many readers, so the code keeps its light ground there while the screen around it follows the theme.
+- While it is shown, the screen raises its brightness and restores it on the way out, and it stays on (`media-awake`). A screen that dims at the counter has the person unlocking a phone in front of a queue.
+- It opens with no connection. A pass or ticket is stored on the device once it is issued (`off-sync-scope`), and a code that rotates for security says so and shows how long the current one is good for.
+- The value it carries is also printed beside it as text, grouped so it can be read aloud, for the reader that fails and for the call with support. A long value shortened in the middle keeps its first and last characters and copies whole (`share-copy`).
+- Nothing animates over it and nothing covers it: no banner, no snackbar, no bar across the quiet zone (`layout-overlays`).
+- Where the platform has a wallet that can hold it, adding it there is offered, since the wallet already does all of the above, the lock screen included.
+
+**SwiftUI**
+
+The window scene's `screen.brightness`, saved on appear, set to 1 and restored on disappear. A pass the system wallet can hold is offered through `AddPassToWalletButton`.
+
+**Jetpack Compose**
+
+`window.attributes.screenBrightness` set to `WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL` while the screen is shown, and back to `BRIGHTNESS_OVERRIDE_NONE` when it leaves.
+
+**Flutter**
+
+The brightness plugin `STACK.md` records, such as `screen_brightness`, raised for the screen and reset in `dispose`.
+
+**React Native**
+
+`expo-brightness`, with the previous value read first, `setBrightnessAsync(1)` while the screen is focused and the previous value restored on blur.
+
+**Mobile web**
+
+A page cannot raise the brightness, so it says to turn it up, and the Screen Wake Lock API keeps it on.
+
+**Unity**
+
+`Screen.brightness` raises it on iOS and does nothing on Android, where the window's `screenBrightness` is set from a plugin. `Screen.sleepTimeout = SleepTimeout.NeverSleep` keeps the screen on while the code is shown, back to `SleepTimeout.SystemSetting` when it leaves.
+
+**Any other stack**
+
+The framework's window brightness override, scoped to the screen that shows the code.
+
 ### `data-empty-null-zero` Zero, unknown and not applicable are three values
 
 They are three different facts and they must not render as the same glyph. Zero is a measurement. Unknown is the absence of one. Not applicable means the question does not apply to this row. In a column this narrow there is no neighbouring cell to compare against and nothing to hover for an explanation, so the glyph is the entire answer the reader gets.
@@ -2444,6 +3310,9 @@ They are three different facts and they must not render as the same glyph. Zero 
 - Unknown says so in a word, and where it matters, why: not synced yet, not recorded, only available on the paid plan. A blank cell is indistinguishable from a rendering failure.
 - Not applicable is the one case where a dash is the right mark, because there is no value to report and never was one. It never shares its glyph with unknown, and where a screen uses a dash for both, unknown is the one that changes.
 - A total or an average over an incomplete set says how many values it covers. Silently treating unknown as zero moves the average, and nothing on screen says it moved.
+- A value computed from another inherits its unknown. A distance from a position the app does not have, an arrival time for an address not yet chosen, a converted amount with no rate, is unknown rather than the formula run on a default. A fallback coordinate or a placeholder rate turned into a confident figure is the worst case, because it looks measured.
+- Empty is drawn only from a response that says there is nothing. A missing key, a field of the wrong type or a payload that fails to decode is an error, and a parser that falls back to an empty list on any of them turns a broken contract into "nothing here", which is the confusion `state-error` forbids, made one layer down where no screen can see it.
+- A history of something that was supposed to happen, a dose, a payment, a habit, a scheduled check, is built from the occurrences that were expected and then matched against the records written. Listing only the records makes a missed one vanish instead of showing as missed, and the missed ones are usually what the person opened the history to find.
 - Zero as a whole screen is a different thing again, and `state-empty` rules it.
 
 ### Check
@@ -2460,9 +3329,10 @@ Review answers each of these against the code, pointing at the line:
 - Instants are stored with a zone where the zone is a fact, calendar dates are never zone converted, the clock setting is read on Android, and no formatted string is parsed or asserted against. `data-time-instant`
 - One measurement system per screen, converted at the display edge without gaining precision, and no figure reaches the screen without its unit on it or over its column. `data-units`
 - Near dates use the platform picker and far dates a keyboard entry mode, ranges use a range picker, minute intervals divide into sixty, durations never use a time of day picker, the time picker takes the system clock setting, and no calendar grid is hand built. `data-date-entry`
-- Zero, unknown and not applicable render as three different things with the dash reserved for the last of them, unknown says why where it matters, and aggregates over incomplete sets declare their coverage. `data-empty-null-zero`
+- A code meant for a scanner is as large as the column allows with a clear quiet zone, dark on light in both appearances, raises the brightness and stays on while shown and restores both on leaving, opens with no connection, prints its value as readable text beside it, and nothing animates over it or covers it. `data-code-scan`
+- Zero, unknown and not applicable render as three different things with the dash reserved for the last of them, unknown says why where it matters, aggregates over incomplete sets declare their coverage, and a value derived from an unknown input is unknown rather than computed from a default. A missing key or a decode failure reaches the screen as an error, never as empty, and a history of expected events shows the missed ones. `data-empty-null-zero`
 
-Run `data-precision`, `data-time-relative` and `data-empty-null-zero` against real records rather than the mock ones. Seeded data has no nulls, no zeros, no thirteen digit floats and no timestamps from last year, which is exactly why the screen looks finished.
+Run `data-precision`, `data-time-relative` and `data-empty-null-zero` against real records rather than the mock ones. Seeded data has no nulls, no zeros, no thirteen digit floats and no timestamps from last year, which is exactly why the screen looks finished. `data-code-scan` is answered by scanning the code with a real reader, in airplane mode, at whatever brightness the phone was left at.
 
 ### Reaches
 
@@ -2471,13 +3341,124 @@ Run `data-precision`, `data-time-relative` and `data-empty-null-zero` against re
 - `heuristics/copy.md`: `copy-numbers`
 - `heuristics/forms.md`: `form-input`
 - `heuristics/icons-and-imagery.md`: `icon-depicts`, `icon-alt`
+- `heuristics/layout.md`: `layout-overlays`
 - `heuristics/lists.md`: `list-row`
 - `heuristics/localization.md`: `l10n-format`, `l10n-direction`
+- `heuristics/media.md`: `media-awake`
+- `heuristics/offline.md`: `off-sync-scope`
 - `heuristics/scrolling.md`: `scroll-affordance`
 - `heuristics/sharing.md`: `share-copy`
-- `heuristics/states.md`: `state-stale`, `state-empty`
+- `heuristics/states.md`: `state-stale`, `state-error`, `state-empty`
 - `heuristics/touch.md`: `touch-floor`
 - `heuristics/typography.md`: `type-strings`, `type-scaling`
+
+# heuristics/economy.md
+
+## Economy
+
+Virtual currency, lives, energy, daily caps and unlock costs: anything the app counts and spends on the person's behalf that is not money. Games carry most of it, learning apps carry lives or a daily limit, and generative tools carry credits that run out and reset. The person cannot audit any of it outside the app, so every rule here is about showing the count and the cost at the moment they decide.
+
+Real money stays in `heuristics/payments.md`. A pack of currency bought with money is a purchase under `pay-rail` and `pay-price-source`, and only what happens after it lands in the balance is this file's. The parts of a shop screen, the balance header, the pack list and the first-purchase pack, are in `references/paywall-anatomy.md`.
+
+Rules in this file, in order: `econ-cost-shown`, `econ-contents`, `econ-afford`, `econ-gate`, `econ-disabled`, `econ-bundle`, `econ-pack-value`, `econ-balances`, `econ-real-money`.
+
+### `econ-cost-shown` The cost sits on the control, and the balance is on the same screen [P1]
+
+A spend the person cannot see before committing is a spend they did not agree to.
+
+- Every control that spends shows its cost on the control itself, in the unit it is paid in, with the unit's icon and its name for the screen reader (`a11y-name`).
+- The current balance of that unit is visible on the same screen, so the comparison is made without leaving it.
+- A spend that cannot be undone, or that is large against the balance, takes a confirmation that repeats the cost (`fb-confirm-test`). A small, frequent spend does not.
+
+### `econ-contents` What is bought is shown before the purchase, and a random reward discloses its odds [P1]
+
+- A bundle, a pack or a chest lists what is inside before it is bought.
+- Where the contents are random, the odds of each outcome are shown before the purchase, on the screen where the purchase is made. Both stores require this of a randomised item bought directly or through a currency bought with money.
+- After the purchase, the result is shown in full before anything else is offered.
+
+### `econ-afford` Whether something is affordable is said in words or shape, never by colour alone
+
+A price turned red is the whole message for some people and no message at all for others (`color-not-alone`).
+
+- A control the person cannot afford says so with text or a state the screen reader reads, and shows the shortfall: how much more is needed.
+- It also shows the route to the shortfall when one exists: play another round, wait, watch an offer, buy.
+- Where the route is a purchase, the first pack offered is the smallest one that covers the shortfall, and the amount left over after the spend is shown with it. Packs sized so that something is always left over are a second purchase sold in advance.
+
+### `econ-gate` A gate is shown where the person enters, not after they start [P1]
+
+Lives, energy and daily caps stop the person from doing something. The worst place to learn that is halfway in.
+
+- The entry point shows the gate before the tap: how many remain, and when none remain, the time until the next one, the cost of refilling against the balance, and the free route if there is one.
+- An action the gate blocks does not let the person start and then stop them. A level that can be opened with no lives left, then refuses at the first move, is the failure.
+- The time to refill counts down in the unit a person reads (`data-time-relative`) and survives the app being closed, because it is computed from a stored instant rather than a running timer.
+- When a gate refills while the app is closed, the person finds out when they return, or through a notification they opted into, never through a notification nobody asked for (`notify-earns-it`).
+
+### `econ-disabled` A disabled buy or refill control says why it is disabled [pass or fail]
+
+A greyed button with no reason sends the person tapping at it, then looking for a setting that does not exist.
+
+- The reason is visible next to the control or on it: not enough of the currency, already full, already owned, available again at a stated time.
+- A tap on the disabled control answers with the same reason rather than doing nothing (`button-state`).
+
+### `econ-bundle` A bundle is offered only to people who do not already own its parts
+
+A bundle priced as a saving is a loss for someone who already owns half of it.
+
+- Hide a bundle whose every part is owned, and either hide or reprice one whose parts are partly owned, saying which parts are already theirs.
+- The same holds for an offer to remove a limit the person already removed, and for a starter pack shown after the start.
+
+### `econ-pack-value` A bonus or best value badge is arithmetic from the smallest pack, and the ladder only climbs
+
+Nobody does division in a shop. Comparing 1000 plus 100 with 3000 plus 600 at two prices is a sum the badge exists to do, so the badge has to be the sum.
+
+- Each pack shows the amount of currency it gives, and any bonus as a figure measured against the rate of the smallest pack, computed from the store prices of both (`pay-price-source`).
+- The amount per unit of money never falls as the pack grows. A larger pack with a smaller bonus than the one below it is a trap for the person who assumes the ladder climbs.
+- "Best value" or "most popular" goes on the pack it describes: the lowest price per unit, or the one most bought, read from sales rather than chosen.
+- A pack with no bonus carries no bonus badge. A flat ladder with honest amounts passes.
+
+### `econ-balances` More than one balance says which is spent first, and credits that expire say when [P1]
+
+Two counts behind the same icon hide which money is being spent, and a credit that resets turns a balance into a deadline.
+
+- Where a currency comes in a bought and an earned or bonus form, the screen that spends it says which goes first, and the balance shows both.
+- Credits that reset each period or expire, a monthly allowance, a bonus with a deadline, a generation quota, show the date beside the balance and on the screen that sells them. Resetting at midnight in a time zone the person is not in is still a date they need.
+- Currency delivered by a subscription arrives in equal amounts each period, and the offer says whether what is left survives a cancellation. Play sells a one time benefit, such as a lump of currency, as an in-app product and not as a subscription.
+- A meter of what remains is visible wherever the allowance is spent, so the limit is never first met as a refusal (`econ-gate`).
+
+### `econ-real-money` Currency bought with money shows the money
+
+The point of a currency is that it hides the money, which is the reason the rules ask for the money to be visible where it is spent.
+
+- A pack of currency shows its price in the store's local money, from the store (`pay-price-source`), and the amount of currency it gives.
+- A spend in currency never sits on the same control as a spend in money, and the two are not drawn so alike that one passes for the other.
+- An entitlement bought with money, such as removing ads or unlimited lives, is restored like any other (`sub-restore`) and is not converted into a currency balance that can run out.
+
+### Check
+
+Review answers each of these against the code, pointing at the line:
+
+- Every spending control shows its cost and unit, the balance is on the same screen, and an irreversible or large spend repeats the cost in a confirmation. `econ-cost-shown`
+- Every bundle lists its contents before purchase, every random reward shows its odds on the purchase screen, and the result is shown in full afterwards. `econ-contents`
+- An unaffordable control says so in text the screen reader reads, shows the shortfall, offers the route when one exists, and a purchase route leads with the smallest pack that covers it and shows what is left over. `econ-afford`
+- Each gated entry point shows remaining count, time to refill, refill cost against balance and the free route before the tap, a blocked action cannot be started, and the refill time is computed from a stored instant. `econ-gate`
+- Every disabled buy or refill control shows its reason, and a tap on it answers with that reason. `econ-disabled`
+- No bundle is offered to someone who owns all of its parts, and a partly owned bundle is hidden or repriced with the owned parts named. `econ-bundle`
+- Every pack shows its amount, every bonus is computed against the smallest pack's rate from store prices, the amount per unit of money never falls up the ladder, and a value badge sits on the pack it describes. `econ-pack-value`
+- Where two balances exist, the spending screen says which goes first and both are shown, every expiring or resetting credit shows its date at the balance and at the sale, subscription currency arrives in equal amounts with its fate on cancellation stated, and a remaining meter is visible where the allowance is spent. `econ-balances`
+- Currency packs show the store's local price, currency and money spends never share a control, and money-bought entitlements are restorable rather than spendable. `econ-real-money`
+
+One of these is settled only on a device. Turn on a colour filter or grayscale, and with the screen reader on, confirm that an unaffordable item reads as unaffordable and its shortfall is spoken (`econ-afford`).
+
+### Reaches
+
+- `heuristics/accessibility.md`: `a11y-name`
+- `heuristics/buttons.md`: `button-state`
+- `heuristics/colors.md`: `color-not-alone`
+- `heuristics/data-display.md`: `data-time-relative`
+- `heuristics/feedback.md`: `fb-confirm-test`
+- `heuristics/notifications.md`: `notify-earns-it`
+- `heuristics/payments.md`: `pay-rail`, `pay-price-source`
+- `heuristics/subscriptions.md`: `sub-restore`
 
 # heuristics/feedback.md
 
@@ -2507,6 +3488,8 @@ Count the blocking dialogs one flow can raise. More than one is a design problem
 People expect what they did to work, so the outcome worth reporting is failure. A message reading "Saved" over a screen that already shows the saved value is decoration that lands across the bottom of the screen, which is exactly where the next tap was going.
 
 Confirm explicitly only what the screen cannot show: money moved, something went to another person, a file left the device, an item was removed from a list the user is no longer looking at. Anything irreversible or financial takes the confirmation `state-queued` already specifies, which no transient rung can be.
+
+A completion screen, the full-screen moment after a booking, a transfer, a sign-up or the end of a lesson, is that confirmation at its largest, and it earns the screen only by what it says. It states what is now true and what happens next, with a time where there is one: arrives Thursday, leaves the account tomorrow, starts at nine. It offers the action that follows from it, and it costs one tap to leave. A celebration drawn on top of that sentence is fine, one drawn instead of it is not, and none of it holds the person still (`motion-blocks`).
 
 ### `fb-confirm-test` Uncommon and irreversible, both at once
 
@@ -2591,6 +3574,8 @@ Use the system prompt and nothing else. The system rate limits it, at most 3 per
 - No question in front of it. Asking whether the user is enjoying the app and routing only the happy ones onward is banned outright on Play, which allows nothing to be asked before or while the card is shown, and it costs the app the negative feedback it needed while spending the moment the system prompt was timing for itself.
 - Not on a button. Both platforms say the ask does not follow from something the user tapped, and the prompt may not appear when it is called anyway, which leaves a control that does nothing. A deliberate ask opens the store listing on its write-a-review route instead.
 - Not during a task, not during the first run, and not while something is being fixed. It goes after a moment that went well: `onboard-defer`.
+- The trigger is a count of core tasks the person has finished, read at the moment the latest one shows its result. A launch counter, a session counter or a timer started at launch measures that the app was opened, not that it worked, and on the third cold start it lands on someone who has not done anything yet.
+- Never over another modal. A consent form, a paywall, an ad or a what's new sheet already holds the moment, and `fb-unprompted` allows one per transition.
 - The card is shown as the system draws it, with nothing over it, around it, or removing it once it appears.
 
 ### Check
@@ -2598,7 +3583,7 @@ Use the system prompt and nothing else. The system rate limits it, at most 3 per
 Review answers each of these against the code, pointing at the line:
 
 - Every message takes the quietest rung that works, no actionable Android message is a `Toast`, no transient message offers more than 1 action, and the only dialog standing in front of the first screen is the one `onboard-ask-order` allows. A flow raising more than one blocking dialog is reported as a problem with the flow rather than counted as a violation. `fb-ladder`
-- No success message duplicates a result the screen already shows, and the ones that remain are for outcomes the screen cannot show. `fb-silent-success`
+- No success message duplicates a result the screen already shows, the ones that remain are for outcomes the screen cannot show, and a completion screen states what is now true and what happens next, offers the next action and leaves in one tap. `fb-silent-success`
 - Every alert that stops the user is both rare and irreversible, counting effects on other people and on running systems as irreversible, and everything else acts and offers undo. `fb-confirm-test`
 - Undo either holds the work for a window written down in `STACK.md` or commits into a place the user can restore from, the message offering it never outlives that window, and it is reachable without a system gesture. `fb-undo`
 - Each message sits at the smallest scope that contains its cause, nothing that fits beside a control is raised as a dialog, and a message that has to name its cause is inline rather than transient. `fb-place`
@@ -2608,7 +3593,7 @@ Review answers each of these against the code, pointing at the line:
 - Messages and dialogs are held as state with a consumed flag, so one rotation shows them once and not twice. `fb-survives`
 - An alert is used only for a yes or no about one irreversible action, blocking surfaces carry at most 3 buttons, do not scroll, name their buttons by result, and never hold a progress bar. `fb-blocking-shape`
 - Nothing the user did not ask for blocks or interrupts them, apart from the segment-boundary ad `ads-placement` allows: it waits for a finished task whose result the person has already seen, never shares a transition with another unprompted surface, closes in one tap, and stays closed for a stated period. `fb-unprompted`
-- The rating prompt is the system one, is not preceded by a question, is not wired to a button, and is not raised during onboarding. `fb-review-prompt`
+- The rating prompt is the system one, is not preceded by a question, is not wired to a button, and is not raised during onboarding. It is raised after a moment that went well, by a count of completed core tasks: a launch counter, a session counter or a timer since launch as the trigger is a fail, and so is a prompt raised while a consent form, paywall or ad is on screen. `fb-review-prompt`
 
 ### Reaches
 
@@ -2619,6 +3604,7 @@ Review answers each of these against the code, pointing at the line:
 - `heuristics/forms.md`: `form-error`
 - `heuristics/layout.md`: `layout-overlays`
 - `heuristics/localization.md`: `l10n-strings`
+- `heuristics/motion.md`: `motion-blocks`
 - `heuristics/navigation.md`: `nav-restore`, `nav-modal`
 - `heuristics/notifications.md`: `notify-inapp`
 - `heuristics/offline.md`: `off-destructive-offline`
@@ -2637,7 +3623,7 @@ The keyboard, its type per field and its return key belong to `touch-keyboard`. 
 
 Per-field keyboard types, return keys and autofill names for each stack are in `references/input-fields.md`, to be opened for one lookup.
 
-Rules in this file, in order: `form-column`, `form-count`, `form-label`, `form-required`, `form-input`, `form-autofill`, `form-validate`, `form-error`, `form-persist`, `form-steps`, `form-submit`.
+Rules in this file, in order: `form-column`, `form-count`, `form-label`, `form-required`, `form-choice`, `form-input`, `form-slider`, `form-autofill`, `form-validate`, `form-error`, `form-persist`, `form-steps`, `form-submit`.
 
 ### `form-column` One field per row, at the full width of the column
 
@@ -2673,6 +3659,18 @@ If most fields are required, mark the optional ones. If most are optional, mark 
 
 Use the word "Optional" rather than an asterisk alone. A phone form is read one field at a time, and the legend that explains the asterisk has scrolled off the top by the second question, so the mark has to carry its meaning where it stands. An asterisk is also announced as a star. The mark goes in the label, never in the placeholder, where it disappears with everything else.
 
+### `form-choice` A choice group states its limit and its count
+
+A group of options with a rule attached, pick one, pick up to three, pick at least five, is a question the person answers one tap at a time, and the rule is the one part of it they cannot see by looking at the options.
+
+- The limit is written at the head of the group in words: "Choose 1", "Up to 3", "At least 5". This is not the mark `form-required` rations. It says how many, so it stands on every constrained group, even on a screen where every group is constrained.
+- A group that takes more than one shows the count so far beside the limit, updated on each tap, and the screen reader hears it with the selection (`a11y-announce`).
+- Exactly one is a radio group, where a tap replaces. More than one is checkboxes or filter chips (`button-chips`). A single choice drawn as checkboxes leaves the person unsure whether the second tap adds or swaps.
+- At the maximum, the remaining options say why they no longer take a tap, or the next tap swaps out the oldest pick and says that it did. Options that silently stop responding read as a frozen screen.
+- Below a minimum, the commit control answers with what is still missing and moves the person to it (`button-state`), group by group when there are several. A label that counts down what is left gives the same answer before the tap instead of after it.
+- An option that costs or saves something carries the difference on the option itself, and the total the choices produce is on the screen where the person commits (`pay-total`).
+- An option that cannot be chosen right now keeps its place, drawn as unavailable with the reason in words. One that disappears reflows the group under a finger that was already moving.
+
 ### `form-input` Configure the field before the finger arrives
 
 Each field declares what it holds, and the rest follows from that declaration. The keyboard type and the return key it produces are `touch-keyboard`; what the field does with what arrives is here.
@@ -2681,8 +3679,19 @@ Each field declares what it holds, and the rest follows from that declaration. T
 - Capitalise names and street lines. Turn capitalisation and autocorrect off for email, usernames, codes and anything the dictionary will not know. Autocorrect on an email field silently substitutes a value the user believes they typed.
 - Mask and format as they type, so spaces in a card number and separators in a phone number are the field's job rather than a rejection afterwards.
 - Where the value set is closed, use a picker, a date picker or a segmented control. A closed set typed by hand is an error being manufactured for later.
+- A keypad the app draws itself, usual on a screen built around one amount, takes on everything the system keyboard did for free: paste, a hardware keyboard, the locale's decimal separator (`l10n-format`), the screen reader reading each key and the value as it grows, and a delete that repeats while held. The value it builds sits above it, with the balance or limit it is checked against on the same screen.
 - Focus a field on open only when the screen exists for that one field, such as search or a code. Anywhere else the keyboard covers the form before it has been read.
 - On mobile web the field's own text size is a layout decision. Safari on iOS zooms the page into any field it is about to focus whose text is under 16px, and it does not zoom back out, so the user finishes the form on a page wider than the screen with the submit button off to one side. Set 16px or larger on the field itself. The viewport is the wrong lever for this: Safari has ignored `user-scalable`, `minimum-scale` and `maximum-scale` on a web page since iOS 10, precisely so that a page cannot take zoom away from the user, and where those values do still apply, which is a web view embedded in an app, what they buy is a page nobody can enlarge.
+
+### `form-slider` A slider is for a value whose exact number does not matter
+
+A drag on glass lands a few points from where it aimed, and the thumb doing the dragging covers the value it is setting. A slider fits a value chosen roughly: a volume, a search radius, an age range, a price ceiling for browsing. Where the exact number matters, an amount to transfer, a dose, a measurement, the control is a field, or a slider with a field beside it.
+
+- The current value is text beside the track, outside the area the finger covers, and it changes during the drag, not only on release.
+- The step matches the data. A continuous track over a value people say in whole numbers produces 37.4 years.
+- A range slider keeps a gap between its two thumbs, so neither can sit on the other where only one of them can be grabbed, and each thumb meets `touch-floor` on its own.
+- Each thumb is an adjustable element to the screen reader, carrying its name and its value and moving one step per swipe (`a11y-name`).
+- Both ends of the track carry their values, and an open end says so in the label: "50 or more", not 50.
 
 ### `form-autofill` The fastest field is the one the platform fills [pass or fail]
 
@@ -2746,7 +3755,9 @@ Review answers each of these against the code, pointing at the line:
 - The visible fields were counted, none asks for the same value twice, six or more questions are grouped or stepped, what is known is prefilled, and every default carries the reason it is one. `form-count`
 - Every field has a label that stays visible, bound to it in code and positioned per platform, no placeholder is doing a label's job, and helper text stays under 100 characters. `form-label`
 - Required or optional is marked on the minority only, as a word, in the label. `form-required`
-- Capitalisation, autocorrect and any mask are set per field, closed value sets use a picker rather than free text, nothing takes focus on open except a single-field screen, and on mobile web no field's text sits under 16px. `form-input`
+- Every constrained group states its limit in words, a multi-select group shows a live count the screen reader hears, single choice is a radio group, reaching a maximum or missing a minimum is explained rather than silent, priced options show their difference with the total on the commit screen, and an unavailable option keeps its place with a reason. `form-choice`
+- Capitalisation, autocorrect and any mask are set per field, closed value sets use a picker rather than free text, nothing takes focus on open except a single-field screen, on mobile web no field's text sits under 16px, and a keypad the app draws itself accepts paste and a hardware keyboard, uses the locale's separator and is read key by key. `form-input`
+- A slider sets only an approximate value or sits beside a field, its value is text outside the finger that updates during the drag, the step matches the data, range thumbs keep a gap and each meets the touch floor, each thumb is adjustable with a name and value, and both ends are labelled. `form-slider`
 - Every field declares its autofill content type, credential fields are grouped and committed on submit, the one time code is a single field, and paste is blocked nowhere. `form-autofill`
 - Nothing validates per keystroke or on focus, blur or a 500 to 1000ms pause triggers it, and accepted formats are normalised rather than rejected. `form-validate`
 - Each message sits under its own field, names the fix in its first few words, does not depend on color, no summary stands in for those messages, and the first failure is scrolled to and focused. `form-error`
@@ -2758,12 +3769,204 @@ Review answers each of these against the code, pointing at the line:
 
 ### Reaches
 
-- `heuristics/buttons.md`: `button-one-primary`, `button-state`
+- `heuristics/accessibility.md`: `a11y-announce`, `a11y-name`
+- `heuristics/buttons.md`: `button-one-primary`, `button-state`, `button-chips`
 - `heuristics/colors.md`: `color-not-alone`
+- `heuristics/localization.md`: `l10n-format`
 - `heuristics/navigation.md`: `nav-restore`
+- `heuristics/payments.md`: `pay-total`
 - `heuristics/states.md`: `state-error`, `state-interrupt`, `state-retry`
-- `heuristics/touch.md`: `touch-keyboard`
+- `heuristics/touch.md`: `touch-keyboard`, `touch-floor`
 - `heuristics/typography.md`: `type-scaling`
+
+# heuristics/game.md
+
+## Game
+
+A play surface is the one screen in an app where the content moves on its own and the person is answering it in real time. Everything else in this skill assumes a screen that waits for the user, and a game does not wait: the clock runs, the thumbs rest on the glass for minutes, and the eyes stay on the middle of the screen rather than reading down it. The rules below are what changes when that is true.
+
+This file covers the play surface and the screens wrapped around it: the HUD, the controls, pause, the result of a round, and the screen that picks the next level. Menus, settings, shops and store screens of a game are ordinary screens and take the ordinary files, and a paywall in a landscape game keeps its exit in landscape (`sub-exit`). An offer raised on launch is `fb-unprompted`, not a boundary. Currency, lives and unlock costs are `econ-` rules, in `heuristics/economy.md`.
+
+Review on a play surface stays proportional. The pass over the Extra table closes, in one line with one reason, the families a play surface cannot contain, such as chat, forms, search, auth, lists and webviews, so the review grades the rules the screen can break rather than marking a hundred rows not applicable. The nine always in scope still apply to the HUD and to every control on it.
+
+Rules in this file, in order: `game-hud-context`, `game-centre`, `game-controls`, `game-pause`, `game-result`, `game-locks`, `game-reward-moment`, `game-segment`, `game-audio`, `game-lettered-art`.
+
+### `game-hud-context` The HUD shows what this moment of the game needs, and no more than four things at once
+
+A HUD is chrome that never scrolls away, so every readout on it is paid for on every frame of play. It changes with the state of the game rather than holding one fixed set.
+
+- Decide the set per state: playing, paused, dialogue or cutscene, and result. Playing shows what the person acts on in the next few seconds. Paused shows the way out and the settings. Dialogue hides the controls it does not use. Result shows the outcome.
+- At most four persistent readouts while playing. A fifth is a sign that something belongs on the pause screen, or should appear only when it changes.
+- A readout that changes rarely appears when it changes and fades back, rather than holding a corner for the whole round.
+- A shortcut to the shop, a "buy" or "get more" button, is a persistent element like any other and counts toward the four. It never sits in a control zone (`game-controls`), where a resting thumb buys.
+- A HUD element is still text and still a control. Its size comes from the type scale, its tap area from `touch-floor`, and its edges from `layout-insets`.
+
+### `game-centre` Nothing persistent sits over the middle of the play area
+
+The eyes rest on the centre of the play area, and anything parked there covers the thing the person is reacting to.
+
+- Persistent chrome lives at the edges. The middle carries the game and the transient feedback that belongs to it: a hit, a score popping from where it was earned, a short banner that leaves on its own.
+- A message that needs reading stops the clock first, under `game-pause`, and appears as a pause state rather than over live play.
+- Transient feedback appears near the event it describes, so the eye does not travel to a corner to learn what just happened.
+
+### `game-controls` Controls own their zones, and nothing else is placed in them [P1]
+
+On a play surface the thumbs rest on the glass for the whole round, so the regions under them are taken. A menu button or a banner placed there is pressed by accident, and a control placed elsewhere is out of reach mid play.
+
+- Give the controls the lower corners and the bottom edge, mirrored for a left hand where the game allows it (`touch-reach`). Menus, pause and secondary buttons go to the top edge, outside the resting thumbs.
+- Choose the input on purpose. Discrete input (taps, buttons, swipes in four directions) suits a grid or a turn. Analog input (a stick, a drag) suits continuous movement. A floating stick that appears where the thumb lands is easier to find than a fixed one, and a fixed one must be visible before the thumb arrives.
+- Every control meets `touch-floor` and stays inside the safe area on all four edges, in every orientation the game supports (`layout-insets`). A system edge gesture is not overridden by a control placed on it (`touch-gestures`).
+- Controls are hidden or disabled while paused, during dialogue and on the result, so a resting thumb does not act on a screen that is not playing.
+- Every action a gesture triggers has a visible control as well, or a setting that provides one (`a11y-gesture`).
+
+**Flutter**
+
+In Flame, place controls as `HudMarginComponent` children with margins taken from `MediaQuery.paddingOf(context)`, so the HUD respects the safe area that the camera viewport does not.
+
+**SwiftUI**
+
+Place the control overlay inside the safe area with `.safeAreaPadding`, and let the game view alone ignore it.
+
+**Jetpack Compose**
+
+Pad the control layer with `WindowInsets.safeDrawing`, and let the game canvas alone draw edge to edge.
+
+**React Native**
+
+Pad the control layer with the insets from `useSafeAreaInsets`, and let the game canvas alone draw edge to edge.
+
+**Mobile web**
+
+Pad the control layer with `env(safe-area-inset-*)` and set `viewport-fit=cover`, and let the canvas alone draw under the bars.
+
+**Unity**
+
+Put the control layer under a panel whose anchors follow `Screen.safeArea`, drive on-screen sticks and buttons with the Input System's `OnScreenStick` and `OnScreenButton` or with `EnhancedTouch`, and test the free axis at both ends of the supported aspect ratios in the Device Simulator.
+
+**Any other stack**
+
+On an engine canvas, fit the control layer to the safe area the platform reports, and test the free axis at both ends of the supported aspect ratios.
+
+### `game-pause` Anything on a clock stops when attention leaves, and starts again only when the person says so [P0]
+
+A game is the one screen where losing focus costs something while the person is away: the timer runs out, the character walks off a ledge, the round is lost on a call. The system carries the memory through an app switch (`state-interrupt`), but it does not stop the game clock.
+
+- Pause on every loss of attention: focus loss, app switch, the notification shade, an incoming call, a system dialog, and any overlay the app raises itself, including its own menu, a consent form or an ad.
+- Resume only on an input from the person, from a pause screen that shows the state they are returning to. Returning to the app is not that input, and a game that resumes on focus regained has played a second without them.
+- Cancel every pointer that was held at the moment of the pause. A touch that started before the interruption and never ended is still down as far as the game knows, and the character keeps moving after resume.
+- Audio follows the same pause, and resumes with play rather than with the app.
+
+**Flutter**
+
+Listen with `AppLifecycleListener` and call `pauseEngine()` on the Flame game on `onInactive` and `onHide`; resume from the pause overlay, never from `onResume`.
+
+**SwiftUI**
+
+Watch `scenePhase` and pause on any value other than `.active`; resume from the pause screen.
+
+**Jetpack Compose**
+
+Pause on `Lifecycle.Event.ON_PAUSE` through a `LifecycleEventObserver`, and resume from the pause screen rather than on `ON_RESUME`.
+
+**React Native**
+
+Pause when `AppState` leaves `active`, and resume from the pause screen.
+
+**Mobile web**
+
+Pause on `visibilitychange` and on `blur`, and resume from the pause screen.
+
+**Unity**
+
+Pause from `OnApplicationFocus(false)` and `OnApplicationPause(true)` on a `MonoBehaviour`: set `Time.timeScale` to zero, set `AudioListener.pause`, and drop every touch that began before the pause, so `EnhancedTouch` reports nothing still held. Resume from the pause screen, never from `OnApplicationFocus(true)`.
+
+**Any other stack**
+
+On an engine, pause from the focus and pause callbacks the engine raises, stop its clock, clear the input state, and resume from the pause screen.
+
+### `game-result` The result shows the outcome first, and dismissing an offer declines it [P1]
+
+The end of a round is where the game is most tempted to sell, and the person is least able to read carefully: they just lost, the thumb is already moving.
+
+- Show the outcome before any offer: won or lost, the score, what was earned. An offer that arrives first hides the one thing the person came to see.
+- The outcome of a round the person played is never what is for sale. A score, a test result, the answer to a puzzle they solved: the time they spent already paid for it, and holding it back until they pay turns that time into the lever. Extra analysis may be sold after the outcome is shown in full.
+- A continue offer, a doubled reward or a purchase states what it costs and what it gives (`ads-rewarded`, `sub-billed-first`). Its dismissal declines it. A close control, a tap outside, back and a countdown running out all mean no, never yes.
+- The decline is as easy to find and to reach as the accept, and the round can be restarted or left from the result without passing through the offer.
+- A modal raised here is still a modal: both exits named, and nothing stacked over it (`nav-modal`).
+
+### `game-locks` A locked level says why, and what opens it
+
+A grid of padlocks tells the person what they cannot have and nothing about how to get it.
+
+- Every locked item shows the condition that opens it: the level before it, a score, a count of stars, a purchase. When the condition is a cost, the cost follows `econ-cost-shown`.
+- A tap on a locked item answers, with the condition and the route to it, rather than doing nothing (`touch-feedback`, `button-state`).
+- The next playable item is the one the screen leads with, so the person returning after a day is one tap from playing.
+
+### `game-reward-moment` A rewarded offer appears at the end of a segment, never during play
+
+A rewarded ad trades attention for something in the game, and the trade is only fair when the person can stop to weigh it.
+
+- Offer it at a boundary: the result of a round, running out of a resource, the end of a level. Never over live play, and never as a surprise that pauses the game.
+- The offer appears only when it can be honoured. A button that promises a reward and then finds no ad to show is a broken promise at the exact moment the person agreed.
+- What the reward is, and that declining returns to the same screen, follow `ads-rewarded`.
+
+### `game-segment` Progress survives the process, and a short attempt may restart if the game says so [P1]
+
+A game holds two kinds of progress, and they deserve different promises.
+
+- Meta progress, everything that outlives a round (levels opened, currency, items, settings, a run across several levels), is saved at every boundary where it changes and survives process death, under `state-interrupt`.
+- A single short attempt, one level or one round of a minute or two, may restart from its beginning after the process is killed, as long as the game says so on return. Restarting silently, or showing a continue that then starts over, is the failure.
+- A segment long enough that restarting it is a real loss is saved inside, at checkpoints the person can see.
+
+### `game-audio` Music and effects are separate, and the soundtrack yields to audio already playing
+
+In a game the soundtrack is part of the product rather than interface sound, and it is the case `sound-unasked` and `sound-off-switch` leave room for.
+
+- Two controls, music and effects, each persisted and reachable from the pause screen. They are two because people want one without the other, most often effects on and music off under their own playlist.
+- Music may start with the game's first screen only when no other audio is playing. When something else is, the game stays quiet until the person turns its music on, and its effects still mix on top (`sound-mixes`). iOS reports this through `AVAudioSession.secondaryAudioShouldBeSilencedHint`, and Android through `AudioManager.isMusicActive`.
+- Music that starts by itself has its stop one step away, which the music control on the pause screen is.
+- Audio pauses with the game under `game-pause`, and nothing in the game carries information only by sound (`sound-never-alone`).
+
+### `game-lettered-art` Words are text drawn over art, not letters painted into it
+
+A button image with its label painted in cannot be translated, cannot scale with the text setting and cannot be read by a screen reader. That holds for any app and is `icon-lettered`. Games reach for it more than anything else because the art style wants lettering, so the game's case is spelled out here.
+
+- Draw the word as text over the art, from the string table (`l10n-strings`), with room for longer translations (`l10n-expansion`).
+- Where the lettering is the art (a title, a logo), ship one asset per supported locale and give the image the accessible name it shows (`a11y-name`).
+- Numbers painted into art (a level number, a price, a counter) are text in every case, since they change.
+
+### Check
+
+Review answers each of these against the code, pointing at the line:
+
+- The HUD set is decided per game state, and no more than four persistent readouts show while playing, shop shortcuts counted among them and none in a control zone. `game-hud-context`
+- No persistent element sits over the middle of the play area, and messages that need reading appear in a paused state. `game-centre`
+- Controls own the lower corners and bottom edge, menus and pause sit outside them, every control meets the touch floor inside the safe area in every supported orientation, and controls are hidden or disabled while not playing. `game-controls`
+- The game clock and its audio pause on focus loss, app switch and every overlay, resume only from a control on a pause screen, and held pointers are cancelled at the pause. `game-pause`
+- The outcome shows in full before any offer and is never itself for sale, every dismissal of an offer declines it, and the round can be restarted or left without passing through the offer. `game-result`
+- Every locked item shows the condition that opens it, and a tap on it answers with that condition. `game-locks`
+- Rewarded offers appear only at a segment boundary and only once the ad can be shown. `game-reward-moment`
+- Meta progress is saved at every boundary and survives process death, and a short attempt that restarts after it says so on return. `game-segment`
+- Music and effects have separate persisted controls reachable from pause, and music does not start by itself while other audio is playing. `game-audio`
+- No label, number or price is painted into raster art, and lettering that is the art has one asset per locale and an accessible name. `game-lettered-art`
+
+Three of these are settled only on a running game. Hold a direction, pull down the shade and come back, and confirm the game is paused and the character is still (`game-pause`). Play a round on the narrowest and the widest supported aspect ratio with the device in each supported orientation, thumbs resting on the controls, and confirm nothing is under them that is not a control (`game-controls`). Kill the process in the background mid level and mid run, then reopen, and confirm what came back matches what the game says (`game-segment`).
+
+### Reaches
+
+- `heuristics/accessibility.md`: `a11y-gesture`, `a11y-name`
+- `heuristics/ads.md`: `ads-rewarded`
+- `heuristics/buttons.md`: `button-state`
+- `heuristics/economy.md`: `econ-cost-shown`
+- `heuristics/feedback.md`: `fb-unprompted`
+- `heuristics/icons-and-imagery.md`: `icon-lettered`
+- `heuristics/layout.md`: `layout-insets`
+- `heuristics/localization.md`: `l10n-strings`, `l10n-expansion`
+- `heuristics/navigation.md`: `nav-modal`
+- `heuristics/sound.md`: `sound-unasked`, `sound-off-switch`, `sound-mixes`, `sound-never-alone`
+- `heuristics/states.md`: `state-interrupt`
+- `heuristics/subscriptions.md`: `sub-exit`, `sub-billed-first`
+- `heuristics/touch.md`: `touch-floor`, `touch-reach`, `touch-gestures`, `touch-feedback`
 
 # heuristics/icons-and-imagery.md
 
@@ -2775,7 +3978,7 @@ Both fail the same way: the set was assembled rather than chosen, and the box wa
 
 Sizes, axis ranges, density buckets and asset paths are in `references/icon-and-image-assets.md`. This file is the rules.
 
-Rules in this file, in order: `icon-one-set`, `icon-weight`, `icon-no-emoji`, `icon-vector`, `icon-reserve`, `icon-crop`, `icon-depicts`, `icon-stand-in`, `icon-alt`, `icon-dark`, `icon-avatar`, `icon-app`.
+Rules in this file, in order: `icon-one-set`, `icon-weight`, `icon-no-emoji`, `icon-vector`, `icon-reserve`, `icon-crop`, `icon-depicts`, `icon-stand-in`, `icon-alt`, `icon-lettered`, `icon-dark`, `icon-avatar`, `icon-app`.
 
 ### `icon-one-set` An icon set is a set, not a collection [pass or fail]
 
@@ -2867,6 +4070,15 @@ Content describes what it shows. Decoration is hidden instead of described, whic
 - A chart, a diagram, or the illustration holding an empty state's meaning owes the sentence it is making rather than an inventory of its parts.
 - An icon that is the only label on a control is not this rule. What is spoken there is the action, which is `a11y-name`.
 
+### `icon-lettered` Words go over the picture as text, never into its pixels
+
+A promotional banner, an offer tile, an onboarding illustration with its headline drawn in: the words are part of the bitmap, so they cannot be translated, do not grow with the reader's text size, are not read by the screen reader, do not follow the dark appearance, and cannot be corrected without producing a new image. A banner one column wide also shrinks its lettering with it, so the words drawn into it are usually the smallest text on the screen.
+
+- The headline, the price, the date and the call to action are text laid over the artwork from the string table (`l10n-strings`), with room for the longest translation (`l10n-expansion`) and a ground that keeps their contrast over every part of the picture they can land on (`color-contrast`).
+- Artwork that arrives from a server, a campaign tile, a partner's banner, brings its words as fields beside the image, and the app sets them. Where only the picture arrives, its words are its description (`icon-alt`), and the tile is never the only route to what it advertises.
+- A figure that changes, a price, a discount, a date, a countdown, is text in every case.
+- Lettering that is itself the artwork, a wordmark, a hand-drawn title, ships one asset per locale where it is translated and carries its words as its accessible name (`a11y-name`).
+
 ### `icon-dark` Artwork that cannot be tinted needs a second asset
 
 A single-colour glyph needs no dark variant, because it is tinted from a theme role and follows it. Everything else does.
@@ -2899,6 +4111,35 @@ The app icon is drawn at about the size of a fingertip, beside twenty others, in
 - Respect the launcher's geometry, which fails at both ends. On Android the outer band of the canvas belongs to the mask and to the parallax effect, so a mark drawn to the edge loses its edge to whatever shape that launcher applies; a mark drawn too small floats in the middle of a canvas everyone else fills. The safe box has a floor as well as a ceiling, and both are in the reference.
 - Ship the monochrome layer on Android, and the dark and tinted appearances on iOS. Both systems generate any variant that is not supplied, so the choice is not whether the app has one, it is whether anybody drew it. An alternate app icon needs its own full set.
 - The mark is the product's own. System symbols may not be used in an app icon or a logo, and platform hardware may not be drawn inside one.
+- The label under the icon is part of it. It is the product's display name, localised where the name is translated, never the package identifier, the project folder or a slug with underscores that a template left in the manifest or the bundle settings, and it fits the launcher without being cut: a long store title gets a short label of its own.
+
+**Flutter**
+
+`android:label` in `AndroidManifest.xml` and `CFBundleDisplayName` in `Info.plist`; neither is read from `pubspec.yaml`.
+
+**SwiftUI**
+
+`CFBundleDisplayName`, localised in `InfoPlist.strings`, rather than the target name.
+
+**Jetpack Compose**
+
+`android:label` on the application and the launcher activity, pointing at a string resource.
+
+**React Native**
+
+`android:label` and `CFBundleDisplayName` in the native projects, or `name` in the Expo config, which writes both.
+
+**Mobile web**
+
+`short_name` in the web app manifest, which is what the home screen shows.
+
+**Unity**
+
+Product Name in the Player Settings, which both platforms show under the icon; the Localization package's Android and iOS app info metadata translates it.
+
+**Any other stack**
+
+Whatever the build sets as the display name on each platform, checked on the home screen of a device rather than in the project settings.
 
 ### Check
 
@@ -2913,9 +4154,10 @@ Review answers each of these against the code, pointing at the line:
 - Every region larger than a touch target that is not text, a control or data depicts something nameable in the product, and no glow, blob, wash or abstract gradient stands where an image belongs. `icon-depicts`
 - Everything the screen is about that has an appearance is shown as a photograph or a drawing of its subject, seeded so it stays with its item, rather than as a glyph on a filled rectangle; nothing that stands in for missing bytes ships; and no content artwork carries an added decorative frame. `icon-stand-in`
 - Every image either describes what it shows or is hidden as decoration, and no description is a file name or the word image. `icon-alt`
+- No headline, price, date or call to action is painted into a bitmap: words are text over the artwork with room for translation and a measured ground, server-sent artwork carries its words as fields or as its description, and lettering that is the artwork ships per locale with an accessible name. `icon-lettered`
 - Every asset that cannot be tinted has a dark counterpart selected by the asset system, and no asset carries an opaque light background. `icon-dark`
 - The avatar has a generated fallback at the same size, stable per user, covering the missing name, carrying no drawn human face, and no path renders a broken image. `icon-avatar`
-- The app icon carries no text, ships unmasked layers with no baked effects, keeps its mark inside the safe box, and supplies the monochrome layer on Android and the dark and tinted appearances on iOS rather than letting the system invent them. `icon-app`
+- The app icon carries no text, ships unmasked layers with no baked effects, keeps its mark inside the safe box, and supplies the monochrome layer on Android and the dark and tinted appearances on iOS rather than letting the system invent them. The launcher label is the product's display name, not a package identifier or project slug, and it is not truncated on the home screen. `icon-app`
 
 Check `icon-dark`, `icon-avatar` and `icon-app` on a rendered screen in dark appearance, and `icon-weight` at the largest text step. All four pass a light-theme, default-size screenshot.
 
@@ -2927,7 +4169,7 @@ Check `icon-dark`, `icon-avatar` and `icon-app` on a rendered screen in dark app
 - `heuristics/copy.md`: `copy-sample-data`
 - `heuristics/layout.md`: `layout-shape`
 - `heuristics/lists.md`: `list-images`
-- `heuristics/localization.md`: `l10n-no-mirror`, `l10n-personal`
+- `heuristics/localization.md`: `l10n-no-mirror`, `l10n-strings`, `l10n-expansion`, `l10n-personal`
 - `heuristics/privacy-ui.md`: `priv-instrument`
 - `heuristics/splashscreen.md`: `splash-contents`
 - `heuristics/states.md`: `state-loading`, `state-error`
@@ -2951,15 +4193,41 @@ Rules in this file, in order: `layout-insets`, `layout-grid`, `layout-grouping`,
 
 Read the inset at runtime and lay the screen out inside it. A constant copied off one device (34, 44, 48) is right on that phone and wrong on the next, and it is wrong on the same phone the moment a call banner or an expanded status bar changes the number.
 
-- SwiftUI respects the safe area already. `.ignoresSafeArea()` belongs to a background fill or an image and never to text or a control, and a pinned bar takes `safeAreaInset(edge:)` so the content behind it scrolls clear.
-- Compose: `enableEdgeToEdge()` with `Scaffold`, which insets its own bars, plus `WindowInsets.safeDrawing` on anything drawn outside it.
-- Flutter: `MediaQuery.paddingOf(context)`, or `SafeArea` with the edges named.
-- React Native: the safe area context hook, read per render, rather than a stored constant.
-- Mobile web inside a shell: `viewport-fit=cover` plus `env(safe-area-inset-*)`, which report zero until that meta tag is set.
+**SwiftUI**
+
+SwiftUI respects the safe area already. `.ignoresSafeArea()` belongs to a background fill or an image and never to text or a control, and a pinned bar takes `safeAreaInset(edge:)` so the content behind it scrolls clear. Status bar icons follow `.preferredColorScheme` or `.toolbarColorScheme` per screen.
+
+**Jetpack Compose**
+
+`enableEdgeToEdge()` with `Scaffold`, which insets its own bars, plus `WindowInsets.safeDrawing` on anything drawn outside it. Bar icon brightness comes from `WindowInsetsControllerCompat.isAppearanceLightStatusBars` and `isAppearanceLightNavigationBars`, set per screen.
+
+**Flutter**
+
+`MediaQuery.paddingOf(context)`, or `SafeArea` with the edges named. Bar icon brightness is an `AnnotatedRegion<SystemUiOverlayStyle>` per screen, with `statusBarIconBrightness`, `systemNavigationBarColor` and `systemNavigationBarIconBrightness` all set. In a Flame game, put the `GameWidget` inside the safe area or give the camera viewport and the HUD components the padding read from `MediaQuery`, since the canvas knows nothing of insets.
+
+**React Native**
+
+The safe area context hook, read per render, rather than a stored constant. `StatusBar` sets the top bar's icons, and the navigation bar needs its own call, `expo-navigation-bar` or the native module, or it keeps the default.
+
+**Mobile web**
+
+Mobile web inside a shell: `viewport-fit=cover` plus `env(safe-area-inset-*)`, which report zero until that meta tag is set, and a `theme-color` meta per appearance.
+
+**Unity**
+
+Apply `Screen.safeArea` to a `RectTransform` at the root of every `Canvas`, setting `anchorMin` and `anchorMax` from the rect divided by `Screen.width` and `Screen.height`, re-read whenever it changes, and put the HUD and every control inside it, since a `CanvasScaler` alone scales into the cutout. Whether the app draws into the cutout at all is the Render Outside Safe Area option in the Android Player Settings. The engine sets no colour or icon brightness for the system bars: either hide them for the whole session in the Player Settings and keep the cutout inset, or set both bars per screen through a call to the Android window from a plugin in `Assets/Plugins/Android`.
+
+**Any other stack**
+
+Whatever the framework reports as the safe area, read per frame. On an engine canvas, apply it to a panel at the root of the canvas and put the HUD inside that panel, since scaling the canvas alone scales into the cutout.
+
+Both system bars, not one. The status bar and the navigation bar each have a colour and an icon brightness, set per screen against the background that screen draws under them. Setting only the status bar leaves the navigation bar on its default, which is a strip of the wrong colour or icons that disappear into the ground, and a screen with its own dark or light ground has to say so again for both.
 
 On a current Android target there is no opt out, since the manifest flag that used to disable edge to edge is ignored, so the inset is a runtime measurement on every build. Nor is it one number: a three-button device reports a taller bottom inset than the same phone using gestures. What a pinned control does when that measurement is skipped is `touch-gestures`.
 
-A pinned bar carries the inset inside itself: its own height for the controls, plus the bottom inset underneath them, in one component. Padding the bar from outside leaves a strip of the wrong background color under it, and a sheet or a dialog opened over the screen owes the same treatment, since it becomes the bottom of the screen while it is up.
+A pinned bar carries the inset inside itself: its own height for the controls, plus the bottom inset underneath them, in one component. Padding the bar from outside leaves a strip of the wrong background color under it, and a sheet or a dialog opened over the screen owes the same treatment, since it becomes the bottom of the screen while it is up. A sheet that grows to full height owes the top inset as well: its content scrolls under the status bar otherwise.
+
+A screen that hides the system bars, a player, a game, a camera, still keeps the cutout inset for anything read or tapped, and it restores the bars when the person leaves it. Hidden bars that stay hidden on the next screen are a defect on a screen that never asked for them.
 
 Four edges, not one. The top holds the status bar and the cutout or Dynamic Island. The bottom holds the home indicator or the navigation bar. The side insets are zero in portrait and stop being zero once the phone is turned, where they are applied to both sides and the cutout is on one of them. Scrolling content may pass under any of them and often should, because the content ending in a hard line above the bar wastes the screen. Anything read or tapped may not, and that includes the last row of a list, the buttons inside a sheet, and a snackbar.
 
@@ -3015,6 +4283,8 @@ Design against a range. Supported iPhones run about 375 to 440pt wide, the narro
 
 A bar sitting in the platform's own bar slot is already handled: a Compose `Scaffold` reports the padding its top and bottom bars take, for the content to apply, and a SwiftUI `TabView` or `safeAreaInset(edge:)` extends the scroll view's safe area itself. Use the slot and there is no number to invent.
 
+Current iOS draws the tab bar floating and translucent over the content, with search as a separate button at its trailing end, an accessory slot above it for a player or a status, and a bar that can shrink while the content scrolls. All of it comes from the system tab view and its modifiers, which also report the bar's height to the scroll. A floating pill rebuilt by hand gets none of that: rows sit readable under it at rest because nothing reported its height, the player lands under it or across it, and it keeps its full size while the person reads. Which modifier does which part, per stack, is in `references/navigation-containers.md`.
+
 Hand-placed chrome is the case that bites: an overlay dropped into a `Box` or a `ZStack`, a floating button, a mini player, a standing banner. It sits on top of the scroll rather than shortening it, so the last row lives underneath and can be read only by overscrolling. Nothing in the code looks wrong, and the screen looks correct until the data is long enough to reach the bottom, which is why it survives review so often. The floating button is `button-fab` and the bottom of a collection is `list-end`.
 
 The padding is derived, not typed. Measure the bar, add the inset, and let the scroll read that value, because a hardcoded 80 goes stale the first time the bar gains a second line or the device has a taller gesture area.
@@ -3028,6 +4298,8 @@ A snackbar, a toast or an undo bar arrives over a screen that already has a bott
 Take it from the platform's host, because that is where the displacement is already written: the `snackbarHost` slot of a `Scaffold`, or the equivalent presentation the stack provides. One hand-placed in a `Box` renders under the bottom bar or over the button, and that is the version that ships.
 
 One at a time, and never behind something else. Two messages stacked, a toast drawn behind an open sheet, and a snackbar left under a keyboard that has just opened are the same defect: a surface positioned by hand into a stack whose heights it does not know.
+
+A modal follows the same order with a scrim under it. The scrim sits on the topmost layer, above every nested canvas, platform view, map, video surface and overlay on the screen, so nothing behind it stays bright or takes a tap. A scrim drawn inside one of those layers dims only that layer, and a native view embedded in the screen usually draws over anything the framework puts on top of it unless the modal goes through the root overlay. The panel itself is opaque: content showing through it competes with the text it holds.
 
 ### `layout-axis` Centred means on the screen's centre line, not in the space left over
 
@@ -3065,14 +4337,14 @@ Reflowing means the primary action stays visible without hunting for it, and the
 
 Review answers each of these against the code, pointing at the line:
 
-- The screen takes its insets from the framework's inset source rather than from a constant, and nothing readable or tappable sits outside them. `layout-insets`
+- The screen takes its insets from the framework's inset source rather than from a constant, and nothing readable or tappable sits outside them. Both the status bar and the navigation bar have a colour and icon brightness set against this screen's own background, a full-height sheet clears the top inset as well as the bottom one, and a screen that hides the bars keeps the cutout inset and restores the bars on exit. `layout-insets`
 - Every gap is a multiple of 4, and of 8 above 16, the text column starts at the same margin on every screen outside full-bleed content and the platform list containers, and the screen uses about five distinct vertical gaps rather than a new one per component. `layout-grid`
 - Grouping comes from space before containers, no container is nested inside another that already groups the same content, and the row height and section gap are the numbers this kind of screen uses everywhere else. `layout-grouping`
 - Radius comes from the shape language rather than per component, the screen holds at most three radius values, a nested surface curves less than the one around it, and depth arrives through one of shadow, outline or fill rather than all three. `layout-shape`
 - One column, no same-axis nesting outside what `scroll-nest` permits, and nothing side by side that would leave either half under about 140 wide apart from short fixed-format fields. `layout-column`
 - No content container carries a fixed width, and the screen was rendered at its own width and again at 320dp with nothing cut at an edge and nothing overflowing sideways. `layout-width`
-- Bars sit in the platform's bar slot, hand-placed chrome derives its padding from the measured bar plus the inset instead of a typed number, no more than two persistent bars stand besides the system ones, and on a rendered screen no line of content sits under a pinned bar, at the top edge or at the bottom one. `layout-chrome`
-- The snackbar comes from the platform's host slot rather than a hand-placed overlay, it clears the bottom bar and the inset, it moves the floating button rather than covering it, and one is on screen at a time. `layout-overlays`
+- Bars sit in the platform's bar slot, a floating tab bar with its search button and accessory comes from the system tab view rather than a hand-built pill, hand-placed chrome derives its padding from the measured bar plus the inset instead of a typed number, no more than two persistent bars stand besides the system ones, and on a rendered screen no line of content sits under a pinned bar, at the top edge or at the bottom one. `layout-chrome`
+- The snackbar comes from the platform's host slot rather than a hand-placed overlay, it clears the bottom bar and the inset, it moves the floating button rather than covering it, and one is on screen at a time. A modal's scrim covers every layer of the screen, nested canvases and platform views included, and the modal panel is opaque. `layout-overlays`
 - On the narrow device at default text size, the screen's subject and the start of its content are visible unscrolled, and the primary action is either in that screenful or in a bar pinned above the bottom inset and visible at rest. `layout-fold`
 - Rendered at its shortest content, the screen holds its action against the bottom rather than centred above an empty lower third, through the same code that lets it scroll once the content grows. `layout-short`
 - Landscape reflows, with the action still visible and the measure still capped at the shorter height, or is locked by a decision of the user recorded in `STACK.md`, and the screen still holds where the platform ignores the lock. `layout-orientation`
@@ -3090,6 +4362,105 @@ Review answers each of these against the code, pointing at the line:
 - `heuristics/touch.md`: `touch-reach`, `touch-gestures`, `touch-keyboard`
 - `heuristics/typography.md`: `type-scaling`, `type-measure`
 
+# heuristics/learning.md
+
+## Learning
+
+Lessons, quizzes, drills, flashcards, and any tutorial that tests what it taught. A screen like this has a job no other screen has: the person is supposed to leave it knowing something they did not know when they opened it. A wrong answer here is not an error in the sense `state-error` means, it is the material working, and the screen has to treat it that way.
+
+The audience comes from `PRODUCT.md`, and every rule below is read against it. A term a professional uses daily is jargon to a beginner, and a drill paced for a child insults an adult.
+
+Rules in this file, in order: `learn-teach-first`, `learn-define`, `learn-feedback`, `learn-repeat`, `learn-stakes`, `learn-commit`, `learn-no-score-yet`, `learn-progress`.
+
+### `learn-teach-first` Nothing is tested before it was taught [P1]
+
+A question about something the person has never seen measures nothing and teaches that guessing is the game.
+
+- Every item that is tested appears first in a teaching step: shown, explained or worked through, in the same lesson or an earlier one the person has completed.
+- A placement test that deliberately probes ahead says so before the first question, and a wrong answer there costs nothing.
+- The first question after a teaching step uses the same example or a close one, and the distance grows from there.
+
+### `learn-define` A term is defined where it first appears, for the declared audience
+
+`copy-jargon` keeps the app's own internal words off the screen. In a lesson the subject's vocabulary is the content, so it stays, and is defined the first time it appears.
+
+- Define a term at its first appearance in the lesson, in a sentence or a tap away, never in a glossary the person has to go and find.
+- Read every term against the audience in `PRODUCT.md`. A word that needs no definition for the expert reader needs one for the beginner, and the beginner is who most lessons are for.
+- Once defined, the term is used the same way everywhere after it (`copy-terms`).
+
+### `learn-feedback` Feedback points at the answer and at the evidence for it [P1]
+
+"Wrong" teaches nothing. The person learns from seeing what was right and why.
+
+- After every answer, show whether it was right, the correct answer, and the reason in one or two lines that point at the evidence: the part of the example, the rule, the word in the sentence that decided it.
+- A right answer gets the reason too, briefly, because a right guess and a right understanding look the same from outside.
+- The feedback stays until the person moves on. It is not a snackbar that leaves while they are reading it (`fb-duration`).
+
+### `learn-repeat` A missed item comes back, and the person is told when
+
+Spaced repetition works, and it confuses people when it is invisible: the same question reappears and the person thinks the app is broken or stuck.
+
+- When an item is missed, say that it will come back, and roughly when: later in this lesson, in the next session, in review.
+- When it does come back, mark it as a review of an earlier miss.
+- A practice set built from earlier misses says so in its title.
+
+### `learn-stakes` The weight of a wrong answer matches what is at stake
+
+The error colour and the error sound exist to stop people losing work. In practice, a wrong answer loses nothing, and alarm-red with a buzzer teaches people to stop guessing, which is the opposite of practice.
+
+- Practice and drills show a wrong answer calmly: a neutral mark, the correct answer, the reason. The error colour and its emphasis are kept for what can actually be lost.
+- A graded test, a placement or anything that spends a life or a limited resource (`econ-gate`) may weigh more, and says before it starts that it counts.
+- Repeated misses never turn into a scolding message. The fourth miss gets the same explanation as the first, or a different one.
+
+### `learn-commit` A single choice answers on tap, and back keeps what was answered
+
+A single-choice question with a separate Next button asks for two taps to say one thing, and invites a second tap on the wrong option on the way to Next.
+
+- In practice, a single-choice step commits on the tap of an option and shows the feedback. Where an answer is costly to get wrong, as in a graded test or one that spends a resource, a check step after the choice is right, and it is said once rather than discovered.
+- Multiple choice, ordering and typed answers keep an explicit check control, since the answer is not complete at the first tap.
+- Back moves to the previous step with its answer kept, and changing an answer that was already marked does not re-score silently (`form-steps`).
+- Slides that teach do not advance on a timer the person did not start (`motion-autoplay`).
+
+### `learn-no-score-yet` Accuracy and progress show nothing before the first answer [pass or fail]
+
+"Accuracy 0%" on a lesson nobody has started tells the person they failed something they never tried. Before the first answer there is no accuracy, which is a different value from zero (`data-empty-null-zero`).
+
+- Before the first answer, accuracy and streak figures are absent or replaced with a line saying they start with the first answer.
+- A progress bar starts empty and labelled with the count, not with a percentage that implies a result.
+
+### `learn-progress` A lesson in progress survives the process, and Continue continues [P0]
+
+A lesson is a sequence, and the person is interrupted in the middle of it constantly (`state-interrupt`).
+
+- The position inside a lesson and the answers given so far are saved at every step and survive process death.
+- A control labelled Continue resumes at the saved step. If the lesson cannot resume, the control says Start again and the screen says why.
+- Results of a completed lesson are saved before the summary screen is shown, so killing the app on the summary loses nothing.
+
+### Check
+
+Review answers each of these against the code, pointing at the line:
+
+- Every tested item appears earlier in a teaching step the person has completed, and any placement test says so before its first question. `learn-teach-first`
+- Every subject term is defined at its first appearance, judged against the audience in `PRODUCT.md`. `learn-define`
+- After every answer the screen shows right or wrong, the correct answer and a short reason pointing at the evidence, and it stays until the person moves on. `learn-feedback`
+- A missed item is announced as returning, and is marked as a review when it does. `learn-repeat`
+- Practice shows a wrong answer without the error emphasis, and anything that counts says so before it starts. `learn-stakes`
+- A single-choice practice step commits on tap, multi-part answers keep a check control, and back keeps earlier answers. `learn-commit`
+- No accuracy, streak or percentage is shown before the first answer. `learn-no-score-yet`
+- The step and answers inside a lesson are saved at every step and survive process death, and Continue resumes at the saved step or is relabelled. `learn-progress`
+
+One of these is settled only on a device. Answer two steps of a lesson, kill the process in the background, reopen, and confirm the lesson resumes at the third step with the first two answers kept, or says plainly that it starts again (`learn-progress`).
+
+### Reaches
+
+- `heuristics/copy.md`: `copy-jargon`, `copy-terms`
+- `heuristics/data-display.md`: `data-empty-null-zero`
+- `heuristics/economy.md`: `econ-gate`
+- `heuristics/feedback.md`: `fb-duration`
+- `heuristics/forms.md`: `form-steps`
+- `heuristics/motion.md`: `motion-autoplay`
+- `heuristics/states.md`: `state-error`, `state-interrupt`
+
 # heuristics/lists.md
 
 ## Lists
@@ -3098,7 +4469,7 @@ Most of a phone app is lists. It is the screen the user opens most, scrolls fast
 
 Loading, empty, error, offline and stale belong to `heuristics/states.md`. This file is what is specific to a collection: what a row is, how many exist at once, and what the top and the bottom of the list do.
 
-Rules in this file, in order: `list-virtualise`, `list-density`, `list-separator`, `list-row`, `list-swipe`, `list-images`, `list-sections`, `list-end`, `list-refresh`, `list-select`, `list-a11y`.
+Rules in this file, in order: `list-virtualise`, `list-density`, `list-separator`, `list-row`, `list-swipe`, `list-images`, `list-sections`, `list-end`, `list-refresh`, `list-select`, `list-save`, `list-a11y`.
 
 ### `list-virtualise` Rows recycle, or the list breaks on real data [pass or fail]
 
@@ -3198,6 +4569,17 @@ Bulk actions on a phone take over the screen, because there is no modifier key a
 - The bulk action says what it did and offers undo, because one mis-tap here costs forty items instead of one (`touch-destructive`).
 - Select all in a list that is still paging means selecting what has loaded, and the label has to admit that.
 
+### `list-save` Saving an item is a toggle that answers at once, and what was saved has an address
+
+A heart, a bookmark or a star on a card is the cheapest promise an app makes: tap it now, find it later. Each half breaks on its own. The tap that waits for the server, the tap that opens a sign-in wall and forgets what it was for, and the saved list nobody can find again all break the same promise.
+
+- The toggle changes state on the tap and writes behind it, rolling back with a message only when the write fails (`off-write-mode`). Its state is drawn by shape, outlined against filled, and announced as selected or not (`color-not-alone`, `a11y-name`).
+- A person who is not signed in and taps it is asked to sign in at that moment, and the item is saved afterwards without a second tap. Or the save is kept on the device and carried into the account later (`onboard-look-first`).
+- The same item shows the same saved state everywhere it appears: card, detail and search result.
+- Saved items live in a titled place reachable from the top level or from the account, and an item that changes price or stops being available stays there, marked as such, rather than vanishing.
+- Saving into a named collection is a second step offered after the save, never a sheet that has to be answered before the first tap counts, and a new collection can be made from inside that step.
+- The toggle is a target of its own inside the card (`touch-nested`, `list-row`).
+
 ### `list-a11y` A row is one stop, not four
 
 A screen reader moves stop by stop and there is no pointer here to skip ahead with. A row left as its icon, then its title, then its subtitle, then its badge is four stops, so two hundred rows become eight hundred and the list stops being navigable long before it stops being correct.
@@ -3220,18 +4602,22 @@ Review answers each of these against the code, pointing at the line:
 - The list loads continuously or offers a load-more control and never numbered pages, and a list that pages states where the data ends and turns a failed page into a retry at the bottom. `list-end`
 - Pull to refresh uses the platform control, and the same refresh is reachable without the gesture. `list-refresh`
 - Selection mode is entered deliberately, shows its count and its exit, marks selection without color alone, and offers undo. `list-select`
+- The save toggle changes on the tap and rolls back only on a failed write, its state is a shape and is announced, a signed-out tap ends saved after sign in without a second tap or is kept on the device, the state matches on every screen, saved items have a titled place where changed items stay marked, and choosing a collection is an optional second step. `list-save`
 - Each row is one merged accessibility node, every swipe or long press is also an accessibility action, and section headers carry the heading trait. `list-a11y`
 
 `list-virtualise` and `list-density` both pass at ten rows and fail at a thousand, so neither is answered from the file alone. Fill the list with production-sized data and scroll it on the slowest device the app supports.
 
 ### Reaches
 
+- `heuristics/accessibility.md`: `a11y-name`
 - `heuristics/colors.md`: `color-gradient`, `color-not-alone`
 - `heuristics/icons-and-imagery.md`: `icon-crop`
 - `heuristics/layout.md`: `layout-chrome`
+- `heuristics/offline.md`: `off-write-mode`
+- `heuristics/onboarding.md`: `onboard-look-first`
 - `heuristics/scrolling.md`: `scroll-nest`
 - `heuristics/states.md`: `state-interrupt`, `state-retry`
-- `heuristics/touch.md`: `touch-floor`, `touch-spacing`, `touch-gestures`, `touch-destructive`
+- `heuristics/touch.md`: `touch-floor`, `touch-spacing`, `touch-gestures`, `touch-destructive`, `touch-nested`
 - `heuristics/typography.md`: `type-weight`, `type-roles`
 - `platform/performance.md`: `perf-frame`, `perf-decode`
 
@@ -3243,7 +4629,7 @@ A phone carries an ordered list of languages, a separate region, a calendar and 
 
 Shipping one language today is fine. Almost everything in this file costs nothing while the app has one language and is a rewrite once it has forty screens, which is the reason it belongs in the build step rather than in a later project.
 
-Rules in this file, in order: `l10n-strings`, `l10n-direction`, `l10n-no-mirror`, `l10n-expansion`, `l10n-format`, `l10n-plurals`, `l10n-script`, `l10n-personal`, `l10n-collate`, `l10n-per-app`, `l10n-change`, `l10n-pseudo`.
+Rules in this file, in order: `l10n-strings`, `l10n-direction`, `l10n-no-mirror`, `l10n-expansion`, `l10n-format`, `l10n-plurals`, `l10n-script`, `l10n-personal`, `l10n-collate`, `l10n-content-language`, `l10n-per-app`, `l10n-change`, `l10n-pseudo`.
 
 ### `l10n-strings` No user-facing text lives in code [pass or fail]
 
@@ -3325,6 +4711,44 @@ Sorting display names by code point puts accented words after Z, splits the case
 - Section headers and the fast-scroll rail down a long list come from that collator, `UILocalizedIndexedCollation` where iOS builds the index for you, never from the first character of the string. Ch, Ñ and Ø are letters in their own right where the list is being read, and this is what `list-sections` is built from.
 - Search matches without regard to case, accents or character width, so typing `jose` finds José.
 
+### `l10n-content-language` Content in another language says which one it is, and a translation says it is one
+
+The interface speaks the app's language and the content often does not: a review left by a visitor, a message from a relative abroad, a listing from a seller in another country, a quoted post. Nothing in the string table reaches it, and the app can neither make it correct by translating it nor pretend it is already in the reader's language.
+
+- Text in a language other than the interface carries its language tag, so the screen reader speaks it in the right voice and line breaking and hyphenation follow its rules. Untagged, a paragraph in Japanese is read out in the interface's voice, one character at a time.
+- A machine translation is marked as one on the text itself, the original is one tap away, and the choice between originals and translations is remembered.
+- The body is what gets translated. Names, addresses, product codes and quoted prices stay as written.
+- Where translation is offered, the language detected for the original is named and a wrong detection can be corrected.
+- Content in a script the interface face lacks falls back to a face that has it (`l10n-script`), and right-to-left content inside a left-to-right screen keeps its own direction within its block (`l10n-direction`).
+
+**SwiftUI**
+
+An `AttributedString` whose run carries the `languageIdentifier` attribute and `accessibilitySpeechLanguage`.
+
+**Jetpack Compose**
+
+`SpanStyle(localeList = LocaleList(tag))` on the run, which drives shaping and line breaking. Whether TalkBack changes voice for it is checked on the device, and where it does not, the content's description carries the language.
+
+**Flutter**
+
+`TextSpan(locale: Locale(tag))` for shaping, and a `Semantics` whose `attributedLabel` carries a `LocaleStringAttribute` over the same range for the spoken voice.
+
+**React Native**
+
+`accessibilityLanguage` on the `Text`, which iOS honours. Android ignores it, so the TalkBack pass is done on a device.
+
+**Mobile web**
+
+The `lang` attribute on the element holding the content, and `dir="auto"` for its direction.
+
+**Unity**
+
+TextMeshPro has no per-run language. The run gets a font asset whose fallback list covers its script, and whether the screen reader changes voice for it is checked by ear on the device.
+
+**Any other stack**
+
+The framework's per-run locale on text, checked by ear with the screen reader.
+
 ### `l10n-per-app` The app language and the system language are two different facts
 
 Both platforms let someone point a single app at a language of its own, so the app cannot read the system language and assume that is what it is rendering in.
@@ -3337,6 +4761,35 @@ Both platforms let someone point a single app at a language of its own, so the a
 ### `l10n-change` The language can change while the app is running
 
 - The locale is read where it is used. A `Locale` captured at launch, a formatter built once inside a singleton, or a string preformatted into a cache leaves the screen rendering half in each language after the switch.
+- So does a string lookup that does not subscribe to the change. A static accessor, a translator object cached in a field, or a lookup that reads the catalogue without going through what rebuilds on a locale change returns the right word at first build and the old one forever after, and a fix applied to the screens someone looked at leaves it on the ones nobody did.
+
+**Flutter**
+
+Look strings up from the `BuildContext` on every build, `AppLocalizations.of(context)` or the package's context extension, so the widget depends on the locale and rebuilds. A static `tr()` or a translation map held in a service does not rebuild anything.
+
+**SwiftUI**
+
+Pass `LocalizedStringKey` to the view, or read `@Environment(\.locale)` where a string is built in code; a `String(localized:)` computed into a stored property keeps its first value.
+
+**Jetpack Compose**
+
+`stringResource()` inside the composable, which follows the configuration. A string read from the application `Context` into a view model keeps the launch language.
+
+**React Native**
+
+The i18n library's hook, such as `useTranslation()`, inside the component, so the change re-renders it. A module-level call to `t()` runs once at import.
+
+**Mobile web**
+
+Re-render from the current locale held in state, and set `lang` on the document when it changes.
+
+**Unity**
+
+With the Localization package, bind each label through a `LocalizeStringEvent` or a `LocalizedString` whose `StringChanged` event sets the text, both of which follow `LocalizationSettings.SelectedLocaleChanged`. A value read once with `GetLocalizedString()` into a field keeps its first language.
+
+**Any other stack**
+
+Whatever the framework offers to make a string lookup depend on the current locale, so the change rebuilds what shows it.
 - Changing the app or the system language recreates the screen on Android the way a rotation does, so what the user had on it comes back with it, which is `state-interrupt`.
 - Anything told the locale once is told it again: the push token registration, the requests that return user-facing text, and any preference the backend stores.
 
@@ -3362,11 +4815,12 @@ Review answers each of these against the code, pointing at the line:
 - The typeface covers every shipped script with a fallback chain, and the leading is a ratio rather than a point value. `l10n-script`
 - One full-name field unless an outside format demands the split and `STACK.md` names it, address fields chosen after the country, and no single mask applied to every phone number. `l10n-personal`
 - Lists sort and section through a locale collator, and search ignores case and accents. `l10n-collate`
+- Content in another language carries its language tag so the screen reader and line breaking follow it, a machine translation is marked on the text with the original one tap away and the choice remembered, names, addresses and codes stay as written, a detected language can be corrected, and other scripts and directions keep their face and direction inside their block. `l10n-content-language`
 - The shipped locales are declared to the system, resources sit at the widest correct dialect, and no language picker bypasses the platform API. `l10n-per-app`
-- No locale is cached at launch, a language change keeps what was on the screen, and everything told the locale once is told it again. `l10n-change`
+- No locale is cached at launch, no string lookup bypasses what rebuilds on a locale change, every visible string switches language without a restart, a language change keeps what was on the screen, and everything told the locale once is told it again. `l10n-change`
 - Both passes were taken, the expanding one and the mirrored one, by whichever mechanism the stack provides, and the screen was seen under each. `l10n-pseudo`
 
-`l10n-direction`, `l10n-no-mirror`, `l10n-expansion`, `l10n-script` and `l10n-pseudo` are answered on a rendered screen rather than in the resource files. A catalogue can be complete, a formatter correct and a plural resource well formed while the screen itself still clips, mirrors the wrong element, or falls back to a face that has no glyphs.
+`l10n-direction`, `l10n-no-mirror`, `l10n-expansion`, `l10n-script` and `l10n-pseudo` are answered on a rendered screen rather than in the resource files. A catalogue can be complete, a formatter correct and a plural resource well formed while the screen itself still clips, mirrors the wrong element, or falls back to a face that has no glyphs. `l10n-content-language` is answered by ear: the screen reader reading a review in another language aloud is the only test that hears an untagged run.
 
 ### Reaches
 
@@ -3545,7 +4999,7 @@ A phone plays media in a pocket, on a commute, on a battery, on a connection som
 
 Here: the player surface, the transport controls, full screen and rotation, picture in picture, background audio, the lock screen, and what happens when something else on the device wants the speaker. Captions and anything an audio track carries alone are `a11y-media`. Whether a clip may start by itself is `motion-autoplay`. Sound the app makes outside a player is not playback and is not here.
 
-Rules in this file, in order: `media-system-player`, `media-controls`, `media-scrub`, `media-unasked-sound`, `media-focus`, `media-noisy`, `media-background`, `media-remote`, `media-resume`, `media-pip`, `media-away`, `media-fullscreen`, `media-awake`, `media-start`, `media-quality`, `media-live`.
+Rules in this file, in order: `media-system-player`, `media-controls`, `media-scrub`, `media-unasked-sound`, `media-focus`, `media-noisy`, `media-background`, `media-remote`, `media-resume`, `media-pip`, `media-away`, `media-fullscreen`, `media-awake`, `media-start`, `media-quality`, `media-offline`, `media-live`.
 
 ### `media-system-player` Play through the platform's engine, and finish any transport you draw yourself
 
@@ -3649,6 +5103,17 @@ Within one second of the tap, either audio is playing or something on screen say
 - A manual quality choice outlives the item it was made on, and switching quality keeps the position rather than restarting playback.
 - Downloading for later waits for an unmetered connection by default and is queued rather than tied to the screen (`off-queue`); preloading the next item stops entirely under the flag (`net-prefetch`).
 
+### `media-offline` A download is something the person owns, with a size, a place and an end
+
+Saving an episode, a film or an album for later turns a stream into a file on a phone with finite storage. The person decides about it before the flight, and finds out whether it worked once there is no way to fix it.
+
+- The size is stated before the download starts, per item and for a whole season or album, against the free space on the device. A batch that will not fit says so before it begins, not after it has filled the disk halfway.
+- Each item shows its own state, queued, downloading with its progress, done, failed with the reason, and the set survives the app being closed (`net-upload`, `off-queue`).
+- Downloaded items are a place the person can open with no connection, reachable from the top level, and playing one never touches the network first (`off-local-first`).
+- Rights that expire say when, on the item and before they do, and an expired item says so instead of failing to play. A limit on downloads or devices is stated where the download is offered.
+- The space downloads take is shown, and one item, a set or all of them can be deleted from that place and from the item itself, with the safeguard `fb-confirm-test` picks.
+- Download quality is a choice of its own that sticks, apart from the streaming one. Whether downloads wait for an unmetered connection is `media-quality`.
+
 ### `media-live` Live has no total duration and its edge keeps moving
 
 - Live is labelled as live, and the label does not rely on color (`color-not-alone`). No total-duration text and no percentage on a stream with no end, and where seeking back exists, a control returns to the edge and says how far behind the user currently sits.
@@ -3673,22 +5138,24 @@ Review answers each of these against the code, pointing at the line:
 - The screen-on flag is set only on a screen that is watched rather than touched, video or otherwise, only while what it shows is live, never for audio alone, and cleared on pause, stop, exit and error. `media-awake`
 - Sound or a preparing indicator arrives within one second of the tap, and a rebuffer leaves the controls and the position alone. `media-start`
 - A metered connection has a written bitrate cap, a manual quality choice persists, and downloads wait for unmetered. `media-quality`
+- The size is stated against free space before a download starts, each item shows its state and the set survives the app closing, downloads are a place that opens with no connection, expiry and limits are stated before they apply, the space used is shown with per-item and bulk delete, and download quality is its own persistent choice. `media-offline`
 - A live stream is labelled without relying on color, shows no total duration, offers a return to the edge, and stops once its surface is left with nothing playing it. `media-live`
 
 ### Reaches
 
 - `heuristics/accessibility.md`: `a11y-media`, `a11y-name`
 - `heuristics/colors.md`: `color-not-alone`
+- `heuristics/feedback.md`: `fb-confirm-test`
 - `heuristics/layout.md`: `layout-insets`, `layout-chrome`, `layout-orientation`
 - `heuristics/localization.md`: `l10n-format`
 - `heuristics/motion.md`: `motion-autoplay`
 - `heuristics/notifications.md`: `notify-ongoing`
-- `heuristics/offline.md`: `off-queue`
+- `heuristics/offline.md`: `off-queue`, `off-local-first`
 - `heuristics/sound.md`: `sound-silenced`
 - `heuristics/states.md`: `state-interrupt`, `state-loading`, `state-error`, `state-retry`
 - `heuristics/touch.md`: `touch-floor`
 - `platform/background-work.md`: `bg-service-last`, `bg-declared`
-- `platform/network.md`: `net-metered`, `net-prefetch`
+- `platform/network.md`: `net-metered`, `net-prefetch`, `net-upload`
 - `platform/performance.md`: `perf-memory`, `perf-power`
 
 # heuristics/motion.md
@@ -3701,7 +5168,7 @@ Generated screens fail this in a recognisable way: motion appears everywhere exc
 
 Press feedback timing is `touch-feedback`. Loading and skeleton behaviour is `state-loading`. The predictive back gesture is `touch-gestures`. Token values and per-stack API names are in `references/motion-tokens.md`.
 
-Rules in this file, in order: `motion-job`, `motion-answered`, `motion-platform`, `motion-model`, `motion-duration`, `motion-choreo`, `motion-loop`, `motion-autoplay`, `motion-blocks`, `motion-cheap`, `motion-reduced`.
+Rules in this file, in order: `motion-job`, `motion-answered`, `motion-platform`, `motion-model`, `motion-duration`, `motion-choreo`, `motion-loop`, `motion-autoplay`, `motion-timed`, `motion-blocks`, `motion-cheap`, `motion-reduced`.
 
 ### `motion-job` Every animation answers a question, and there are three questions
 
@@ -3774,6 +5241,17 @@ The longest-running motion in a real app is usually not an animation anyone wrot
 - A looping asset stops when its screen goes away, rather than playing on behind whatever came next.
 - The sound half is `a11y-media`, and stopping autoplay on a metered or power-saving device is `state-offline`.
 
+### `motion-timed` Content that advances on a clock can be held, stepped and slowed by the person [P1]
+
+A run of full-screen panels that moves on by itself, segments filling along the top, the right half of the screen for next and the left half for back, is a reading surface with a timer on it. The timer was set for the median reader, and everyone slower, everyone on a screen reader and everyone interrupted loses the panel they were on.
+
+- Holding a finger anywhere pauses it, and lifting resumes. Leaving the app, a call arriving or the system covering the screen pauses it too, and the return resumes on the same panel rather than the first (`state-interrupt`).
+- The zones that step forward and back are invisible, so the segments say where the person is and how many remain, and a visible way to close is present on every panel.
+- With the screen reader on, or with reduced motion set (`motion-reduced`), nothing advances by itself: each panel waits, and next and previous are named actions (`a11y-gesture`).
+- A panel's time follows its content, so more text gets more time, and a panel holding a control, a link, a choice, a field, stops the clock until it is answered or skipped.
+- The end goes somewhere stated, the next set or the screen it was opened from, and it does not loop.
+- Anything that has to be read to continue, terms, a price, an instruction, is not on a timed panel at all.
+
 ### `motion-blocks` Motion never holds the user still
 
 Nothing waits for an animation to finish. A second tap during a transition does not queue a second transition, the back gesture interrupts whatever is playing, and no input is gated on a completion callback. This matters more the more often the animation runs: a sequence that charms once is an obstacle by the fiftieth launch.
@@ -3816,19 +5294,20 @@ Review answers each of these against the code, pointing at the line:
 - One element or region leads each transition, and any stagger runs on first appearance only, stepping at most 30ms per row and adding at most 200ms overall. `motion-choreo`
 - Nothing pulses to attract attention, nothing animates in on the first screenful, self-starting motion beside other content has a pause control past 5 seconds, auto-updating figures have one at any duration, nothing flashes more than 3 times a second, and every animation ends when its reason ends. `motion-loop`
 - Autoplay is gated on the platform setting, anything that autoplays has a visible stop, and a looping asset stops with its screen. `motion-autoplay`
+- Timed panels pause on a hold and on any interruption and resume on the same panel, the segments show position and total with a visible close on every panel, nothing advances under the screen reader or reduced motion, a panel's time follows its content and a panel holding a control waits, the end leads somewhere stated, and nothing that must be read sits on a timed panel. `motion-timed`
 - No input, dismissal or back gesture is blocked by an animation, and a repeated tap does not queue a second one. `motion-blocks`
 - Layout properties are animated only by the framework's own layout animations, hand-written animation stays on transform and opacity, and the React Native animations declare the native driver. `motion-cheap`
 - The reduced-motion flag is read on every platform the app ships to, iOS substitutes rather than deletes, and the Android screen still reads with nothing animating. `motion-reduced`
 
-Three of these are not answered from the file. `motion-reduced` is answered on a device with the setting turned on, because a reduced-motion path that was written and never wired to the flag reads exactly like one that works. `motion-cheap` is answered half in the source, where the native driver and the animated properties are visible, and half in the frame profiler, which is the only place a dropped frame exists. `motion-blocks` is answered by tapping through a transition and pressing back during one.
+Four of these are not answered from the file. `motion-timed` is answered with the screen reader on and again by taking a call halfway through a panel, since a sequence that only pauses on a finger looks complete in every silent test. `motion-reduced` is answered on a device with the setting turned on, because a reduced-motion path that was written and never wired to the flag reads exactly like one that works. `motion-cheap` is answered half in the source, where the native driver and the animated properties are visible, and half in the frame profiler, which is the only place a dropped frame exists. `motion-blocks` is answered by tapping through a transition and pressing back during one.
 
 ### Reaches
 
-- `heuristics/accessibility.md`: `a11y-media`
+- `heuristics/accessibility.md`: `a11y-media`, `a11y-gesture`
 - `heuristics/colors.md`: `color-roles`
 - `heuristics/layout.md`: `layout-fold`
 - `heuristics/navigation.md`: `nav-container`
-- `heuristics/states.md`: `state-loading`, `state-offline`
+- `heuristics/states.md`: `state-loading`, `state-offline`, `state-interrupt`
 - `heuristics/touch.md`: `touch-feedback`, `touch-gestures`
 - `platform/performance.md`: `perf-frame`
 
@@ -3842,7 +5321,7 @@ Then the session breaks. Someone walks away mid task, the system reclaims the pr
 
 `STACK.md` records which navigator this codebase uses and what its destinations are. This file is about the structure those choices produce. The tab bar as a control is `button-tabs`; the back gesture, the predictive animation and the system edge zones are `touch-gestures`. Container and restoration APIs per stack sit in `references/navigation-containers.md`, for one lookup rather than a read through.
 
-Rules in this file, in order: `nav-depth`, `nav-container`, `nav-modal`, `nav-back`, `nav-back-control`, `nav-location`, `nav-deeplink`, `nav-tab-stack`, `nav-cross-tab`, `nav-drawer`, `nav-search`, `nav-restore`.
+Rules in this file, in order: `nav-depth`, `nav-container`, `nav-modal`, `nav-sheet`, `nav-back`, `nav-back-control`, `nav-location`, `nav-scope`, `nav-deeplink`, `nav-tab-stack`, `nav-cross-tab`, `nav-drawer`, `nav-search`, `nav-restore`.
 
 ### `nav-depth` Three levels, and the job within two taps
 
@@ -3854,13 +5333,14 @@ A fourth level is usually a filter wearing a screen. If the new screen is the pr
 
 ### `nav-container` The container comes from the relationship, not from convenience
 
-Five containers, five different relationships to what is underneath them:
+Six containers, six different relationships to what is underneath them:
 
 | Container | What it means | How it ends |
 |---|---|---|
 | Pushed screen | more about the thing that was tapped | back |
 | Top-level destination | another section of the app, always available | selecting another one |
 | Bottom sheet | a short task or a set of options belonging to the screen under it | swipe down, scrim, back |
+| Persistent sheet | a second layer of the same screen, resized by the person, with the layer under it still live | it does not end: it collapses to its smallest height, which is `nav-sheet` |
 | Full screen cover | a self-contained task that needs the whole screen | an explicit Cancel and a named commit |
 | Alert or dialog | one decision that genuinely cannot wait | choosing an answer, and on Android a back dismiss unless that was turned off on purpose |
 
@@ -3875,6 +5355,46 @@ On a phone the modal covers its parent, so there is no visible background to cli
 - Name both exits. Cancel abandons, and the commit is the verb of the task. A lone X leaves the user guessing whether the work was kept.
 - Interactive dismissal is already on, so the line to look for is the one that turns it off: `interactiveDismissDisabled`, a sheet state that refuses to hide. It belongs only where dismissing loses work, and where it appears the question appears with it, which is not the same as trapping.
 - Never open a modal over a modal. The second one is a pushed screen inside the first.
+- A modal whose action leads somewhere else closes itself first, then navigates. A dialog left open while its button pushes a new destination outlives the flow that opened it: back lands on the stale dialog, its action can fire twice, and on some stacks it sits over the new screen. The modal ends the task, and the parent does the navigation.
+
+### `nav-sheet` A sheet that stays is part of the screen, and the layer under it stays live
+
+Results over a map, a queue over a player, the steps of a route over the route: the lower layer is the subject, and the sheet is a second layer of the same screen that the person resizes. It is not a task stacked on top, and the exits `nav-modal` asks for do not apply to it. Built from the modal sheet component it gets a scrim, a swipe down that dismisses and a background that ignores taps, which are three wrong answers here.
+
+- The layer under it keeps taking touches at every height where it is visible: the map pans, a marker opens. A scrim appears, if ever, only at the tallest height, where the sheet has become the screen.
+- It rests at two or three heights, and the smallest still shows something useful, a title and a count of what is inside, rather than a handle on an empty strip. Swiping down at the smallest height does nothing, because there is nothing to leave.
+- The height is state. It survives rotation and process death (`nav-restore`), and it does not snap back to a default each time the content under it changes.
+- The layer under it frames its content inside the part the sheet leaves uncovered: a map recentres with padding equal to the sheet's current height (`map-camera`), and a list underneath ends above it (`layout-chrome`).
+- Resizing the sheet and scrolling inside it are one gesture with a handoff. A drag grows the sheet until its tallest height, then scrolls the content, and at the content's top a downward drag shrinks the sheet again (`scroll-nest`).
+- Back on Android collapses an expanded sheet to its resting height before it leaves the screen, which is back unwinding what is on top (`nav-back`). Every height can also be reached without the drag (`a11y-gesture`).
+
+**SwiftUI**
+
+A `.sheet` with `.presentationDetents`, `.presentationBackgroundInteraction(.enabled(upThrough:))` naming the largest height at which the layer under it stays live, and `.interactiveDismissDisabled()` so the smallest height is a floor rather than an exit.
+
+**Jetpack Compose**
+
+`BottomSheetScaffold` with a `sheetPeekHeight`. `ModalBottomSheet` is the modal one.
+
+**Flutter**
+
+A `DraggableScrollableSheet` in a `Stack` over the content, with `snap` and `snapSizes`. `showModalBottomSheet` is the modal one.
+
+**React Native**
+
+The non-modal sheet of the sheet library `STACK.md` records, such as `BottomSheet` rather than `BottomSheetModal` in `@gorhom/bottom-sheet`, with snap points and no backdrop at the lower ones.
+
+**Mobile web**
+
+An element fixed to the bottom edge with snap heights, inside the page. A `<dialog>` is modal.
+
+**Unity**
+
+Unity UI has no sheet. A panel anchored to the bottom edge, resized through `IDragHandler` to the resting heights it snaps to, with the layer underneath still taking raycasts wherever the panel does not cover it.
+
+**Any other stack**
+
+The framework's non-modal sheet, or a panel in the screen's own layout with resting heights, never its modal sheet.
 
 ### `nav-back` Back unwinds the stack and nothing else [P0]
 
@@ -3896,6 +5416,17 @@ Keep the system control. Where a custom one has to replace it, restore the inter
 There is no window title and no breadcrumb, so a screen that names nothing leaves its position to be inferred from the content. That inference fails fastest where it costs most: three levels down, on the screen a notification just opened, in an app that was closed a second ago.
 
 Every pushed destination carries a title naming what it is, and every top-level destination carries its own. Where more than one screen leads to this one, the back control names the destination it returns to instead of showing a bare arrow. Which top-level destination is selected stays visible throughout, which is `button-tabs`.
+
+### `nav-scope` What scopes the whole screen is on it, and changing it changes everything [P1]
+
+Some values decide the meaning of every row on a screen without being any one of them: the address things are delivered to, the branch whose stock is shown, delivery against collection, the day a plan is for, the currency prices are in. Every price, time and availability below is true only for that value, and a person who cannot see it cannot tell the screen is answering a question other than theirs.
+
+- The scope sits at the top of every screen it governs, as text showing its current value, and that text is the control that changes it. A setting two levels deep is not that.
+- Changing it re-scopes everything at once: lists, prices, availability, counts and anything already chosen. What cannot carry over, a basket from the previous branch, items not offered at the new address, is named before the change goes through rather than discovered after it, and `fb-confirm-test` decides whether that takes a question.
+- A value the app picked, the last address, a detected position, the first account, says it was picked and stays visible until the person confirms or changes it. A position from a stale fix carries its accuracy (`sense-accuracy`) and is never presented as where the person is.
+- Where the scope is a date, today is one tap away from any other day, and the screen says which day it shows in words, not only through a highlighted number in a strip.
+- The identity acting is the same shape, and `auth-active-account` owns it.
+- The value survives the process like the rest of the place (`nav-restore`).
 
 ### `nav-deeplink` Arriving in the middle still needs everything above it
 
@@ -3949,10 +5480,12 @@ Review answers each of these against the code, pointing at the line:
 
 - Hierarchy runs at most three levels below a top-level destination, or the fourth is recorded in `STACK.md` with its reason, and the app's main job is within two taps of one. `nav-depth`
 - Nothing that is a place in the app is presented modally: a surface a deep link resolves to, or one that appears in the destination list, belongs in a pushed screen or a destination. `nav-container`
-- Every modal names both exits, turns interactive dismissal off only where work would be lost and asks there, and no modal opens over another. `nav-modal`
+- Every modal names both exits, turns interactive dismissal off only where work would be lost and asks there, no modal opens over another, and a modal whose action navigates closes before the navigation runs. `nav-modal`
+- A sheet that stays over a live layer is the non-modal component, the layer under it takes touches below the tallest height, it rests at a few heights with a useful smallest one that is a floor rather than an exit, its height survives restoration, the layer under it frames content in the uncovered part, the drag hands off between resizing and scrolling, and back collapses it before leaving. `nav-sheet`
 - Back pops the surface on top, is not bound to a sideways or forward move, resolves every interception, and does not exit the app from a destination that is not the start destination. `nav-back`
 - No screen hides or replaces the system back control without restoring the interactive pop gesture alongside it. `nav-back-control`
 - Every route builder sets a title, and a back control with more than one origin names where it returns to. `nav-location`
+- Every value that scopes the screen is shown at its top as the control that changes it, a change re-scopes everything and names what cannot carry over before it happens, a value the app picked says so, a date scope reaches today in one tap and names the day in words, and the value survives the process. `nav-scope`
 - Every deep link target opens from a killed process with a full stack above it, survives a sign in, and fails onto a real screen. `nav-deeplink`
 - Each top-level destination keeps its own stack across a switch, and re-selecting the current one pops it to its root. `nav-tab-stack`
 - An item whose home is another top-level destination opens on the current stack, the selected destination does not change, and back returns to the screen it was opened from, unless the control is labelled as a move to that section. `nav-cross-tab`
@@ -3960,14 +5493,20 @@ Review answers each of these against the code, pointing at the line:
 - A collection people come to search rather than browse either carries a search field on its own screen or is covered by an app-wide search destination that keeps its query. `nav-search`
 - The destination, its stack, scroll, selection, filters and the open sheet come back after the process is killed, and the restore cutoff is a set number rather than forever. `nav-restore`
 
-`nav-deeplink` and `nav-restore` are answered by killing the process and launching from a link, not by reading the router. A graph that looks correct in the file is exactly the one that loses the stack on a cold link.
+`nav-deeplink` and `nav-restore` are answered by killing the process and launching from a link, not by reading the router. A graph that looks correct in the file is exactly the one that loses the stack on a cold link. `nav-sheet` is answered by touching the layer under the sheet at each resting height and by dragging from inside the sheet's own scroll, because a modal sheet styled to look persistent passes every static check.
 
 ### Reaches
 
+- `heuristics/accessibility.md`: `a11y-gesture`
+- `heuristics/auth.md`: `auth-active-account`
 - `heuristics/buttons.md`: `button-tabs`, `button-one-primary`
+- `heuristics/feedback.md`: `fb-confirm-test`
 - `heuristics/forms.md`: `form-persist`
-- `heuristics/scrolling.md`: `scroll-restore`
+- `heuristics/layout.md`: `layout-chrome`
+- `heuristics/maps.md`: `map-camera`
+- `heuristics/scrolling.md`: `scroll-nest`, `scroll-restore`
 - `heuristics/search.md`: `search-surface`
+- `heuristics/sense.md`: `sense-accuracy`
 - `heuristics/states.md`: `state-error`, `state-interrupt`
 - `heuristics/touch.md`: `touch-gestures`, `touch-reach`
 
@@ -3981,7 +5520,7 @@ So the default answer to sending one is no, and the cost of getting it wrong is 
 
 The permission prompt itself is `perm-notify-ask`. This file is about what the app sends once it has one.
 
-Rules in this file, in order: `notify-earns-it`, `notify-channels`, `notify-level`, `notify-quiet`, `notify-lockscreen`, `notify-destination`, `notify-actions`, `notify-shade`, `notify-ongoing`, `notify-badge`, `notify-inapp`.
+Rules in this file, in order: `notify-earns-it`, `notify-channels`, `notify-level`, `notify-quiet`, `notify-lockscreen`, `notify-destination`, `notify-actions`, `notify-shade`, `notify-ongoing`, `notify-occurrence`, `notify-badge`, `notify-inapp`.
 
 ### `notify-earns-it` Every send site names the event, and the event is the user's
 
@@ -4062,8 +5601,19 @@ Only a live event holds a permanent place in the shade: playback, a call, naviga
 
 - The work runs in a foreground service posting under a non-zero id, on a channel that follows `notify-level`.
 - From Android 14 the user can swipe that notification away while the service keeps running. Dismissal is not a stop signal and not a crash: the work continues, the notification is reposted when the state changes, and the app never treats its presence as where the state is stored.
+- Updates the person drives are coalesced to the latest value. Android rate limits how often one app may post or update a notification and drops the posts over the limit, so a notification refreshed on every tap, every score change or every tick ends on whichever update got through rather than the last one. Post the current state once per short interval, and always post the final one.
 - A journey with a start and an end shows how far along it is rather than repeating one static line. Android 16 has `Notification.ProgressStyle` for exactly this, which is the delivery, the ride and the route.
 - iOS does this job with a Live Activity, which can only be started while the app is in the foreground. It stays active for up to eight hours and on the Lock Screen for up to twelve, so it carries a `staleDate` for the point its content stops being trustworthy and an `ActivityUIDismissalPolicy` for how it leaves. End it when the work ends instead of letting the ceiling end it.
+
+### `notify-occurrence` Each scheduled occurrence is its own notification with its own life
+
+A reminder that repeats, a dose three times a day, a bill every month, a lesson every evening, is not one notification firing many times. Each firing is an occurrence the person can act on, miss or ignore, and the schedule is the list of them.
+
+- Every occurrence carries its own identifier, derived from the item and the instant it is for, so cancelling, updating or confirming one names that one. A single id reused for the series, or a cancel that clears every pending request for the item, takes tomorrow's reminders with today's.
+- An occurrence has a lifecycle the app tracks: upcoming, due, and then done or missed. Due lasts a grace window written in `STACK.md`, so an occurrence does not turn missed at the exact minute it fires while the person is reaching for the phone.
+- Acting on one occurrence touches that occurrence only. Confirming, snoozing or skipping it leaves every other one scheduled as it was, and a follow-up reminder belongs to the occurrence that raised it.
+- Nothing is scheduled for an instant already past or before the item existed. An item created at 15:00 with a daily time of 08:00 starts tomorrow, and a schedule rebuilt after an edit drops the instants that have gone by instead of firing them all at once.
+- The platforms cap pending local notifications, 64 on iOS, so a long schedule keeps a rolling window filled ahead and tops it up, rather than registering a year of occurrences once.
 
 ### `notify-badge` A badge is a count of things waiting, or it is nothing
 
@@ -4091,7 +5641,8 @@ Review answers each of these against the code, pointing at the line:
 - The payload carries a destination and a subject id reached through `setContentIntent()`, the routing runs on a cold launch from a killed process, and the tap clears the notification. `notify-destination`
 - No more than two actions are relied on and none exceeds the platform's ceiling, the first is non-destructive, conversations use `MessagingStyle` with direct reply, and completing an action from the shade updates the notification and the badge. `notify-actions`
 - Related notifications share a group or thread with a summary, children alert with `GROUP_ALERT_SUMMARY`, repeat events update in place, and anything handled elsewhere or no longer true is cancelled or times out. `notify-shade`
-- Anything persistent is a real ongoing event, the app keeps working when the user dismisses it, and a Live Activity carries a stale date and an explicit end. `notify-ongoing`
+- Anything persistent is a real ongoing event, the app keeps working when the user dismisses it, updates driven by the person are coalesced with the final state always posted, and a Live Activity carries a stale date and an explicit end. `notify-ongoing`
+- Each scheduled occurrence has its own identifier and a tracked state with a grace window before missed, acting on one never cancels or alters another, nothing is scheduled in the past or before the item existed, and long schedules stay under the platform's pending limit. `notify-occurrence`
 - The badge counts something the user can act on, matches what the app shows, and reaches zero through normal use. `notify-badge`
 - Every notification the app sends has an in-app equivalent that works with notifications denied, and a foreground arrival lands in the content instead of presenting as a banner. `notify-inapp`
 
@@ -4291,7 +5842,7 @@ Nobody remembers a slideshow about an interface they have not used yet, and a ph
 Sort the setup into two lists: what the app cannot start without, and what can be defaulted now or answered later. The second list is longer than it first looks, and everything on it that stays in the flow is a screen paying rent it does not earn. These screens are read one at a time on a device where the exit is a home swipe, and anything the first run downloads arrives on whatever data the user is standing in.
 
 - Ship a working default instead of asking, which is `set-default-first`.
-- No rating prompt and no purchase ask before the user has seen the product work.
+- No rating prompt and no purchase ask before the user has seen the product work. Where a purchase ask is placed in the flow anyway, it is not one of the steps a progress bar counts, and closing it lands in the product (`sub-honest`).
 - The first run does not wait on a download. Content packs, models and offline data arrive in the background while the app is already usable.
 - Terms and licensing are not one of the three panels. Where consent is legally required it is one line with a link at the point it applies, not a wall to scroll to the bottom of.
 
@@ -4365,6 +5916,7 @@ Review answers each of these against the code, pointing at the line:
 - `heuristics/permissions.md`: `perm-rationale`, `perm-purpose-string`, `perm-notify-ask`, `perm-no-coercion`
 - `heuristics/settings.md`: `set-default-first`
 - `heuristics/states.md`: `state-empty`, `state-permission`, `state-interrupt`
+- `heuristics/subscriptions.md`: `sub-honest`
 - `heuristics/touch.md`: `touch-floor`
 - `heuristics/typography.md`: `type-scaling`
 
@@ -4376,7 +5928,9 @@ Taking money on a phone is the one design problem where a wrong decision is not 
 
 Everything after that is a form on a small screen, held by someone who is about to hand over money and is looking for a reason not to.
 
-Rules in this file, in order: `pay-rail`, `pay-steering`, `pay-wallet-first`, `pay-sheet`, `pay-total`, `pay-price-source`, `pay-subscription-terms`, `pay-cancel`, `pay-restore`, `pay-card`, `pay-handoff`, `pay-outcome`, `pay-honest-paywall`.
+The paywall, the terms of a subscription, its trial, restore and cancellation are the `sub-` prefix, in `heuristics/subscriptions.md`.
+
+Rules in this file, in order: `pay-rail`, `pay-steering`, `pay-wallet-first`, `pay-sheet`, `pay-total`, `pay-price-source`, `pay-card`, `pay-handoff`, `pay-outcome`.
 
 ### `pay-rail` What is being sold decides the rail, and it is not a preference
 
@@ -4414,7 +5968,9 @@ The app's job is what comes before the sheet and what happens after it. The shee
 
 State the full amount to be billed for anything on offer, of any type. On a phone the surprise arrives late, because the screen is short and the fee lands at the bottom.
 
-- Shipping, tax and every fee are visible on the screen where the user commits, not one step later.
+- Shipping, tax and every fee are visible on the screen where the user commits, not one step later. An estimate on the screen before it is not that total.
+- An optional charge, a tip, a donation, insurance, starts at none on the checkout exactly as it does in the cart (`shop-upsell`), and the total changes in view when one is picked.
+- A hold or deposit placed on the card is stated before the method is chosen: the amount, when it is taken and when it is released. The person who later finds a larger pending amount on the statement reads it as an overcharge.
 - Currency, grouping and decimals come from the locale, which is `l10n-format`, and figures in a column align under `type-strings`.
 - Rounding never flatters: `data-precision` owns what a displayed number is allowed to imply.
 - The price is not smaller than the button next to it, and it does not need a scroll to reach.
@@ -4428,32 +5984,13 @@ A price typed into the code is wrong in every currency but one, and it is wrong 
 It is the easiest defect to introduce and the hardest to see in review, because a hardcoded price renders perfectly on the reviewer's device.
 
 - The amount, the currency and the formatting are the store's, taken from the product query. The app does not build the string, convert a currency, or append a symbol.
-- A struck-through "was" price is only the store's own reference or introductory price. Inventing one to show a discount is promoting a false price, which guideline 2.3.1(a) makes grounds for removing the app and terminating the account, and `pay-honest-paywall` owns the rest of that shape.
+- A struck-through "was" price is only the store's own reference or introductory price, and a saving is derived from two store prices. What either may claim is `sub-discount`.
 - The product query is a network call that is slow, fails, and returns fewer products than asked for. The screen needs a loading state and a failure state under `state-loading`, and neither of them is a placeholder amount.
 - A product the store did not return is not for sale on this device, and it does not render as a disabled row with a price beside it. Separate that from a query that failed: Play reports each product it could not fetch with a reason for the failure, and a transient one is `state-error` on the paywall rather than an item silently vanishing from it.
-- The same rule holds for anything derived from the price, including the per-period figure on an annual plan and any "save 30%" badge.
+- The same rule holds for anything derived from the price: the per-period figure on an annual plan, any "save 30%" badge, and the money price of a currency pack.
+- Remote configuration chooses which store products a screen offers, never what they cost. A price string in a config value is a constant that ships later.
 
 Search for a currency symbol in the view layer. Every hit is either this defect or a comment.
-
-### `pay-subscription-terms` A subscription screen has required contents
-
-Before anyone can subscribe, the screen carries the subscription name, the period, what the money buys during each period, and the billing amount localised for the storefront being sold to. Also on that screen, not one level deeper, a way for an existing subscriber to sign in or restore.
-
-- A free trial says plainly that a payment starts automatically when it ends, and when that is.
-- An introductory price states the intro amount, how long it lasts, and the standard price that follows.
-- Changing an existing app to a subscription does not take away what current users already paid for.
-
-### `pay-cancel` Cancelling is easy or the app is hostile
-
-The platform owns the actual cancellation screen, so the app links to the system page rather than rebuilding it, which is `set-system-owned`. What the app owns is whether that link is findable.
-
-A manage-subscription entry buried several levels down reads as obstruction, and it is called out as such by the platform. It belongs where someone looks for it, next to the account exit that `set-account-exit` places. Cancelling a subscription and deleting an account are different actions with different consequences, and `auth-delete` owns the second.
-
-### `pay-restore` Restore exists, or a paying customer is locked out
-
-A reinstall, a new device, a factory reset and a sign-in from another platform are all normal. Any restorable purchase needs a restore path, and the paywall is one of the places it is reachable from.
-
-Restore is a labelled control, not a hidden gesture, and it reports what happened: restored, nothing to restore, or failed with a reason under `state-error`. A paywall with no restore turns an existing customer into someone being asked to pay twice.
 
 ### `pay-card` When a card form is the legal rail, it is still a form on a phone
 
@@ -4480,17 +6017,6 @@ A payment has four outcomes, not two: succeeded, failed, still pending, and reve
 - Every attempt carries an idempotency key so a retry, a double tap or a reconnect cannot bill twice. This is the payment case of `net-dedupe`, and here the cost of getting it wrong is money.
 - A receipt is reachable after the fact, from inside the app, without searching an inbox.
 
-### `pay-honest-paywall` The paywall is where scam patterns get apps removed [P1]
-
-Tricking someone into a subscription is grounds for removal from the store, and the patterns are well known enough to be worth naming.
-
-- The close control is visible, reachable and meets `touch-floor`. A paywall that has to be escaped by a system gesture is the pattern the rule exists for.
-- Terms are legible at the size everything else is, not in the smallest type on the screen.
-- The selected plan is the one the user picked, not a pre-selected annual with the monthly option one tap away in grey.
-- No invented urgency: a countdown that resets on relaunch is a lie the screen tells.
-- What the user gets is described before the price is asked for, and `onboard-look-first` already rules that people may see the product first.
-- Purchases involving children carry the same restraint `ads-children` demands.
-
 ### Check
 
 Review answers each of these against the code, pointing at the line:
@@ -4499,31 +6025,24 @@ Review answers each of these against the code, pointing at the line:
 - Any link to an external purchase page is conditional on the storefront at runtime, and the enabled storefronts are recorded. `pay-steering`
 - The wallet button is the primary payment option where credentials exist, drawn by the platform API, no smaller than the alternatives and visible without scrolling, with all purchase options settled before the sheet. `pay-wallet-first`
 - No screen imitates, wraps or precedes the system purchase sheet with a lookalike. `pay-sheet`
-- The full billed amount, including shipping, tax and fees, is on the screen where the user commits, formatted for the locale. `pay-total`
-- Every displayed price, and everything derived from one, comes from the store's product object, with a loading and a failure state instead of a placeholder amount and no invented reference price. No currency symbol appears in the view layer. `pay-price-source`
-- The subscription screen carries name, period, what is included, the localised price, restore or sign-in, and the automatic charge at the end of any trial. `pay-subscription-terms`
-- A link to the system cancellation page is reachable from the account area rather than buried. `pay-cancel`
-- A labelled restore control exists, is reachable from the paywall, and reports its result. `pay-restore`
+- The full billed amount, including shipping, tax and fees, is on the screen where the user commits, formatted for the locale, every optional charge starts at none, and any hold is stated with its amount and release before the method is chosen. `pay-total`
+- Every displayed price, and everything derived from one, comes from the store's product object, with a loading and a failure state instead of a placeholder amount, no invented reference price and no price held in remote configuration. No currency symbol appears in the view layer. `pay-price-source`
 - Card fields use autofill and the right keyboards, sit in one column, and survive a declined payment with the input intact. `pay-card`
 - A payment that leaves the app holds its pending order across the trip, routes the return to the outcome, and reconciles on next launch when the user does not return. `pay-handoff`
 - Pending is a rendered state, and every attempt carries an idempotency key so no retry can bill twice. `pay-outcome`
-- The paywall has a visible close control meeting the touch floor, legible terms, no pre-selected plan the user did not choose, and no countdown that resets. `pay-honest-paywall`
 
 `pay-rail` and `pay-steering` are answered against the store policy that applies to the item and the storefront, not against taste. When the two rails disagree with a product decision, the policy wins and the product decision changes.
 
 ### Reaches
 
-- `heuristics/ads.md`: `ads-children`
-- `heuristics/auth.md`: `auth-delete`
+- `heuristics/commerce.md`: `shop-upsell`
 - `heuristics/data-display.md`: `data-precision`
 - `heuristics/forms.md`: `form-autofill`, `form-input`, `form-persist`
 - `heuristics/layout.md`: `layout-column`
 - `heuristics/localization.md`: `l10n-format`
 - `heuristics/navigation.md`: `nav-deeplink`
-- `heuristics/onboarding.md`: `onboard-look-first`
-- `heuristics/settings.md`: `set-system-owned`, `set-account-exit`
 - `heuristics/states.md`: `state-loading`, `state-error`, `state-interrupt`, `state-set`
-- `heuristics/touch.md`: `touch-floor`
+- `heuristics/subscriptions.md`: `sub-discount`
 - `heuristics/typography.md`: `type-strings`
 - `platform/network.md`: `net-timeout`, `net-dedupe`
 
@@ -4733,13 +6252,14 @@ The mechanism is `auth-biometric-session`: a device prompt re-authorizes a sessi
 - **What it does not cover.** A gate with no `priv-switcher` cover is read straight off the switcher thumbnail of the screen behind it. Both, or neither is worth having.
 - The way out stays open when the check cannot run. Sign out, deletion and support are reachable with the sensor unavailable or unenrolled, which is `sense-biometric`.
 
-### `priv-instrument` Nothing the user typed leaves the device in a log, a crash report or an event
+### `priv-instrument` Nothing the user typed, imported or received leaves the device in a log, a crash report or an event
 
 Apple requires explicit consent and a clear visual or audible indication when an app records or logs user activity, and names screen recordings and other user inputs in that requirement. Session replay is therefore a store rule before it is a taste question.
 
 - Write the event schema down and name every field. No field carries free text, the contents of a masked value, a token, a precise coordinate, or a full identifier where a stable hash does the job.
 - Analytics and crash SDKs capture screens, taps and the view hierarchy by default, and that default is the whole failure. Put the sensitive views in the SDK's redaction list at the same moment the screen decides to mask them, and confirm it by replaying a captured session rather than by reading the configuration.
-- A crash report carries state with it. Strip request bodies, credential bearing headers and every field the screen masks before it is sent.
+- Typed is the narrow case. A file the person imported, a chat export, a contact card, a message someone sent them and a document opened from another app are their content too, and nobody typed a word of it.
+- A crash report carries state with it. Strip request bodies, credential bearing headers and every field the screen masks before it is sent. The channels nobody thinks of as data are the ones that carry it: an exception message that quotes the line it failed to parse, a model's `toString` printed into a stack trace or a breadcrumb, a logged request or response body. Errors name the field and the position, never the value, and a model printed for debugging prints its type and its id.
 - The debug log ships. A line that prints a response body is a leak the moment the phone is plugged into a laptop, and it is the cheapest of these to remove.
 - Whether any of it crosses to another company is `perm-tracking`. The answer to that prompt does not change what is inside the payload.
 
@@ -4774,7 +6294,7 @@ Review answers each of these against the code, pointing at the line:
 - Capture blocking is scoped to the screen that needs it, is not relied on as a guarantee, and no screen puts two halves of one secret together. `priv-capture-block`
 - Capture detection is used as a notice the user was warned about, never as protection, and the live mirroring signal is read on both platforms and answered by hiding the region rather than by ending the session. `priv-capture-detect`
 - The gate covers an area rather than the app, re-locks on background and idle, and ships together with the switcher cover. `priv-gate`
-- No log, crash report, analytics event or replay session carries typed text, masked values, tokens or full identifiers. `priv-instrument`
+- No log, crash report, analytics event or replay session carries typed text, imported or received content, masked values, tokens or full identifiers, and no exception message, model `toString` or logged body quotes the content it was handling. `priv-instrument`
 - Data deletion exists separately from account deletion, removes the row rather than hiding it, says which copies went, names what is retained and why, and reaches the on device leftovers. `priv-delete-data`
 - `STACK.md` records what both stores were told, that record matches the dependency list and the requests in the diff, and the in-app disclosure and the policy route both exist. `priv-declared`
 
@@ -4803,7 +6323,7 @@ Scrolling is the movement a phone gets the most of. The screen is a few hundred 
 
 This file is the scroll itself: its axis, its position over time, the chrome that moves with it, and the effects the platform owns. The collection inside the scroll is `heuristics/lists.md`. The column it runs in, the bars pinned over it and the insets around it are `heuristics/layout.md`.
 
-Rules in this file, in order: `scroll-nest`, `scroll-affordance`, `scroll-collapse`, `scroll-edge`, `scroll-anchor`, `scroll-restore`, `scroll-top`, `scroll-programmatic`, `scroll-overscroll`, `scroll-keyboard`.
+Rules in this file, in order: `scroll-nest`, `scroll-affordance`, `scroll-collapse`, `scroll-edge`, `scroll-anchor`, `scroll-restore`, `scroll-top`, `scroll-programmatic`, `scroll-sections`, `scroll-overscroll`, `scroll-keyboard`.
 
 ### `scroll-nest` Same-axis nesting needs a wired handoff, and the fling is part of it
 
@@ -4880,6 +6400,19 @@ A touch becomes a scroll after a small amount of travel, 8 dp by the Android def
 - Animate only across a short distance. An animated scroll to a distant index rides through everything between and lasts as long as the distance. Jump instead, and let the destination be the first frame the user sees.
 - Reduced motion turns the animated ones into jumps (`motion-reduced`).
 
+### `scroll-sections` A row of section labels over one scroll has two drivers, and they never fight
+
+A long page split into sections, a menu by course, a product by description, specifications and reviews, a shop by aisle, often grows a row of labels pinned above the scroll. It looks like tabs and it is not navigation: there is one screen and one scroll, and the row is an index into it. `button-tabs` is not the rule for it, and the row changes nothing about what back does (`nav-back`).
+
+The row has two drivers. A tap on a label scrolls the page to that section, and the page scrolled by hand changes which label is selected. Each one wired alone looks finished in a quick test.
+
+- A tap scrolls the page and the selection goes straight to the destination. It does not flicker through every label the page passes on the way.
+- Hand scrolling moves the selection when a section crosses one line just below the pinned row, written once, and the row slides sideways to keep the selected label in view without moving under a drag (`scroll-programmatic`).
+- A section lands under the pinned row, not behind it: the offset is the measured height of the row and of any bar above it (`layout-chrome`).
+- The last section is usually shorter than the screen and can never reach the line. Its label is still selected by a tap, and selected once the page reaches its end.
+- With more labels than fit, the row scrolls sideways with the next label cut by the edge (`scroll-affordance`).
+- To the screen reader the row is a set of links, and the selected one says it is selected (`a11y-name`).
+
 ### `scroll-overscroll` The end-of-content effect belongs to the operating system
 
 Android 12 replaced the edge glow with a stretch that bounces back on drag and on fling, for every app on the device. iOS bounces elastically and expects apps to keep that behaviour. In both cases the scrolling container already provides it, so a hand-built rubber band is a second bounce arguing with the first: it starts at a different velocity and settles on a different curve, and it reads as a rendering fault rather than as a style.
@@ -4909,21 +6442,22 @@ Review answers each of these against the code, pointing at the line:
 - List items carry stable keys, the position is persisted as an item identity that survives the process, restored after the data loads, and falls back to the top when the item is gone. `scroll-restore`
 - On iPhone exactly one scroll view per screen keeps scroll-to-top enabled; on Android any unbounded scroll offers a built return-to-top at the touch floor. `scroll-top`
 - Every programmatic scroll is guarded against an in-progress drag, moves the minimum needed, and animates only over a short distance. `scroll-programmatic`
+- A label row over one scroll is built as an index rather than as tabs, a tap moves the selection straight to its destination, hand scrolling changes it at one written line and keeps the label in view, a section lands below the pinned row, the last section can be selected, and the row reads as links with a selected state. `scroll-sections`
 - No hand-written bounce, overscroll is not disabled, and scroll-linked effects move only transform and opacity. `scroll-overscroll`
 - The scroll container consumes the keyboard inset, and dragging the content dismisses the keyboard. `scroll-keyboard`
 
-Check nesting, the scroll affordance, anchoring and restoration on a device with real data rather than in the layout code. All four look correct in a short mock list and fail only once the content outruns the screen.
+Check nesting, the scroll affordance, anchoring and restoration on a device with real data rather than in the layout code. All four look correct in a short mock list and fail only once the content outruns the screen. `scroll-sections` is answered the same way: fling through the page, then tap a label far from the current one, because the flicker through the labels in between and a last section that never selects show only in motion.
 
 ### Reaches
 
-- `heuristics/accessibility.md`: `a11y-gesture`
-- `heuristics/buttons.md`: `button-one-primary`
+- `heuristics/accessibility.md`: `a11y-gesture`, `a11y-name`
+- `heuristics/buttons.md`: `button-one-primary`, `button-tabs`
 - `heuristics/forms.md`: `form-persist`
 - `heuristics/icons-and-imagery.md`: `icon-reserve`
-- `heuristics/layout.md`: `layout-column`
+- `heuristics/layout.md`: `layout-column`, `layout-chrome`
 - `heuristics/lists.md`: `list-virtualise`, `list-refresh`, `list-end`
 - `heuristics/motion.md`: `motion-reduced`, `motion-cheap`
-- `heuristics/navigation.md`: `nav-restore`
+- `heuristics/navigation.md`: `nav-restore`, `nav-back`
 - `heuristics/states.md`: `state-interrupt`
 - `heuristics/touch.md`: `touch-floor`, `touch-keyboard`
 
@@ -5569,6 +7103,7 @@ Sound follows a touch. Launching, arriving at a screen, a card scrolling into vi
 - Where a soundtrack or an ambient loop is genuinely the point, it starts from a control the user reaches on the first screen, not before it, and stopping it is one step from anywhere it can be heard.
 - Audio that does start by itself owes a control that stops it, or its own volume separate from the system's. On the web that is an accessibility floor rather than a courtesy, and WCAG puts the line at anything running past 3 seconds. Native publishes no number, so take the same 3 seconds as the working one, and it applies to a splash animation and a game menu alike.
 - Whether a media surface may start by itself is `motion-autoplay`, and claiming the speaker at launch is `media-unasked-sound`. The addition here is that outside a player there is no case for it at all.
+- A game whose soundtrack is part of the product is the one case that may start it without a tap, under the conditions in `game-audio`: never over audio the person was already playing, and yielding to it.
 
 ### `sound-off-switch` One switch, in the place that already owns the sound
 
@@ -5576,6 +7111,7 @@ An app-level control is right only where nothing above it can turn the sound off
 
 - Samples the app plays itself are the case that needs one: a single switch for the app's own sound, sitting beside what it affects, read by every play site (`set-wired`), and persisted across launches.
 - One switch for the whole set, not one per event. A set small enough to defend under `sound-inventory` is small enough to turn off as a unit, and a sound settings screen with six rows is the inventory admitting it is too long.
+- A game carrying both a soundtrack and effects is the exception to one switch: music and effects are two controls, because people keep one and silence the other, which is `game-audio`.
 - A better default is cheaper than a switch (`set-default-first`). Where the sound is decoration rather than a signal, that default is off, and the switch exists for the people who want it back.
 
 ### Check
@@ -5597,6 +7133,7 @@ Two of those halves are not answerable from a diff. Whether other apps' audio co
 - `heuristics/accessibility.md`: `a11y-media`
 - `heuristics/colors.md`: `color-not-alone`
 - `heuristics/feedback.md`: `fb-silent-success`, `fb-reach`
+- `heuristics/game.md`: `game-audio`
 - `heuristics/media.md`: `media-system-player`, `media-unasked-sound`, `media-focus`
 - `heuristics/motion.md`: `motion-autoplay`
 - `heuristics/notifications.md`: `notify-channels`, `notify-level`
@@ -5761,7 +7298,7 @@ The first load draws the real layout with its content replaced by blocks: same r
 - Under 300ms, show nothing. Once it is shown, hold it 500ms even if the data arrives sooner. The threshold alone produces the flicker it exists to prevent, on every response that lands a moment after it.
 - Past ten seconds, indeterminate stops being honest. Name the stage or count what is done, and offer a way out of the wait, because the only other exit a phone user has is the force quit.
 - The deadline itself is `net-timeout`. The half nobody writes is what happens when it is hit. Write that branch, or the timeout expires into the same animation and the wait has no end after all.
-- Three loads look different: first load fills the screen with the placeholder, refresh keeps the current content and marks it as updating, and loading more is `list-end` and `list-refresh`.
+- Three loads look different: first load fills the screen with the placeholder, refresh keeps the current content and marks it as updating, and loading more is `list-end` and `list-refresh`. They are separate states in the code, not one `isLoading` flag: a flag shared by both turns every refresh, a pull, a timer, a return to the screen, into rows redrawn as blocks and a scroll position thrown away. A placeholder appears only where there is nothing loaded to show.
 - The transition is announced, not only drawn. Loading, loaded and failed are silent to VoiceOver and TalkBack unless the region is marked live: `liveRegion` in Compose semantics, `accessibilityLiveRegion` on Android views, an announcement notification on iOS.
 
 Acknowledging the tap comes before all of this and belongs to `touch-feedback`.
@@ -5839,13 +7376,15 @@ A call, a notification pulled down and an app switch stop the screen without des
 - Where the user lands on return is `nav-restore`, which owns the restored place: destination, stack, selection and filters, with the position inside a collection under `scroll-restore`. The values in a form, the focused field and the abandoned draft are `form-persist`. What is left here is the lifecycle: saving where the system says to save, and saying so when something did not make it back.
 - If something was lost, say so. A form silently emptied claims nothing happened, and the user finds out by reading it back.
 - Long work resumes rather than restarting from zero, and a cancelled screen cancels its own requests and timers on the way out.
+- For free means the memory survives, not that time stopped. Anything running on a clock the person answers to, a countdown, a timed round, a simulation, a workout interval, pauses when the app loses focus and resumes only when the person says so, and a finger held down when focus went is released rather than still pressing on return.
+- A short segment the person can replay in moments, a single round or one attempt at a level, may restart after a process death instead of resuming, as long as the screen says it restarted. Progress that took longer than that, a run, a streak, an unlocked level, currency, is the P0 case.
 
 ### Check
 
 Review answers each of these against the code, pointing at the line:
 
 - Every state the screen can enter has a line in the code, and each one it cannot is answered as not applicable with the reason. `state-set`
-- First load draws a placeholder matching the final layout, no spinner covers the screen, nothing appears under 300ms or leaves within 500ms of appearing, ten seconds names a stage and offers an exit, the timeout has a written branch behind it, and the transitions are announced. `state-loading`
+- First load draws a placeholder matching the final layout, no spinner covers the screen, nothing appears under 300ms or leaves within 500ms of appearing, ten seconds names a stage and offers an exit, the timeout has a written branch behind it, and the transitions are announced. First load and refresh are separate states, and a second refresh cycle, run after the content has loaded once, keeps that content on screen instead of drawing placeholders over it. `state-loading`
 - The three empties render three different sentences, with an action on the first two and none invented for the third. `state-empty`
 - There is a message per next action, with connection and refusal never sharing one, no cause is asserted that was not verified, no failure renders as an empty, no message carries a status code, and the message reaches a screen reader. `state-error`
 - A visible manual retry exists, retrying restores the input, the selection and the scroll position, and automatic retry backs off, stops, and never writes the message. `state-retry`
@@ -5854,7 +7393,7 @@ Review answers each of these against the code, pointing at the line:
 - Unconfirmed actions render as pending with a way out on the item itself, a failed one rolls back on screen with the content kept, and a confirmed one names what changed in something that does not dismiss itself. `state-queued`
 - A failed region marks itself and retries alone, leaving the rest of the screen. `state-partial`
 - Denial degrades to a working screen, and the route back is a deep link into the system Settings page. `state-permission`
-- In-progress work survives a configuration change and a system-initiated process death. `state-interrupt`
+- In-progress work survives a configuration change and a system-initiated process death, apart from a short replayable segment that restarts and says so. A running clock pauses on focus loss, resumes only on the person's input, and no held pointer is still pressed on return. `state-interrupt`
 
 `state-offline` and `state-stale` are answered on a device with the network actually off. `state-interrupt` is answered against a rotation and a kill the system would have made itself, using Don't keep activities or `adb shell am kill`, never a swipe out of the recents list: that gesture is the user asking for a clean start, and nothing is meant to come back from it. `state-queued` is the one that keeps the recents-swipe test, because persisted work is exactly what has to outlive a dismissal. Nothing in the file proves any of them, and a state that was never entered is unrun rather than passing.
 
@@ -5875,6 +7414,133 @@ Review answers each of these against the code, pointing at the line:
 - `heuristics/typography.md`: `type-scaling`
 - `platform/network.md`: `net-timeout`, `net-metered`
 
+# heuristics/subscriptions.md
+
+## Subscriptions
+
+A subscription is the one purchase that keeps charging after the screen that sold it is gone, so whatever the person misread there is billed again every period. On a phone the offer is read in seconds, on one screen, with the price competing against artwork for the same space, and the system sheet that confirms it shows little more than an amount and a period. Every rule here is about what the person agrees to on the paywall matching what that sheet then charges.
+
+The rail, the system sheet and where every price comes from are `heuristics/payments.md`: `pay-rail`, `pay-sheet`, `pay-price-source`. A struck price on physical goods is `shop-price-unit`. Credits, lives and currency that a subscription grants are the `econ-` prefix. The compositions, parts and states a selling screen is built from, and the paywall each platform already ships, are in `references/paywall-anatomy.md`.
+
+Rules in this file, in order: `sub-terms`, `sub-billed-first`, `sub-discount`, `sub-trial-end`, `sub-plan-choice`, `sub-exit`, `sub-honest`, `sub-children`, `sub-restore`, `sub-cancel`.
+
+### `sub-terms` The offer screen carries the terms, the price and the way back in
+
+On the screen where the person commits, not one level deeper:
+
+- The subscription's name, its period, and what each period buys, in quantities where there are any: how much storage, how many credits, which content. Every benefit listed is one the entitlement grants (`copy-claims`).
+- The renewal price, localised for the storefront and read from the store (`pay-price-source`). A screen that starts a subscription or a trial with no price anywhere on it fails, however the trial is worded.
+- A way for an existing subscriber to sign in or restore (`sub-restore`).
+- Whether the app is usable without subscribing, and what that use includes, wherever it is. Play lists a promotion that hides this as a violation.
+- An introductory price states the intro amount, how long it lasts and the standard price after it. A trial or intro offer is drawn only when the store says this user is eligible; someone who already used one sees the plan at its price, with the button and the billing line switched to paying now. Moving an existing app to a subscription does not take away what current users already paid for.
+
+### `sub-billed-first` The amount that will be billed is the most prominent price on each option [P1]
+
+The system sheet confirms an amount and a period. When the paywall led with a different number, the person approved one figure and is charged another.
+
+- On each option, the billed amount and its period are the largest price. A per week, per day or per month equivalent, and any saving, sit in a smaller size and a subordinate position. Apple's subscription guidance states this order, and Play lists an annual plan that leads with a monthly cost as a violation.
+- The price of a trial or of an introductory period never stands where the plan's price goes. A tile that reads zero for a plan billing every month is the failure.
+- Equivalents use one unit across every option on the screen. Per week on one tile and per day on the next leaves nothing to compare.
+- The button, or the line directly above it, repeats what the selected option bills and when.
+
+### `sub-discount` A saving names what it is measured against, and a struck price is one somebody paid [P1]
+
+- A struck reference is the store's standard price behind an introductory offer, or a price the product actually charged for that plan. One computed backwards from the discount, the sale price divided by one minus the percentage or simply doubled, is a price nobody paid, and guideline 2.3.1(a) makes promoting a false price grounds for removal. Where EU price indication law applies, an announced reduction is measured from the lowest price of the previous 30 days. The same rule for goods is `shop-price-unit`.
+- A "save N%" badge names its comparison, such as twelve months of the monthly plan, and is computed from the two store prices rather than typed. The plan it is compared with is on the same screen.
+- The percentage rounds down, never up (`data-precision`).
+
+A reference price computed in code from the sale price is this defect whatever it renders as, and it is visible in the formula.
+
+### `sub-trial-end` The end of a trial is a date and an amount beside the button, and a promised reminder arrives [P1]
+
+A free trial turns into a charge with no action from the person. Knowing when is their only protection, and this screen is the only place they read it.
+
+- Beside the button, at the screen's body size and not only in the legal text: the date the trial ends, the amount billed then and its period. Apple asks for the trial length and the price billed after it, and Play for how and when the trial converts and how to cancel.
+- The date is computed from the trial length the store returns for this user, not from a constant.
+- A control promising a reminder before the trial ends exists only where the reminder can reach the person: notifications already allowed, asked for at that moment under `perm-notify-ask`, or an email address the screen names. Schedule it on the server from the store's renewal data, since a reminder scheduled on the device dies with a reinstall.
+- A switch that turns the trial on or off changes the button label and the billing line with it, in both positions.
+
+### `sub-plan-choice` The plans are one choice, and the button commits to exactly the selected one
+
+- The options are a single-choice group: one selected at a time, the selection legible without colour (`color-not-alone`), and each option read as a radio with its name, billed amount, period and selected state (`a11y-name`).
+- Preselecting an option is allowed. The button commits to the option visibly selected, and that option's billed amount is on the screen.
+- The button names what happens, starting a trial or paying now, with the amount where it is not the wallet button (`button-label`). Continue on a button that starts a charge describes nothing.
+- A plan reached through a "view all plans" link answers to every rule in this file on the screen it opens.
+- Someone already subscribed who reaches the paywall sees their plan, its renewal date and the way to change it, never a purchase of what they already have.
+
+### `sub-exit` The way out is visible in the first frame, against whatever is actually behind it [P1, pass or fail]
+
+Play lists a trial whose dismiss button is missing or hard to see as a violation, and a paywall escaped only by a system gesture is the shape the stores remove apps for.
+
+- A close control, or a text decline such as "Not now", is present from the first frame, never after a delay or below a scroll.
+- It meets `touch-floor`, and 3:1 against the image or video actually behind it, measured on the rendered frame rather than against a theme colour (`color-contrast`). A pale cross over a bright photograph is the common failure.
+- It survives every orientation the app supports. A paywall drawn for portrait inside a landscape game loses its exit past the edge (`layout-insets`).
+- Restore, help and sign in do not take the corner where the exit usually sits, because the tap meant to leave lands on them.
+- A decline naming the free option, "Continue with the free plan", is the strongest version. A decline worded as a loss is `copy-voice`.
+- Closing may raise one other offer, once per decision, and that offer's own close leaves for good. A close that opens a second paywall which opens a third is the chain Play describes as purchase flows where a subscribe can be tapped by accident.
+- Cancelling the system purchase sheet is the person saying no, not an error: the paywall stays as it was, with no failure message (`state-error` is for failures), and the same single offer limit applies.
+
+### `sub-honest` Urgency has a real deadline, and the offer is described before it is priced [P1]
+
+- A deadline, "today only", "price rises soon", "limited time", has an end the server owns, it survives relaunch and reinstall, and the offer goes when it passes. A countdown that restarts, or "limited" with no end at all, is invented urgency.
+- What is bought is described before the price is asked for, and people may look at the product first (`onboard-look-first`).
+- A paywall placed inside onboarding is not a step of its progress, and closing it lands in the product (`onboard-first-action`).
+- Ratings, user counts and rankings shown beside the offer are claims under `copy-claims`.
+- The terms are legible at the size of everything else, not the smallest grey on the screen.
+
+### `sub-children` In an app declared for children, buying sits behind a parental gate [P1]
+
+- Apple's guideline 1.3 keeps purchasing out of Kids Category apps unless it is behind a parental gate. The gate asks something a child cannot answer by reading the screen, and the purchase screen is reachable only through it.
+- Play's Families policy bars blurring virtual coins and real money in apps for children, and bars emotionally manipulative tactics that push a purchase or an ad view. A sad character, a lost streak or a countdown is not a reason given for buying.
+- Whether the app makes either declaration comes from `PRODUCT.md`, as it does for `ads-children`.
+
+### `sub-restore` Restore exists, or a paying customer is locked out
+
+A reinstall, a new device, a factory reset and a sign in from another platform are all normal. Any restorable purchase needs a restore path, and the paywall is one of the places it is reachable from.
+
+Restore is a labelled control, not a hidden gesture, and it reports what happened: restored, nothing to restore, or failed with a reason under `state-error`. It does not sit where the exit does (`sub-exit`). A paywall with no restore turns an existing customer into someone being asked to pay twice.
+
+### `sub-cancel` Cancelling is easy or the app is hostile
+
+The platform owns the actual cancellation screen, so the app links to the system page rather than rebuilding it, which is `set-system-owned`. What the app owns is whether that link is findable, and Play requires the in-app route.
+
+A manage-subscription entry buried several levels down reads as obstruction. It belongs where someone looks for it, next to the account exit that `set-account-exit` places. Cancelling a subscription and deleting an account are different actions with different consequences, and `auth-delete` owns the second.
+
+### Check
+
+Review answers each of these against the code, pointing at the line:
+
+- The commit screen carries name, period, what each period buys, the localised renewal price, restore or sign in, and what works without subscribing, no screen starts a subscription or trial without a price, and a trial is drawn only for a user the store reports eligible. `sub-terms`
+- On every option the billed amount and period are the largest price, equivalents and savings are smaller and share one unit across options, and no trial price stands in for a plan price. `sub-billed-first`
+- Every struck reference is a store or actually charged price, no reference is computed from the sale price, and every saving names its comparison plan and is derived from store prices, rounded down. `sub-discount`
+- The trial end date, the amount billed then and its period sit beside the button at body size, the date comes from the store's trial length, any reminder control is wired to a reachable channel and scheduled on the server, and a trial switch updates the label and the billing line. `sub-trial-end`
+- The plans are a single-choice group read as radios with name, billed amount, period and state, the button commits to the visibly selected option, its label names a trial or a charge, and an existing subscriber sees their plan rather than a purchase. `sub-plan-choice`
+- An exit is present from the first frame, meets the touch floor, reaches 3:1 against the rendered background, survives every supported orientation, does not share its corner with restore, help or sign in, and leads to at most one further offer whose close leaves, with a cancelled system sheet treated as a no rather than an error. `sub-exit`
+- Every deadline is server owned and survives reinstall, the offer is described before the price, an onboarding paywall is outside the progress and closes into the product, and the terms are body size. `sub-honest`
+- Where the app declares a child audience, every purchase sits behind a parental gate and currency prices are distinguishable from money. `sub-children`
+- A labelled restore control exists, is reachable from the paywall away from the exit, and reports its result. `sub-restore`
+- A link to the system cancellation page is reachable from the account area rather than buried. `sub-cancel`
+
+`sub-exit` is measured on the rendered paywall, not in the layout code: capture the first frame over its real artwork or video in every supported orientation, sample the colour behind the exit, and check its contrast and its target.
+
+### Reaches
+
+- `heuristics/accessibility.md`: `a11y-name`
+- `heuristics/ads.md`: `ads-children`
+- `heuristics/auth.md`: `auth-delete`
+- `heuristics/buttons.md`: `button-label`
+- `heuristics/colors.md`: `color-not-alone`, `color-contrast`
+- `heuristics/commerce.md`: `shop-price-unit`
+- `heuristics/copy.md`: `copy-claims`, `copy-voice`
+- `heuristics/data-display.md`: `data-precision`
+- `heuristics/layout.md`: `layout-insets`
+- `heuristics/onboarding.md`: `onboard-look-first`, `onboard-first-action`
+- `heuristics/payments.md`: `pay-rail`, `pay-sheet`, `pay-price-source`
+- `heuristics/permissions.md`: `perm-notify-ask`
+- `heuristics/settings.md`: `set-system-owned`, `set-account-exit`
+- `heuristics/states.md`: `state-error`
+- `heuristics/touch.md`: `touch-floor`
+
 # heuristics/touch.md
 
 ## Touch
@@ -5885,7 +7551,7 @@ It is blunt: the contact patch is an oval of 16 to 20mm for a fingertip and more
 
 Add the fourth condition that belongs to the device rather than the hand: the grip changes constantly, often within a single task, so nothing can assume the phone is being held the way it was a moment ago.
 
-Rules in this file, in order: `touch-floor`, `touch-spacing`, `touch-nested`, `touch-reach`, `touch-destructive`, `touch-feedback`, `touch-gestures`, `touch-keyboard`.
+Rules in this file, in order: `touch-floor`, `touch-spacing`, `touch-nested`, `touch-reach`, `touch-destructive`, `touch-feedback`, `touch-affordance`, `touch-gestures`, `touch-long-press`, `touch-keyboard`.
 
 ### `touch-floor` The target is the hit area, never the drawing [P1]
 
@@ -5912,6 +7578,10 @@ A minimum frame plus `.contentShape()`, so the padding is tappable and not just 
 **Mobile web**
 
 Padding on the control, never margin, since margin does not take taps.
+
+**Unity**
+
+A `RectTransform` sized to the floor carrying the raycast target, with the drawn icon as a child whose `raycastTarget` is off, or negative values in `Graphic.raycastPadding` to grow the hit area past the drawing. Under a `CanvasScaler` set to Scale With Screen Size the reference units are not dp, so convert the floor from `Screen.dpi` and check it on the narrowest supported screen.
 
 **Any other stack**
 
@@ -5955,6 +7625,10 @@ Give the drawn view `pointerEvents="none"`, with `accessibilityElementsHidden` o
 
 Put the `inert` attribute on the drawn subtree.
 
+**Unity**
+
+Put a `CanvasGroup` on the drawn subtree with `blocksRaycasts` and `interactable` off, or turn `raycastTarget` off on every `Graphic` in it, and register no `AccessibilityNode` for it in the `AccessibilityHierarchy`.
+
 **Any other stack**
 
 Take the drawn subtree out of hit testing and out of the accessibility tree, with whatever the framework offers for each.
@@ -5993,6 +7667,15 @@ Every touch gets an acknowledgement inside about 100ms, before the work behind i
 
 The touch state set is its own thing: rest, pressed, long press where the element has one, dragging where it moves, plus disabled, loading, error and empty. `hover` does not exist here, and `focus` belongs to a hardware keyboard or switch control rather than to a finger. Nothing may hide behind either.
 
+### `touch-affordance` What looks pressable presses, and nothing else looks it
+
+A finger cannot hover to find out, so the look of an element is the only promise it makes before the tap. Both ways of breaking that promise cost the same: a tap on something that does nothing reads as a broken app, and a control nobody recognises as one is a feature nobody uses.
+
+- Nothing that ignores a tap wears the marks of a control: a raised shadow, a button shape, a filled pill, a chevron at the end of a row, an underline, the accent colour reserved for interactive text. A decorative card styled like a tappable one, a status shown as a chip, a heading in link blue, all invite a tap with nothing behind it.
+- Everything that takes a tap carries one of those marks, or sits where the platform has already taught that position to act: a list row, a tab, a bar item. A tappable line of plain body text, a card with no edge or chevron that opens a detail, or an image that is secretly the only way into a screen is found by accident.
+- A row that opens something shows it, with a chevron on iOS or the full-width ripple on Android, and a row that only displays a value does not borrow the chevron.
+- One element, one promise. Where a tap on part of a surface acts and the rest does not, the acting part is drawn as its own control, which is `touch-nested`.
+
 ### `touch-gestures` The edges belong to the operating system
 
 A gesture that starts at a screen edge is competing with the OS and will lose. On iOS that is back from the left edge, the shade from the top left, the control panel from the top right, and home from the bottom. On Android it is back from either side, home from the bottom, and the shade from the top. Where a drag genuinely has to begin at an edge, claim the strip explicitly through the system's gesture exclusion mechanism and keep it as small as possible.
@@ -6004,6 +7687,45 @@ A gesture that starts at a screen edge is competing with the OS and will lose. O
 - Give a swipe region real height, and keep two swipeable things from overlapping where their gestures begin.
 
 Content runs underneath the system bars on current Android targets, so a control pinned to the bottom edge without inset handling ends up beneath the gesture strip: visible, and not tappable. The inset geometry itself is `layout-insets`.
+
+### `touch-long-press` A long press opens the platform's menu, and nothing lives only there
+
+Holding a finger on a message, a row or a photo is where both platforms put the occasional actions on the thing under it: reply, copy, share, react, move, delete. It suits actions that belong to one item and are wanted now and then, and it is the wrong home for anything someone needs, because nothing on the screen says it exists.
+
+- The press answers with the platform's own menu, anchored to the item, with the item lifted or previewed so it is clear which one the menu is about. A popover drawn by hand over a dimmed screen loses the system haptic, the drag-to-choose gesture and the screen reader's actions at once.
+- Items are ordered by how often they are used, with destructive actions last, set apart, in the destructive role and never the first item under the finger (`touch-destructive`).
+- A quick row above the menu, reactions or the one verb used most, is part of the menu rather than a second gesture.
+- Every action in the menu is reachable without the long press: an overflow control on the item or on its detail screen for the sighted, and the same set as named actions for the screen reader (`a11y-gesture`, `touch-gestures`).
+- The press itself never does something irreversible, and it means the same thing on every row of one list.
+- The menu leaves on a tap outside it and on back, and its scrim covers the whole screen (`layout-overlays`).
+
+**SwiftUI**
+
+`.contextMenu`, with a `preview:` where the item needs one, and the destructive actions as `Button(role: .destructive)` in a `Section` of their own.
+
+**Jetpack Compose**
+
+`Modifier.combinedClickable(onLongClick = ...)` opening a `DropdownMenu` anchored to the item, with `HapticFeedbackType.LongPress` performed as it opens.
+
+**Flutter**
+
+`CupertinoContextMenu` on iOS, and on Android a `MenuAnchor` opened from `onLongPress` with `Feedback.forLongPress`.
+
+**React Native**
+
+A native menu module recorded in `STACK.md`, such as `@react-native-menu/menu` opened on long press, rather than a popover drawn in JavaScript.
+
+**Mobile web**
+
+A long press on mobile web opens the browser's own menu, so the page offers a visible overflow control instead of claiming the press.
+
+**Unity**
+
+Unity UI has no context menu. Detect the hold with the Input System's `HoldInteraction`, or `IPointerDownHandler` and `IPointerUpHandler` with a timer, open a menu panel anchored to the item, and give every action in it a visible control as well.
+
+**Any other stack**
+
+The framework's context menu component bound to the long press, never a popover built from scratch.
 
 ### `touch-keyboard` Half the screen, arriving without warning
 
@@ -6023,7 +7745,9 @@ Review answers each of these against the code, pointing at the line:
 - Primary action and primary navigation sit in the bottom third, and the layout was checked mirrored for a left thumb. `touch-reach`
 - Destructive actions sit outside the easy region, and the vehicle carrying the confirmation is the one `fb-confirm-test` selects. `touch-destructive`
 - Pressed state is visible under a covering finger, feedback lands within about 100ms outside the occluded area, and nothing depends on hover. `touch-feedback`
+- Every element carrying a control's marks (shadow, button shape, chevron, underline, interactive colour) responds to a tap, and every element that responds carries one of them or sits in a position the platform already makes interactive. `touch-affordance`
 - No custom gesture starts in a system edge zone without an explicit exclusion, the system's back gesture keeps its own predictive animation, standard gestures keep their standard meaning, and every gesture has a visible equivalent on screen. `touch-gestures`
+- A long press opens the platform's menu anchored to a lifted or previewed item, ordered by use with destructive actions last and apart, every action is reachable another way and as a named action, nothing irreversible fires on the press, and the menu leaves on a tap outside and on back. `touch-long-press`
 - With the keyboard open, the focused field is visible and the primary action is reachable. `touch-keyboard`
 
 Hit areas are measured, not estimated: read the bounds in the inspector or the layout tree. A target that looks big enough next to a 24dp icon is exactly the one that is not.
@@ -6033,8 +7757,138 @@ Hit areas are measured, not estimated: read the bounds in the inspector or the l
 - `heuristics/accessibility.md`: `a11y-gesture`
 - `heuristics/feedback.md`: `fb-confirm-test`
 - `heuristics/forms.md`: `form-input`
-- `heuristics/layout.md`: `layout-insets`
+- `heuristics/layout.md`: `layout-insets`, `layout-overlays`
 - `heuristics/navigation.md`: `nav-back`
+
+# heuristics/tracking.md
+
+## Tracking
+
+Something the person started and then handed to the world: a meal being cooked and carried across town, a car on its way, a parcel between depots, a transfer clearing between banks, a booked journey, a laptop at a repair desk. The app does not do the work, it reports on it, and the report arrives in pieces from systems that lag, disagree and go quiet. The person checks it in glances, often from a notification, usually while doing something else, and decides from it whether to go downstairs, call someone or wait. Every rule here is about the gap between what the screen says and what is actually happening.
+
+The surfaces outside the app belong elsewhere: the Dynamic Island and Live Activity are `widget-island`, their last frame is `widget-live-end`, an ongoing notification is `notify-ongoing` and where its tap lands is `notify-destination`. Cached content and its age is `state-stale`, relative time that ages on screen is `data-time-relative`, and a map that keeps the moving thing in frame is `map-follow`. Paying for the thing being tracked is `heuristics/payments.md`.
+
+Rules in this file, in order: `track-stages`, `track-estimate`, `track-fresh`, `track-late`, `track-contact`, `track-change`, `track-final`, `track-entry`, `track-outside`, `track-several`.
+
+### `track-stages` The process is a named list of stages, and the current one is said in words
+
+A progress bar with no labels tells the person something is happening and nothing about what. The stages are what they plan around: accepted means it can still be changed, picked up means it is coming, at the depot means not today.
+
+- The stages are named in the person's terms and listed in order, with the ones already passed, the current one and the ones still to come all visible on the screen.
+- The current stage is said in text, and the screen reader reads it as the current one. Position on a line, a filled dot or a coloured segment is decoration on top of that (`color-not-alone`).
+- A stage that was skipped, failed or repeated is drawn as what it was. A parcel that went back to the depot does not show an unbroken line to the door.
+- Each passed stage carries the time it was reached, because "picked up at 18:40" answers a question "picked up" does not.
+
+### `track-estimate` An estimate is a range with the time it was made, and it says when it moves [P1]
+
+A single minute figure promises a precision no courier, driver or clearing system has. The person reads it as a commitment and acts on it.
+
+- Show the estimate as a window, 18:40 to 18:55 or 2 to 3 working days, at the precision the source actually has (`data-precision`).
+- The estimate states when it was computed, either beside it or through the freshness `track-fresh` asks for.
+- When it changes by more than its own width, the screen says that it moved and which way, rather than replacing the number silently. A delivery that was due at seven and is now due at eight reads differently to someone who saw seven.
+- Nothing counts down from data that stopped arriving. A countdown is computed from the estimate and the clock, and once the estimate is older than its update interval, the countdown stops and the screen shows the last estimate as last known (`data-time-relative`).
+
+### `track-fresh` A live status carries its age, and a lost connection shows the last known state as last known
+
+The screen is updated by a feed the app does not control. A courier's phone in a lift, a tunnel or a basement stops reporting, and the dot on the map stays exactly where it was, looking live.
+
+- Every position and every status carries the instant it was reported, and the screen shows that age once it passes the feed's normal interval (`state-stale`).
+- A moving marker whose last report is old stops looking live: no pulsing, no smooth interpolation toward a guess, and a label with the age. Following it on the map is `map-follow`'s mode, and that mode ends when the data does.
+- The person's own connection dropping is a different fact from the other side going quiet, and the two are said differently: one is "you are offline", the other is "no update from the driver for 6 minutes".
+- Refreshing does not need a pull. The screen updates itself while it is open, and a manual refresh, if offered, is a second route (`list-refresh`).
+
+### `track-late` Late, stuck and waiting on someone are drawn states, never a frozen estimate [P1]
+
+Things go wrong in the middle of a process far more often than at its start, and the default failure is the screen that keeps showing the original plan after the plan is gone.
+
+- Late is a state the screen enters when the estimate passes without the stage changing. It says so, with the new estimate where there is one and without one where there is not.
+- Stuck is a stage that has not moved in longer than it normally takes. The screen says how long and what the app is doing about it.
+- Needs action is a state that names the person who has to act and what they have to do: confirm an address, be present for a signature, upload a document, answer the driver. When it is the person themselves, the action is on this screen, not behind a menu.
+- Each of these states says what happens next: it will be retried, it will be refunded, support will call, or nothing until the person does something. A state with no next step is a dead end (`state-error`).
+
+### `track-contact` The other side can be reached from the screen for as long as the process runs
+
+When something goes wrong in the middle, the person needs whoever is holding their thing, and they need them now, on this screen.
+
+- The courier, the driver, the shop or support is one tap away from the tracking screen while the process is running, and the control says who it reaches.
+- Calls and messages go through masked numbers or in-app messaging where the service offers them, so neither side's personal number is exposed (`priv-shoulder`). The other side's name and photo are enough to recognise them, and nothing more of theirs is shown.
+- After the final state, the direct channel closes and a support route takes its place. A driver's number that still works the next day is a privacy leak in both directions.
+- A message thread opened from here is a conversation and follows the `chat-` prefix.
+
+### `track-change` What can still be changed is on the screen with its cutoff, and past the cutoff the control says why it is gone
+
+Every process has a point after which the address cannot change and the order cannot be cancelled. The person learns where that point is either before it passes or after it is too late.
+
+- Cancel, change the address, change the time and add an item are on the tracking screen while they are still possible, each with the moment they stop being possible.
+- Past the cutoff, the control stays where it was and says why it is no longer available, rather than vanishing (`button-state`). Something that was never possible for this process is absent, not disabled.
+- A cancellation that costs money says how much on the control or in the confirmation, before the tap (`fb-confirm-test`).
+- A change requested is pending until the other side accepts it, and reads as pending (`state-queued`).
+
+### `track-final` The final state stays reachable with its time and its receipt
+
+Delivered, completed, cancelled and refunded are where the process ends, and they are also where disputes start: the parcel that says delivered and is not there, the refund that never arrived.
+
+- The final state names itself, the time it was reached and, where the service records it, the evidence: a photo at the door, a signature, a reference number, the amount refunded and where it was sent.
+- The process remains reachable after it ends, in a history the person can find from the place they started it, for at least as long as a dispute could be raised.
+- Reporting a problem starts from the final state of this process, with the process already attached, not from a general help page.
+- A rating ask is optional, comes after the final state is shown, and never stands between the person and the receipt (`fb-review-prompt`).
+
+### `track-entry` A notification, a widget or a live surface opens this process's screen, even from a cold start
+
+Most visits to a tracking screen start outside the app: the stage changed and the phone said so. The tap has one job, which is to show that process now.
+
+- Every outside entry point carries the process's identifier and lands on its tracking screen, not on the home screen or the list of orders (`notify-destination`, `widget-tap`).
+- The landing is rebuilt from a killed process, with the screens above it in place so back goes somewhere sensible (`nav-deeplink`).
+- The screen shows the latest state on arrival, fetched before or while it draws, and never the state the notification described if a newer one is already in hand.
+- A process that has since ended lands on its final state, not on an error saying it is no longer active.
+
+### `track-outside` The live surface outside the app says the same thing as the screen inside it
+
+The person sees the lock screen more often than the app while waiting, and the two disagreeing is the fastest way to stop trusting either.
+
+- The live surface, the ongoing notification and the in-app screen read the same stage and the same estimate from the same source, updated by the same event (`widget-island`, `notify-ongoing`).
+- The outside surface carries only what fits a glance: the current stage in words, the estimate window, and at most one action.
+- When the process ends, the outside surface shows the final state and then leaves, on the schedule `widget-live-end` sets, rather than disappearing at the last update or lingering on a stage that has passed.
+- A process the person dismissed from the lock screen is still running, and the app does not post it again unless the stage changes.
+
+### `track-several` Several processes at once are each named and each reachable
+
+Two parcels, a ride and a food order can run at the same time, and the person has to tell them apart at a glance.
+
+- Each running process is listed with what it is, in the person's terms, and its own stage and estimate. Three items from one shop, two shops in one basket and two baskets are three different shapes, and the screen says which one it is showing.
+- Nothing is merged into one combined estimate or one combined progress bar, because the earliest arrival and the latest one lead to different decisions.
+- A notification or live surface for one process names that process, so the person does not open the wrong one.
+
+### Check
+
+Review answers each of these against the code, pointing at the line:
+
+- The stages are named and listed in order, the current one is said in text the screen reader reads as current, skipped or failed stages are drawn as such, and each passed stage carries its time. `track-stages`
+- Every estimate is a window at the source's precision, states when it was computed, a move larger than its width is announced with its direction, and no countdown runs past the estimate's update interval. `track-estimate`
+- Every position and status carries its report time, the age is shown past the normal interval, a stale marker stops animating as if live, the person's offline state and the other side's silence are worded differently, and the screen updates itself while open. `track-fresh`
+- Late, stuck and needs-action are distinct drawn states, each says what happens next and who acts, and an action the person owes is on the tracking screen. `track-late`
+- The other side is one labelled tap away while the process runs, through a masked channel where the service has one, and the direct channel closes at the final state in favour of support. `track-contact`
+- Every change still possible shows its cutoff, a control past its cutoff stays and says why, a paid cancellation states the cost before the tap, and a requested change reads as pending until accepted. `track-change`
+- The final state shows its time and evidence, stays reachable in a history for the dispute window, reporting a problem starts from it with the process attached, and any rating ask comes after the receipt and can be skipped. `track-final`
+- Every notification, widget and live surface tap carries the process id and lands on its tracking screen with the latest state, from a killed process, with back leading somewhere sensible, and an ended process lands on its final state. `track-entry`
+- The live surface, the ongoing notification and the screen show the same stage and estimate from one source, the outside surface holds the stage, the window and at most one action, and it ends on the final state. `track-outside`
+- Concurrent processes are listed separately with their own stage and estimate, nothing is merged into one figure, and each outside surface names its process. `track-several`
+
+Two of these are settled only on a device. For `track-fresh`, cut the feed or put the device in airplane mode mid process and watch the marker and the estimate: they have to stop looking live and show their age, and the two kinds of silence have to read differently. For `track-entry`, force stop the app, then tap a stage notification and a live surface: each has to land on that process's screen with its latest state and a back stack above it.
+
+### Reaches
+
+- `heuristics/buttons.md`: `button-state`
+- `heuristics/colors.md`: `color-not-alone`
+- `heuristics/data-display.md`: `data-time-relative`, `data-precision`
+- `heuristics/feedback.md`: `fb-confirm-test`, `fb-review-prompt`
+- `heuristics/lists.md`: `list-refresh`
+- `heuristics/maps.md`: `map-follow`
+- `heuristics/navigation.md`: `nav-deeplink`
+- `heuristics/notifications.md`: `notify-ongoing`, `notify-destination`
+- `heuristics/privacy-ui.md`: `priv-shoulder`
+- `heuristics/states.md`: `state-stale`, `state-error`, `state-queued`
+- `heuristics/widgets.md`: `widget-island`, `widget-live-end`, `widget-tap`
 
 # heuristics/typography.md
 
@@ -6113,7 +7967,7 @@ The usual failure is a paragraph running edge to edge on a large phone held side
 
 ### `type-scaling` Render it at maximum before calling it done [P1]
 
-No other check in this file surfaces as many genuine defects. Turn the text size to the platform's largest accessibility step, walk every screen, and look for:
+No other check in this file surfaces as many genuine defects. Turn the text size to the platform's largest accessibility step and start with the chrome every screen shares: the tab bar, the top bar, a bottom sheet, a dialog. One defect there repeats on every screen, and those surfaces hold fixed heights by design. Then walk every screen, and look for:
 
 - a container with a fixed height that its own content has outgrown;
 - a control row that needed to become a column and stayed a row;
@@ -6121,9 +7975,39 @@ No other check in this file surfaces as many genuine defects. Turn the text size
 - a one-line label now wrapping to two, pushing the primary action under the fold or beneath a fixed bottom bar;
 - a string cut into ambiguity: a button reading "Cont..." has lost its meaning, not merely some letters.
 
-Layouts reflow; they do not truncate. A screen that only holds together at 100% has failed exactly the people who moved the setting.
+Layouts reflow; they do not truncate. A screen that only holds together at 100% has failed exactly the people who moved the setting. The fix is decided when the row is written, not when it breaks: every row of text beside text or beside a control has a stacked form, chosen by the space measured at the current size, and a label is allowed to wrap. A row with no stacked branch is a row waiting for the setting to move.
 
-Nor do they shrink the text back. Scaling a label down to fit its box, through `FittedBox`, `minimumScaleFactor`, `adjustsFontSizeToFitWidth`, an auto-size text widget or a size computed from the width, turns the setting off exactly where it was needed, and whatever sits in the same box, an icon button included, shrinks with it under `touch-floor`. It passes a check that only looks for clipping, which is why it is named here. The exception is a single display figure whose size is the layout, a clock or a score on a screen built around it, and it is recorded as that, with every control kept outside the scaled box.
+Nor do they shrink the text back. Scaling a label down to fit its box, through `FittedBox`, `minimumScaleFactor`, `adjustsFontSizeToFitWidth`, an auto-size text widget, a best fit option or a size computed from the width, turns the setting off exactly where it was needed, and whatever sits in the same box, an icon button included, shrinks with it under `touch-floor`. A box with a fixed width and height around text is the same fix arrived at by another road: the text either clips or gets made to fit. It passes a check that only looks for clipping, which is why it is named here. The exception is a single display figure whose size is the layout, a clock or a score on a screen built around it, and it is recorded as that, with every control kept outside the scaled box.
+
+Text inside artwork of a fixed size is not interface text, and it is not an exception either. A rendered board, a scene drawn to scale, a frame of video, a generated image or a poster keeps its proportions because the proportions are the content. The chrome around it still scales, the words inside it are also exposed as an accessible label, and the artwork offers its own way to see it larger, a zoom, a pinch or a full-screen view. What it may not do is pull the controls around it into its fixed box.
+
+**Flutter**
+
+Read the size from `MediaQuery.textScalerOf(context)`, never clamp it in a `MediaQuery` override, and switch a `Row` to a `Column` from a `LayoutBuilder`. In a Flame game, text drawn on the canvas with `TextComponent` does not hear the setting: read the scaler from the widget tree and apply it to the HUD, or draw the HUD as Flutter widgets in an overlay, which scale by themselves.
+
+**SwiftUI**
+
+Use text styles, read `@Environment(\.dynamicTypeSize)` and switch an `HStack` to a `VStack` from it, or use `ViewThatFits`.
+
+**Jetpack Compose**
+
+Keep sizes in `sp`, read `LocalDensity.current.fontScale`, and give a `Row` a `FlowRow` or `Column` form chosen from `BoxWithConstraints`.
+
+**React Native**
+
+Leave `allowFontScaling` on, cap nothing with `maxFontSizeMultiplier` on body text, and switch `flexDirection` from `useWindowDimensions().fontScale`.
+
+**Mobile web**
+
+Size text in `rem`, never in `px`, and let a flex row wrap with `flex-wrap`.
+
+**Unity**
+
+Unity UI and TextMeshPro do not follow the system text size by themselves. From Unity 6, read `AccessibilitySettings.fontScale` and apply it to every `TMP_Text` through one scale value, updated on `AccessibilitySettings.fontScaleChanged`. Below Unity 6, or where the engine reports nothing, offer a text size setting inside the app and treat it as the largest step. Leave `enableAutoSizing` off on body text, since it is the shrink-to-fit named above, and let a `HorizontalLayoutGroup` with a `ContentSizeFitter` give way to a `VerticalLayoutGroup` when the scaled row no longer fits.
+
+**Any other stack**
+
+Whatever the framework offers to read the system text size. A game engine's canvas UI often ignores it: offer a text size setting inside the app, apply it to every text element, and treat that setting as the largest step.
 
 ### `type-strings` The text in the layout is not the text you typed
 
@@ -6151,7 +8035,7 @@ Review answers each of these against the code, pointing at the line:
 - Nothing below 400, no weight hardcoded outside a theme style, and every weight step jumps a grade. Weight is distributed across the screen, with most text on the regular cut and the heavy cut spent on a few elements, and something on the screen does carry it. `type-weight`
 - The typeface choice can be stated as a reason, a brand face stays in the display roles, and any custom face scales. `type-face`
 - Body copy runs 40 to 60 characters per line. `type-measure`
-- The screen was rendered at the largest accessibility step, and nothing clips, overlaps or truncates into ambiguity, and no text is scaled back down to fit its box, except a recorded display figure with no control inside its scaled region. `type-scaling`
+- The shared chrome and then the screen were rendered at the largest accessibility step, and nothing clips, overlaps or truncates into ambiguity. Every text row has a stacked or wrapping form, and no text is scaled back down to fit its box or held in a box of fixed width and height, except a recorded display figure with no control inside its scaled region. Text inside fixed-size artwork carries an accessible label, the artwork can be viewed larger, and the chrome around it scales. `type-scaling`
 - The longest localized string fits, numeric columns are tabular, every truncation point was chosen deliberately, and a truncated identifier can be read in full and copied one tap away. `type-strings`
 - Dark theme text was judged on a rendered screen. `type-dark`
 
@@ -6896,7 +8780,7 @@ Row recycling is `list-virtualise`. Which properties an animation may move is `m
 
 Platform versions named in this file run up to Android API 34. Each rule states a behaviour first and an API second. On a release newer than that, the behaviour still binds and the API name is the part to check against the platform's current documentation.
 
-Rules in this file, in order: `perf-cold-start`, `perf-main-thread`, `perf-frame`, `perf-overdraw`, `perf-decode`, `perf-memory`, `perf-power`, `perf-size`, `perf-measure`.
+Rules in this file, in order: `perf-cold-start`, `perf-main-thread`, `perf-frame`, `perf-overdraw`, `perf-decode`, `perf-memory`, `perf-power`, `perf-size`, `perf-measure`, `perf-release`.
 
 ### `perf-cold-start` Only what the first screen draws happens before the first screen draws
 
@@ -6986,6 +8870,40 @@ Then the reading is compared against something. `STACK.md` names that device and
 - **React Native:** the performance monitor, with the JS frame rate and the UI frame rate read as two separate numbers.
 - **Mobile web inside the app:** 2.5s to the largest contentful paint, 200ms interaction to next paint, and 0.1 of cumulative layout shift, each measured at the 75th percentile rather than as an average.
 
+### `perf-release` The build that ships is a different program, so one pass runs on it [P1]
+
+A debug build and a release build differ in more than speed, and every difference is a way for the shipped app to fail where the tested one did not. The manifest is merged from different source sets, so a permission declared only for debug is missing from the release. Code shrinking and obfuscation strip classes reached only by reflection, a serializer, a plugin, a model read by name. Assertions that guarded a mistake in debug are compiled out, and so is the debug-only configuration: the test ad unit, the staging endpoint, the verbose log, the developer menu, the sample products in a store fixture.
+
+So before review closes, one working pass runs on a release build installed on a device: launch, the primary task end to end, one network request, one purchase or ad path where the app has one, and a look at the final merged manifest for the permissions and the exported components it actually declares. Everything that should only exist in debug is confirmed absent there, and everything the app needs is confirmed present.
+
+**Flutter**
+
+`flutter build apk --release` or `--profile`, installed on the device. The `INTERNET` permission sits in the debug and profile manifests that the template creates and is absent from `main` until someone adds it, so a release build of a new project has no network at all. Release builds run R8 by default, so a plugin reached by reflection needs its keep rules.
+
+**SwiftUI**
+
+Archive with the Release configuration, or run the scheme with Build Configuration set to Release, and check that `#if DEBUG` branches and debug-only entitlements are not what made the tested path work.
+
+**Jetpack Compose**
+
+Install the `release` variant with `isMinifyEnabled` on, read the merged manifest in `build/intermediates`, and check that nothing in `src/debug` is load-bearing.
+
+**React Native**
+
+`--mode release` on Android or the Release configuration on iOS, which bundles the JavaScript instead of loading it from Metro and drops `__DEV__` branches. With Expo, a production build profile.
+
+**Mobile web**
+
+The production build served the way it ships, with the service worker, minified bundle and production environment variables, not the dev server.
+
+**Unity**
+
+A build with Development Build off, the IL2CPP scripting backend and the Managed Stripping Level the store build uses, installed on the device. Stripping removes types reached only by reflection, a JSON model or a plugin entry point, which `link.xml` or `[Preserve]` keeps. Read the manifest the Android build merged from `Assets/Plugins/Android` and the packages, and keep test ad units and debug menus behind `Debug.isDebugBuild` or a scripting define the release build does not set.
+
+**Any other stack**
+
+The configuration the store receives, built and installed on a device, with the engine's development build flags and debug overlays off.
+
 ### Check
 
 Review answers each of these against the code, pointing at the line:
@@ -6999,8 +8917,9 @@ Review answers each of these against the code, pointing at the line:
 - Every repeating timer, scanning subscription, wake lock and background assertion names the interval it defends and has exactly one path that ends it, including the failure path, and sustained work reads the thermal level. `perf-power`
 - The shipped build sends one density and one architecture per device rather than a universal binary, only the font weights the type scale names, and nothing large that the first session does not open. `perf-size`
 - `STACK.md` names the slowest supported device and a budget for cold start, for frames on the longest list, and for memory after a few screens. `perf-measure`
+- One working pass ran on a release build on a device, covering launch, the primary task, a network request and any purchase or ad path, the merged release manifest declares every permission the app uses, and no debug-only configuration, fixture or endpoint is reachable in it. `perf-release`
 
-`perf-measure` is the one answered by whether the budgets exist at all, and a missing budget is the violation rather than a slow number. `perf-frame` and `perf-power` are answered in the source first, where a hardcoded 16ms and a subscription with no stop are both visible, and then again on hardware that has been working long enough to get warm, because thermal behaviour and sustained frame pacing exist nowhere else.
+`perf-measure` is the one answered by whether the budgets exist at all, and a missing budget is the violation rather than a slow number. `perf-frame` and `perf-power` are answered in the source first, where a hardcoded 16ms and a subscription with no stop are both visible, and then again on hardware that has been working long enough to get warm, because thermal behaviour and sustained frame pacing exist nowhere else. `perf-release` is answered by installing the release build and using it; reading the build configuration is where the pass starts, not what settles it.
 
 ### Reaches
 
@@ -7038,7 +8957,7 @@ A few rules are requirements and not defaults: the nine always in scope in `SKIL
 
 An exception is good when all four are true:
 
-1. **It comes from the job or the person, not from the build.** "The person is choosing between two equal outcomes" is a reason. "The component we already have does it this way" is not, and neither is the deadline.
+1. **It comes from the job or the person, not from the build.** "The person is choosing between two equal outcomes" is a reason. "The component we already have does it this way" is not, and neither is the deadline. A growth pattern the user asked for through `flow/dark-ux.md` is the one place the product's own result counts as the job: the exception names the metric it moves, and the other three tests still apply to it.
 2. **It names the cost and who pays it.** Every default protects someone. The exception says who loses that protection and why that is acceptable here, or what replaces it.
 3. **It is narrow.** It covers this screen or this component, not "the app". An exception that would apply to every screen is a disagreement with the rule, and that conversation belongs in the repository of the skill, not in one project's `STACK.md`.
 4. **Somebody could disagree with it.** A reason nobody could argue against ("it looks better", "it felt right") has said nothing.
@@ -7046,6 +8965,18 @@ An exception is good when all four are true:
 ### Where it is recorded
 
 `STACK.md` grants exceptions, and nothing else does. A screen brief records intent and never grants one, and an `n/a` in a brief is a claim review checks. In review, a rule with a recorded exception is `n/a` with that exception as the reason. It is never a low score defended in prose, and never a high score awarded for the quality of the excuse.
+
+Every exception names the rule it excepts by its id, in backticks. A name that is not a rule id excepts nothing, and `npx trunative doctor` reports it, since a rule renamed or never spelled right leaves an exception that looks granted and covers no rule at all.
+
+When the exception covers a part of the code rather than a screen, content the product renders as its output, a template, an artwork drawn with widgets, a game board, write it in the one shape tools can read, a list item with the rule ids, then `in`, then the paths, then the reason after a colon:
+
+```text
+- `type-scale`, `touch-nested` in `lib/templates/**`: the templates are artwork the person exports, not interface they operate.
+```
+
+`**` crosses folders, `*` stays inside one, and a path with no wildcard covers a file or everything under a folder. `npx trunative detect` drops its findings for those rules under those paths and counts what it dropped, so the exception stays visible. Point 3 of the test still applies: a glob covering the whole source tree is an exception for the app, and it fails.
+
+A reference the user supplied can be the reason. When the user asked for a screen to match an image, and the image breaks a rule that is a default, the exception names the reference, where it lives, and which rule it overrides, so the next review reads a decision instead of a violation. The nine always in scope and every P0 rule are not overridden by a reference either: build the look the reference shows with the requirement met.
 
 ### Worked examples
 
@@ -7680,6 +9611,7 @@ Compose `Icon` is 24.dp when the painter has no intrinsic size, and is tinted wi
 | Android resources | `res/drawable-<bucket>/` | A vector drawable goes in the default `res/drawable/` with no per-density copy |
 | Flutter | `2.0x/name.png` beside `name.png` | Nominal densities 1.5x, 2.0x, 3.0x, 4.0x. List only the main asset or its folder in `pubspec.yaml` |
 | React Native | `name@2x.png` sibling files, one `require` | The closest density is picked when the exact one is missing. A `uri` source carries no dimensions |
+| Unity | One texture per image, no density variants | Import at the largest size the UI draws it, with Max Size and mipmaps set per platform in the texture importer. Sprite atlases pack UI images, and `Canvas Scaler` decides the drawn size |
 
 ### Android density buckets
 
@@ -8057,10 +9989,21 @@ The concept is portable and the name is not. Pick the row for the relationship, 
 | Pushed screen | `NavigationStack` with `navigationDestination` | `NavHost` with `navController.navigate` | `Navigator.push`, `MaterialPageRoute`, `context.push` on GoRouter | native stack, `navigation.navigate` | History API `pushState`, or the router's push |
 | Top-level destinations | `TabView` with `Tab` | `NavigationBar` over one nested graph per destination | `NavigationBar` in a `Scaffold`, plus `IndexedStack` or a `Navigator` per branch | bottom tab navigator, one stack inside each tab | one route prefix per section |
 | Bottom sheet | `.sheet` with `.presentationDetents` | `ModalBottomSheet` | `showModalBottomSheet` | a sheet library, or a native stack screen with `presentation: 'formSheet'` | `<dialog>` positioned to the bottom edge |
+| Persistent sheet | `.sheet` with `.presentationDetents`, `.presentationBackgroundInteraction` and `.interactiveDismissDisabled` | `BottomSheetScaffold` with `sheetPeekHeight` | `DraggableScrollableSheet` in a `Stack` | `BottomSheet` from `@gorhom/bottom-sheet`, not `BottomSheetModal` | an element fixed to the bottom edge with snap heights |
 | Full screen cover | `.fullScreenCover` | a route on the graph, or `Dialog(usePlatformDefaultWidth = false)` | `MaterialPageRoute(fullscreenDialog: true)` | native stack screen with `presentation: 'fullScreenModal'` | a route of its own |
 | Alert or dialog | `.alert`, `.confirmationDialog` | `AlertDialog` | `showDialog` with `AlertDialog` or `CupertinoAlertDialog` | `Alert.alert` | `<dialog>` with `showModal()` |
 
 Bare React Native ships no bottom sheet. Reaching for one means adding a dependency, which is a `STACK.md` decision rather than a detail.
+
+### The tab bar's parts
+
+Current iOS floats the tab bar over the content and gives it three parts beyond the destinations. Each comes from the system tab view; a bar drawn by hand has to rebuild each one and report its height to the scroll itself.
+
+| Part | SwiftUI | Jetpack Compose | Flutter | React Native | Mobile web |
+|---|---|---|---|---|---|
+| Search as its own destination | `Tab(role: .search)` | a destination in the `NavigationBar` | a destination in the `NavigationBar` | a search tab in a native tab bar library; the JavaScript tab bar draws an ordinary tab | an ordinary destination |
+| Accessory above the bar, such as a mini player | `.tabViewBottomAccessory` | a bar stacked above the `NavigationBar` inside the `Scaffold`'s `bottomBar`, so the padding covers both | a widget stacked above the `NavigationBar` in `bottomNavigationBar` | a native tab bar library where it exposes the accessory, otherwise a view above the tab bar whose height reaches the scroll | an element fixed above the bar, its height added to the page's bottom padding |
+| Bar that shrinks while scrolling | `.tabBarMinimizeBehavior(.onScrollDown)` | not built into `NavigationBar`; hiding it on scroll is hand work under `scroll-collapse` | hand work under `scroll-collapse` | hand work under `scroll-collapse` | hand work under `scroll-collapse` |
 
 ### Back and dismissal
 
@@ -8095,6 +10038,99 @@ Two paths to test, always: the app already running, and the app killed. Only the
 | Mobile web | `history.state` for the route, `sessionStorage` for the screen | `sessionStorage` clears with the tab |
 
 Restore the place. Refetch the content.
+
+# references/paywall-anatomy.md
+
+## Paywall anatomy
+
+Lookup for any screen that sells: a paywall, an upgrade sheet at a limit, a currency shop, a checkout summary. Read it when `flow/explore.md` is writing candidates for one of those screens, and again in build for the parts and the states. The rules these parts answer to are `sub-`, `pay-` and `econ-`; nothing here overrides them, and nothing here is a template. The compositions are prompts in the sense `references/wireframe-frame.md` uses the word, and a candidate that needs none of them still gets drawn.
+
+Sections, in order: Compositions, Parts, States, Platform, Shops.
+
+### Compositions
+
+Each is named so a brief and a wireframe can refer to it. What it suits, and the rule it most often breaks when built carelessly.
+
+- **media-dock.** A full-bleed ground of the product at work, a looping clip, a wall of real outputs, the person's own content, with the choice and the action docked in a panel along the bottom. Suits a product whose value is visible in a second. Breaks `sub-exit` first, because the exit sits over the brightest part of the ground; a scrim under the top corners is part of the composition, not a fix added later.
+- **compare-columns.** Rows of capability against two or three columns, free and paid, with the paid column carried as one continuous emphasised band and the action under it. Suits an upgrade where the free tier is real and the difference is the point. Breaks `color-not-alone` when the only difference between a check and a lock is colour, and `layout-fold` when the action falls below a long table.
+- **statement-offer.** One sentence carrying the offer and its terms, large, in the middle of an otherwise empty screen, a single action low. Suits a single plan with a trial. Breaks `sub-billed-first` when the sentence leads with the equivalent rather than the billed amount, and is the composition where that order is easiest to get right.
+- **timeline-offer.** The trial as three dated stops on a line, unlock today, reminder, charge, with the action directly under the last stop. Suits trial-led offers to people wary of forgetting. It is the `timeline` shape, and it breaks `sub-trial-end` when the dates are typed rather than computed.
+- **plan-rail.** Plans as equal tiles in a row that scrolls sideways, the next tile cut by the edge so the row reads as more than one screen wide. Suits several durations or tiers. Breaks `sub-billed-first` when each tile normalises to a different unit, and `a11y-collection` when the tiles are not announced as one group with a count.
+- **plan-rows.** Plans as full-width rows, one under another, each with its radio, name, billed amount and badge. Suits two or three options where the labels are long or translated. The quietest way to meet `sub-plan-choice`.
+- **value-pages.** Two or three pages of benefit or a question about the person's goal, then the prices on the last page. Suits an offer that needs explaining or a headline that should repeat the goal the person picked. Breaks `sub-exit` when the exit lives only on the last page.
+- **limit-sheet.** A sheet raised over the feature the person just hit the limit in, the feature still visible behind it, the meter at zero and its refill time beside the offer. Suits a quota or a locked tool. It is `nav-sheet` with `econ-gate`, and it keeps the free path, waiting, on the sheet.
+- **split-offer.** For a landscape app: the plans or tiers as a list on one side and the selected one in detail, with its action, on the other. Suits games and anything held sideways. It exists because a portrait paywall rotated into landscape loses its exit and its action past the edges (`layout-orientation`).
+- **pack-shelf.** A currency or credits shop: the balance at the top, packs as rows or a two-column grid in ascending order, each pack's price as its own button. Suits any store of consumables. See Shops below.
+- **summary-dock.** A checkout whose items, fees and choices scroll above a docked bar holding the total and the commit action. Suits physical goods and services. The total in the dock is `pay-total`, and the optional lines above it start at none.
+
+### Parts
+
+In the order a person reads them on most selling screens. A screen leaves out what it does not need; what it keeps has these properties.
+
+- **Exit.** In the top corner the platform uses for dismissal, or as a text decline under the action. Visible in the first frame, sized to `touch-floor`, contrasted against the rendered ground (`sub-exit`). A scrim, a tinted circle behind the mark or a solid bar under the status area are the usual ways to keep it legible over media. Restore goes elsewhere.
+- **Hero.** Proof that the product does the thing: a real result, the person's own content, a short silent loop of the feature in use. A clip loops only while visible, starts muted (`media-unasked-sound`), stops for reduced motion (`motion-reduced`) and has a poster frame so the first frame is never blank (`icon-reserve`). Abstract art says nothing the headline does not.
+- **Headline.** The outcome for the person, in their terms, in one line or two (`copy-budget`). It may repeat the goal they chose earlier in onboarding.
+- **Benefits.** Three to five lines, strongest first, each a concrete capability with its quantity where it has one (`copy-claims`), a glyph from the app's own set (`icon-one-set`). A list that needs a sixth line is a compare-columns screen.
+- **Proof.** A rating, a review, a count, only when sourced under `copy-claims`. Placed near the decision rather than at the top, where it competes with the headline.
+- **Plan option.** Content in this order: the plan's name, the billed amount with its period as the largest figure, the equivalent below it in a smaller size, the trial or intro terms where they apply. A badge ("most chosen", "save 40% against monthly") sits on the option's top edge, outside the text flow, and says what it measures. Selection is shown by a border and a mark, not by fill colour alone, and the group is announced as one choice (`sub-plan-choice`).
+- **Trial controls.** A switch row that turns the trial on and off, a reminder row under it, or a timeline. Each changes the billing line and the button label when it changes (`sub-trial-end`). A reminder row appears only when the reminder can be sent.
+- **Offer dock.** Pinned above the bottom inset (`layout-chrome`), holding, top to bottom: the billing line for the selected option ("7 days free, then 49.99 a year, from 12 March"), the action with a label naming what happens (`button-label`), a reassurance line only when it is true ("Nothing is charged today" holds during a trial and not otherwise), and one row of small links: Terms, Privacy, Restore, Redeem a code. The billing line is body size, not legal size.
+- **Decline.** Where the screen offers a free path, a text action under the dock that names it ("Continue with the free plan"), same weight as the link row or more.
+
+### States
+
+Every selling screen has these, and each is drawn in the wireframe as its own frame when it changes the structure (`state-set`).
+
+- **Products loading.** The plan options keep their size with an empty price box; no placeholder amount, no zero (`pay-price-source`, `state-loading`). The exit works from the first frame regardless.
+- **Products failed.** One line saying the prices could not be loaded, a retry, the exit. A product the store did not return is absent, not drawn disabled.
+- **Not eligible for the trial.** Someone who already used an introductory offer sees the plan without it: the trial switch, the timeline and "free" disappear, and the billing line and button switch to paying now. Eligibility is the store's answer for this user, never assumed.
+- **Already subscribed.** The current plan, its renewal date, the way to change plan, and the route to manage or cancel (`sub-cancel`). Never a purchase screen for what the person already has (`econ-bundle` is the same idea for packs).
+- **Purchase pending.** A purchase waiting for a parent's approval or a delayed payment method is pending, says so, and unlocks when the store confirms (`pay-outcome`).
+- **Success.** The unlock confirmed in place, what is now available, and the person returned to what they were doing when the offer appeared, not to a home screen.
+- **Restore results.** Restored, nothing to restore, or failed with a reason (`sub-restore`).
+- **Offline.** The screen says the store cannot be reached; the exit and the free path still work (`state-offline`).
+
+### Platform
+
+**SwiftUI**
+
+StoreKit ships a paywall: `SubscriptionStoreView` for a subscription group and `StoreView` for other products, drawing localised prices, trial terms, purchase and restore from the store itself. Start there, show restore with `.storeButton(.visible, for: .restorePurchases)`, and put the app's own hero and benefits in its marketing content; build a custom screen only when a composition above cannot be expressed with it. Trial eligibility is `isEligibleForIntroOffer` on the product's subscription info.
+
+**Jetpack Compose**
+
+No system paywall exists on Android; the screen is the app's own. Query the products with Play Billing, and read trial eligibility from `subscriptionOfferDetails`: Play returns only the offers this user may take, so a trial offer missing from the list means the trial line is not drawn. A free phase is the pricing phase whose amount is zero.
+
+**Flutter**
+
+No cross-platform paywall widget ships with Flutter. Build the screen, query products through `in_app_purchase`, and read eligibility through its platform packages: on Android the offers Play returns are only those this user may take, and on iOS the intro offer eligibility StoreKit reports.
+
+**React Native**
+
+No paywall component ships with React Native. Build the screen, query products through the billing library in use, and read eligibility per platform: on Android the subscription offers Play returns are only those this user may take, and on iOS the intro offer eligibility StoreKit reports.
+
+**Unity**
+
+Unity IAP supplies products and purchasing, not a paywall. Draw the screen in the UI system the game uses, fit it to `Screen.safeArea` in every supported orientation, and take trial eligibility from each store's own answer for the user, as the native stacks do.
+
+**Mobile web**
+
+A mobile web app sells through the web payment provider the business uses, not the stores; `pay-rail` decides whether that is allowed at all for what is sold. The parts and states above apply unchanged.
+
+**Any other stack**
+
+Look for a system paywall component first; where none exists, build the parts above and read trial eligibility from the store's own answer for the user.
+
+### Shops
+
+A store of consumables, coins, credits, lives, has its own parts.
+
+- **Balance header.** Every balance the shop sells or spends, with the bought and the earned shown separately where both exist, and the date any of them expires (`econ-balances`).
+- **Pack list.** Ascending by amount, each row the currency icon and amount, any bonus as a figure, and the store price on the buy control (`econ-pack-value`, `econ-real-money`). A two-column grid when packs are many and short, rows when the amounts or bonuses need words.
+- **Value marks.** "Best value" on the pack with the lowest price per unit, computed; "most popular" only from sales.
+- **First-purchase pack.** Shown once, above the list, with its contents itemised (`econ-contents`), and gone after it is bought (`econ-bundle`).
+- **Subscriptions in a shop.** A membership or a currency subscription sits in its own section, labelled as renewing, with its billing line, apart from one-off packs (`sub-terms`).
+- **Limits.** A purchase limit the app enforces is shown with what remains of it, before the person reaches it (`shop-quantity` treats the same for goods).
+- **Entry from a shortfall.** Opened from an unaffordable item, the shop scrolls to the smallest pack that covers the shortfall and says what will be left (`econ-afford`).
 
 # references/search-controls.md
 
@@ -8244,6 +10280,8 @@ Everything is greyscale by construction: four greys, one ink, and nothing else. 
 - **tab-cluster**: content split into switchable panes at the same position, not one continuous scroll.
 - **split-focus**: two unequal regions, one persistent (a map, a preview, a player) and one scrollable that acts on it.
 - **canvas-overlay**: a full-bleed background with controls floating over it, instead of content sitting inside bounded cards.
+
+A screen that sells, a paywall, an upgrade at a limit, a shop, a checkout, has its own named compositions in `references/paywall-anatomy.md`, with the parts and states each one needs.
 
 ### Known defaults
 

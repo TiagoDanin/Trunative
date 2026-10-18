@@ -43,7 +43,7 @@ Nobody remembers a slideshow about an interface they have not used yet, and a ph
 Sort the setup into two lists: what the app cannot start without, and what can be defaulted now or answered later. The second list is longer than it first looks, and everything on it that stays in the flow is a screen paying rent it does not earn. These screens are read one at a time on a device where the exit is a home swipe, and anything the first run downloads arrives on whatever data the user is standing in.
 
 - Ship a working default instead of asking, which is `set-default-first`.
-- No rating prompt and no purchase ask before the user has seen the product work.
+- No rating prompt and no purchase ask before the user has seen the product work. Where a purchase ask is placed in the flow anyway, it is not one of the steps a progress bar counts, and closing it lands in the product (`sub-honest`).
 - The first run does not wait on a download. Content packs, models and offline data arrive in the background while the app is already usable.
 - Terms and licensing are not one of the three panels. Where consent is legally required it is one line with a link at the point it applies, not a wall to scroll to the bottom of.
 
@@ -119,5 +119,6 @@ The rules this file cites and the files that hold them. Open one when a citation
 - `heuristics/permissions.md`: `perm-rationale`, `perm-purpose-string`, `perm-notify-ask`, `perm-no-coercion`
 - `heuristics/settings.md`: `set-default-first`
 - `heuristics/states.md`: `state-empty`, `state-permission`, `state-interrupt`
+- `heuristics/subscriptions.md`: `sub-honest`
 - `heuristics/touch.md`: `touch-floor`
 - `heuristics/typography.md`: `type-scaling`

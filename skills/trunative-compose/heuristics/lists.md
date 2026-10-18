@@ -4,7 +4,7 @@ Most of a phone app is lists. It is the screen the user opens most, scrolls fast
 
 Loading, empty, error, offline and stale belong to `heuristics/states.md`. This file is what is specific to a collection: what a row is, how many exist at once, and what the top and the bottom of the list do.
 
-Rules in this file, in order: `list-virtualise`, `list-density`, `list-separator`, `list-row`, `list-swipe`, `list-images`, `list-sections`, `list-end`, `list-refresh`, `list-select`, `list-a11y`.
+Rules in this file, in order: `list-virtualise`, `list-density`, `list-separator`, `list-row`, `list-swipe`, `list-images`, `list-sections`, `list-end`, `list-refresh`, `list-select`, `list-save`, `list-a11y`.
 
 ## `list-virtualise` Rows recycle, or the list breaks on real data [pass or fail]
 
@@ -104,6 +104,17 @@ Bulk actions on a phone take over the screen, because there is no modifier key a
 - The bulk action says what it did and offers undo, because one mis-tap here costs forty items instead of one (`touch-destructive`).
 - Select all in a list that is still paging means selecting what has loaded, and the label has to admit that.
 
+## `list-save` Saving an item is a toggle that answers at once, and what was saved has an address
+
+A heart, a bookmark or a star on a card is the cheapest promise an app makes: tap it now, find it later. Each half breaks on its own. The tap that waits for the server, the tap that opens a sign-in wall and forgets what it was for, and the saved list nobody can find again all break the same promise.
+
+- The toggle changes state on the tap and writes behind it, rolling back with a message only when the write fails (`off-write-mode`). Its state is drawn by shape, outlined against filled, and announced as selected or not (`color-not-alone`, `a11y-name`).
+- A person who is not signed in and taps it is asked to sign in at that moment, and the item is saved afterwards without a second tap. Or the save is kept on the device and carried into the account later (`onboard-look-first`).
+- The same item shows the same saved state everywhere it appears: card, detail and search result.
+- Saved items live in a titled place reachable from the top level or from the account, and an item that changes price or stops being available stays there, marked as such, rather than vanishing.
+- Saving into a named collection is a second step offered after the save, never a sheet that has to be answered before the first tap counts, and a new collection can be made from inside that step.
+- The toggle is a target of its own inside the card (`touch-nested`, `list-row`).
+
 ## `list-a11y` A row is one stop, not four
 
 A screen reader moves stop by stop and there is no pointer here to skip ahead with. A row left as its icon, then its title, then its subtitle, then its badge is four stops, so two hundred rows become eight hundred and the list stops being navigable long before it stops being correct.
@@ -126,6 +137,7 @@ Review answers each of these against the code, pointing at the line:
 - The list loads continuously or offers a load-more control and never numbered pages, and a list that pages states where the data ends and turns a failed page into a retry at the bottom. `list-end`
 - Pull to refresh uses the platform control, and the same refresh is reachable without the gesture. `list-refresh`
 - Selection mode is entered deliberately, shows its count and its exit, marks selection without color alone, and offers undo. `list-select`
+- The save toggle changes on the tap and rolls back only on a failed write, its state is a shape and is announced, a signed-out tap ends saved after sign in without a second tap or is kept on the device, the state matches on every screen, saved items have a titled place where changed items stay marked, and choosing a collection is an optional second step. `list-save`
 - Each row is one merged accessibility node, every swipe or long press is also an accessibility action, and section headers carry the heading trait. `list-a11y`
 
 `list-virtualise` and `list-density` both pass at ten rows and fail at a thousand, so neither is answered from the file alone. Fill the list with production-sized data and scroll it on the slowest device the app supports.
@@ -134,11 +146,14 @@ Review answers each of these against the code, pointing at the line:
 
 The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
 
+- `heuristics/accessibility.md`: `a11y-name`
 - `heuristics/colors.md`: `color-gradient`, `color-not-alone`
 - `heuristics/icons-and-imagery.md`: `icon-crop`
 - `heuristics/layout.md`: `layout-chrome`
+- `heuristics/offline.md`: `off-write-mode`
+- `heuristics/onboarding.md`: `onboard-look-first`
 - `heuristics/scrolling.md`: `scroll-nest`
 - `heuristics/states.md`: `state-interrupt`, `state-retry`
-- `heuristics/touch.md`: `touch-floor`, `touch-spacing`, `touch-gestures`, `touch-destructive`
+- `heuristics/touch.md`: `touch-floor`, `touch-spacing`, `touch-gestures`, `touch-destructive`, `touch-nested`
 - `heuristics/typography.md`: `type-weight`, `type-roles`
 - `platform/performance.md`: `perf-frame`, `perf-decode`

@@ -36,7 +36,7 @@ Each candidate is written through one lens. The lenses are what makes the three 
 
 The three are allowed different amounts of distance from the default, and the amounts are the point. The conventional candidate may be the default done well. The spatial candidate has to change the structure: what dominates, how things are grouped, what contains them. The contextual candidate has to change the interaction model, meaning what the hand does to get the job done: a tap where there was a form, a glance where there was a tap, a hold, a drag, a single control that replaces a screen of them. A third candidate operated exactly like the first has not used its lens.
 
-`references/design-grammars.md` holds the spatial relations a candidate can be built from, and the shape list in `references/wireframe-frame.md` holds compositions that already have names. Both are prompts. A candidate that fits none of them is drawn anyway and given a name of its own, in two words, the way `hero-split` or `canvas-overlay` were: a name is what lets the next screen refer to it.
+`references/design-grammars.md` holds the spatial relations a candidate can be built from, the shape list in `references/wireframe-frame.md` holds compositions that already have names, and `references/paywall-anatomy.md` holds the named compositions of a screen that sells. All three are prompts. A candidate that fits none of them is drawn anyway and given a name of its own, in two words, the way `hero-split` or `canvas-overlay` were: a name is what lets the next screen refer to it.
 
 A candidate is five lines and no drawing:
 
@@ -122,6 +122,6 @@ Chosen       B, because the next departure is the whole job and A buries it in a
 Lost         A reads as a schedule to study, C hides later departures behind a gesture
 ```
 
-`Default`, `Context`, `Candidates`, `Distance`, `Chosen` and `Lost` are required, and `Distance` counts all three pairs as `A/B`, `A/C` and `B/C`.
+`Default`, `Context`, `Candidates`, `Distance`, `Chosen` and `Lost` are required, and `Distance` counts all three pairs as `A/B`, `A/C` and `B/C`. The gate in `flow/spec.md` adds a `Gate` line under them once it has been asked or skipped.
 
 Then return to `flow/spec.md` and draw the chosen candidate. The hierarchy in the brief is updated when the winner reordered it, since the brief is the contract and this step is allowed to change its mind.

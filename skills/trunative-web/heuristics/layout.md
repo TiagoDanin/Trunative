@@ -12,15 +12,15 @@ Rules in this file, in order: `layout-insets`, `layout-grid`, `layout-grouping`,
 
 Read the inset at runtime and lay the screen out inside it. A constant copied off one device (34, 44, 48) is right on that phone and wrong on the next, and it is wrong on the same phone the moment a call banner or an expanded status bar changes the number.
 
-- SwiftUI respects the safe area already. `.ignoresSafeArea()` belongs to a background fill or an image and never to text or a control, and a pinned bar takes `safeAreaInset(edge:)` so the content behind it scrolls clear.
-- Compose: `enableEdgeToEdge()` with `Scaffold`, which insets its own bars, plus `WindowInsets.safeDrawing` on anything drawn outside it.
-- Flutter: `MediaQuery.paddingOf(context)`, or `SafeArea` with the edges named.
-- React Native: the safe area context hook, read per render, rather than a stored constant.
-- Mobile web inside a shell: `viewport-fit=cover` plus `env(safe-area-inset-*)`, which report zero until that meta tag is set.
+Mobile web inside a shell: `viewport-fit=cover` plus `env(safe-area-inset-*)`, which report zero until that meta tag is set, and a `theme-color` meta per appearance.
+
+Both system bars, not one. The status bar and the navigation bar each have a colour and an icon brightness, set per screen against the background that screen draws under them. Setting only the status bar leaves the navigation bar on its default, which is a strip of the wrong colour or icons that disappear into the ground, and a screen with its own dark or light ground has to say so again for both.
 
 On a current Android target there is no opt out, since the manifest flag that used to disable edge to edge is ignored, so the inset is a runtime measurement on every build. Nor is it one number: a three-button device reports a taller bottom inset than the same phone using gestures. What a pinned control does when that measurement is skipped is `touch-gestures`.
 
-A pinned bar carries the inset inside itself: its own height for the controls, plus the bottom inset underneath them, in one component. Padding the bar from outside leaves a strip of the wrong background color under it, and a sheet or a dialog opened over the screen owes the same treatment, since it becomes the bottom of the screen while it is up.
+A pinned bar carries the inset inside itself: its own height for the controls, plus the bottom inset underneath them, in one component. Padding the bar from outside leaves a strip of the wrong background color under it, and a sheet or a dialog opened over the screen owes the same treatment, since it becomes the bottom of the screen while it is up. A sheet that grows to full height owes the top inset as well: its content scrolls under the status bar otherwise.
+
+A screen that hides the system bars, a player, a game, a camera, still keeps the cutout inset for anything read or tapped, and it restores the bars when the person leaves it. Hidden bars that stay hidden on the next screen are a defect on a screen that never asked for them.
 
 Four edges, not one. The top holds the status bar and the cutout or Dynamic Island. The bottom holds the home indicator or the navigation bar. The side insets are zero in portrait and stop being zero once the phone is turned, where they are applied to both sides and the cutout is on one of them. Scrolling content may pass under any of them and often should, because the content ending in a hard line above the bar wastes the screen. Anything read or tapped may not, and that includes the last row of a list, the buttons inside a sheet, and a snackbar.
 
@@ -76,6 +76,8 @@ Design against a range. Supported iPhones run about 375 to 440pt wide, the narro
 
 A bar sitting in the platform's own bar slot is already handled: a Compose `Scaffold` reports the padding its top and bottom bars take, for the content to apply, and a SwiftUI `TabView` or `safeAreaInset(edge:)` extends the scroll view's safe area itself. Use the slot and there is no number to invent.
 
+Current iOS draws the tab bar floating and translucent over the content, with search as a separate button at its trailing end, an accessory slot above it for a player or a status, and a bar that can shrink while the content scrolls. All of it comes from the system tab view and its modifiers, which also report the bar's height to the scroll. A floating pill rebuilt by hand gets none of that: rows sit readable under it at rest because nothing reported its height, the player lands under it or across it, and it keeps its full size while the person reads. Which modifier does which part, per stack, is in `references/navigation-containers.md`.
+
 Hand-placed chrome is the case that bites: an overlay dropped into a `Box` or a `ZStack`, a floating button, a mini player, a standing banner. It sits on top of the scroll rather than shortening it, so the last row lives underneath and can be read only by overscrolling. Nothing in the code looks wrong, and the screen looks correct until the data is long enough to reach the bottom, which is why it survives review so often. The floating button is `button-fab` and the bottom of a collection is `list-end`.
 
 The padding is derived, not typed. Measure the bar, add the inset, and let the scroll read that value, because a hardcoded 80 goes stale the first time the bar gains a second line or the device has a taller gesture area.
@@ -89,6 +91,8 @@ A snackbar, a toast or an undo bar arrives over a screen that already has a bott
 Take it from the platform's host, because that is where the displacement is already written: the `snackbarHost` slot of a `Scaffold`, or the equivalent presentation the stack provides. One hand-placed in a `Box` renders under the bottom bar or over the button, and that is the version that ships.
 
 One at a time, and never behind something else. Two messages stacked, a toast drawn behind an open sheet, and a snackbar left under a keyboard that has just opened are the same defect: a surface positioned by hand into a stack whose heights it does not know.
+
+A modal follows the same order with a scrim under it. The scrim sits on the topmost layer, above every nested canvas, platform view, map, video surface and overlay on the screen, so nothing behind it stays bright or takes a tap. A scrim drawn inside one of those layers dims only that layer, and a native view embedded in the screen usually draws over anything the framework puts on top of it unless the modal goes through the root overlay. The panel itself is opaque: content showing through it competes with the text it holds.
 
 ## `layout-axis` Centred means on the screen's centre line, not in the space left over
 
@@ -126,14 +130,14 @@ Reflowing means the primary action stays visible without hunting for it, and the
 
 Review answers each of these against the code, pointing at the line:
 
-- The screen takes its insets from the framework's inset source rather than from a constant, and nothing readable or tappable sits outside them. `layout-insets`
+- The screen takes its insets from the framework's inset source rather than from a constant, and nothing readable or tappable sits outside them. Both the status bar and the navigation bar have a colour and icon brightness set against this screen's own background, a full-height sheet clears the top inset as well as the bottom one, and a screen that hides the bars keeps the cutout inset and restores the bars on exit. `layout-insets`
 - Every gap is a multiple of 4, and of 8 above 16, the text column starts at the same margin on every screen outside full-bleed content and the platform list containers, and the screen uses about five distinct vertical gaps rather than a new one per component. `layout-grid`
 - Grouping comes from space before containers, no container is nested inside another that already groups the same content, and the row height and section gap are the numbers this kind of screen uses everywhere else. `layout-grouping`
 - Radius comes from the shape language rather than per component, the screen holds at most three radius values, a nested surface curves less than the one around it, and depth arrives through one of shadow, outline or fill rather than all three. `layout-shape`
 - One column, no same-axis nesting outside what `scroll-nest` permits, and nothing side by side that would leave either half under about 140 wide apart from short fixed-format fields. `layout-column`
 - No content container carries a fixed width, and the screen was rendered at its own width and again at 320dp with nothing cut at an edge and nothing overflowing sideways. `layout-width`
-- Bars sit in the platform's bar slot, hand-placed chrome derives its padding from the measured bar plus the inset instead of a typed number, no more than two persistent bars stand besides the system ones, and on a rendered screen no line of content sits under a pinned bar, at the top edge or at the bottom one. `layout-chrome`
-- The snackbar comes from the platform's host slot rather than a hand-placed overlay, it clears the bottom bar and the inset, it moves the floating button rather than covering it, and one is on screen at a time. `layout-overlays`
+- Bars sit in the platform's bar slot, a floating tab bar with its search button and accessory comes from the system tab view rather than a hand-built pill, hand-placed chrome derives its padding from the measured bar plus the inset instead of a typed number, no more than two persistent bars stand besides the system ones, and on a rendered screen no line of content sits under a pinned bar, at the top edge or at the bottom one. `layout-chrome`
+- The snackbar comes from the platform's host slot rather than a hand-placed overlay, it clears the bottom bar and the inset, it moves the floating button rather than covering it, and one is on screen at a time. A modal's scrim covers every layer of the screen, nested canvases and platform views included, and the modal panel is opaque. `layout-overlays`
 - On the narrow device at default text size, the screen's subject and the start of its content are visible unscrolled, and the primary action is either in that screenful or in a bar pinned above the bottom inset and visible at rest. `layout-fold`
 - Rendered at its shortest content, the screen holds its action against the bottom rather than centred above an empty lower third, through the same code that lets it scroll once the content grows. `layout-short`
 - Landscape reflows, with the action still visible and the measure still capped at the shorter height, or is locked by a decision of the user recorded in `STACK.md`, and the screen still holds where the platform ignores the lock. `layout-orientation`

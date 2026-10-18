@@ -30,6 +30,8 @@ Everything is greyscale by construction: four greys, one ink, and nothing else. 
 - **split-focus**: two unequal regions, one persistent (a map, a preview, a player) and one scrollable that acts on it.
 - **canvas-overlay**: a full-bleed background with controls floating over it, instead of content sitting inside bounded cards.
 
+A screen that sells, a paywall, an upgrade at a limit, a shop, a checkout, has its own named compositions in `references/paywall-anatomy.md`, with the parts and states each one needs.
+
 ## Known defaults
 
 A wireframe that lands on one of these without a reason recorded is not a choice, it is the shape nobody chose:

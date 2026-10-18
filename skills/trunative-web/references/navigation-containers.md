@@ -11,10 +11,21 @@ The concept is portable and the name is not. Pick the row for the relationship, 
 | Pushed screen | History API `pushState`, or the router's push |
 | Top-level destinations | one route prefix per section |
 | Bottom sheet | `<dialog>` positioned to the bottom edge |
+| Persistent sheet | an element fixed to the bottom edge with snap heights |
 | Full screen cover | a route of its own |
 | Alert or dialog | `<dialog>` with `showModal()` |
 
 Bare React Native ships no bottom sheet. Reaching for one means adding a dependency, which is a `STACK.md` decision rather than a detail.
+
+## The tab bar's parts
+
+Current iOS floats the tab bar over the content and gives it three parts beyond the destinations. Each comes from the system tab view; a bar drawn by hand has to rebuild each one and report its height to the scroll itself.
+
+| Part | Mobile web |
+|---|---|
+| Search as its own destination | an ordinary destination |
+| Accessory above the bar, such as a mini player | an element fixed above the bar, its height added to the page's bottom padding |
+| Bar that shrinks while scrolling | hand work under `scroll-collapse` |
 
 ## Back and dismissal
 

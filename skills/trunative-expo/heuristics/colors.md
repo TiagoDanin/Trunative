@@ -115,7 +115,7 @@ A gradient that stays brings three constraints with it:
 - A long ramp bands on an 8-bit panel, which is what a phone becomes once brightness drops.
 - Translucency stacked on translucency leaves the final ratio at the mercy of whatever happens to scroll past. Opaque values can be checked; these cannot.
 
-## `color-dark-composed` Dark is a second design, not a switch [P1]
+## `color-dark-composed` Dark is a second design, not a switch, unless the product ships one appearance and forces it everywhere, splash, window and night resources included [P1]
 
 This is the part that gets done last and shows it.
 
@@ -126,7 +126,7 @@ This is the part that gets done last and shows it.
 - **Every pair gets measured again.** Passing in light says nothing about dark.
 - **Neither appearance inherits the other's derivation.** `color-derived`'s reflex check runs again here, on whichever appearance was built from the other: shedding chroma from a hue that already escaped the reflex can still land that appearance back inside it.
 
-Following the system setting is the default, and both appearances get built. Shipping one appearance is a product decision the user takes, recorded in `DESIGN.md`, never one this rule leaves to whoever writes the theme. Once it is taken, the rule grades the other half of it: the app forces that appearance everywhere it draws, so a phone set to the other one never produces a half-themed screen. The status bar icons, the keyboard, date and time pickers, dialogs from the platform, web content and the launch surface all follow the forced appearance, and each is checked with the system set the opposite way.
+Following the system setting is the default, and both appearances get built. Shipping one appearance is a product decision the user takes, recorded in `DESIGN.md`, never one this rule leaves to whoever writes the theme. Once it is taken, the rule grades the other half of it: the app forces that appearance everywhere it draws, so a phone set to the other one never produces a half-themed screen. The status bar icons, the keyboard, date and time pickers, dialogs from the platform, web content and the launch surface all follow the forced appearance, and each is checked with the system set the opposite way. The window background and the night resource set count as well: a light-only app whose night window is black flashes it before the first frame and behind every transition. A single appearance carried through all of that passes this rule, and it is not an exception to record.
 
 ## `color-contrast` Measure the pair, do not eyeball it [P1]
 

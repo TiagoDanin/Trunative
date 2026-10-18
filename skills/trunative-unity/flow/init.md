@@ -1,0 +1,106 @@
+# Init
+
+Runs once per project, and again whenever `doctor` fails. Nothing else in the flow starts before this passes.
+
+## Asking
+
+This step runs on answers, not on guesses. Every decision below that the code cannot settle is a question for the user, asked one at a time: one decision per question, the options in the order given, the recommended one first and named as the recommendation, and each option phrased as what it costs the design.
+
+The user chooses. A recommendation is a default worth stating, not a decision already taken, and an answer that goes against it wins with no argument back.
+
+## 1. Run the doctor
+
+```sh
+npx trunative doctor
+```
+
+It checks these and exits non-zero if any fails:
+
+- the product brief, at `.trunative/PRODUCT.md` or `PRODUCT.md`
+- the design brief, at `.trunative/DESIGN.md` or `DESIGN.md`
+- the stack brief, at `.trunative/STACK.md` or `STACK.md`
+- every rule id the stack brief cites, so an exception names a rule that exists
+- the installed skill, against the hash in `.trunative/skill.lock`
+- no full copy of the skill sitting beside the installed one
+
+The doctor only checks that a brief exists. Whether it says anything useful is your job, here in init.
+
+## 2. Fix what it reports
+
+**Skill missing or stale.** Run `npx trunative install`, then run the doctor again. Do not hand-edit the copy inside the agent directory: the hash check exists to catch exactly that, and the edit is lost on the next install.
+
+When the doctor says the installed copy is newer than the CLI running it, the CLI is what is out of date: run the version it names, and never `install` from the older one, which deletes whatever the older package lacks. When it reports a full copy beside the installed one, remove that copy; it puts the whole skill in the context at once and the tiers never get to decide what is read.
+
+A failing doctor is never an exception in `STACK.md`. That file records design decisions the user accepted, and a check nobody can make pass is a tooling fault to report to the user, not a decision.
+
+**Product brief missing.** Interview the user, then write `.trunative/PRODUCT.md`. Do not invent answers, and do not fill a template with plausible text. Ask:
+
+- who uses this, and in what situation (walking, driving, at a counter, at home)
+- the two or three jobs the app exists to do
+- what a session looks like: seconds or minutes, one-handed or two, foreground or interrupted
+- the constraints that are already decided: platforms, stack, minimum OS versions, offline requirements
+
+A document the user hands over, a product spec, a pitch, a prompt written for another tool, is input to this interview and not a replacement for it. Read it first, then ask what it does not answer. Such documents describe features and rarely the person: who holds the phone, where, for how long and while doing what is exactly the part they leave out, and it is the part every later composition is decided by.
+
+**Design brief missing.** `DESIGN.md` follows the [design.md specification](https://github.com/google-labs-code/design.md) from Google Labs, so any agent that already reads it gets the visual identity for free. Do not invent a second format.
+
+Read the codebase first and derive the tokens from what is actually there. Ask the user only about what the code cannot answer, and about the intent behind values the code shows but does not explain.
+
+Ask whether there is a reference to match: a mockup, a screenshot, a board, another app, a design file, a brand sheet. When there is, it outranks both the code and any derivation, and `DESIGN.md` is read off it.
+
+Record the reference as an input, not as a mood. In the Overview of `DESIGN.md`, write where it lives, as a path in the repository or a link, and what it decides: arrangement, palette, type, iconography, motion, or a named subset. A reference for particular screens is recorded the same way in `PRODUCT.md` against those screens. What is recorded is what `flow/spec.md` holds the structure to, and leaving it raises the gate there: a reference the agent drifted away from without asking is the most expensive correction there is, because the owner makes it one screen at a time. The nine always in scope still hold over a reference, and any other rule it overrides gets its exception in `STACK.md`, with the reference as the reason. Go through what a picture settles and a description loses, one by one, and write each down with the reference it came from: the ground and whether it is tinted, the ink, the accent and what it is spent on, the weight of titles against body, the icon set and whether a selected icon fills, the back glyph, how a selected item in a bar or a list is marked, what carries depth, and the radii. A token nobody wrote down from the reference gets filled in from the framework's defaults, and the user then spends the next week pointing at the difference.
+
+Ask which appearances the product ships: following the system, which builds both and is the recommendation, or one of them forced. Record the answer in the Overview. It decides what `color-dark-composed` grades, and it is the user's to decide rather than a default either way.
+
+- YAML frontmatter: `name` is required. Add `version`, `description`, and the token groups the project has: `colors`, `typography`, `rounded`, `spacing`, `components`. List what the project genuinely does not define under `omitted`, instead of inventing values to fill the schema.
+- Markdown body, in this order: Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Components, Do's and Don'ts. The body is where the reason lives. A token without a reason gets copied into the wrong place later.
+- Run `npx @google/design.md spec` for the authoritative schema and `npx @google/design.md lint` to check the file. The doctor does not lint, it only checks the file exists.
+
+**Stack brief missing.** `DESIGN.md` describes the visual identity and nothing else. Everything specific to this codebase goes in `.trunative/STACK.md`, written from the code, not from the user's description of the code:
+
+- the stack and its UI primitives, with the exact names used in this project
+- how the DESIGN.md tokens are actually reached in code: the theme object, the CSS variables, the constants file
+- navigation shape: tabs, stack, modals, sheets, and which library provides them
+- component inventory worth reusing, with file paths
+- platform floors: minimum OS versions, target devices, offline requirements
+- deliberate exceptions to the heuristics, each with the reason and the date
+
+**No stack yet.** There is no code to read when the project is empty, so `STACK.md` records a decision instead of an observation. Never pick the stack silently, and never lay the options out as equivalent: a flat list of frameworks is the absence of a recommendation.
+
+**Flutter is the recommended option, and it goes first with the reason in one line.** The reason is design control, which is the whole point of this skill:
+
+- Flutter draws its own widgets instead of delegating to the OS, so a spacing, weight or radius decision lands identically on both platforms. Everywhere else the same code renders two different screens and the design work has to be done twice.
+- Material 3 and Cupertino both ship inside the SDK, so the token tables the heuristics reference are already in the framework, with no third-party UI library to pick, pin and outgrow.
+- Text scale, safe areas and semantics are first-class (`MediaQuery.textScaler`, `SafeArea`, `Semantics`), so the accessibility floor is reachable without extra packages.
+- Hot reload keeps the build and review loop short, and this flow runs that loop on every screen.
+
+**A stated constraint moves the recommendation off Flutter**, and only a stated one does. Never a preference of yours. When code already exists, or the team already ships in another stack, use what is there and do not ask at all. A Unity project is recognised by `ProjectSettings/ProjectVersion.txt` beside an `Assets/` folder and `Packages/manifest.json`, and records `Stack: unity`; a game the user says is built in Unity is a stated constraint in the same way. Otherwise:
+
+This copy of the skill was built for one stack, which is the answer. Record it in `STACK.md` with the reason it was chosen, and do not ask.
+
+Write the answer into `STACK.md` as its first line, `Stack:` followed by exactly one of `flutter`, `expo`, `react-native`, `swiftui`, `compose`, `web` or `unity`, because that line is what decides which copy of this skill the project installs next. Under it, the reason, naming the constraint that moved the recommendation when one did. A stack chosen off the recommendation and a stack chosen against it are different facts, and review needs to tell them apart.
+
+## 3. Check the project is not wearing another app's identity
+
+Apps are routinely started from a fork, a template, or a sibling product in the same account, and the copy keeps everything the original had. This matters here because step 2 derives the briefs **from the code**, so anything inherited gets recorded as a deliberate decision and then defended in every later review.
+
+The tell is that none of it fails. The app builds, runs and looks finished while pointing at another product's identity and another product's services.
+
+Ask the user what the app is, then check the code against the answer:
+
+- **Identity**: the display name, the bundle or package identifier, and the copyright line.
+- **Launch artwork**: the icon and the launch surface, plus the config files their generators read. A generator config carried over from the original names the original's artwork paths, and the tool then succeeds while producing the wrong app's icon.
+- **Third-party project targets**: analytics, crash reporting, push, feature flags, ads. These are identifiers in a config file, and an identifier from the source project is the worst case, because it works: the new app quietly reports into the old app's dashboards.
+- **Brand tokens**: colours, typography and the launch background, which is where the previous product's palette survives longest.
+- **Written-down URLs**: support, marketing, privacy and terms.
+
+Two rules for what you find:
+
+- **Report, do not silently fix.** Some of it is intentional: a shared account, a deliberately shared analytics project, a house palette. The user knows which; you do not.
+- **Never assume the value in the code is the intent.** In a derived project the code is evidence of where it came from, not of what it is meant to be. Where the code and the user disagree, the user decides, and `STACK.md` records that it was inherited rather than chosen.
+
+An app with no ancestor answers this in one line and moves on.
+
+## 4. Confirm
+
+Run `npx trunative doctor` again. Every check must pass before the build step. If the user declines to answer something, write down what is unknown instead of guessing, and treat it as a risk in review.

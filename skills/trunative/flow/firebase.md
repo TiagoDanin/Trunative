@@ -1,6 +1,6 @@
 # Firebase
 
-Loaded by `flow/build.md`, never as a step of its own, whenever the screen touches auth, Firestore, Storage, Messaging, Remote Config or Crashlytics.
+Loaded by `flow/build.md`, never as a step of its own, whenever the screen touches auth, Firestore, Storage, Messaging, Remote Config, A/B Testing, In-App Messaging or Crashlytics, or sells something on a project that uses Firebase.
 
 It exists because Firebase decides things this skill already has rules about. Offline persistence changes what an honest loading state is. Local writes come back before the server has seen them, so what the screen shows is a claim rather than a fact. An agent that wires it up without knowing that produces screens the heuristics then have to fight.
 
@@ -62,8 +62,26 @@ The screen has to be correct before any value lands, which means shipped default
 - Screen names match the flow the user walks, so the funnel and the navigation graph are the same thing.
 - Nothing the user typed leaves the device in an event, a log or a crash report. That is `priv-instrument`, and it is the rule an analytics call breaks fastest.
 - What the store declaration says has to match what the SDKs actually collect: `priv-declared`.
+- A purchase event is logged from the transaction the store confirmed, never from the tap on the button. A tap counted as a sale inflates conversion and hides the pending outcome that `pay-outcome` requires, and it is the event every paywall test is judged on. It carries the placement and the variant that sold it.
 
-## 9. Setup
+## 9. Selling without another service
+
+A paywall needs four things besides the store: a way to choose what it shows, a way to test that choice, a record of who has paid, and messages around a trial. Firebase carries all four.
+
+- **What shows where.** Each moment that can sell has a stable placement name, and a Remote Config parameter per placement holds the store product ids, the copy keys and the layout variant. Conditions on that parameter target by country, platform, app version or a user property. Remote Config chooses products, never prices: the amount is read from the store's product object (`pay-price-source`), and a parameter holding a price string is a constant that ships later.
+- **Testing it.** An A/B Testing experiment on that parameter splits the audience, keeps a control group as the holdout, and is judged on the purchase event above rather than on taps. The variant is fixed when the paywall opens and does not change while it is on screen (section 7).
+- **Who has paid.** The entitlement lives in Firestore and is written only by a Cloud Function that receives the stores' server notifications (App Store Server Notifications, Real-time developer notifications from Play) and verifies the transaction. The client never writes it. Read from the persisted cache, it is the last known state that `ads-entitlement` requires on a cold start with no network, and it is what `sub-restore` finds again on a new device.
+- **Around a trial.** The same notifications carry the trial's end and an auto renew switched off. A function schedules the reminder `sub-trial-end` promises from that date and sends it through Cloud Messaging only to a token whose owner allowed notifications, or by email; a renewal switched off queues the single save offer for the next open.
+
+## 10. In-App Messaging is a surface nobody asked for
+
+A campaign that opens on launch or on an analytics event is an unprompted surface the moment it appears.
+
+- It answers to `fb-unprompted`: dismissal remembered, a plain close, and never over a task in progress.
+- A message promoting another product, a sale or a partner is a house ad under `ads-labelled`, and on launch it is the placement `ads-placement` forbids for an interstitial.
+- A campaign that opens the paywall is a placement like any other, and the paywall it opens answers to the whole `sub-` prefix.
+
+## 11. Setup
 
 Only commands and file paths live here. Every design consequence above applies whatever the stack is.
 
@@ -83,6 +101,10 @@ Add the Firebase SDK through Swift Package Manager, put `GoogleService-Info.plis
 
 Add the Google services plugin and the Firebase BoM to Gradle, put `google-services.json` in `app/`, and let the content provider initialise Firebase rather than calling it from `Application.onCreate`. Persistence is on by default.
 
+**Unity**
+
+Import the Firebase Unity SDK packages, one per product, through the Package Manager or the `.unitypackage` files, put `google-services.json` and `GoogleService-Info.plist` anywhere under `Assets/`, and resolve the Android dependencies with the External Dependency Manager. Call `FirebaseApp.CheckAndFixDependenciesAsync()` once at startup and use no Firebase API before it reports available, keeping that wait off the first frame (`perf-cold-start`).
+
 ## What review scores this against
 
 This file adds no rules. It says what Firebase does to the screen, and review scores the result against the rules that already exist:
@@ -98,5 +120,10 @@ This file adds no rules. It says what Firebase does to the screen, and review sc
 | The push prompt and the denied path | `perm-notify-ask`, `perm-rationale`, `notify-inapp` |
 | Shipped Remote Config defaults and a screen that does not shift | `pay-price-source`, `icon-reserve` |
 | Screen names, and nothing typed leaving the device | `priv-instrument`, `priv-declared` |
+| Purchases counted from the confirmed transaction, with placement and variant | `pay-outcome` |
+| Paywall products chosen by Remote Config, prices from the store, variant fixed while open | `pay-price-source`, `sub-billed-first` |
+| The entitlement written by the server and read from the cache | `ads-entitlement`, `sub-restore` |
+| Trial reminders scheduled from the store's dates and sent only where allowed | `sub-trial-end`, `perm-notify-ask`, `notify-earns-it` |
+| In-App Messaging campaigns | `fb-unprompted`, `ads-labelled`, `ads-placement` |
 
 Two of them are answered on a device rather than in the router, and both pass on a warm app with a fast connection, which is the only condition the code was written against. Cold start with a stored session and watch the first two frames, then turn the network off, make a write, and look at what the row says while the server has not seen it.

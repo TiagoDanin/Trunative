@@ -73,7 +73,7 @@ The usual failure is a paragraph running edge to edge on a large phone held side
 
 ## `type-scaling` Render it at maximum before calling it done [P1]
 
-No other check in this file surfaces as many genuine defects. Turn the text size to the platform's largest accessibility step, walk every screen, and look for:
+No other check in this file surfaces as many genuine defects. Turn the text size to the platform's largest accessibility step and start with the chrome every screen shares: the tab bar, the top bar, a bottom sheet, a dialog. One defect there repeats on every screen, and those surfaces hold fixed heights by design. Then walk every screen, and look for:
 
 - a container with a fixed height that its own content has outgrown;
 - a control row that needed to become a column and stayed a row;
@@ -81,9 +81,13 @@ No other check in this file surfaces as many genuine defects. Turn the text size
 - a one-line label now wrapping to two, pushing the primary action under the fold or beneath a fixed bottom bar;
 - a string cut into ambiguity: a button reading "Cont..." has lost its meaning, not merely some letters.
 
-Layouts reflow; they do not truncate. A screen that only holds together at 100% has failed exactly the people who moved the setting.
+Layouts reflow; they do not truncate. A screen that only holds together at 100% has failed exactly the people who moved the setting. The fix is decided when the row is written, not when it breaks: every row of text beside text or beside a control has a stacked form, chosen by the space measured at the current size, and a label is allowed to wrap. A row with no stacked branch is a row waiting for the setting to move.
 
-Nor do they shrink the text back. Scaling a label down to fit its box, through `FittedBox`, `minimumScaleFactor`, `adjustsFontSizeToFitWidth`, an auto-size text widget or a size computed from the width, turns the setting off exactly where it was needed, and whatever sits in the same box, an icon button included, shrinks with it under `touch-floor`. It passes a check that only looks for clipping, which is why it is named here. The exception is a single display figure whose size is the layout, a clock or a score on a screen built around it, and it is recorded as that, with every control kept outside the scaled box.
+Nor do they shrink the text back. Scaling a label down to fit its box, through `FittedBox`, `minimumScaleFactor`, `adjustsFontSizeToFitWidth`, an auto-size text widget, a best fit option or a size computed from the width, turns the setting off exactly where it was needed, and whatever sits in the same box, an icon button included, shrinks with it under `touch-floor`. A box with a fixed width and height around text is the same fix arrived at by another road: the text either clips or gets made to fit. It passes a check that only looks for clipping, which is why it is named here. The exception is a single display figure whose size is the layout, a clock or a score on a screen built around it, and it is recorded as that, with every control kept outside the scaled box.
+
+Text inside artwork of a fixed size is not interface text, and it is not an exception either. A rendered board, a scene drawn to scale, a frame of video, a generated image or a poster keeps its proportions because the proportions are the content. The chrome around it still scales, the words inside it are also exposed as an accessible label, and the artwork offers its own way to see it larger, a zoom, a pinch or a full-screen view. What it may not do is pull the controls around it into its fixed box.
+
+Keep sizes in `sp`, read `LocalDensity.current.fontScale`, and give a `Row` a `FlowRow` or `Column` form chosen from `BoxWithConstraints`.
 
 ## `type-strings` The text in the layout is not the text you typed
 
@@ -111,7 +115,7 @@ Review answers each of these against the code, pointing at the line:
 - Nothing below 400, no weight hardcoded outside a theme style, and every weight step jumps a grade. Weight is distributed across the screen, with most text on the regular cut and the heavy cut spent on a few elements, and something on the screen does carry it. `type-weight`
 - The typeface choice can be stated as a reason, a brand face stays in the display roles, and any custom face scales. `type-face`
 - Body copy runs 40 to 60 characters per line. `type-measure`
-- The screen was rendered at the largest accessibility step, and nothing clips, overlaps or truncates into ambiguity, and no text is scaled back down to fit its box, except a recorded display figure with no control inside its scaled region. `type-scaling`
+- The shared chrome and then the screen were rendered at the largest accessibility step, and nothing clips, overlaps or truncates into ambiguity. Every text row has a stacked or wrapping form, and no text is scaled back down to fit its box or held in a box of fixed width and height, except a recorded display figure with no control inside its scaled region. Text inside fixed-size artwork carries an accessible label, the artwork can be viewed larger, and the chrome around it scales. `type-scaling`
 - The longest localized string fits, numeric columns are tabular, every truncation point was chosen deliberately, and a truncated identifier can be read in full and copied one tap away. `type-strings`
 - Dark theme text was judged on a rendered screen. `type-dark`
 

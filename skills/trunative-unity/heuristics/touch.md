@@ -1,0 +1,140 @@
+# Touch
+
+A finger is not a cursor, and every rule here follows from three differences.
+
+It is blunt: the contact patch is an oval of 16 to 20mm for a fingertip and more for a thumb pad, so the input is a smudge and not a point. It has no hover: there is no state between not touching and committed, so anything a desktop design revealed on the way to a click has nowhere to live. And it is opaque: the finger covers the thing it presses along with a ring around it, so feedback drawn under the contact point did not happen.
+
+Add the fourth condition that belongs to the device rather than the hand: the grip changes constantly, often within a single task, so nothing can assume the phone is being held the way it was a moment ago.
+
+Rules in this file, in order: `touch-floor`, `touch-spacing`, `touch-nested`, `touch-reach`, `touch-destructive`, `touch-feedback`, `touch-affordance`, `touch-gestures`, `touch-long-press`, `touch-keyboard`.
+
+## `touch-floor` The target is the hit area, never the drawing [P1]
+
+44pt on iOS, 48dp on Android, for everything a user can activate. Both land under a centimetre of glass, which is already smaller than the finger arriving at it. That is why they are floors and not goals.
+
+The drawn control and the target are two different objects. A 24dp icon centred in a 48dp target is right; growing the icon to fill the target and shrinking the target to hug the icon are both wrong. Reach for the mechanism the stack already has:
+
+A `RectTransform` sized to the floor carrying the raycast target, with the drawn icon as a child whose `raycastTarget` is off, or negative values in `Graphic.raycastPadding` to grow the hit area past the drawing. Under a `CanvasScaler` set to Scale With Screen Size the reference units are not dp, so convert the floor from `Screen.dpi` and check it on the narrowest supported screen.
+
+Two consequences that get missed. A list row is a target: full width, at least 48dp tall, and the whole row responds rather than the label inside it. And a target that is marginal at the top of the screen is worse at the bottom, where the thumb arrives at a shallow angle and the contact oval stretches.
+
+The web accessibility floor is lower than the platform one and does not replace it. WCAG 2.2 asks for 24 by 24 CSS pixels at AA, with exceptions, and 44 by 44 only at AAA. On a phone the platform number wins, every time.
+
+## `touch-spacing` Two correct targets can still produce a wrong tap
+
+Leave at least 8dp of dead space between neighbouring targets. Adjacent controls that each meet the floor still collect mis-taps, because the contact oval straddles the boundary between them and the system awards the tap to whichever one owns the centre.
+
+Watch the places it concentrates: a row of icon buttons in a toolbar, a line of chips, a close control sitting beside another control, and two swipe actions revealed on the same row. When a target has to be smaller than the floor, the distance to its neighbours has to grow to compensate, which is the same trade WCAG makes with its spacing exception.
+
+## `touch-nested` One point answers to one target, and a picture of a control is not a target
+
+When two pressables overlap, the system hands the tap to the innermost one and the outer one never hears it. So a control placed inside a tappable card is a hole in the card: a tap there does the control's job, or nothing at all, and never the card's.
+
+That is right when the inner control is a real second action, a favourite on a row or a menu on a card. Then it is its own target, it meets `touch-floor` and `touch-spacing` against the edge of the card, and its tap does not also fire the card underneath.
+
+It is wrong when the inner control is only drawn. A theme previewed on a sample screen, a keyboard skin in a store, a widget in a gallery of widgets, a mockup of an app inside a portfolio tile: these are pictures of controls, and they are content. They are excluded from hit testing and from the accessibility tree, so the tap goes to the card and a screen reader reads the card rather than a button that does nothing.
+
+Put a `CanvasGroup` on the drawn subtree with `blocksRaycasts` and `interactable` off, or turn `raycastTarget` off on every `Graphic` in it, and register no `AccessibilityNode` for it in the `AccessibilityHierarchy`.
+
+A drawn control that still takes a tap is found by pressing it: it ripples, and nothing happens.
+
+## `touch-reach` The bottom third is the only easy part of the screen
+
+Roughly half of phone use is one-handed, and about two thirds of that is a right thumb. A layout that only works for one hand fails a large minority of users, so check the mirror before shipping.
+
+Three regions, mirrored for a left hand:
+
+- **Easy:** the bottom third, leaning toward the side opposite the thumb. The primary action, the primary navigation and whatever gets used most.
+- **Stretch:** mid screen and across to the far side. Secondary actions.
+- **Hard:** the top corners, worst at the diagonal from the holding thumb. Search, settings, anything used rarely.
+
+Past about six inches of screen, the top is not reachable one-handed at all. Anything essential up there needs a second path: a bottom sheet, a pull-down, a duplicate control in reach. A bottom tab bar is not a stylistic preference, it is where the thumb is.
+
+Since the grip changes mid-task, the design has to survive the change rather than assume a posture. A control that only works while the phone is cradled in two hands is a control that fails while walking.
+
+## `touch-destructive` Distance is the safety mechanism
+
+Delete, unsubscribe, cancel the order and send the payment do not belong in the easy region, and never beside something used often. The whole point of the hard region is that reaching it takes a deliberate second movement.
+
+Prefer undo over a confirmation dialog. Undo is faster for the person who meant it, recoverable for the person who did not, and it does not train users to dismiss dialogs without reading them. When a dialog is the right vehicle instead is `fb-confirm-test`.
+
+## `touch-feedback` If it happened under the finger, it did not happen [P1]
+
+Every touch gets an acknowledgement inside about 100ms, before the work behind it finishes. Latency between contact and response is the loudest quality signal a phone app has.
+
+- The pressed state is mandatory, and it has to be visible with a finger parked over the middle of the control. Change the whole surface, not a small area at the centre.
+- Use the platform's own idiom: a ripple originating at the contact point on Android, a highlight or dim on iOS. Invented feedback that neither platform uses reads as a malfunction.
+- Confirmation of a result belongs above the touch point or in another region entirely, never underneath it.
+- Disable the control while its action runs, or a second tap fires the same request twice.
+- Haptics are a vocabulary, not decoration. One meaning per pattern, distinct signals for success and failure, nothing on scroll. Constant haptic feedback is worse than none.
+
+The touch state set is its own thing: rest, pressed, long press where the element has one, dragging where it moves, plus disabled, loading, error and empty. `hover` does not exist here, and `focus` belongs to a hardware keyboard or switch control rather than to a finger. Nothing may hide behind either.
+
+## `touch-affordance` What looks pressable presses, and nothing else looks it
+
+A finger cannot hover to find out, so the look of an element is the only promise it makes before the tap. Both ways of breaking that promise cost the same: a tap on something that does nothing reads as a broken app, and a control nobody recognises as one is a feature nobody uses.
+
+- Nothing that ignores a tap wears the marks of a control: a raised shadow, a button shape, a filled pill, a chevron at the end of a row, an underline, the accent colour reserved for interactive text. A decorative card styled like a tappable one, a status shown as a chip, a heading in link blue, all invite a tap with nothing behind it.
+- Everything that takes a tap carries one of those marks, or sits where the platform has already taught that position to act: a list row, a tab, a bar item. A tappable line of plain body text, a card with no edge or chevron that opens a detail, or an image that is secretly the only way into a screen is found by accident.
+- A row that opens something shows it, with a chevron on iOS or the full-width ripple on Android, and a row that only displays a value does not borrow the chevron.
+- One element, one promise. Where a tap on part of a surface acts and the rest does not, the acting part is drawn as its own control, which is `touch-nested`.
+
+## `touch-gestures` The edges belong to the operating system
+
+A gesture that starts at a screen edge is competing with the OS and will lose. On iOS that is back from the left edge, the shade from the top left, the control panel from the top right, and home from the bottom. On Android it is back from either side, home from the bottom, and the shade from the top. Where a drag genuinely has to begin at an edge, claim the strip explicitly through the system's gesture exclusion mechanism and keep it as small as possible.
+
+- The back gesture is the system's, and what this rule owns of it is the gesture: on Android the modern callback rather than an override of the old back method, keeping the predictive animation the system draws while the finger is still down and interpolating any custom transition from its progress. Where back lands, and a handler that consumes it and leaves no way out, is `nav-back`, and it is scored there and not twice.
+- Use the standard gesture for the standard meaning. Repurposing pull to refresh, long press or edge swipe costs the user the muscle memory built by every other app on the device.
+- Every gesture needs a visible equivalent, because a swipe-only action does not exist for someone who has never been shown it. That is the sighted half. The route for a reader, a switch or a keyboard is a named action, and `a11y-gesture` owns it.
+- A gesture nobody discovers is a feature nobody has. Leave a partial reveal at rest, a grabber, or a one-time hint.
+- Give a swipe region real height, and keep two swipeable things from overlapping where their gestures begin.
+
+Content runs underneath the system bars on current Android targets, so a control pinned to the bottom edge without inset handling ends up beneath the gesture strip: visible, and not tappable. The inset geometry itself is `layout-insets`.
+
+## `touch-long-press` A long press opens the platform's menu, and nothing lives only there
+
+Holding a finger on a message, a row or a photo is where both platforms put the occasional actions on the thing under it: reply, copy, share, react, move, delete. It suits actions that belong to one item and are wanted now and then, and it is the wrong home for anything someone needs, because nothing on the screen says it exists.
+
+- The press answers with the platform's own menu, anchored to the item, with the item lifted or previewed so it is clear which one the menu is about. A popover drawn by hand over a dimmed screen loses the system haptic, the drag-to-choose gesture and the screen reader's actions at once.
+- Items are ordered by how often they are used, with destructive actions last, set apart, in the destructive role and never the first item under the finger (`touch-destructive`).
+- A quick row above the menu, reactions or the one verb used most, is part of the menu rather than a second gesture.
+- Every action in the menu is reachable without the long press: an overflow control on the item or on its detail screen for the sighted, and the same set as named actions for the screen reader (`a11y-gesture`, `touch-gestures`).
+- The press itself never does something irreversible, and it means the same thing on every row of one list.
+- The menu leaves on a tap outside it and on back, and its scrim covers the whole screen (`layout-overlays`).
+
+Unity UI has no context menu. Detect the hold with the Input System's `HoldInteraction`, or `IPointerDownHandler` and `IPointerUpHandler` with a timer, open a menu panel anchored to the item, and give every action in it a visible control as well.
+
+## `touch-keyboard` Half the screen, arriving without warning
+
+The keyboard is not an overlay that happens to the screen, it is part of the screen for as long as someone is typing, and it deserves the same design attention as anything else that takes up that much room.
+
+- The focused field stays visible when it opens. Test the last field of a form, not the first: the first one always passes.
+- Which keyboard opens, and what its return key does, is decided per field rather than globally. `form-input` covers that in full.
+- A fixed bottom action either rises with the keyboard or is reachable above it. Leaving it underneath means the user types and then cannot submit.
+
+## Check
+
+Review answers each of these against the code, pointing at the line:
+
+- Every interactive element measures at least 44pt or 48dp in its hit area, and list rows are tappable across their full width. `touch-floor`
+- Adjacent targets are separated by at least 8dp of dead space. `touch-spacing`
+- No point on the screen belongs to two targets unless the inner one is a real second action that meets the floor and does not fire the outer one, and every control drawn as content is excluded from hit testing and from the accessibility tree. `touch-nested`
+- Primary action and primary navigation sit in the bottom third, and the layout was checked mirrored for a left thumb. `touch-reach`
+- Destructive actions sit outside the easy region, and the vehicle carrying the confirmation is the one `fb-confirm-test` selects. `touch-destructive`
+- Pressed state is visible under a covering finger, feedback lands within about 100ms outside the occluded area, and nothing depends on hover. `touch-feedback`
+- Every element carrying a control's marks (shadow, button shape, chevron, underline, interactive colour) responds to a tap, and every element that responds carries one of them or sits in a position the platform already makes interactive. `touch-affordance`
+- No custom gesture starts in a system edge zone without an explicit exclusion, the system's back gesture keeps its own predictive animation, standard gestures keep their standard meaning, and every gesture has a visible equivalent on screen. `touch-gestures`
+- A long press opens the platform's menu anchored to a lifted or previewed item, ordered by use with destructive actions last and apart, every action is reachable another way and as a named action, nothing irreversible fires on the press, and the menu leaves on a tap outside and on back. `touch-long-press`
+- With the keyboard open, the focused field is visible and the primary action is reachable. `touch-keyboard`
+
+Hit areas are measured, not estimated: read the bounds in the inspector or the layout tree. A target that looks big enough next to a 24dp icon is exactly the one that is not.
+
+## Reaches
+
+The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
+
+- `heuristics/accessibility.md`: `a11y-gesture`
+- `heuristics/feedback.md`: `fb-confirm-test`
+- `heuristics/forms.md`: `form-input`
+- `heuristics/layout.md`: `layout-insets`, `layout-overlays`
+- `heuristics/navigation.md`: `nav-back`

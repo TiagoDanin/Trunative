@@ -2,7 +2,7 @@
 
 A mobile-only design skill for AI coding agents.
 
-![skills.sh](https://skills.sh/b/TiagoDanin/Trunative)
+[![skills.sh](https://skills.sh/b/TiagoDanin/Trunative)](https://www.skills.sh/tiagodanin/trunative)
 
 Trunative is a [skill](https://www.skills.sh/docs) that makes coding agents treat mobile as its own platform rather than a narrow browser window. A phone is not a small desktop: input is imprecise and one-handed, the session gets interrupted by calls and notifications, the network drops mid-request, the OS owns gestures and insets and permissions, text scales to whatever the user set, the battery and the thermal budget are finite, and the whole thing is often used outdoors while walking. Those constraints, not the viewport width, are what a mobile design has to answer for.
 

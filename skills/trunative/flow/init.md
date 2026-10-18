@@ -14,12 +14,14 @@ The user chooses. A recommendation is a default worth stating, not a decision al
 npx trunative doctor
 ```
 
-It checks four things and exits non-zero if any fails:
+It checks these and exits non-zero if any fails:
 
 - the product brief, at `.trunative/PRODUCT.md` or `PRODUCT.md`
 - the design brief, at `.trunative/DESIGN.md` or `DESIGN.md`
 - the stack brief, at `.trunative/STACK.md` or `STACK.md`
+- every rule id the stack brief cites, so an exception names a rule that exists
 - the installed skill, against the hash in `.trunative/skill.lock`
+- no full copy of the skill sitting beside the installed one
 
 The doctor only checks that a brief exists. Whether it says anything useful is your job, here in init.
 
@@ -44,7 +46,9 @@ A document the user hands over, a product spec, a pitch, a prompt written for an
 
 Read the codebase first and derive the tokens from what is actually there. Ask the user only about what the code cannot answer, and about the intent behind values the code shows but does not explain.
 
-Ask whether there is a reference to match: a mockup, a screenshot, another app, a brand sheet. When there is, it outranks both the code and any derivation, and `DESIGN.md` is read off it. Go through what a picture settles and a description loses, one by one, and write each down with the reference it came from: the ground and whether it is tinted, the ink, the accent and what it is spent on, the weight of titles against body, the icon set and whether a selected icon fills, the back glyph, how a selected item in a bar or a list is marked, what carries depth, and the radii. A token nobody wrote down from the reference gets filled in from the framework's defaults, and the user then spends the next week pointing at the difference.
+Ask whether there is a reference to match: a mockup, a screenshot, a board, another app, a design file, a brand sheet. When there is, it outranks both the code and any derivation, and `DESIGN.md` is read off it.
+
+Record the reference as an input, not as a mood. In the Overview of `DESIGN.md`, write where it lives, as a path in the repository or a link, and what it decides: arrangement, palette, type, iconography, motion, or a named subset. A reference for particular screens is recorded the same way in `PRODUCT.md` against those screens. What is recorded is what `flow/spec.md` holds the structure to, and leaving it raises the gate there: a reference the agent drifted away from without asking is the most expensive correction there is, because the owner makes it one screen at a time. The nine always in scope still hold over a reference, and any other rule it overrides gets its exception in `STACK.md`, with the reference as the reason. Go through what a picture settles and a description loses, one by one, and write each down with the reference it came from: the ground and whether it is tinted, the ink, the accent and what it is spent on, the weight of titles against body, the icon set and whether a selected icon fills, the back glyph, how a selected item in a bar or a list is marked, what carries depth, and the radii. A token nobody wrote down from the reference gets filled in from the framework's defaults, and the user then spends the next week pointing at the difference.
 
 Ask which appearances the product ships: following the system, which builds both and is the recommendation, or one of them forced. Record the answer in the Overview. It decides what `color-dark-composed` grades, and it is the user's to decide rather than a default either way.
 
@@ -70,9 +74,9 @@ Ask which appearances the product ships: following the system, which builds both
 - Text scale, safe areas and semantics are first-class (`MediaQuery.textScaler`, `SafeArea`, `Semantics`), so the accessibility floor is reachable without extra packages.
 - Hot reload keeps the build and review loop short, and this flow runs that loop on every screen.
 
-**A stated constraint moves the recommendation off Flutter**, and only a stated one does. Never a preference of yours. When code already exists, or the team already ships in another stack, use what is there and do not ask at all. Otherwise:
+**A stated constraint moves the recommendation off Flutter**, and only a stated one does. Never a preference of yours. When code already exists, or the team already ships in another stack, use what is there and do not ask at all. A Unity project is recognised by `ProjectSettings/ProjectVersion.txt` beside an `Assets/` folder and `Packages/manifest.json`, and records `Stack: unity`; a game the user says is built in Unity is a stated constraint in the same way. Otherwise:
 
-**Flutter and Expo and React Native and SwiftUI and Jetpack Compose and Mobile web**
+**Flutter and Expo and React Native and SwiftUI and Jetpack Compose and Mobile web and Unity**
 
 This copy of the skill was built for one stack, which is the answer. Record it in `STACK.md` with the reason it was chosen, and do not ask.
 
@@ -84,8 +88,9 @@ Ask this in plain text, ending in a question mark, under the label "Stack", with
 - **React Native or Expo.** Right when the product is a feature inside an app that already ships in it. Two renderers, so every design decision is verified twice.
 - **SwiftUI or Jetpack Compose.** One platform only, with integration no cross-platform layer reaches: widgets, App Clips, deep system APIs. The other platform is a second product.
 - **Mobile web.** The target is a website. The browser owns gestures, insets and the keyboard, and the heuristics apply to what it leaves.
+- **Unity.** Right when the product is a game whose play surface needs a real engine: physics, 3D, a scene editor. Its canvas UI reports nothing to the platform by itself, so safe areas, text size and the screen reader are wired by hand on every screen.
 
-Write the answer into `STACK.md` as its first line, `Stack:` followed by exactly one of `flutter`, `expo`, `react-native`, `swiftui`, `compose` or `web`, because that line is what decides which copy of this skill the project installs next. Under it, the reason, naming the constraint that moved the recommendation when one did. A stack chosen off the recommendation and a stack chosen against it are different facts, and review needs to tell them apart.
+Write the answer into `STACK.md` as its first line, `Stack:` followed by exactly one of `flutter`, `expo`, `react-native`, `swiftui`, `compose`, `web` or `unity`, because that line is what decides which copy of this skill the project installs next. Under it, the reason, naming the constraint that moved the recommendation when one did. A stack chosen off the recommendation and a stack chosen against it are different facts, and review needs to tell them apart.
 
 ## 3. Check the project is not wearing another app's identity
 

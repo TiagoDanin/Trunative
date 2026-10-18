@@ -11,10 +11,21 @@ The concept is portable and the name is not. Pick the row for the relationship, 
 | Pushed screen | `Navigator.push`, `MaterialPageRoute`, `context.push` on GoRouter |
 | Top-level destinations | `NavigationBar` in a `Scaffold`, plus `IndexedStack` or a `Navigator` per branch |
 | Bottom sheet | `showModalBottomSheet` |
+| Persistent sheet | `DraggableScrollableSheet` in a `Stack` |
 | Full screen cover | `MaterialPageRoute(fullscreenDialog: true)` |
 | Alert or dialog | `showDialog` with `AlertDialog` or `CupertinoAlertDialog` |
 
 Bare React Native ships no bottom sheet. Reaching for one means adding a dependency, which is a `STACK.md` decision rather than a detail.
+
+## The tab bar's parts
+
+Current iOS floats the tab bar over the content and gives it three parts beyond the destinations. Each comes from the system tab view; a bar drawn by hand has to rebuild each one and report its height to the scroll itself.
+
+| Part | Flutter |
+|---|---|
+| Search as its own destination | a destination in the `NavigationBar` |
+| Accessory above the bar, such as a mini player | a widget stacked above the `NavigationBar` in `bottomNavigationBar` |
+| Bar that shrinks while scrolling | hand work under `scroll-collapse` |
 
 ## Back and dismissal
 

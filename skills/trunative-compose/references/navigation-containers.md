@@ -11,10 +11,21 @@ The concept is portable and the name is not. Pick the row for the relationship, 
 | Pushed screen | `NavHost` with `navController.navigate` |
 | Top-level destinations | `NavigationBar` over one nested graph per destination |
 | Bottom sheet | `ModalBottomSheet` |
+| Persistent sheet | `BottomSheetScaffold` with `sheetPeekHeight` |
 | Full screen cover | a route on the graph, or `Dialog(usePlatformDefaultWidth = false)` |
 | Alert or dialog | `AlertDialog` |
 
 Bare React Native ships no bottom sheet. Reaching for one means adding a dependency, which is a `STACK.md` decision rather than a detail.
+
+## The tab bar's parts
+
+Current iOS floats the tab bar over the content and gives it three parts beyond the destinations. Each comes from the system tab view; a bar drawn by hand has to rebuild each one and report its height to the scroll itself.
+
+| Part | Jetpack Compose |
+|---|---|
+| Search as its own destination | a destination in the `NavigationBar` |
+| Accessory above the bar, such as a mini player | a bar stacked above the `NavigationBar` inside the `Scaffold`'s `bottomBar`, so the padding covers both |
+| Bar that shrinks while scrolling | not built into `NavigationBar`; hiding it on scroll is hand work under `scroll-collapse` |
 
 ## Back and dismissal
 

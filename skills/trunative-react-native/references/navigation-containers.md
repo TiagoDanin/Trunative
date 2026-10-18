@@ -11,10 +11,21 @@ The concept is portable and the name is not. Pick the row for the relationship, 
 | Pushed screen | native stack, `navigation.navigate` |
 | Top-level destinations | bottom tab navigator, one stack inside each tab |
 | Bottom sheet | a sheet library, or a native stack screen with `presentation: 'formSheet'` |
+| Persistent sheet | `BottomSheet` from `@gorhom/bottom-sheet`, not `BottomSheetModal` |
 | Full screen cover | native stack screen with `presentation: 'fullScreenModal'` |
 | Alert or dialog | `Alert.alert` |
 
 Bare React Native ships no bottom sheet. Reaching for one means adding a dependency, which is a `STACK.md` decision rather than a detail.
+
+## The tab bar's parts
+
+Current iOS floats the tab bar over the content and gives it three parts beyond the destinations. Each comes from the system tab view; a bar drawn by hand has to rebuild each one and report its height to the scroll itself.
+
+| Part | React Native |
+|---|---|
+| Search as its own destination | a search tab in a native tab bar library; the JavaScript tab bar draws an ordinary tab |
+| Accessory above the bar, such as a mini player | a native tab bar library where it exposes the accessory, otherwise a view above the tab bar whose height reaches the scroll |
+| Bar that shrinks while scrolling | hand work under `scroll-collapse` |
 
 ## Back and dismissal
 

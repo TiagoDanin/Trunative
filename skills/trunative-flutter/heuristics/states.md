@@ -24,7 +24,7 @@ The first load draws the real layout with its content replaced by blocks: same r
 - Under 300ms, show nothing. Once it is shown, hold it 500ms even if the data arrives sooner. The threshold alone produces the flicker it exists to prevent, on every response that lands a moment after it.
 - Past ten seconds, indeterminate stops being honest. Name the stage or count what is done, and offer a way out of the wait, because the only other exit a phone user has is the force quit.
 - The deadline itself is `net-timeout`. The half nobody writes is what happens when it is hit. Write that branch, or the timeout expires into the same animation and the wait has no end after all.
-- Three loads look different: first load fills the screen with the placeholder, refresh keeps the current content and marks it as updating, and loading more is `list-end` and `list-refresh`.
+- Three loads look different: first load fills the screen with the placeholder, refresh keeps the current content and marks it as updating, and loading more is `list-end` and `list-refresh`. They are separate states in the code, not one `isLoading` flag: a flag shared by both turns every refresh, a pull, a timer, a return to the screen, into rows redrawn as blocks and a scroll position thrown away. A placeholder appears only where there is nothing loaded to show.
 - The transition is announced, not only drawn. Loading, loaded and failed are silent to VoiceOver and TalkBack unless the region is marked live: `liveRegion` in Compose semantics, `accessibilityLiveRegion` on Android views, an announcement notification on iOS.
 
 Acknowledging the tap comes before all of this and belongs to `touch-feedback`.
@@ -102,13 +102,15 @@ A call, a notification pulled down and an app switch stop the screen without des
 - Where the user lands on return is `nav-restore`, which owns the restored place: destination, stack, selection and filters, with the position inside a collection under `scroll-restore`. The values in a form, the focused field and the abandoned draft are `form-persist`. What is left here is the lifecycle: saving where the system says to save, and saying so when something did not make it back.
 - If something was lost, say so. A form silently emptied claims nothing happened, and the user finds out by reading it back.
 - Long work resumes rather than restarting from zero, and a cancelled screen cancels its own requests and timers on the way out.
+- For free means the memory survives, not that time stopped. Anything running on a clock the person answers to, a countdown, a timed round, a simulation, a workout interval, pauses when the app loses focus and resumes only when the person says so, and a finger held down when focus went is released rather than still pressing on return.
+- A short segment the person can replay in moments, a single round or one attempt at a level, may restart after a process death instead of resuming, as long as the screen says it restarted. Progress that took longer than that, a run, a streak, an unlocked level, currency, is the P0 case.
 
 ## Check
 
 Review answers each of these against the code, pointing at the line:
 
 - Every state the screen can enter has a line in the code, and each one it cannot is answered as not applicable with the reason. `state-set`
-- First load draws a placeholder matching the final layout, no spinner covers the screen, nothing appears under 300ms or leaves within 500ms of appearing, ten seconds names a stage and offers an exit, the timeout has a written branch behind it, and the transitions are announced. `state-loading`
+- First load draws a placeholder matching the final layout, no spinner covers the screen, nothing appears under 300ms or leaves within 500ms of appearing, ten seconds names a stage and offers an exit, the timeout has a written branch behind it, and the transitions are announced. First load and refresh are separate states, and a second refresh cycle, run after the content has loaded once, keeps that content on screen instead of drawing placeholders over it. `state-loading`
 - The three empties render three different sentences, with an action on the first two and none invented for the third. `state-empty`
 - There is a message per next action, with connection and refusal never sharing one, no cause is asserted that was not verified, no failure renders as an empty, no message carries a status code, and the message reaches a screen reader. `state-error`
 - A visible manual retry exists, retrying restores the input, the selection and the scroll position, and automatic retry backs off, stops, and never writes the message. `state-retry`
@@ -117,7 +119,7 @@ Review answers each of these against the code, pointing at the line:
 - Unconfirmed actions render as pending with a way out on the item itself, a failed one rolls back on screen with the content kept, and a confirmed one names what changed in something that does not dismiss itself. `state-queued`
 - A failed region marks itself and retries alone, leaving the rest of the screen. `state-partial`
 - Denial degrades to a working screen, and the route back is a deep link into the system Settings page. `state-permission`
-- In-progress work survives a configuration change and a system-initiated process death. `state-interrupt`
+- In-progress work survives a configuration change and a system-initiated process death, apart from a short replayable segment that restarts and says so. A running clock pauses on focus loss, resumes only on the person's input, and no held pointer is still pressed on return. `state-interrupt`
 
 `state-offline` and `state-stale` are answered on a device with the network actually off. `state-interrupt` is answered against a rotation and a kill the system would have made itself, using Don't keep activities or `adb shell am kill`, never a swipe out of the recents list: that gesture is the user asking for a clean start, and nothing is meant to come back from it. `state-queued` is the one that keeps the recents-swipe test, because persisted work is exactly what has to outlive a dismissal. Nothing in the file proves any of them, and a state that was never entered is unrun rather than passing.
 

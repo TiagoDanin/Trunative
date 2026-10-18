@@ -6,7 +6,7 @@ Both fail the same way: the set was assembled rather than chosen, and the box wa
 
 Sizes, axis ranges, density buckets and asset paths are in `references/icon-and-image-assets.md`. This file is the rules.
 
-Rules in this file, in order: `icon-one-set`, `icon-weight`, `icon-no-emoji`, `icon-vector`, `icon-reserve`, `icon-crop`, `icon-depicts`, `icon-stand-in`, `icon-alt`, `icon-dark`, `icon-avatar`, `icon-app`.
+Rules in this file, in order: `icon-one-set`, `icon-weight`, `icon-no-emoji`, `icon-vector`, `icon-reserve`, `icon-crop`, `icon-depicts`, `icon-stand-in`, `icon-alt`, `icon-lettered`, `icon-dark`, `icon-avatar`, `icon-app`.
 
 ## `icon-one-set` An icon set is a set, not a collection [pass or fail]
 
@@ -98,6 +98,15 @@ Content describes what it shows. Decoration is hidden instead of described, whic
 - A chart, a diagram, or the illustration holding an empty state's meaning owes the sentence it is making rather than an inventory of its parts.
 - An icon that is the only label on a control is not this rule. What is spoken there is the action, which is `a11y-name`.
 
+## `icon-lettered` Words go over the picture as text, never into its pixels
+
+A promotional banner, an offer tile, an onboarding illustration with its headline drawn in: the words are part of the bitmap, so they cannot be translated, do not grow with the reader's text size, are not read by the screen reader, do not follow the dark appearance, and cannot be corrected without producing a new image. A banner one column wide also shrinks its lettering with it, so the words drawn into it are usually the smallest text on the screen.
+
+- The headline, the price, the date and the call to action are text laid over the artwork from the string table (`l10n-strings`), with room for the longest translation (`l10n-expansion`) and a ground that keeps their contrast over every part of the picture they can land on (`color-contrast`).
+- Artwork that arrives from a server, a campaign tile, a partner's banner, brings its words as fields beside the image, and the app sets them. Where only the picture arrives, its words are its description (`icon-alt`), and the tile is never the only route to what it advertises.
+- A figure that changes, a price, a discount, a date, a countdown, is text in every case.
+- Lettering that is itself the artwork, a wordmark, a hand-drawn title, ships one asset per locale where it is translated and carries its words as its accessible name (`a11y-name`).
+
 ## `icon-dark` Artwork that cannot be tinted needs a second asset
 
 A single-colour glyph needs no dark variant, because it is tinted from a theme role and follows it. Everything else does.
@@ -130,6 +139,9 @@ The app icon is drawn at about the size of a fingertip, beside twenty others, in
 - Respect the launcher's geometry, which fails at both ends. On Android the outer band of the canvas belongs to the mask and to the parallax effect, so a mark drawn to the edge loses its edge to whatever shape that launcher applies; a mark drawn too small floats in the middle of a canvas everyone else fills. The safe box has a floor as well as a ceiling, and both are in the reference.
 - Ship the monochrome layer on Android, and the dark and tinted appearances on iOS. Both systems generate any variant that is not supplied, so the choice is not whether the app has one, it is whether anybody drew it. An alternate app icon needs its own full set.
 - The mark is the product's own. System symbols may not be used in an app icon or a logo, and platform hardware may not be drawn inside one.
+- The label under the icon is part of it. It is the product's display name, localised where the name is translated, never the package identifier, the project folder or a slug with underscores that a template left in the manifest or the bundle settings, and it fits the launcher without being cut: a long store title gets a short label of its own.
+
+`android:label` and `CFBundleDisplayName` in the native projects, or `name` in the Expo config, which writes both.
 
 ## Check
 
@@ -144,9 +156,10 @@ Review answers each of these against the code, pointing at the line:
 - Every region larger than a touch target that is not text, a control or data depicts something nameable in the product, and no glow, blob, wash or abstract gradient stands where an image belongs. `icon-depicts`
 - Everything the screen is about that has an appearance is shown as a photograph or a drawing of its subject, seeded so it stays with its item, rather than as a glyph on a filled rectangle; nothing that stands in for missing bytes ships; and no content artwork carries an added decorative frame. `icon-stand-in`
 - Every image either describes what it shows or is hidden as decoration, and no description is a file name or the word image. `icon-alt`
+- No headline, price, date or call to action is painted into a bitmap: words are text over the artwork with room for translation and a measured ground, server-sent artwork carries its words as fields or as its description, and lettering that is the artwork ships per locale with an accessible name. `icon-lettered`
 - Every asset that cannot be tinted has a dark counterpart selected by the asset system, and no asset carries an opaque light background. `icon-dark`
 - The avatar has a generated fallback at the same size, stable per user, covering the missing name, carrying no drawn human face, and no path renders a broken image. `icon-avatar`
-- The app icon carries no text, ships unmasked layers with no baked effects, keeps its mark inside the safe box, and supplies the monochrome layer on Android and the dark and tinted appearances on iOS rather than letting the system invent them. `icon-app`
+- The app icon carries no text, ships unmasked layers with no baked effects, keeps its mark inside the safe box, and supplies the monochrome layer on Android and the dark and tinted appearances on iOS rather than letting the system invent them. The launcher label is the product's display name, not a package identifier or project slug, and it is not truncated on the home screen. `icon-app`
 
 Check `icon-dark`, `icon-avatar` and `icon-app` on a rendered screen in dark appearance, and `icon-weight` at the largest text step. All four pass a light-theme, default-size screenshot.
 
@@ -160,7 +173,7 @@ The rules this file cites and the files that hold them. Open one when a citation
 - `heuristics/copy.md`: `copy-sample-data`
 - `heuristics/layout.md`: `layout-shape`
 - `heuristics/lists.md`: `list-images`
-- `heuristics/localization.md`: `l10n-no-mirror`, `l10n-personal`
+- `heuristics/localization.md`: `l10n-no-mirror`, `l10n-strings`, `l10n-expansion`, `l10n-personal`
 - `heuristics/privacy-ui.md`: `priv-instrument`
 - `heuristics/splashscreen.md`: `splash-contents`
 - `heuristics/states.md`: `state-loading`, `state-error`

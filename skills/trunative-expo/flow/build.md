@@ -8,6 +8,12 @@ Before anything else, write one line saying whether this task establishes or cha
 
 That line is written, not recalled. Unwritten, the answer is always the same one, because code is what this step is for and the pull is toward starting it.
 
+The line is about what the person will see, not about which layer the task lives in. An ads integration, an analytics event that opens a rating prompt, a notification, a permission request or a paywall variant adds an action, a state or a modal to some screen, and it comes through here like any other change to that screen.
+
+Two changes go to the gate in `flow/spec.md` however small they look: replacing the launcher icon, the launch surface, the display name or anything `DESIGN.md` names as signature, and leaving a reference the user supplied. Neither is a build decision, and doing it unasked is how a product ships with an identity its owner never saw.
+
+**When the explore record at the top of the screen's wireframe has a `Gate` line reading `approved`**, the structure is the user's, not this step's. A change that moves its hierarchy, actions, states or navigation goes back through the gate, even when the change is a fix: an approved screen altered to make a defect go away is still an approved screen altered.
+
 **When the screen has a brief**, at `.trunative/screens/<name>.md`, read it and build what it says. The person's goal and the moment they are in, the hierarchy, the primary action, the six states and the scope were settled in `flow/spec.md`, and the composition was chosen between alternatives in `flow/explore.md`. Rederiving them here is the context this step exists to save. Build the composition that won, as it was drawn: the pull while writing code is back toward the stock arrangement the framework's widgets suggest, and a screen that quietly reverts to a bar over equal cards has thrown the choice away, which review reports as drift and scores under `comp-context`. Where the brief and the request disagree, the brief is stale: go back to `flow/spec.md` and change it rather than building against a file that now lies.
 
 **When it has none**, and the line above says the task touches none of the four, state in one or two lines before writing code:
@@ -30,9 +36,11 @@ Extra is not a feeling either. Name the screen in one line, as the thing it is r
 
 A brief's `scope` has already made that pass. Open what `scope.open` names and reuse the sentences in `scope.closed`, and run the pass yourself for anything the brief does not cover, because a screen grows between the brief and the code.
 
-When the screen touches Firebase, in any of auth, Firestore, Storage, Messaging, Remote Config or Crashlytics, read `flow/firebase.md` as well. It is loaded here the way a heuristic is, and it is not a step.
+When this change brings in a capability the brief excluded, an ads SDK, a notification, a rating prompt, a purchase, a camera, a map or another locale, open that file now and move its row to `scope.open` in the same change. The rules of a file nobody opened are the ones a new capability breaks, and a brief that still excludes it tells review not to look.
 
-**When the user supplied a reference for this screen**, an image, a sketch, another app's screen, read it before the tokens and build what it shows. It is not a mood to be interpreted: the ground, the weights, the glyphs, the spacing between groups and how a selected item is marked are all in it, and a value the reference shows is not a gap to fill with a derivation. Where the rules and the reference disagree, build the reference, record the conflict for review, and tell the user which rule it breaks and what that costs.
+When the screen touches Firebase, in any of auth, Firestore, Storage, Messaging, Remote Config, A/B Testing, In-App Messaging or Crashlytics, or sells something on a project that uses Firebase, read `flow/firebase.md` as well. It is loaded here the way a heuristic is, and it is not a step.
+
+**When the user supplied a reference for this screen**, an image, a sketch, another app's screen, read it before the tokens and build what it shows. It is not a mood to be interpreted: the ground, the weights, the glyphs, the spacing between groups and how a selected item is marked are all in it, and a value the reference shows is not a gap to fill with a derivation. Where the rules and the reference disagree, build the reference, record the conflict for review, and tell the user which rule it breaks and what that costs. A rule the reference overrides gets an exception in `STACK.md` with the reference as its reason, through the test in `references/accepted-exceptions.md`, so review reads a decision rather than a violation. The nine always in scope are the limit: a reference does not override them, and where it would, build the reference's look with the rule met and say so.
 
 **When `DESIGN.md` is missing, or says nothing about a role this screen needs.** Init writes that file and `doctor` is what notices it is gone, but screens get built in the gap anyway, and what fills the gap on its own is the median of everything a model has read: a system font, a violet button, a rounded card, and a screen that would fit any other product. Settle the identity in writing before the first line of code, in five lines:
 
@@ -72,6 +80,8 @@ Say which heuristics files you applied and which you deliberately skipped, with 
 
 Where the code had to depart from the brief, change the brief in the same turn and say what moved. A brief left behind is what review reports as drift, and it is cheaper to correct here than to explain there. The same holds when the user asks for the change: a request that moves an item the brief names under Hierarchy, Interactions or Navigation, or removes a screen another brief links to, rewrites those briefs in the same turn, and a structural change also redraws the wireframe through `flow/spec.md`.
 
-Then run `npx trunative spec` over the briefs this build touched. A build renames and splits files, and a `target` pointing at a file that no longer renders the screen is a brief that joins to nothing.
+Then run `npx trunative spec` over the briefs this build touched. A build renames and splits files, and a `target` pointing at a file that no longer renders the screen is a brief that joins to nothing. It also reports a target changed after its brief, and a capability the target imports while the brief excludes it: answer both in this turn.
+
+Before saying the work is done, run `npx trunative detect` over the files this build changed, and fix what it finds or name it in the hand-off. It answers only the part of a rule a file can settle, so its silence proves nothing, but a finding it prints is a defect review would otherwise spend a pass on. A fix is a change too: the patch that makes one defect go away is where the next one comes from, and it goes through the same run.
 
 A plan that builds several screens builds them one at a time, each through this file and each reviewed before the next starts. Writing every screen first and the briefs afterwards, to complete the record, turns spec into paperwork about decisions nobody made.

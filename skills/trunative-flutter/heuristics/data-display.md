@@ -6,7 +6,7 @@ Two failures produce most of the damage. The first is precision the data does no
 
 Neither platform will stop either one. Android ships no chart component and no data table component, in Material or in androidx, and iOS publishes no guidance for a sortable multicolumn table on a phone. Every grid and every chart on a phone is something someone decided to build from nothing.
 
-Rules in this file, in order: `data-precision`, `data-table-shape`, `data-subject-shape`, `data-chart-earns-it`, `data-chart-scale`, `data-chart-reach`, `data-time-relative`, `data-time-instant`, `data-units`, `data-date-entry`, `data-empty-null-zero`.
+Rules in this file, in order: `data-precision`, `data-table-shape`, `data-subject-shape`, `data-chart-earns-it`, `data-chart-scale`, `data-chart-reach`, `data-time-relative`, `data-time-instant`, `data-units`, `data-date-entry`, `data-code-scan`, `data-empty-null-zero`.
 
 ## `data-precision` Never show more digits than the value carries
 
@@ -108,6 +108,20 @@ Near dates go in the platform picker: a compact field or inline calendar on iOS,
 - Do not open a new screen just to show a picker, and do not build a calendar grid by hand: it will miss the locale's first day of week, its week numbering and its non Gregorian calendars.
 - `form-input` rules that a closed value set gets a picker at all. This rule is which picker, and in which direction the entry is going.
 
+## `data-code-scan` A code shown to be scanned is drawn for the scanner, and it works without a network [P1]
+
+A boarding pass, an entry ticket, a membership card, a payment code, an address to receive funds, a pickup code at a counter. The reader is a machine held by a stranger, often in hard light and often where the signal is worst, and for those seconds the screen has one job: be read by it.
+
+- The code is as large as the column allows, with its quiet zone clear: no rounded mask, no frame drawn into the margin, and no logo over the middle beyond what the error correction level was chosen to absorb.
+- Dark modules on a light ground in both appearances. A code inverted for the dark appearance fails on many readers, so the code keeps its light ground there while the screen around it follows the theme.
+- While it is shown, the screen raises its brightness and restores it on the way out, and it stays on (`media-awake`). A screen that dims at the counter has the person unlocking a phone in front of a queue.
+- It opens with no connection. A pass or ticket is stored on the device once it is issued (`off-sync-scope`), and a code that rotates for security says so and shows how long the current one is good for.
+- The value it carries is also printed beside it as text, grouped so it can be read aloud, for the reader that fails and for the call with support. A long value shortened in the middle keeps its first and last characters and copies whole (`share-copy`).
+- Nothing animates over it and nothing covers it: no banner, no snackbar, no bar across the quiet zone (`layout-overlays`).
+- Where the platform has a wallet that can hold it, adding it there is offered, since the wallet already does all of the above, the lock screen included.
+
+The brightness plugin `STACK.md` records, such as `screen_brightness`, raised for the screen and reset in `dispose`.
+
 ## `data-empty-null-zero` Zero, unknown and not applicable are three values
 
 They are three different facts and they must not render as the same glyph. Zero is a measurement. Unknown is the absence of one. Not applicable means the question does not apply to this row. In a column this narrow there is no neighbouring cell to compare against and nothing to hover for an explanation, so the glyph is the entire answer the reader gets.
@@ -116,6 +130,9 @@ They are three different facts and they must not render as the same glyph. Zero 
 - Unknown says so in a word, and where it matters, why: not synced yet, not recorded, only available on the paid plan. A blank cell is indistinguishable from a rendering failure.
 - Not applicable is the one case where a dash is the right mark, because there is no value to report and never was one. It never shares its glyph with unknown, and where a screen uses a dash for both, unknown is the one that changes.
 - A total or an average over an incomplete set says how many values it covers. Silently treating unknown as zero moves the average, and nothing on screen says it moved.
+- A value computed from another inherits its unknown. A distance from a position the app does not have, an arrival time for an address not yet chosen, a converted amount with no rate, is unknown rather than the formula run on a default. A fallback coordinate or a placeholder rate turned into a confident figure is the worst case, because it looks measured.
+- Empty is drawn only from a response that says there is nothing. A missing key, a field of the wrong type or a payload that fails to decode is an error, and a parser that falls back to an empty list on any of them turns a broken contract into "nothing here", which is the confusion `state-error` forbids, made one layer down where no screen can see it.
+- A history of something that was supposed to happen, a dose, a payment, a habit, a scheduled check, is built from the occurrences that were expected and then matched against the records written. Listing only the records makes a missed one vanish instead of showing as missed, and the missed ones are usually what the person opened the history to find.
 - Zero as a whole screen is a different thing again, and `state-empty` rules it.
 
 ## Check
@@ -132,9 +149,10 @@ Review answers each of these against the code, pointing at the line:
 - Instants are stored with a zone where the zone is a fact, calendar dates are never zone converted, the clock setting is read on Android, and no formatted string is parsed or asserted against. `data-time-instant`
 - One measurement system per screen, converted at the display edge without gaining precision, and no figure reaches the screen without its unit on it or over its column. `data-units`
 - Near dates use the platform picker and far dates a keyboard entry mode, ranges use a range picker, minute intervals divide into sixty, durations never use a time of day picker, the time picker takes the system clock setting, and no calendar grid is hand built. `data-date-entry`
-- Zero, unknown and not applicable render as three different things with the dash reserved for the last of them, unknown says why where it matters, and aggregates over incomplete sets declare their coverage. `data-empty-null-zero`
+- A code meant for a scanner is as large as the column allows with a clear quiet zone, dark on light in both appearances, raises the brightness and stays on while shown and restores both on leaving, opens with no connection, prints its value as readable text beside it, and nothing animates over it or covers it. `data-code-scan`
+- Zero, unknown and not applicable render as three different things with the dash reserved for the last of them, unknown says why where it matters, aggregates over incomplete sets declare their coverage, and a value derived from an unknown input is unknown rather than computed from a default. A missing key or a decode failure reaches the screen as an error, never as empty, and a history of expected events shows the missed ones. `data-empty-null-zero`
 
-Run `data-precision`, `data-time-relative` and `data-empty-null-zero` against real records rather than the mock ones. Seeded data has no nulls, no zeros, no thirteen digit floats and no timestamps from last year, which is exactly why the screen looks finished.
+Run `data-precision`, `data-time-relative` and `data-empty-null-zero` against real records rather than the mock ones. Seeded data has no nulls, no zeros, no thirteen digit floats and no timestamps from last year, which is exactly why the screen looks finished. `data-code-scan` is answered by scanning the code with a real reader, in airplane mode, at whatever brightness the phone was left at.
 
 ## Reaches
 
@@ -145,10 +163,13 @@ The rules this file cites and the files that hold them. Open one when a citation
 - `heuristics/copy.md`: `copy-numbers`
 - `heuristics/forms.md`: `form-input`
 - `heuristics/icons-and-imagery.md`: `icon-depicts`, `icon-alt`
+- `heuristics/layout.md`: `layout-overlays`
 - `heuristics/lists.md`: `list-row`
 - `heuristics/localization.md`: `l10n-format`, `l10n-direction`
+- `heuristics/media.md`: `media-awake`
+- `heuristics/offline.md`: `off-sync-scope`
 - `heuristics/scrolling.md`: `scroll-affordance`
 - `heuristics/sharing.md`: `share-copy`
-- `heuristics/states.md`: `state-stale`, `state-empty`
+- `heuristics/states.md`: `state-stale`, `state-error`, `state-empty`
 - `heuristics/touch.md`: `touch-floor`
 - `heuristics/typography.md`: `type-strings`, `type-scaling`

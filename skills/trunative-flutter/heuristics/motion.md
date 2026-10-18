@@ -6,7 +6,7 @@ Generated screens fail this in a recognisable way: motion appears everywhere exc
 
 Press feedback timing is `touch-feedback`. Loading and skeleton behaviour is `state-loading`. The predictive back gesture is `touch-gestures`. Token values and per-stack API names are in `references/motion-tokens.md`.
 
-Rules in this file, in order: `motion-job`, `motion-answered`, `motion-platform`, `motion-model`, `motion-duration`, `motion-choreo`, `motion-loop`, `motion-autoplay`, `motion-blocks`, `motion-cheap`, `motion-reduced`.
+Rules in this file, in order: `motion-job`, `motion-answered`, `motion-platform`, `motion-model`, `motion-duration`, `motion-choreo`, `motion-loop`, `motion-autoplay`, `motion-timed`, `motion-blocks`, `motion-cheap`, `motion-reduced`.
 
 ## `motion-job` Every animation answers a question, and there are three questions
 
@@ -79,6 +79,17 @@ The longest-running motion in a real app is usually not an animation anyone wrot
 - A looping asset stops when its screen goes away, rather than playing on behind whatever came next.
 - The sound half is `a11y-media`, and stopping autoplay on a metered or power-saving device is `state-offline`.
 
+## `motion-timed` Content that advances on a clock can be held, stepped and slowed by the person [P1]
+
+A run of full-screen panels that moves on by itself, segments filling along the top, the right half of the screen for next and the left half for back, is a reading surface with a timer on it. The timer was set for the median reader, and everyone slower, everyone on a screen reader and everyone interrupted loses the panel they were on.
+
+- Holding a finger anywhere pauses it, and lifting resumes. Leaving the app, a call arriving or the system covering the screen pauses it too, and the return resumes on the same panel rather than the first (`state-interrupt`).
+- The zones that step forward and back are invisible, so the segments say where the person is and how many remain, and a visible way to close is present on every panel.
+- With the screen reader on, or with reduced motion set (`motion-reduced`), nothing advances by itself: each panel waits, and next and previous are named actions (`a11y-gesture`).
+- A panel's time follows its content, so more text gets more time, and a panel holding a control, a link, a choice, a field, stops the clock until it is answered or skipped.
+- The end goes somewhere stated, the next set or the screen it was opened from, and it does not loop.
+- Anything that has to be read to continue, terms, a price, an instruction, is not on a timed panel at all.
+
 ## `motion-blocks` Motion never holds the user still
 
 Nothing waits for an animation to finish. A second tap during a transition does not queue a second transition, the back gesture interrupts whatever is playing, and no input is gated on a completion callback. This matters more the more often the animation runs: a sequence that charms once is an obstacle by the fiftieth launch.
@@ -121,20 +132,21 @@ Review answers each of these against the code, pointing at the line:
 - One element or region leads each transition, and any stagger runs on first appearance only, stepping at most 30ms per row and adding at most 200ms overall. `motion-choreo`
 - Nothing pulses to attract attention, nothing animates in on the first screenful, self-starting motion beside other content has a pause control past 5 seconds, auto-updating figures have one at any duration, nothing flashes more than 3 times a second, and every animation ends when its reason ends. `motion-loop`
 - Autoplay is gated on the platform setting, anything that autoplays has a visible stop, and a looping asset stops with its screen. `motion-autoplay`
+- Timed panels pause on a hold and on any interruption and resume on the same panel, the segments show position and total with a visible close on every panel, nothing advances under the screen reader or reduced motion, a panel's time follows its content and a panel holding a control waits, the end leads somewhere stated, and nothing that must be read sits on a timed panel. `motion-timed`
 - No input, dismissal or back gesture is blocked by an animation, and a repeated tap does not queue a second one. `motion-blocks`
 - Layout properties are animated only by the framework's own layout animations, hand-written animation stays on transform and opacity, and the React Native animations declare the native driver. `motion-cheap`
 - The reduced-motion flag is read on every platform the app ships to, iOS substitutes rather than deletes, and the Android screen still reads with nothing animating. `motion-reduced`
 
-Three of these are not answered from the file. `motion-reduced` is answered on a device with the setting turned on, because a reduced-motion path that was written and never wired to the flag reads exactly like one that works. `motion-cheap` is answered half in the source, where the native driver and the animated properties are visible, and half in the frame profiler, which is the only place a dropped frame exists. `motion-blocks` is answered by tapping through a transition and pressing back during one.
+Four of these are not answered from the file. `motion-timed` is answered with the screen reader on and again by taking a call halfway through a panel, since a sequence that only pauses on a finger looks complete in every silent test. `motion-reduced` is answered on a device with the setting turned on, because a reduced-motion path that was written and never wired to the flag reads exactly like one that works. `motion-cheap` is answered half in the source, where the native driver and the animated properties are visible, and half in the frame profiler, which is the only place a dropped frame exists. `motion-blocks` is answered by tapping through a transition and pressing back during one.
 
 ## Reaches
 
 The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
 
-- `heuristics/accessibility.md`: `a11y-media`
+- `heuristics/accessibility.md`: `a11y-media`, `a11y-gesture`
 - `heuristics/colors.md`: `color-roles`
 - `heuristics/layout.md`: `layout-fold`
 - `heuristics/navigation.md`: `nav-container`
-- `heuristics/states.md`: `state-loading`, `state-offline`
+- `heuristics/states.md`: `state-loading`, `state-offline`, `state-interrupt`
 - `heuristics/touch.md`: `touch-feedback`, `touch-gestures`
 - `platform/performance.md`: `perf-frame`

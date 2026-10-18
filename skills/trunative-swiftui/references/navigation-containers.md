@@ -11,10 +11,21 @@ The concept is portable and the name is not. Pick the row for the relationship, 
 | Pushed screen | `NavigationStack` with `navigationDestination` |
 | Top-level destinations | `TabView` with `Tab` |
 | Bottom sheet | `.sheet` with `.presentationDetents` |
+| Persistent sheet | `.sheet` with `.presentationDetents`, `.presentationBackgroundInteraction` and `.interactiveDismissDisabled` |
 | Full screen cover | `.fullScreenCover` |
 | Alert or dialog | `.alert`, `.confirmationDialog` |
 
 Bare React Native ships no bottom sheet. Reaching for one means adding a dependency, which is a `STACK.md` decision rather than a detail.
+
+## The tab bar's parts
+
+Current iOS floats the tab bar over the content and gives it three parts beyond the destinations. Each comes from the system tab view; a bar drawn by hand has to rebuild each one and report its height to the scroll itself.
+
+| Part | SwiftUI |
+|---|---|
+| Search as its own destination | `Tab(role: .search)` |
+| Accessory above the bar, such as a mini player | `.tabViewBottomAccessory` |
+| Bar that shrinks while scrolling | `.tabBarMinimizeBehavior(.onScrollDown)` |
 
 ## Back and dismissal
 

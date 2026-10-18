@@ -128,6 +128,7 @@ What it looks like in a real codebase: the same quantity living as a literal ins
 - Where it genuinely cannot be derived, it lives in one named place that the domain code also reads, never inline in a component.
 - A cap the product enforces is stated as the cap, not as the theoretical maximum. Advertising a ceiling that a limit elsewhere prevents anyone from reaching is a false claim, and it is the version that reaches a store reviewer.
 - Store listing text, screenshots and onboarding repeat these figures. When one changes, they are part of the change.
+- Figures about the product's popularity are claims too: a star rating, a count of users or reviews, "N people joined today", a ranking. The rating is the store's current one, read rather than typed; a count is a query over the system that knows it; a ranking names who ranked it and when. A daily count written as a constant reads the same on every day anyone opens the screen, which is how it gets disproved.
 
 Grep the view layer for digits inside display strings. Each hit is a claim, and each claim has an owner in the code or it is a defect.
 
@@ -154,7 +155,7 @@ Review answers each of these against the code, pointing at the string:
 - Field hints show a format, each line standing in for missing content names its cause and the 2 empties with a next move end on the verb of the control that takes it, and 0 waiting lines claim unmeasured progress. `copy-absence`
 - Every string and figure belongs to the product's domain, the screen shows at least one concrete value a reader would recognise, and the figures on it reconcile with each other. `copy-sample-data`
 - Numbers are numerals, destructive strings state the exact count and object, and formatting and plurals come from the locale. `copy-numbers`
-- Every figure that describes what the product delivers is interpolated from the constant the behaviour uses, or lives in one named place the domain also reads, and no advertised ceiling is unreachable because of a limit elsewhere. `copy-claims`
+- Every figure that describes what the product delivers is interpolated from the constant the behaviour uses, or lives in one named place the domain also reads, and no advertised ceiling is unreachable because of a limit elsewhere; every rating, count and ranking about the product is read from its source, with the ranker named. `copy-claims`
 - Every usage description is 1 sentence-case sentence ending in a full stop, the control that opens the system dialog reads Continue or Next, and any data disclosure says why, what and how before the dialog with nothing unrelated bundled into it. `copy-rationale`
 
 Read the strings in the running app, not in the catalogue. Terminology drift only shows up when the screens are walked in the order the user walks them, and a string that is correct in the file can still be the wrong length once the device's text size is applied to it.

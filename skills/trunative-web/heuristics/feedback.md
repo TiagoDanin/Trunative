@@ -25,6 +25,8 @@ People expect what they did to work, so the outcome worth reporting is failure. 
 
 Confirm explicitly only what the screen cannot show: money moved, something went to another person, a file left the device, an item was removed from a list the user is no longer looking at. Anything irreversible or financial takes the confirmation `state-queued` already specifies, which no transient rung can be.
 
+A completion screen, the full-screen moment after a booking, a transfer, a sign-up or the end of a lesson, is that confirmation at its largest, and it earns the screen only by what it says. It states what is now true and what happens next, with a time where there is one: arrives Thursday, leaves the account tomorrow, starts at nine. It offers the action that follows from it, and it costs one tap to leave. A celebration drawn on top of that sentence is fine, one drawn instead of it is not, and none of it holds the person still (`motion-blocks`).
+
 ## `fb-confirm-test` Uncommon and irreversible, both at once
 
 Destructive is not the test. Both halves have to be true before an alert stops the user: the user does this rarely, and nothing brings it back. Deleting one photo out of ten thousand is destructive, common and recoverable, so it happens and offers undo. Deleting the account is rare and final, so it interrupts.
@@ -108,6 +110,8 @@ Use the system prompt and nothing else. The system rate limits it, at most 3 per
 - No question in front of it. Asking whether the user is enjoying the app and routing only the happy ones onward is banned outright on Play, which allows nothing to be asked before or while the card is shown, and it costs the app the negative feedback it needed while spending the moment the system prompt was timing for itself.
 - Not on a button. Both platforms say the ask does not follow from something the user tapped, and the prompt may not appear when it is called anyway, which leaves a control that does nothing. A deliberate ask opens the store listing on its write-a-review route instead.
 - Not during a task, not during the first run, and not while something is being fixed. It goes after a moment that went well: `onboard-defer`.
+- The trigger is a count of core tasks the person has finished, read at the moment the latest one shows its result. A launch counter, a session counter or a timer started at launch measures that the app was opened, not that it worked, and on the third cold start it lands on someone who has not done anything yet.
+- Never over another modal. A consent form, a paywall, an ad or a what's new sheet already holds the moment, and `fb-unprompted` allows one per transition.
 - The card is shown as the system draws it, with nothing over it, around it, or removing it once it appears.
 
 ## Check
@@ -115,7 +119,7 @@ Use the system prompt and nothing else. The system rate limits it, at most 3 per
 Review answers each of these against the code, pointing at the line:
 
 - Every message takes the quietest rung that works, no actionable Android message is a `Toast`, no transient message offers more than 1 action, and the only dialog standing in front of the first screen is the one `onboard-ask-order` allows. A flow raising more than one blocking dialog is reported as a problem with the flow rather than counted as a violation. `fb-ladder`
-- No success message duplicates a result the screen already shows, and the ones that remain are for outcomes the screen cannot show. `fb-silent-success`
+- No success message duplicates a result the screen already shows, the ones that remain are for outcomes the screen cannot show, and a completion screen states what is now true and what happens next, offers the next action and leaves in one tap. `fb-silent-success`
 - Every alert that stops the user is both rare and irreversible, counting effects on other people and on running systems as irreversible, and everything else acts and offers undo. `fb-confirm-test`
 - Undo either holds the work for a window written down in `STACK.md` or commits into a place the user can restore from, the message offering it never outlives that window, and it is reachable without a system gesture. `fb-undo`
 - Each message sits at the smallest scope that contains its cause, nothing that fits beside a control is raised as a dialog, and a message that has to name its cause is inline rather than transient. `fb-place`
@@ -125,7 +129,7 @@ Review answers each of these against the code, pointing at the line:
 - Messages and dialogs are held as state with a consumed flag, so one rotation shows them once and not twice. `fb-survives`
 - An alert is used only for a yes or no about one irreversible action, blocking surfaces carry at most 3 buttons, do not scroll, name their buttons by result, and never hold a progress bar. `fb-blocking-shape`
 - Nothing the user did not ask for blocks or interrupts them, apart from the segment-boundary ad `ads-placement` allows: it waits for a finished task whose result the person has already seen, never shares a transition with another unprompted surface, closes in one tap, and stays closed for a stated period. `fb-unprompted`
-- The rating prompt is the system one, is not preceded by a question, is not wired to a button, and is not raised during onboarding. `fb-review-prompt`
+- The rating prompt is the system one, is not preceded by a question, is not wired to a button, and is not raised during onboarding. It is raised after a moment that went well, by a count of completed core tasks: a launch counter, a session counter or a timer since launch as the trigger is a fail, and so is a prompt raised while a consent form, paywall or ad is on screen. `fb-review-prompt`
 
 ## Reaches
 
@@ -138,6 +142,7 @@ The rules this file cites and the files that hold them. Open one when a citation
 - `heuristics/forms.md`: `form-error`
 - `heuristics/layout.md`: `layout-overlays`
 - `heuristics/localization.md`: `l10n-strings`
+- `heuristics/motion.md`: `motion-blocks`
 - `heuristics/navigation.md`: `nav-restore`, `nav-modal`
 - `heuristics/notifications.md`: `notify-inapp`
 - `heuristics/offline.md`: `off-destructive-offline`

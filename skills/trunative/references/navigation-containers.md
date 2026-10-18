@@ -11,10 +11,21 @@ The concept is portable and the name is not. Pick the row for the relationship, 
 | Pushed screen | `NavigationStack` with `navigationDestination` | `NavHost` with `navController.navigate` | `Navigator.push`, `MaterialPageRoute`, `context.push` on GoRouter | native stack, `navigation.navigate` | History API `pushState`, or the router's push |
 | Top-level destinations | `TabView` with `Tab` | `NavigationBar` over one nested graph per destination | `NavigationBar` in a `Scaffold`, plus `IndexedStack` or a `Navigator` per branch | bottom tab navigator, one stack inside each tab | one route prefix per section |
 | Bottom sheet | `.sheet` with `.presentationDetents` | `ModalBottomSheet` | `showModalBottomSheet` | a sheet library, or a native stack screen with `presentation: 'formSheet'` | `<dialog>` positioned to the bottom edge |
+| Persistent sheet | `.sheet` with `.presentationDetents`, `.presentationBackgroundInteraction` and `.interactiveDismissDisabled` | `BottomSheetScaffold` with `sheetPeekHeight` | `DraggableScrollableSheet` in a `Stack` | `BottomSheet` from `@gorhom/bottom-sheet`, not `BottomSheetModal` | an element fixed to the bottom edge with snap heights |
 | Full screen cover | `.fullScreenCover` | a route on the graph, or `Dialog(usePlatformDefaultWidth = false)` | `MaterialPageRoute(fullscreenDialog: true)` | native stack screen with `presentation: 'fullScreenModal'` | a route of its own |
 | Alert or dialog | `.alert`, `.confirmationDialog` | `AlertDialog` | `showDialog` with `AlertDialog` or `CupertinoAlertDialog` | `Alert.alert` | `<dialog>` with `showModal()` |
 
 Bare React Native ships no bottom sheet. Reaching for one means adding a dependency, which is a `STACK.md` decision rather than a detail.
+
+## The tab bar's parts
+
+Current iOS floats the tab bar over the content and gives it three parts beyond the destinations. Each comes from the system tab view; a bar drawn by hand has to rebuild each one and report its height to the scroll itself.
+
+| Part | SwiftUI | Jetpack Compose | Flutter | React Native | Mobile web |
+|---|---|---|---|---|---|
+| Search as its own destination | `Tab(role: .search)` | a destination in the `NavigationBar` | a destination in the `NavigationBar` | a search tab in a native tab bar library; the JavaScript tab bar draws an ordinary tab | an ordinary destination |
+| Accessory above the bar, such as a mini player | `.tabViewBottomAccessory` | a bar stacked above the `NavigationBar` inside the `Scaffold`'s `bottomBar`, so the padding covers both | a widget stacked above the `NavigationBar` in `bottomNavigationBar` | a native tab bar library where it exposes the accessory, otherwise a view above the tab bar whose height reaches the scroll | an element fixed above the bar, its height added to the page's bottom padding |
+| Bar that shrinks while scrolling | `.tabBarMinimizeBehavior(.onScrollDown)` | not built into `NavigationBar`; hiding it on scroll is hand work under `scroll-collapse` | hand work under `scroll-collapse` | hand work under `scroll-collapse` | hand work under `scroll-collapse` |
 
 ## Back and dismissal
 
