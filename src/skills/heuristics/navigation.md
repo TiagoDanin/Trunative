@@ -71,6 +71,10 @@ The non-modal sheet of the sheet library `STACK.md` records, such as `BottomShee
 An element fixed to the bottom edge with snap heights, inside the page. A `<dialog>` is modal.
 </If>
 
+<If stack="unity">
+Unity UI has no sheet. A panel anchored to the bottom edge, resized through `IDragHandler` to the resting heights it snaps to, with the layer underneath still taking raycasts wherever the panel does not cover it.
+</If>
+
 <If stack="other">
 The framework's non-modal sheet, or a panel in the screen's own layout with resting heights, never its modal sheet.
 </If>

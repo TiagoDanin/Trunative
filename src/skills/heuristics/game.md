@@ -53,8 +53,12 @@ Pad the control layer with the insets from `useSafeAreaInsets`, and let the game
 Pad the control layer with `env(safe-area-inset-*)` and set `viewport-fit=cover`, and let the canvas alone draw under the bars.
 </If>
 
+<If stack="unity">
+Put the control layer under a panel whose anchors follow `Screen.safeArea`, drive on-screen sticks and buttons with the Input System's `OnScreenStick` and `OnScreenButton` or with `EnhancedTouch`, and test the free axis at both ends of the supported aspect ratios in the Device Simulator.
+</If>
+
 <If stack="other">
-On an engine canvas, fit the control layer to the safe area the platform reports (in Unity, a panel whose anchors follow `Screen.safeArea`), and test the free axis at both ends of the supported aspect ratios.
+On an engine canvas, fit the control layer to the safe area the platform reports, and test the free axis at both ends of the supported aspect ratios.
 </If>
 
 ## <Rule id="game-pause" severity="p0" evidence="device" description="Anything on a clock stops when attention leaves, and starts again only when the person says so" />
@@ -86,8 +90,12 @@ Pause when `AppState` leaves `active`, and resume from the pause screen.
 Pause on `visibilitychange` and on `blur`, and resume from the pause screen.
 </If>
 
+<If stack="unity">
+Pause from `OnApplicationFocus(false)` and `OnApplicationPause(true)` on a `MonoBehaviour`: set `Time.timeScale` to zero, set `AudioListener.pause`, and drop every touch that began before the pause, so `EnhancedTouch` reports nothing still held. Resume from the pause screen, never from `OnApplicationFocus(true)`.
+</If>
+
 <If stack="other">
-On an engine, pause from the focus and pause callbacks the engine raises (in Unity, `OnApplicationFocus(false)` and `OnApplicationPause(true)`, setting `Time.timeScale` to zero and clearing the input state), and resume from the pause screen.
+On an engine, pause from the focus and pause callbacks the engine raises, stop its clock, clear the input state, and resume from the pause screen.
 </If>
 
 ## <Rule id="game-result" severity="p1" description="The result shows the outcome first, and dismissing an offer declines it" />

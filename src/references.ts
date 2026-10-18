@@ -25,6 +25,7 @@ const OWNS: Record<string, string[]> = {
 	swiftui: ['SwiftUI', 'UIKit'],
 	compose: ['Jetpack Compose', 'Compose', 'Views'],
 	web: ['Mobile web', 'Web'],
+	unity: ['Unity'],
 }
 
 /** Every framework word. A label carrying none of them is left where it is. */

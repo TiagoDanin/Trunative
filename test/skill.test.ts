@@ -310,6 +310,18 @@ test('an import that reaches an extra file the brief shut reopens it', async () 
 		(cwd) => writeFile(join(cwd, 'lib', 'screen.dart'), "import 'package:share_plus/share_plus.dart';\n"),
 		async (cwd) => assert.equal(await spec({ cwd, paths: [] }), 0),
 	)
+	// A C# `using` is an import line, so a Unity script reaches the same check.
+	await inProject(
+		async (cwd) => {
+			await mkdir(join(cwd, 'Assets', 'Scripts'), { recursive: true })
+			await writeFile(join(cwd, 'Assets', 'Scripts', 'Results.cs'), 'using GoogleMobileAds.Api;\n')
+		},
+		async (cwd) => assert.equal(await spec({ cwd, paths: [] }), 1),
+		BRIEF.replace('lib/screen.dart', 'Assets/Scripts/Results.cs').replace(
+			'auto_excluded: [chat, camera]',
+			'auto_excluded: [chat, camera, ads]',
+		),
+	)
 })
 
 test('a brief that shuts localisation fails once the project ships two locales', async () => {

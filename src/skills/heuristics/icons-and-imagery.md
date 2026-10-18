@@ -159,6 +159,10 @@ The app icon is drawn at about the size of a fingertip, beside twenty others, in
 `short_name` in the web app manifest, which is what the home screen shows.
 </If>
 
+<If stack="unity">
+Product Name in the Player Settings, which both platforms show under the icon; the Localization package's Android and iOS app info metadata translates it.
+</If>
+
 <If stack="other">
 Whatever the build sets as the display name on each platform, checked on the home screen of a device rather than in the project settings.
 </If>

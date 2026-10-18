@@ -14,7 +14,7 @@ export interface Target {
 export const AGENTS = ['claude', 'codex', 'antigravity', 'opencode', 'other'] as const
 
 /** Stack values a block may carry, in the order STACK.md may record them. */
-export const STACKS = ['flutter', 'expo', 'react-native', 'swiftui', 'compose', 'web'] as const
+export const STACKS = ['flutter', 'expo', 'react-native', 'swiftui', 'compose', 'web', 'unity'] as const
 
 /** Expo runs React Native, so it follows that branch when it has none of its own. */
 const INHERITS: Record<string, string> = { expo: 'react-native' }
@@ -26,6 +26,7 @@ const STACK_LABELS: Record<string, string> = {
 	swiftui: 'SwiftUI',
 	compose: 'Jetpack Compose',
 	web: 'Mobile web',
+	unity: 'Unity',
 	other: 'Any other stack',
 }
 

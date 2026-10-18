@@ -74,9 +74,9 @@ Ask which appearances the product ships: following the system, which builds both
 - Text scale, safe areas and semantics are first-class (`MediaQuery.textScaler`, `SafeArea`, `Semantics`), so the accessibility floor is reachable without extra packages.
 - Hot reload keeps the build and review loop short, and this flow runs that loop on every screen.
 
-**A stated constraint moves the recommendation off Flutter**, and only a stated one does. Never a preference of yours. When code already exists, or the team already ships in another stack, use what is there and do not ask at all. Otherwise:
+**A stated constraint moves the recommendation off Flutter**, and only a stated one does. Never a preference of yours. When code already exists, or the team already ships in another stack, use what is there and do not ask at all. A Unity project is recognised by `ProjectSettings/ProjectVersion.txt` beside an `Assets/` folder and `Packages/manifest.json`, and records `Stack: unity`; a game the user says is built in Unity is a stated constraint in the same way. Otherwise:
 
-<If stack="flutter, expo, react-native, swiftui, compose, web">
+<If stack="flutter, expo, react-native, swiftui, compose, web, unity">
 This copy of the skill was built for one stack, which is the answer. Record it in `STACK.md` with the reason it was chosen, and do not ask.
 </If>
 
@@ -99,10 +99,14 @@ There is no code to read yet, so the stack is a decision rather than an observat
 <Option>
 **Mobile web.** The target is a website. The browser owns gestures, insets and the keyboard, and the heuristics apply to what it leaves.
 </Option>
+
+<Option>
+**Unity.** Right when the product is a game whose play surface needs a real engine: physics, 3D, a scene editor. Its canvas UI reports nothing to the platform by itself, so safe areas, text size and the screen reader are wired by hand on every screen.
+</Option>
 </Ask>
 </If>
 
-Write the answer into `STACK.md` as its first line, `Stack:` followed by exactly one of `flutter`, `expo`, `react-native`, `swiftui`, `compose` or `web`, because that line is what decides which copy of this skill the project installs next. Under it, the reason, naming the constraint that moved the recommendation when one did. A stack chosen off the recommendation and a stack chosen against it are different facts, and review needs to tell them apart.
+Write the answer into `STACK.md` as its first line, `Stack:` followed by exactly one of `flutter`, `expo`, `react-native`, `swiftui`, `compose`, `web` or `unity`, because that line is what decides which copy of this skill the project installs next. Under it, the reason, naming the constraint that moved the recommendation when one did. A stack chosen off the recommendation and a stack chosen against it are different facts, and review needs to tell them apart.
 
 ## 3. Check the project is not wearing another app's identity
 

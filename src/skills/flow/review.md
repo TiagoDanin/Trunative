@@ -126,6 +126,10 @@ Run `adb-agent ui dump --json` against the running app and read the elements, or
 Read the accessibility tree in the browser devtools, or run axe against the page and keep its output.
 </If>
 
+<If stack="unity">
+Unity UI reaches the platform's screen reader only through what the app registers: from Unity 6, an `AccessibilityHierarchy` of `AccessibilityNode`s with labels and roles, made active through `AssistiveSupport.activeHierarchy`. On Android `adb-agent ui dump --json` against the running build shows whether those nodes arrived, and on iOS the Accessibility Inspector in Xcode does. A tree with one node for the whole screen is itself the finding, for every name and order rule on it.
+</If>
+
 <If stack="other">
 Use the platform's own inspector for the accessibility tree: on Android `adb-agent ui dump --json`, on iOS the Accessibility Inspector in Xcode. An engine that draws its own canvas exposes only what it registers with the platform, so a tree with one node for the whole screen is itself the finding.
 </If>
@@ -138,7 +142,7 @@ chrome --headless --window-size=402,874 --screenshot=screen.png file:///absolute
 ```
 </If>
 
-<If stack="flutter,react-native,swiftui,compose">
+<If stack="flutter,react-native,swiftui,compose,unity">
 ```sh
 xcrun simctl io booted screenshot screen.png   # iOS simulator
 adb-agent screen shot --out screen.png         # Android emulator or device
@@ -165,7 +169,7 @@ It reads the files and answers the part of a `Check` line a file can settle, rep
 
 Then the measurements that do need a device: both appearances on the narrowest and widest device class, the largest accessibility text step on the narrowest, hit area bounds read from the inspector rather than estimated from a screenshot, the primary flow completed with the screen reader on, the screen with the network off and after a process kill the system would have made itself, and real records rather than seed data, meaning a null, a zero, a long string, an old timestamp and an empty list. When the app can reach a real account, use it: demo data was written to look right, which is the one thing real data does not do.
 
-<If stack="flutter,react-native,compose,other">
+<If stack="flutter,react-native,compose,unity,other">
 On an Android emulator or device, drive all of it with `adb-agent`, the shell counterpart of an Android debug bridge server: every command answers `--json`, exits non zero on failure, and reads the screen by label instead of by guessed coordinates. When it is not on the path, `npx -p android-debug-bridge-mcp adb-agent` runs it, and `adb-agent skills get adb-cli` prints its full guide. Run `adb-agent doctor` once before the first measurement, since a run that cannot reach `uiautomator` produces no tree and the rows it was meant to settle stay `unrun`.
 
 ```sh

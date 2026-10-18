@@ -30,8 +30,12 @@ The safe area context hook, read per render, rather than a stored constant. `Sta
 Mobile web inside a shell: `viewport-fit=cover` plus `env(safe-area-inset-*)`, which report zero until that meta tag is set, and a `theme-color` meta per appearance.
 </If>
 
+<If stack="unity">
+Apply `Screen.safeArea` to a `RectTransform` at the root of every `Canvas`, setting `anchorMin` and `anchorMax` from the rect divided by `Screen.width` and `Screen.height`, re-read whenever it changes, and put the HUD and every control inside it, since a `CanvasScaler` alone scales into the cutout. Whether the app draws into the cutout at all is the Render Outside Safe Area option in the Android Player Settings. The engine sets no colour or icon brightness for the system bars: either hide them for the whole session in the Player Settings and keep the cutout inset, or set both bars per screen through a call to the Android window from a plugin in `Assets/Plugins/Android`.
+</If>
+
 <If stack="other">
-Whatever the framework reports as the safe area, read per frame. In Unity, apply `Screen.safeArea` to a panel at the root of every canvas and put the HUD inside that panel, since a `CanvasScaler` alone scales into the cutout.
+Whatever the framework reports as the safe area, read per frame. On an engine canvas, apply it to a panel at the root of the canvas and put the HUD inside that panel, since scaling the canvas alone scales into the cutout.
 </If>
 
 Both system bars, not one. The status bar and the navigation bar each have a colour and an icon brightness, set per screen against the background that screen draws under them. Setting only the status bar leaves the navigation bar on its default, which is a strip of the wrong colour or icons that disappear into the ground, and a screen with its own dark or light ground has to say so again for both.

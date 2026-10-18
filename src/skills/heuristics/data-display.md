@@ -138,6 +138,10 @@ The brightness plugin `STACK.md` records, such as `screen_brightness`, raised fo
 A page cannot raise the brightness, so it says to turn it up, and the Screen Wake Lock API keeps it on.
 </If>
 
+<If stack="unity">
+`Screen.brightness` raises it on iOS and does nothing on Android, where the window's `screenBrightness` is set from a plugin. `Screen.sleepTimeout = SleepTimeout.NeverSleep` keeps the screen on while the code is shown, back to `SleepTimeout.SystemSetting` when it leaves.
+</If>
+
 <If stack="other">
 The framework's window brightness override, scoped to the screen that shows the code.
 </If>

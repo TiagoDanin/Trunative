@@ -83,6 +83,10 @@ Add the Firebase SDK through Swift Package Manager, put `GoogleService-Info.plis
 Add the Google services plugin and the Firebase BoM to Gradle, put `google-services.json` in `app/`, and let the content provider initialise Firebase rather than calling it from `Application.onCreate`. Persistence is on by default.
 </If>
 
+<If stack="unity">
+Import the Firebase Unity SDK packages, one per product, through the Package Manager or the `.unitypackage` files, put `google-services.json` and `GoogleService-Info.plist` anywhere under `Assets/`, and resolve the Android dependencies with the External Dependency Manager. Call `FirebaseApp.CheckAndFixDependenciesAsync()` once at startup and use no Firebase API before it reports available, keeping that wait off the first frame (`perf-cold-start`).
+</If>
+
 ## What review scores this against
 
 This file adds no rules. It says what Firebase does to the screen, and review scores the result against the rules that already exist:

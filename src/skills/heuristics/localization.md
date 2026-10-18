@@ -114,6 +114,10 @@ An `AttributedString` whose run carries the `languageIdentifier` attribute and `
 The `lang` attribute on the element holding the content, and `dir="auto"` for its direction.
 </If>
 
+<If stack="unity">
+TextMeshPro has no per-run language. The run gets a font asset whose fallback list covers its script, and whether the screen reader changes voice for it is checked by ear on the device.
+</If>
+
 <If stack="other">
 The framework's per-run locale on text, checked by ear with the screen reader.
 </If>
@@ -150,6 +154,10 @@ The i18n library's hook, such as `useTranslation()`, inside the component, so th
 
 <If stack="web">
 Re-render from the current locale held in state, and set `lang` on the document when it changes.
+</If>
+
+<If stack="unity">
+With the Localization package, bind each label through a `LocalizeStringEvent` or a `LocalizedString` whose `StringChanged` event sets the text, both of which follow `LocalizationSettings.SelectedLocaleChanged`. A value read once with `GetLocalizedString()` into a field keeps its first language.
 </If>
 
 <If stack="other">

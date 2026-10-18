@@ -23,7 +23,8 @@
     "expo",
     "flutter",
     "swiftui",
-    "jetpack-compose"
+    "jetpack-compose",
+    "unity"
   ],
   "homepage": "https://github.com/TiagoDanin/Trunative#readme",
   "bugs": {

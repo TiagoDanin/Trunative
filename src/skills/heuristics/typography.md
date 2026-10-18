@@ -105,8 +105,12 @@ Leave `allowFontScaling` on, cap nothing with `maxFontSizeMultiplier` on body te
 Size text in `rem`, never in `px`, and let a flex row wrap with `flex-wrap`.
 </If>
 
+<If stack="unity">
+Unity UI and TextMeshPro do not follow the system text size by themselves. From Unity 6, read `AccessibilitySettings.fontScale` and apply it to every `TMP_Text` through one scale value, updated on `AccessibilitySettings.fontScaleChanged`. Below Unity 6, or where the engine reports nothing, offer a text size setting inside the app and treat it as the largest step. Leave `enableAutoSizing` off on body text, since it is the shrink-to-fit named above, and let a `HorizontalLayoutGroup` with a `ContentSizeFitter` give way to a `VerticalLayoutGroup` when the scaled row no longer fits.
+</If>
+
 <If stack="other">
-Whatever the framework offers to read the system text size. A game engine's canvas UI usually ignores it, Unity's included: offer a text size setting inside the app, apply it to every text element, and treat that setting as the largest step.
+Whatever the framework offers to read the system text size. A game engine's canvas UI often ignores it: offer a text size setting inside the app, apply it to every text element, and treat that setting as the largest step.
 </If>
 
 ## <Rule id="type-strings" description="The text in the layout is not the text you typed" />

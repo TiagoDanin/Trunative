@@ -122,6 +122,10 @@ Install the `release` variant with `isMinifyEnabled` on, read the merged manifes
 The production build served the way it ships, with the service worker, minified bundle and production environment variables, not the dev server.
 </If>
 
+<If stack="unity">
+A build with Development Build off, the IL2CPP scripting backend and the Managed Stripping Level the store build uses, installed on the device. Stripping removes types reached only by reflection, a JSON model or a plugin entry point, which `link.xml` or `[Preserve]` keeps. Read the manifest the Android build merged from `Assets/Plugins/Android` and the packages, and keep test ad units and debug menus behind `Debug.isDebugBuild` or a scripting define the release build does not set.
+</If>
+
 <If stack="other">
 The configuration the store receives, built and installed on a device, with the engine's development build flags and debug overlays off.
 </If>

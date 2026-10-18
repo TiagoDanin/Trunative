@@ -17,6 +17,7 @@ const STACK_LABELS: Record<string, string> = {
 	swiftui: 'SwiftUI',
 	compose: 'Jetpack Compose',
 	web: 'mobile web',
+	unity: 'Unity',
 }
 
 /** Every file of the source skill, project-relative, in a stable order. */

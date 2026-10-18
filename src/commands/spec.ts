@@ -80,7 +80,13 @@ const DASH = /[—–]/
 const CAPABILITIES: { rule: string; tokens: string[] }[] = [
 	{
 		rule: 'ads-labelled',
-		tokens: ['google_mobile_ads', 'react-native-google-mobile-ads', 'com.google.android.gms.ads', 'GoogleMobileAds'],
+		tokens: [
+			'google_mobile_ads',
+			'react-native-google-mobile-ads',
+			'com.google.android.gms.ads',
+			'GoogleMobileAds',
+			'UnityEngine.Advertisements',
+		],
 	},
 	{
 		rule: 'notify-earns-it',
@@ -94,11 +100,19 @@ const CAPABILITIES: { rule: string; tokens: string[] }[] = [
 			'UserNotifications',
 			'NotificationCompat',
 			'com.google.firebase.messaging',
+			'Unity.Notifications',
+			'Firebase.Messaging',
 		],
 	},
 	{
 		rule: 'fb-review-prompt',
-		tokens: ['in_app_review', 'expo-store-review', 'react-native-in-app-review', 'com.google.android.play.core.review'],
+		tokens: [
+			'in_app_review',
+			'expo-store-review',
+			'react-native-in-app-review',
+			'com.google.android.play.core.review',
+			'Google.Play.Review',
+		],
 	},
 	{
 		rule: 'cam-system-first',
@@ -124,6 +138,7 @@ const CAPABILITIES: { rule: string; tokens: string[] }[] = [
 			'react-native-purchases',
 			'com.android.billingclient',
 			'RevenueCat',
+			'UnityEngine.Purchasing',
 		],
 	},
 	{ rule: 'share-sheet-only', tokens: ['share_plus', 'expo-sharing', 'react-native-share'] },
@@ -138,6 +153,7 @@ const CAPABILITIES: { rule: string; tokens: string[] }[] = [
 			'AuthenticationServices',
 			'com.google.firebase.auth',
 			'androidx.credentials',
+			'Firebase.Auth',
 		],
 	},
 ]
@@ -145,7 +161,7 @@ const CAPABILITIES: { rule: string; tokens: string[] }[] = [
 /** A rule the localisation file owns, so the locale check finds that file's stem. */
 const LOCALE_RULE = 'l10n-strings'
 
-const IMPORT_LINE = /^\s*(import|export|@import)\b|\bfrom\s+['"]|\brequire\(\s*['"]/
+const IMPORT_LINE = /^\s*(import|export|@import|using)\b|\bfrom\s+['"]|\brequire\(\s*['"]/
 
 /** Folders a project walk never enters, because nothing in them is the app's own source. */
 const WALK_SKIPPED = new Set([

@@ -32,6 +32,10 @@ A minimum frame plus `.contentShape()`, so the padding is tappable and not just 
 Padding on the control, never margin, since margin does not take taps.
 </If>
 
+<If stack="unity">
+A `RectTransform` sized to the floor carrying the raycast target, with the drawn icon as a child whose `raycastTarget` is off, or negative values in `Graphic.raycastPadding` to grow the hit area past the drawing. Under a `CanvasScaler` set to Scale With Screen Size the reference units are not dp, so convert the floor from `Screen.dpi` and check it on the narrowest supported screen.
+</If>
+
 <If stack="other">
 Whatever the framework offers to grow a hit area past the drawn control without growing the drawing.
 </If>
@@ -72,6 +76,10 @@ Give the drawn view `pointerEvents="none"`, with `accessibilityElementsHidden` o
 
 <If stack="web">
 Put the `inert` attribute on the drawn subtree.
+</If>
+
+<If stack="unity">
+Put a `CanvasGroup` on the drawn subtree with `blocksRaycasts` and `interactable` off, or turn `raycastTarget` off on every `Graphic` in it, and register no `AccessibilityNode` for it in the `AccessibilityHierarchy`.
 </If>
 
 <If stack="other">
@@ -162,6 +170,10 @@ A native menu module recorded in `STACK.md`, such as `@react-native-menu/menu` o
 
 <If stack="web">
 A long press on mobile web opens the browser's own menu, so the page offers a visible overflow control instead of claiming the press.
+</If>
+
+<If stack="unity">
+Unity UI has no context menu. Detect the hold with the Input System's `HoldInteraction`, or `IPointerDownHandler` and `IPointerUpHandler` with a timer, open a menu panel anchored to the item, and give every action in it a visible control as well.
 </If>
 
 <If stack="other">

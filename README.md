@@ -6,7 +6,7 @@ A mobile-only design skill for AI coding agents.
 
 Trunative is a [skill](https://www.skills.sh/docs) that makes coding agents treat mobile as its own platform rather than a narrow browser window. A phone is not a small desktop: input is imprecise and one-handed, the session gets interrupted by calls and notifications, the network drops mid-request, the OS owns gestures and insets and permissions, text scales to whatever the user set, the battery and the thermal budget are finite, and the whole thing is often used outdoors while walking. Those constraints, not the viewport width, are what a mobile design has to answer for.
 
-It is stack-agnostic: the rules apply to React Native, Expo, Flutter, SwiftUI, Jetpack Compose, or mobile web, and the agent detects the framework and translates.
+It is stack-agnostic: the rules apply to React Native, Expo, Flutter, SwiftUI, Jetpack Compose, mobile web, or Unity, and the agent detects the framework and translates.
 
 ## Why
 
@@ -67,7 +67,7 @@ The skills.sh CLI works too, without the lockfile and the version check:
 npx skills add TiagoDanin/Trunative --skill trunative
 ```
 
-The repository carries eight copies. `trunative` covers every stack, and `trunative-flutter`, `trunative-expo`, `trunative-react-native`, `trunative-swiftui`, `trunative-compose` and `trunative-web` are the same skill with the other frameworks' instructions removed. `trunative-full` is the whole skill in a single file, every rule and procedure inlined, for a context that gets pasted into once rather than read from disk. Pick one with `--skill`, or list them with `-l`. `npx trunative install` needs none of this: it reads the stack from `STACK.md` and resolves the copy itself.
+The repository carries nine copies. `trunative` covers every stack, and `trunative-flutter`, `trunative-expo`, `trunative-react-native`, `trunative-swiftui`, `trunative-compose`, `trunative-web` and `trunative-unity` are the same skill with the other frameworks' instructions removed. `trunative-full` is the whole skill in a single file, every rule and procedure inlined, for a context that gets pasted into once rather than read from disk. Pick one with `--skill`, or list them with `-l`. `npx trunative install` needs none of this: it reads the stack from `STACK.md` and resolves the copy itself.
 
 To install manually, copy one of those folders into your agent's skills directory:
 
