@@ -20,7 +20,7 @@ A few rules are requirements and not defaults: the nine always in scope in `SKIL
 
 An exception is good when all four are true:
 
-1. **It comes from the job or the person, not from the build.** "The person is choosing between two equal outcomes" is a reason. "The component we already have does it this way" is not, and neither is the deadline.
+1. **It comes from the job or the person, not from the build.** "The person is choosing between two equal outcomes" is a reason. "The component we already have does it this way" is not, and neither is the deadline. A growth pattern the user asked for through `flow/dark-ux.md` is the one place the product's own result counts as the job: the exception names the metric it moves, and the other three tests still apply to it.
 2. **It names the cost and who pays it.** Every default protects someone. The exception says who loses that protection and why that is acceptable here, or what replaces it.
 3. **It is narrow.** It covers this screen or this component, not "the app". An exception that would apply to every screen is a disagreement with the rule, and that conversation belongs in the repository of the skill, not in one project's `STACK.md`.
 4. **Somebody could disagree with it.** A reason nobody could argue against ("it looks better", "it felt right") has said nothing.

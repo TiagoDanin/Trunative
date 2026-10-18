@@ -30,6 +30,8 @@ Every hand-off after build carries the status line of the review that ran on it,
 
 Loaded by build, not a step: `flow/firebase.md`, whenever the screen touches Firebase.
 
+Run only when the user asks for it, never by build or review: `flow/dark-ux.md`, which builds the growth patterns large apps use to move conversion, retention and revenue, and records each rule it departs from as an exception in `STACK.md`.
+
 ## Heuristics
 
 One concern per file, in two tiers. The tier decides when a file is opened, not how much it counts: a rule in an extra file binds exactly like a rule in a base file once the screen touches it.
