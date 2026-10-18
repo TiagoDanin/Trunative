@@ -58,7 +58,7 @@ AdMob's placement policy says an ad may not be placed so that it interferes with
 
 - `touch-spacing` puts 8dp between two of the app's own targets. An ad edge is worth more, because the mis-tap pays: leave at least 16dp between the ad container and the nearest control, and 24dp where that control is the screen's primary action.
 - The bottom third is where the thumb lands (`touch-reach`) and where the tab bar, the primary button and the banner all want to sit. At least one of the three moves.
-- No ad on a screen that exists for one decision: a confirmation, a payment, a permission rationale, anything destructive.
+- No ad on a screen that exists for one decision: a confirmation, a payment, a paywall, a shop where prices are tapped, a permission rationale, anything destructive.
 
 ## <Rule id="ads-rewarded" description="The trade is stated before it starts, and the reward survives the process" />
 
@@ -101,9 +101,10 @@ One missed call site is the whole feature failing, because the user only has to 
 
 - The check lives with the ad request, in one place both the banner and the interstitial paths go through, not repeated per screen where a new screen forgets it.
 - The entitlement resolves before the first ad opportunity, including on a cold start with no network. Unknown is not treated as unentitled: a paying user offline is still a paying user, and the last known state is what the app acts on until the store answers.
-- It survives reinstall and a new device through restore, which is `pay-restore`. An entitlement that only lives in local storage is lost with the app.
+- It survives reinstall and a new device through restore, which is `sub-restore`. An entitlement that only lives in local storage is lost with the app.
 - Removing ads removes the space too. A paid user does not get the reserved slot from `ads-reserve` as a blank rectangle, and the layout closes up.
 - Anything the paid tier still shows, a house promo or a cross-sell for another app of yours, is still an ad under `ads-labelled`, and selling their removal and then showing them is the pattern users report.
+- The offer says, where it is sold, what stays: rewarded videos the person chooses to watch, house promos, one placement that remains. "No ads" with an asterisk is a claim the entitlement does not keep (`copy-claims`).
 - Apple's Developer Code of Conduct, guideline 5.6, names charging for features or content that are not delivered as conduct that terminates the developer account. An ad shown to someone who paid to remove ads is that sentence, with the receipt attached.
 
 ## <Rule id="ads-cost" description="The ad stack is paid for in launch time, memory and the user's data" />
@@ -128,12 +129,12 @@ No single configuration satisfies both. Decide from `PRODUCT.md` whether the app
 <Verify rule="ads-placement">No interstitial call site sits at launch, on exit, on back, inside a task or at the start of a segment, and no ad unit is built outside the app itself, in an extension, a widget, a notification, a keyboard or a watch app.</Verify>
 <Verify rule="ads-frequency">A frequency cap with a written number and a time interval is enforced in code, not in the mediation config.</Verify>
 <Verify rule="ads-reserve">Every ad slot reserves its declared size before it fills, has a decided no-fill state, and shortens the scroll rather than covering it.</Verify>
-<Verify rule="ads-adjacency">At least 16dp separates every ad container from the nearest control and 24dp from a primary action, and screens that exist for one decision carry no ad at all.</Verify>
+<Verify rule="ads-adjacency">At least 16dp separates every ad container from the nearest control and 24dp from a primary action, and screens that exist for one decision, a paywall and a shop included, carry no ad at all.</Verify>
 <Verify rule="ads-rewarded">A rewarded offer states what is traded, appears or enables only once its ad has loaded, grants on the reward callback and persists it, never grants on dismissal, and nothing the app is for sits behind an ad.</Verify>
 <Verify rule="ads-consent">The consent state is read at request time, the non-personalised request is the default path, `NSUserTrackingUsageDescription` is in the property list and `com.google.android.gms.permission.AD_ID` is declared where the build targets Android 13 or above, and no health, classroom or child data reaches a request.</Verify>
 <Verify rule="ads-report">Targeting information and an ad report route are both reachable without leaving the app, and the unit carries a content rating ceiling matching the app's own age rating; a codebase that ships only to Android answers this not applicable.</Verify>
 <Verify rule="ads-a11y">The close control has a name, the ad contains focus and returns it on dismissal, and the creative is a single stop for the reader.</Verify>
-<Verify rule="ads-entitlement">Where any purchase removes advertising, one entitlement check guards every ad request rather than each display, resolves before the first opportunity, treats unknown as the last known state, survives restore, and collapses the reserved slot.</Verify>
+<Verify rule="ads-entitlement">Where any purchase removes advertising, one entitlement check guards every ad request rather than each display, resolves before the first opportunity, treats unknown as the last known state, survives restore, collapses the reserved slot, and the offer that sold it names whatever still shows.</Verify>
 <Verify rule="ads-cost">Ad SDK initialisation is off the cold start path, the preload pool is one, and video is not prefetched on a metered connection.</Verify>
 <Verify rule="ads-children">Where the app is submitted to the Kids Category or declares a child target audience, the ad configuration is per store and written into `STACK.md`.</Verify>
 

@@ -2,7 +2,7 @@
 
 A play surface is the one screen in an app where the content moves on its own and the person is answering it in real time. Everything else in this skill assumes a screen that waits for the user, and a game does not wait: the clock runs, the thumbs rest on the glass for minutes, and the eyes stay on the middle of the screen rather than reading down it. The rules below are what changes when that is true.
 
-This file covers the play surface and the screens wrapped around it: the HUD, the controls, pause, the result of a round, and the screen that picks the next level. Menus, settings, shops and store screens of a game are ordinary screens and take the ordinary files. Currency, lives and unlock costs are `econ-` rules, in `heuristics/economy.md`.
+This file covers the play surface and the screens wrapped around it: the HUD, the controls, pause, the result of a round, and the screen that picks the next level. Menus, settings, shops and store screens of a game are ordinary screens and take the ordinary files, and a paywall in a landscape game keeps its exit in landscape (`sub-exit`). An offer raised on launch is `fb-unprompted`, not a boundary. Currency, lives and unlock costs are `econ-` rules, in `heuristics/economy.md`.
 
 Review on a play surface stays proportional. The pass over the Extra table closes, in one line with one reason, the families a play surface cannot contain, such as chat, forms, search, auth, lists and webviews, so the review grades the rules the screen can break rather than marking a hundred rows not applicable. The nine always in scope still apply to the HUD and to every control on it.
 
@@ -13,6 +13,7 @@ A HUD is chrome that never scrolls away, so every readout on it is paid for on e
 - Decide the set per state: playing, paused, dialogue or cutscene, and result. Playing shows what the person acts on in the next few seconds. Paused shows the way out and the settings. Dialogue hides the controls it does not use. Result shows the outcome.
 - At most four persistent readouts while playing. A fifth is a sign that something belongs on the pause screen, or should appear only when it changes.
 - A readout that changes rarely appears when it changes and fades back, rather than holding a corner for the whole round.
+- A shortcut to the shop, a "buy" or "get more" button, is a persistent element like any other and counts toward the four. It never sits in a control zone (`game-controls`), where a resting thumb buys.
 - A HUD element is still text and still a control. Its size comes from the type scale, its tap area from `touch-floor`, and its edges from `layout-insets`.
 
 ## <Rule id="game-centre" description="Nothing persistent sits over the middle of the play area" />
@@ -103,7 +104,8 @@ On an engine, pause from the focus and pause callbacks the engine raises, stop i
 The end of a round is where the game is most tempted to sell, and the person is least able to read carefully: they just lost, the thumb is already moving.
 
 - Show the outcome before any offer: won or lost, the score, what was earned. An offer that arrives first hides the one thing the person came to see.
-- A continue offer, a doubled reward or a purchase states what it costs and what it gives (`ads-rewarded`, `pay-honest-paywall`). Its dismissal declines it. A close control, a tap outside, back and a countdown running out all mean no, never yes.
+- The outcome of a round the person played is never what is for sale. A score, a test result, the answer to a puzzle they solved: the time they spent already paid for it, and holding it back until they pay turns that time into the lever. Extra analysis may be sold after the outcome is shown in full.
+- A continue offer, a doubled reward or a purchase states what it costs and what it gives (`ads-rewarded`, `sub-billed-first`). Its dismissal declines it. A close control, a tap outside, back and a countdown running out all mean no, never yes.
 - The decline is as easy to find and to reach as the accept, and the round can be restarted or left from the result without passing through the offer.
 - A modal raised here is still a modal: both exits named, and nothing stacked over it (`nav-modal`).
 
@@ -150,11 +152,11 @@ A button image with its label painted in cannot be translated, cannot scale with
 
 <Check>
 
-<Verify rule="game-hud-context">The HUD set is decided per game state, and no more than four persistent readouts show while playing.</Verify>
+<Verify rule="game-hud-context">The HUD set is decided per game state, and no more than four persistent readouts show while playing, shop shortcuts counted among them and none in a control zone.</Verify>
 <Verify rule="game-centre">No persistent element sits over the middle of the play area, and messages that need reading appear in a paused state.</Verify>
 <Verify rule="game-controls">Controls own the lower corners and bottom edge, menus and pause sit outside them, every control meets the touch floor inside the safe area in every supported orientation, and controls are hidden or disabled while not playing.</Verify>
 <Verify rule="game-pause">The game clock and its audio pause on focus loss, app switch and every overlay, resume only from a control on a pause screen, and held pointers are cancelled at the pause.</Verify>
-<Verify rule="game-result">The outcome shows before any offer, every dismissal of an offer declines it, and the round can be restarted or left without passing through the offer.</Verify>
+<Verify rule="game-result">The outcome shows in full before any offer and is never itself for sale, every dismissal of an offer declines it, and the round can be restarted or left without passing through the offer.</Verify>
 <Verify rule="game-locks">Every locked item shows the condition that opens it, and a tap on it answers with that condition.</Verify>
 <Verify rule="game-reward-moment">Rewarded offers appear only at a segment boundary and only once the ad can be shown.</Verify>
 <Verify rule="game-segment">Meta progress is saved at every boundary and survives process death, and a short attempt that restarts after it says so on return.</Verify>

@@ -2,7 +2,7 @@
 
 An answer written by a model for this person, now: an assistant thread, a summary placed over a document, a suggested reply, a drafted description. It differs from everything else the app shows in three ways. It arrives in pieces over several seconds, so the screen changes while it is being read. It can be wrong while sounding certain, so the person needs a way to check it. And it often costs something per request, in money or in a quota, so a failure or a limit takes something the person already spent.
 
-Here: following text as it arrives, the wait before it does, stopping, failing halfway, where a claim came from, generated content leaving the conversation, earlier versions, limits and cost, the composer's modes, and what the screen reader hears. The transcript as a column that grows from its bottom is `chat-anchor`, the composer's ceiling is `chat-composer` and attaching is `chat-attach`. Loading placeholders are `state-loading`, failure wording is `state-error` and keeping the input across a retry is `state-retry`. A scroll during a drag is `scroll-programmatic`. A link opened from an answer goes through `webview-surface-choice`, and an upgrade offered at a limit answers to `pay-honest-paywall`.
+Here: following text as it arrives, the wait before it does, stopping, failing halfway, where a claim came from, generated content leaving the conversation, earlier versions, limits and cost, the composer's modes, and what the screen reader hears. The transcript as a column that grows from its bottom is `chat-anchor`, the composer's ceiling is `chat-composer` and attaching is `chat-attach`. Loading placeholders are `state-loading`, failure wording is `state-error` and keeping the input across a retry is `state-retry`. A scroll during a drag is `scroll-programmatic`. A link opened from an answer goes through `webview-surface-choice`, and an upgrade offered at a limit answers to `sub-honest`.
 
 ## <Rule id="ai-stream" evidence="device" description="Text arriving in pieces never moves what is being read" />
 
@@ -70,7 +70,7 @@ A quota, a per-message cost or a daily cap is a gate on the composer, and the wo
 
 - Where requests are counted or priced, the remaining amount is visible before sending, near the composer, in the unit the limit is counted in, as `econ-gate` asks of any gate.
 - Reaching the limit keeps the typed prompt and its attachments, says when the limit resets as a time, and names the routes that exist: wait, a smaller mode, an upgrade.
-- An upgrade offer never replaces the input field or sits on top of it. The composer stays a composer, and the offer answers to `pay-honest-paywall`.
+- An upgrade offer never replaces the input field or sits on top of it. The composer stays a composer, and the offer answers to `sub-exit` and `sub-honest`.
 - A request that will cost more than the usual one, a long document, a heavier mode, says so before it is sent.
 
 ## <Rule id="ai-composer" description="Mode, model and attachments are visible state in the composer, readable before sending" />

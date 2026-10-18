@@ -294,7 +294,7 @@ total: 482
 max: 610
 percent: 79
 scored: 60
-na: [pay-restore: no purchases on this screen, ads-report: no Android build]
+na: [sub-restore: no purchases on this screen, ads-report: no Android build]
 unrun: [a11y-announce, type-scaling]
 ---
 ```

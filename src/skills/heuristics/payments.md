@@ -4,6 +4,8 @@ Taking money on a phone is the one design problem where a wrong decision is not 
 
 Everything after that is a form on a small screen, held by someone who is about to hand over money and is looking for a reason not to.
 
+The paywall, the terms of a subscription, its trial, restore and cancellation are the `sub-` prefix, in `heuristics/subscriptions.md`.
+
 ## <Rule id="pay-rail" evidence="device" description="What is being sold decides the rail, and it is not a preference" />
 
 Answer this before drawing anything, because it determines the whole screen.
@@ -40,7 +42,9 @@ The app's job is what comes before the sheet and what happens after it. The shee
 
 State the full amount to be billed for anything on offer, of any type. On a phone the surprise arrives late, because the screen is short and the fee lands at the bottom.
 
-- Shipping, tax and every fee are visible on the screen where the user commits, not one step later.
+- Shipping, tax and every fee are visible on the screen where the user commits, not one step later. An estimate on the screen before it is not that total.
+- An optional charge, a tip, a donation, insurance, starts at none on the checkout exactly as it does in the cart (`shop-upsell`), and the total changes in view when one is picked.
+- A hold or deposit placed on the card is stated before the method is chosen: the amount, when it is taken and when it is released. The person who later finds a larger pending amount on the statement reads it as an overcharge.
 - Currency, grouping and decimals come from the locale, which is `l10n-format`, and figures in a column align under `type-strings`.
 - Rounding never flatters: `data-precision` owns what a displayed number is allowed to imply.
 - The price is not smaller than the button next to it, and it does not need a scroll to reach.
@@ -54,32 +58,13 @@ A price typed into the code is wrong in every currency but one, and it is wrong 
 It is the easiest defect to introduce and the hardest to see in review, because a hardcoded price renders perfectly on the reviewer's device.
 
 - The amount, the currency and the formatting are the store's, taken from the product query. The app does not build the string, convert a currency, or append a symbol.
-- A struck-through "was" price is only the store's own reference or introductory price. Inventing one to show a discount is promoting a false price, which guideline 2.3.1(a) makes grounds for removing the app and terminating the account, and `pay-honest-paywall` owns the rest of that shape.
+- A struck-through "was" price is only the store's own reference or introductory price, and a saving is derived from two store prices. What either may claim is `sub-discount`.
 - The product query is a network call that is slow, fails, and returns fewer products than asked for. The screen needs a loading state and a failure state under `state-loading`, and neither of them is a placeholder amount.
 - A product the store did not return is not for sale on this device, and it does not render as a disabled row with a price beside it. Separate that from a query that failed: Play reports each product it could not fetch with a reason for the failure, and a transient one is `state-error` on the paywall rather than an item silently vanishing from it.
-- The same rule holds for anything derived from the price, including the per-period figure on an annual plan and any "save 30%" badge.
+- The same rule holds for anything derived from the price: the per-period figure on an annual plan, any "save 30%" badge, and the money price of a currency pack.
+- Remote configuration chooses which store products a screen offers, never what they cost. A price string in a config value is a constant that ships later.
 
 Search for a currency symbol in the view layer. Every hit is either this defect or a comment.
-
-## <Rule id="pay-subscription-terms" description="A subscription screen has required contents" />
-
-Before anyone can subscribe, the screen carries the subscription name, the period, what the money buys during each period, and the billing amount localised for the storefront being sold to. Also on that screen, not one level deeper, a way for an existing subscriber to sign in or restore.
-
-- A free trial says plainly that a payment starts automatically when it ends, and when that is.
-- An introductory price states the intro amount, how long it lasts, and the standard price that follows.
-- Changing an existing app to a subscription does not take away what current users already paid for.
-
-## <Rule id="pay-cancel" description="Cancelling is easy or the app is hostile" />
-
-The platform owns the actual cancellation screen, so the app links to the system page rather than rebuilding it, which is `set-system-owned`. What the app owns is whether that link is findable.
-
-A manage-subscription entry buried several levels down reads as obstruction, and it is called out as such by the platform. It belongs where someone looks for it, next to the account exit that `set-account-exit` places. Cancelling a subscription and deleting an account are different actions with different consequences, and `auth-delete` owns the second.
-
-## <Rule id="pay-restore" description="Restore exists, or a paying customer is locked out" />
-
-A reinstall, a new device, a factory reset and a sign-in from another platform are all normal. Any restorable purchase needs a restore path, and the paywall is one of the places it is reachable from.
-
-Restore is a labelled control, not a hidden gesture, and it reports what happened: restored, nothing to restore, or failed with a reason under `state-error`. A paywall with no restore turns an existing customer into someone being asked to pay twice.
 
 ## <Rule id="pay-card" description="When a card form is the legal rail, it is still a form on a phone" />
 
@@ -106,32 +91,17 @@ A payment has four outcomes, not two: succeeded, failed, still pending, and reve
 - Every attempt carries an idempotency key so a retry, a double tap or a reconnect cannot bill twice. This is the payment case of `net-dedupe`, and here the cost of getting it wrong is money.
 - A receipt is reachable after the fact, from inside the app, without searching an inbox.
 
-## <Rule id="pay-honest-paywall" severity="p1" description="The paywall is where scam patterns get apps removed" />
-
-Tricking someone into a subscription is grounds for removal from the store, and the patterns are well known enough to be worth naming.
-
-- The close control is visible, reachable and meets `touch-floor`. A paywall that has to be escaped by a system gesture is the pattern the rule exists for.
-- Terms are legible at the size everything else is, not in the smallest type on the screen.
-- The selected plan is the one the user picked, not a pre-selected annual with the monthly option one tap away in grey.
-- No invented urgency: a countdown that resets on relaunch is a lie the screen tells.
-- What the user gets is described before the price is asked for, and `onboard-look-first` already rules that people may see the product first.
-- Purchases involving children carry the same restraint `ads-children` demands.
-
 <Check>
 
 <Verify rule="pay-rail">Each purchasable item is on the rail its type requires, store billing for digital goods consumed in the app and an outside processor for physical goods and outside services, with both present where the app sells both.</Verify>
 <Verify rule="pay-steering">Any link to an external purchase page is conditional on the storefront at runtime, and the enabled storefronts are recorded.</Verify>
 <Verify rule="pay-wallet-first">The wallet button is the primary payment option where credentials exist, drawn by the platform API, no smaller than the alternatives and visible without scrolling, with all purchase options settled before the sheet.</Verify>
 <Verify rule="pay-sheet">No screen imitates, wraps or precedes the system purchase sheet with a lookalike.</Verify>
-<Verify rule="pay-total">The full billed amount, including shipping, tax and fees, is on the screen where the user commits, formatted for the locale.</Verify>
-<Verify rule="pay-price-source">Every displayed price, and everything derived from one, comes from the store's product object, with a loading and a failure state instead of a placeholder amount and no invented reference price. No currency symbol appears in the view layer.</Verify>
-<Verify rule="pay-subscription-terms">The subscription screen carries name, period, what is included, the localised price, restore or sign-in, and the automatic charge at the end of any trial.</Verify>
-<Verify rule="pay-cancel">A link to the system cancellation page is reachable from the account area rather than buried.</Verify>
-<Verify rule="pay-restore">A labelled restore control exists, is reachable from the paywall, and reports its result.</Verify>
+<Verify rule="pay-total">The full billed amount, including shipping, tax and fees, is on the screen where the user commits, formatted for the locale, every optional charge starts at none, and any hold is stated with its amount and release before the method is chosen.</Verify>
+<Verify rule="pay-price-source">Every displayed price, and everything derived from one, comes from the store's product object, with a loading and a failure state instead of a placeholder amount, no invented reference price and no price held in remote configuration. No currency symbol appears in the view layer.</Verify>
 <Verify rule="pay-card">Card fields use autofill and the right keyboards, sit in one column, and survive a declined payment with the input intact.</Verify>
 <Verify rule="pay-handoff">A payment that leaves the app holds its pending order across the trip, routes the return to the outcome, and reconciles on next launch when the user does not return.</Verify>
 <Verify rule="pay-outcome">Pending is a rendered state, and every attempt carries an idempotency key so no retry can bill twice.</Verify>
-<Verify rule="pay-honest-paywall">The paywall has a visible close control meeting the touch floor, legible terms, no pre-selected plan the user did not choose, and no countdown that resets.</Verify>
 
 <Device>`pay-rail` and `pay-steering` are answered against the store policy that applies to the item and the storefront, not against taste. When the two rails disagree with a product decision, the policy wins and the product decision changes.</Device>
 
