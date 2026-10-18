@@ -1,6 +1,6 @@
 ---
 name: trunative
-description: Design and review mobile app UI for any stack (React Native, Expo, Flutter, SwiftUI, Jetpack Compose, mobile web). Use when building a screen, component, navigation flow, or form for a phone, or when reviewing existing mobile UI. Also use when a change adds something the person sees without asking for a screen: an ad placement, a notification, a review or rating prompt, a permission request, a paywall, or a dialog or sheet raised by analytics or remote config.
+description: Design and review mobile app UI for any stack (React Native, Expo, Flutter, SwiftUI, Jetpack Compose, mobile web, Unity). Use when building a screen, component, navigation flow, or form for a phone, or when reviewing existing mobile UI. Also use when a change adds something the person sees without asking for a screen, such as an ad placement, a notification, a review or rating prompt, a permission request, a paywall, or a dialog or sheet raised by analytics or remote config.
 ---
 
 # Trunative

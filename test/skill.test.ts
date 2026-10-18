@@ -11,7 +11,7 @@ import { install } from '../src/commands/install.js'
 import { spec, uncovered } from '../src/commands/spec.js'
 import { matchesGlob } from '../src/exceptions.js'
 import { AGENTS, variantStacks } from '../src/compile.js'
-import { readSources, resolve } from '../src/emit.js'
+import { flatten, readSources, resolve } from '../src/emit.js'
 import { readGraph } from '../src/graph.js'
 import { readHeuristics } from '../src/heuristics.js'
 import { packagedSkillDir } from '../src/paths.js'
@@ -84,6 +84,22 @@ test('no variant ships a tag, for any agent or any stack', async () => {
 				const left = prose(content.toString('utf8')).filter((line) => tag.test(line))
 				assert.deepEqual(left, [], `${file} for ${agent}/${stack ?? 'generic'}`)
 			}
+		}
+	}
+})
+
+test('every published SKILL.md has frontmatter a YAML parser accepts', async () => {
+	// The values are plain scalars, where ": " opens a nested mapping and " #"
+	// starts a comment, and a skill index skips the whole skill on either.
+	const sources = await readSources()
+	const copies = [undefined, ...variantStacks()].map((stack) => resolve(sources, stack ? { agent: 'other', stack } : { agent: 'other' }))
+	for (const files of [...copies, flatten(copies[0]!)]) {
+		const entry = files.get('SKILL.md')!.toString('utf8')
+		const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---/.exec(entry)?.[1] ?? ''
+		for (const line of frontmatter.split(/\r?\n/)) {
+			const value = /^[a-z-]+:\s(.*)$/.exec(line)?.[1]
+			assert.ok(value !== undefined, `not a key and a value: ${line.slice(0, 60)}`)
+			assert.doesNotMatch(value, /: |\s#|^[\s'"&*!|>%@`[{-]/, line.slice(0, 80))
 		}
 	}
 })

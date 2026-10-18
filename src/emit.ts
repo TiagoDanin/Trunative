@@ -229,7 +229,7 @@ export function flatten(files: Map<string, Buffer>): Map<string, Buffer> {
 		.replace(
 			/^description:\s*(.+)$/m,
 			(_, text: string) =>
-				`description: ${text.trim()} This copy carries every rule, procedure and reference inline, in one file, for a context that cannot read files. Never install it in a project or beside another trunative copy: a project uses the tiered copy that "npx trunative install" writes.`,
+				`description: ${text.trim()} This copy carries every rule, procedure and reference inline, in one file, for a context that cannot read files. Never install it in a project or beside another trunative copy, since a project uses the tiered copy that "npx trunative install" writes.`,
 		)
 
 	const parts = [
