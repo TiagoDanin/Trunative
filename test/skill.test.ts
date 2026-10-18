@@ -305,6 +305,12 @@ test('an import that reaches an extra file the brief shut reopens it', async () 
 		},
 		async (cwd) => assert.equal(await spec({ cwd, paths: [] }), 1),
 	)
+	// A paywall package reopens the subscriptions file a brief shut.
+	await inProject(
+		(cwd) => writeFile(join(cwd, 'lib', 'screen.dart'), "import 'package:adapty_flutter/adapty_flutter.dart';\n"),
+		async (cwd) => assert.equal(await spec({ cwd, paths: [] }), 1),
+		BRIEF.replace('auto_excluded: [chat, camera]', 'auto_excluded: [chat, camera, subscriptions]'),
+	)
 	// A capability the brief never shut is no finding.
 	await inProject(
 		(cwd) => writeFile(join(cwd, 'lib', 'screen.dart'), "import 'package:share_plus/share_plus.dart';\n"),
