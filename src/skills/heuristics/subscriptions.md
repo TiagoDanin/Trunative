@@ -2,7 +2,7 @@
 
 A subscription is the one purchase that keeps charging after the screen that sold it is gone, so whatever the person misread there is billed again every period. On a phone the offer is read in seconds, on one screen, with the price competing against artwork for the same space, and the system sheet that confirms it shows little more than an amount and a period. Every rule here is about what the person agrees to on the paywall matching what that sheet then charges.
 
-The rail, the system sheet and where every price comes from are `heuristics/payments.md`: `pay-rail`, `pay-sheet`, `pay-price-source`. A struck price on physical goods is `shop-price-unit`. Credits, lives and currency that a subscription grants are the `econ-` prefix.
+The rail, the system sheet and where every price comes from are `heuristics/payments.md`: `pay-rail`, `pay-sheet`, `pay-price-source`. A struck price on physical goods is `shop-price-unit`. Credits, lives and currency that a subscription grants are the `econ-` prefix. The compositions, parts and states a selling screen is built from, and the paywall each platform already ships, are in `references/paywall-anatomy.md`.
 
 ## <Rule id="sub-terms" description="The offer screen carries the terms, the price and the way back in" />
 
@@ -12,7 +12,7 @@ On the screen where the person commits, not one level deeper:
 - The renewal price, localised for the storefront and read from the store (`pay-price-source`). A screen that starts a subscription or a trial with no price anywhere on it fails, however the trial is worded.
 - A way for an existing subscriber to sign in or restore (`sub-restore`).
 - Whether the app is usable without subscribing, and what that use includes, wherever it is. Play lists a promotion that hides this as a violation.
-- An introductory price states the intro amount, how long it lasts and the standard price after it. Moving an existing app to a subscription does not take away what current users already paid for.
+- An introductory price states the intro amount, how long it lasts and the standard price after it. A trial or intro offer is drawn only when the store says this user is eligible; someone who already used one sees the plan at its price, with the button and the billing line switched to paying now. Moving an existing app to a subscription does not take away what current users already paid for.
 
 ## <Rule id="sub-billed-first" severity="p1" description="The amount that will be billed is the most prominent price on each option" />
 
@@ -46,6 +46,7 @@ A free trial turns into a charge with no action from the person. Knowing when is
 - Preselecting an option is allowed. The button commits to the option visibly selected, and that option's billed amount is on the screen.
 - The button names what happens, starting a trial or paying now, with the amount where it is not the wallet button (`button-label`). Continue on a button that starts a charge describes nothing.
 - A plan reached through a "view all plans" link answers to every rule in this file on the screen it opens.
+- Someone already subscribed who reaches the paywall sees their plan, its renewal date and the way to change it, never a purchase of what they already have.
 
 ## <Rule id="sub-exit" severity="p1" grade="binary" evidence="device" description="The way out is visible in the first frame, against whatever is actually behind it" />
 
@@ -87,11 +88,11 @@ A manage-subscription entry buried several levels down reads as obstruction. It 
 
 <Check>
 
-<Verify rule="sub-terms">The commit screen carries name, period, what each period buys, the localised renewal price, restore or sign in, and what works without subscribing, and no screen starts a subscription or trial without a price.</Verify>
+<Verify rule="sub-terms">The commit screen carries name, period, what each period buys, the localised renewal price, restore or sign in, and what works without subscribing, no screen starts a subscription or trial without a price, and a trial is drawn only for a user the store reports eligible.</Verify>
 <Verify rule="sub-billed-first">On every option the billed amount and period are the largest price, equivalents and savings are smaller and share one unit across options, and no trial price stands in for a plan price.</Verify>
 <Verify rule="sub-discount">Every struck reference is a store or actually charged price, no reference is computed from the sale price, and every saving names its comparison plan and is derived from store prices, rounded down.</Verify>
 <Verify rule="sub-trial-end">The trial end date, the amount billed then and its period sit beside the button at body size, the date comes from the store's trial length, any reminder control is wired to a reachable channel and scheduled on the server, and a trial switch updates the label and the billing line.</Verify>
-<Verify rule="sub-plan-choice">The plans are a single-choice group read as radios with name, billed amount, period and state, the button commits to the visibly selected option, and its label names a trial or a charge.</Verify>
+<Verify rule="sub-plan-choice">The plans are a single-choice group read as radios with name, billed amount, period and state, the button commits to the visibly selected option, its label names a trial or a charge, and an existing subscriber sees their plan rather than a purchase.</Verify>
 <Verify rule="sub-exit">An exit is present from the first frame, meets the touch floor, reaches 3:1 against the rendered background, survives every supported orientation, does not share its corner with restore, help or sign in, and leads to at most one further offer whose close leaves, with a cancelled system sheet treated as a no rather than an error.</Verify>
 <Verify rule="sub-honest">Every deadline is server owned and survives reinstall, the offer is described before the price, an onboarding paywall is outside the progress and closes into the product, and the terms are body size.</Verify>
 <Verify rule="sub-children">Where the app declares a child audience, every purchase sits behind a parental gate and currency prices are distinguishable from money.</Verify>

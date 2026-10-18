@@ -129,7 +129,7 @@ It fails in two quiet ways. Judging by the feature closes a file that owns somet
 
 <Index of="references" />
 
-Lookup material, read on demand for one value and never as background: `references/color-construction.md`, `references/type-scales.md`, `references/fonts.json`, `references/input-fields.md`, `references/navigation-containers.md`, `references/motion-tokens.md`, `references/capability-checks.md`, `references/launch-surface.md`, `references/icon-and-image-assets.md`, `references/search-controls.md`, `references/wireframe-frame.md`, `references/design-grammars.md`, `references/accepted-exceptions.md`.
+Lookup material, read on demand for one value and never as background: `references/color-construction.md`, `references/type-scales.md`, `references/fonts.json`, `references/input-fields.md`, `references/navigation-containers.md`, `references/motion-tokens.md`, `references/capability-checks.md`, `references/launch-surface.md`, `references/icon-and-image-assets.md`, `references/search-controls.md`, `references/wireframe-frame.md`, `references/design-grammars.md`, `references/accepted-exceptions.md`, `references/paywall-anatomy.md`.
 
 ## Always in scope
 

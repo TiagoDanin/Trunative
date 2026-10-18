@@ -237,9 +237,9 @@ Every scored rule counts with the weight of its severity, so the total says how 
 
 A rule's points are its score times its weight. The total is the sum of the points, and the maximum is 5 times the sum of the weights of the rules actually scored, from 1 to 5 or as `pass` and `fail`. Nothing else is in it.
 
-Unweighted, a scope that is mostly P2 and P3 lets polish carry the number: forty small rules at 5 hide two P1 rules at 3 the same way an average hides one rule at 1. The weights make a 3 on a rule about exclusion cost three times what a 3 on a rule about polish costs.
+Unweighted, a scope that is mostly P2 lets friction carry the number: forty P2 rules at 5 hide two P1 rules at 3 the same way an average hides one rule at 1. The weights make a 3 on a rule about exclusion cost half as much again as a 3 on a rule about friction, and a 3 on a P0 cost twice as much.
 
-- The denominator is never the size of the scope. A scope of 74 rules with 9 `n/a` and 5 `unrun` leaves 60 scored. At 6 P1, 50 P2 and 4 P3, their weights add to 6 × 3 + 50 × 2 + 4 × 1 = 122, so the maximum is 610: not 5 times 74, and not 5 times 60.
+- The denominator is never the size of the scope. A checkout screen scoped to the base files plus `forms`, `commerce` and `payments` holds 148 rules, and with 12 `n/a` and 8 `unrun` it leaves 128 scored. At 5 P0, 18 P1, 101 P2 and 4 P3, their weights add to 5 × 4 + 18 × 3 + 101 × 2 + 4 × 1 = 280, so the maximum is 1400: not 5 times 148, and not 5 times 128.
 - A weight comes from the severity on the rule's own heading, as the checklist prints it, and a run never assigns one. A rule whose weight looks wrong has the wrong severity, and that is fixed in `heuristics/`, where every later run picks it up.
 - A carried grade in a follow-up run keeps its rule's current weight, so a severity changed since the full run moves the carried points too, and the trend line says the skill hash moved.
 - Report coverage beside the total: scored, `n/a` and `unrun`, out of the scope. A run that skipped the device work does not come out ahead of one that did it.
@@ -287,14 +287,14 @@ spec: .trunative/screens/checkout.md
 date: 2026-09-08T14:22
 skill: sha256:6f0a...
 mode: full
-scope: [touch, forms, states, layout, typography, colors, motion, accessibility]
+scope: [colors, typography, touch, buttons, layout, composition, states, motion, accessibility, copy, icons-and-imagery, forms, commerce, payments]
 status: VIOLATIONS
 violations: [p0: 0, p1: 0, p2: 2, p3: 1]
-total: 482
-max: 610
+total: 1106
+max: 1400
 percent: 79
-scored: 60
-na: [sub-restore: no purchases on this screen, ads-report: no Android build]
+scored: 128
+na: [pay-steering: physical goods, no storefront rule applies, shop-substitute: nothing is picked after the order is placed]
 unrun: [a11y-announce, type-scaling]
 ---
 ```
@@ -303,7 +303,7 @@ unrun: [a11y-announce, type-scaling]
 
 Then read the newest five archived runs with the same slug and print one line:
 
-> Trend for `lib-screens-checkout-screen-dart`: 61%, 74%, 79% (482/610 this run).
+> Trend for `lib-screens-checkout-screen-dart`: 61%, 74%, 79% (1106/1400 this run).
 
 The comparison is only honest when the measurement is the same, so name any of these that changed since the previous run, on the same line: the skill hash moved, so some of the difference is rules, or the severities that weigh them, rather than the screen; the scope changed, and which files joined or left; or the `n/a` set or the `unrun` set changed, since a rule that was excused or skipped last time and scored now moved the total on its own. The scope may grow between runs and may not silently shrink: a later run covering fewer files is not a better run.
 

@@ -2,7 +2,7 @@
 
 Virtual currency, lives, energy, daily caps and unlock costs: anything the app counts and spends on the person's behalf that is not money. Games carry most of it, learning apps carry lives or a daily limit, and generative tools carry credits that run out and reset. The person cannot audit any of it outside the app, so every rule here is about showing the count and the cost at the moment they decide.
 
-Real money stays in `heuristics/payments.md`. A pack of currency bought with money is a purchase under `pay-rail` and `pay-price-source`, and only what happens after it lands in the balance is this file's.
+Real money stays in `heuristics/payments.md`. A pack of currency bought with money is a purchase under `pay-rail` and `pay-price-source`, and only what happens after it lands in the balance is this file's. The parts of a shop screen, the balance header, the pack list and the first-purchase pack, are in `references/paywall-anatomy.md`.
 
 ## <Rule id="econ-cost-shown" severity="p1" description="The cost sits on the control, and the balance is on the same screen" />
 
