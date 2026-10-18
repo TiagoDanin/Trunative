@@ -102,6 +102,17 @@ Bulk actions on a phone take over the screen, because there is no modifier key a
 - The bulk action says what it did and offers undo, because one mis-tap here costs forty items instead of one (`touch-destructive`).
 - Select all in a list that is still paging means selecting what has loaded, and the label has to admit that.
 
+## <Rule id="list-save" description="Saving an item is a toggle that answers at once, and what was saved has an address" />
+
+A heart, a bookmark or a star on a card is the cheapest promise an app makes: tap it now, find it later. Each half breaks on its own. The tap that waits for the server, the tap that opens a sign-in wall and forgets what it was for, and the saved list nobody can find again all break the same promise.
+
+- The toggle changes state on the tap and writes behind it, rolling back with a message only when the write fails (`off-write-mode`). Its state is drawn by shape, outlined against filled, and announced as selected or not (`color-not-alone`, `a11y-name`).
+- A person who is not signed in and taps it is asked to sign in at that moment, and the item is saved afterwards without a second tap. Or the save is kept on the device and carried into the account later (`onboard-look-first`).
+- The same item shows the same saved state everywhere it appears: card, detail and search result.
+- Saved items live in a titled place reachable from the top level or from the account, and an item that changes price or stops being available stays there, marked as such, rather than vanishing.
+- Saving into a named collection is a second step offered after the save, never a sheet that has to be answered before the first tap counts, and a new collection can be made from inside that step.
+- The toggle is a target of its own inside the card (`touch-nested`, `list-row`).
+
 ## <Rule id="list-a11y" description="A row is one stop, not four" />
 
 A screen reader moves stop by stop and there is no pointer here to skip ahead with. A row left as its icon, then its title, then its subtitle, then its badge is four stops, so two hundred rows become eight hundred and the list stops being navigable long before it stops being correct.
@@ -122,6 +133,7 @@ A screen reader moves stop by stop and there is no pointer here to skip ahead wi
 <Verify rule="list-end">The list loads continuously or offers a load-more control and never numbered pages, and a list that pages states where the data ends and turns a failed page into a retry at the bottom.</Verify>
 <Verify rule="list-refresh">Pull to refresh uses the platform control, and the same refresh is reachable without the gesture.</Verify>
 <Verify rule="list-select">Selection mode is entered deliberately, shows its count and its exit, marks selection without color alone, and offers undo.</Verify>
+<Verify rule="list-save">The save toggle changes on the tap and rolls back only on a failed write, its state is a shape and is announced, a signed-out tap ends saved after sign in without a second tap or is kept on the device, the state matches on every screen, saved items have a titled place where changed items stay marked, and choosing a collection is an optional second step.</Verify>
 <Verify rule="list-a11y">Each row is one merged accessibility node, every swipe or long press is also an accessibility action, and section headers carry the heading trait.</Verify>
 
 <Device>`list-virtualise` and `list-density` both pass at ten rows and fail at a thousand, so neither is answered from the file alone. Fill the list with production-sized data and scroll it on the slowest device the app supports.</Device>

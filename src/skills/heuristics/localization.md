@@ -84,6 +84,40 @@ Sorting display names by code point puts accented words after Z, splits the case
 - Section headers and the fast-scroll rail down a long list come from that collator, `UILocalizedIndexedCollation` where iOS builds the index for you, never from the first character of the string. Ch, Ñ and Ø are letters in their own right where the list is being read, and this is what `list-sections` is built from.
 - Search matches without regard to case, accents or character width, so typing `jose` finds José.
 
+## <Rule id="l10n-content-language" evidence="device" description="Content in another language says which one it is, and a translation says it is one" />
+
+The interface speaks the app's language and the content often does not: a review left by a visitor, a message from a relative abroad, a listing from a seller in another country, a quoted post. Nothing in the string table reaches it, and the app can neither make it correct by translating it nor pretend it is already in the reader's language.
+
+- Text in a language other than the interface carries its language tag, so the screen reader speaks it in the right voice and line breaking and hyphenation follow its rules. Untagged, a paragraph in Japanese is read out in the interface's voice, one character at a time.
+- A machine translation is marked as one on the text itself, the original is one tap away, and the choice between originals and translations is remembered.
+- The body is what gets translated. Names, addresses, product codes and quoted prices stay as written.
+- Where translation is offered, the language detected for the original is named and a wrong detection can be corrected.
+- Content in a script the interface face lacks falls back to a face that has it (`l10n-script`), and right-to-left content inside a left-to-right screen keeps its own direction within its block (`l10n-direction`).
+
+<If stack="swiftui">
+An `AttributedString` whose run carries the `languageIdentifier` attribute and `accessibilitySpeechLanguage`.
+</If>
+
+<If stack="compose">
+`SpanStyle(localeList = LocaleList(tag))` on the run, which drives shaping and line breaking. Whether TalkBack changes voice for it is checked on the device, and where it does not, the content's description carries the language.
+</If>
+
+<If stack="flutter">
+`TextSpan(locale: Locale(tag))` for shaping, and a `Semantics` whose `attributedLabel` carries a `LocaleStringAttribute` over the same range for the spoken voice.
+</If>
+
+<If stack="react-native">
+`accessibilityLanguage` on the `Text`, which iOS honours. Android ignores it, so the TalkBack pass is done on a device.
+</If>
+
+<If stack="web">
+The `lang` attribute on the element holding the content, and `dir="auto"` for its direction.
+</If>
+
+<If stack="other">
+The framework's per-run locale on text, checked by ear with the screen reader.
+</If>
+
 ## <Rule id="l10n-per-app" description="The app language and the system language are two different facts" />
 
 Both platforms let someone point a single app at a language of its own, so the app cannot read the system language and assume that is what it is rendering in.
@@ -144,10 +178,11 @@ Most of this is findable without a translator, on a device, before any string is
 <Verify rule="l10n-script">The typeface covers every shipped script with a fallback chain, and the leading is a ratio rather than a point value.</Verify>
 <Verify rule="l10n-personal">One full-name field unless an outside format demands the split and `STACK.md` names it, address fields chosen after the country, and no single mask applied to every phone number.</Verify>
 <Verify rule="l10n-collate">Lists sort and section through a locale collator, and search ignores case and accents.</Verify>
+<Verify rule="l10n-content-language">Content in another language carries its language tag so the screen reader and line breaking follow it, a machine translation is marked on the text with the original one tap away and the choice remembered, names, addresses and codes stay as written, a detected language can be corrected, and other scripts and directions keep their face and direction inside their block.</Verify>
 <Verify rule="l10n-per-app">The shipped locales are declared to the system, resources sit at the widest correct dialect, and no language picker bypasses the platform API.</Verify>
 <Verify rule="l10n-change">No locale is cached at launch, no string lookup bypasses what rebuilds on a locale change, every visible string switches language without a restart, a language change keeps what was on the screen, and everything told the locale once is told it again.</Verify>
 <Verify rule="l10n-pseudo">Both passes were taken, the expanding one and the mirrored one, by whichever mechanism the stack provides, and the screen was seen under each.</Verify>
 
-<Device>`l10n-direction`, `l10n-no-mirror`, `l10n-expansion`, `l10n-script` and `l10n-pseudo` are answered on a rendered screen rather than in the resource files. A catalogue can be complete, a formatter correct and a plural resource well formed while the screen itself still clips, mirrors the wrong element, or falls back to a face that has no glyphs.</Device>
+<Device>`l10n-direction`, `l10n-no-mirror`, `l10n-expansion`, `l10n-script` and `l10n-pseudo` are answered on a rendered screen rather than in the resource files. A catalogue can be complete, a formatter correct and a plural resource well formed while the screen itself still clips, mirrors the wrong element, or falls back to a face that has no glyphs. `l10n-content-language` is answered by ear: the screen reader reading a review in another language aloud is the only test that hears an untagged run.</Device>
 
 </Check>

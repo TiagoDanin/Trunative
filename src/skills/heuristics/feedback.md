@@ -23,6 +23,8 @@ People expect what they did to work, so the outcome worth reporting is failure. 
 
 Confirm explicitly only what the screen cannot show: money moved, something went to another person, a file left the device, an item was removed from a list the user is no longer looking at. Anything irreversible or financial takes the confirmation `state-queued` already specifies, which no transient rung can be.
 
+A completion screen, the full-screen moment after a booking, a transfer, a sign-up or the end of a lesson, is that confirmation at its largest, and it earns the screen only by what it says. It states what is now true and what happens next, with a time where there is one: arrives Thursday, leaves the account tomorrow, starts at nine. It offers the action that follows from it, and it costs one tap to leave. A celebration drawn on top of that sentence is fine, one drawn instead of it is not, and none of it holds the person still (`motion-blocks`).
+
 ## <Rule id="fb-confirm-test" description="Uncommon and irreversible, both at once" />
 
 Destructive is not the test. Both halves have to be true before an alert stops the user: the user does this rarely, and nothing brings it back. Deleting one photo out of ten thousand is destructive, common and recoverable, so it happens and offers undo. Deleting the account is rare and final, so it interrupts.
@@ -113,7 +115,7 @@ Use the system prompt and nothing else. The system rate limits it, at most 3 per
 <Check>
 
 <Verify rule="fb-ladder">Every message takes the quietest rung that works, no actionable Android message is a `Toast`, no transient message offers more than 1 action, and the only dialog standing in front of the first screen is the one `onboard-ask-order` allows. A flow raising more than one blocking dialog is reported as a problem with the flow rather than counted as a violation.</Verify>
-<Verify rule="fb-silent-success">No success message duplicates a result the screen already shows, and the ones that remain are for outcomes the screen cannot show.</Verify>
+<Verify rule="fb-silent-success">No success message duplicates a result the screen already shows, the ones that remain are for outcomes the screen cannot show, and a completion screen states what is now true and what happens next, offers the next action and leaves in one tap.</Verify>
 <Verify rule="fb-confirm-test">Every alert that stops the user is both rare and irreversible, counting effects on other people and on running systems as irreversible, and everything else acts and offers undo.</Verify>
 <Verify rule="fb-undo">Undo either holds the work for a window written down in `STACK.md` or commits into a place the user can restore from, the message offering it never outlives that window, and it is reachable without a system gesture.</Verify>
 <Verify rule="fb-place">Each message sits at the smallest scope that contains its cause, nothing that fits beside a control is raised as a dialog, and a message that has to name its cause is inline rather than transient.</Verify>

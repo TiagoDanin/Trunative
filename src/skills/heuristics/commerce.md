@@ -72,7 +72,7 @@ The cart is where the person has already decided. Anything added to it is compet
 - The checkout action is pinned above the bottom inset and visible at rest, whatever the suggestions above it hold (`layout-fold`, `layout-chrome`).
 - Suggestions sit below the lines the person chose, never between the lines and the total, and they are a secondary emphasis: there is one primary on the screen, and it is checkout (`button-one-primary`).
 - A suggested item added from the cart follows `shop-add`, in place, without opening a new page.
-- Something added by default, a bag fee, a tip, cutlery, insurance, is a line the person can see and remove, and anything that costs money starts off.
+- Something added by default, a bag fee, a tip, an extended warranty, insurance, is a line the person can see and remove, and anything that costs money starts off.
 
 ## <Rule id="shop-substitute" severity="p1" description="What happens to a missing item is the person's choice, made before ordering, and reported line by line" />
 
