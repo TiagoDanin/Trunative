@@ -75,6 +75,7 @@ The blurred oval behind the form, the glow under the logo tile, the three gradie
 - Where the real image does not exist yet, draw the subject, hold the frame it will occupy (`icon-reserve`), or leave the space. A placeholder that depicts nothing is worse than an honest gap, because it looks finished.
 - Texture is not subject. A pattern, a grain pass or a wash over artwork that already shows something is treatment. The same wash on its own is the defect.
 - Abstract is allowed where the product is abstract, and the test does not care about style: somebody who has not seen the app can say what the picture shows.
+- A drawing has to be good enough to be the thing. A trolley that reads as a tangle of lines, grass that reads as a smear, a jar that reads as a battery: each one is worse than the plain symbol from the icon set or a held photo frame, because it is the largest element on the screen and it looks broken. When the subject cannot be drawn well at that size, draw less of it, a silhouette or the one recognisable part, or use the photograph slot.
 
 ## <Rule id="icon-stand-in" description="A domain with pictures in it gets pictures" />
 

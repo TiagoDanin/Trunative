@@ -208,8 +208,15 @@ test('a brief with no context, or with a context key missing, fails it', async (
 	}
 })
 
-test('a primary action is one label, two labels joined by or, or none with its reason', async () => {
-	for (const value of ['"Start" or "Stop"', 'none, the screen is read and each row opens its own detail']) {
+test('a primary action is one label, two labels joined by or or then, a conditional label, a gesture, or none with its reason', async () => {
+	for (const value of [
+		'"Start" or "Stop"',
+		'"Start" then "Stop"',
+		'"Pay {total} with Pix"',
+		'"Try again" when offline',
+		'gesture: swipe up for the next departure',
+		'none, the screen is read and each row opens its own detail',
+	]) {
 		assert.equal(await checks(BRIEF.replace('"Set alert"', value)), 0, value)
 	}
 	for (const value of [
@@ -217,6 +224,8 @@ test('a primary action is one label, two labels joined by or, or none with its r
 		'none',
 		'"Open a row; the screen reads and carries no filled button"',
 		'"Start, or Stop when the machine is running"',
+		'"Try again" when',
+		'gesture:',
 	]) {
 		assert.equal(await checks(BRIEF.replace('"Set alert"', value)), 1, value)
 	}

@@ -6,7 +6,7 @@ Values already written into `DESIGN.md`, the spacing scale and the screen margin
 
 Neighbouring rules own the parts that are not geometry: thumb zones are `touch-reach`, the system gesture strips are `touch-gestures`, the keyboard is `touch-keyboard`, and long collections belong to `heuristics/lists.md`.
 
-Rules in this file, in order: `layout-insets`, `layout-grid`, `layout-grouping`, `layout-shape`, `layout-column`, `layout-width`, `layout-chrome`, `layout-overlays`, `layout-axis`, `layout-fold`, `layout-short`, `layout-orientation`.
+Rules in this file, in order: `layout-insets`, `layout-system-bars`, `layout-grid`, `layout-grouping`, `layout-shape`, `layout-column`, `layout-width`, `layout-chrome`, `layout-overlays`, `layout-axis`, `layout-fold`, `layout-short`, `layout-orientation`.
 
 ## `layout-insets` The safe area is geometry, not padding added at the end [P1]
 
@@ -23,6 +23,30 @@ A pinned bar carries the inset inside itself: its own height for the controls, p
 A screen that hides the system bars, a player, a game, a camera, still keeps the cutout inset for anything read or tapped, and it restores the bars when the person leaves it. Hidden bars that stay hidden on the next screen are a defect on a screen that never asked for them.
 
 Four edges, not one. The top holds the status bar and the cutout or Dynamic Island. The bottom holds the home indicator or the navigation bar. The side insets are zero in portrait and stop being zero once the phone is turned, where they are applied to both sides and the cutout is on one of them. Scrolling content may pass under any of them and often should, because the content ending in a hard line above the bar wastes the screen. Anything read or tapped may not, and that includes the last row of a list, the buttons inside a sheet, and a snackbar.
+
+## `layout-system-bars` Each system bar is solid or transparent on purpose, and its colour continues the surface beside it
+
+`layout-insets` reads how tall the status bar and the navigation bar are. This rule decides what they look like, per screen, because the system draws them over whatever the app leaves there and the default is rarely what the screen needs.
+
+Each of the two bars gets three decisions, written in the wireframe beside the band it labels and set in code per screen:
+
+- **Solid or transparent.** Solid means the band is filled with a colour role; transparent means the app's content or background runs underneath it.
+- **Which colour.** A solid band takes the role of the surface it touches: the status bar continues the top bar or the hero under it, the navigation bar continues the tab bar, the action bar, the composer or the sheet at the bottom. It never takes a colour of its own.
+- **Icon brightness.** Light icons on a dark band or dark media, dark icons on a light one, measured against what actually sits under them, scrim included.
+
+What it usually looks like on a phone:
+
+- A screen with a top bar or a coloured header: status bar transparent over that surface, so the header runs to the top edge in one piece.
+- A screen with a tab bar or a pinned bottom action: navigation bar in the same colour as that bar, so the bar and the system area read as one block. A bottom bar in one colour above a navigation area in another is the defect people notice first.
+- Full-bleed media, a camera, a video, a story, a map: status bar transparent over a scrim with light icons. The navigation bar stays transparent only when nothing is tapped at the bottom; when a reply field, a composer or controls sit there, it turns solid in their colour so the gesture strip does not cut through the media under the control.
+- A sheet or a dialog that reaches the bottom becomes the surface the navigation bar continues while it is up, and the bar returns to the screen's colour when it closes.
+- A screen whose top is a different appearance from the one before it, a dark camera after a light list, switches the icon brightness on entry and back on exit.
+
+The defects are always one of three: a band in a colour nothing else on the screen uses, a black or white strip between the bar and the app's own surface, or icons that disappear into the ground. Each one is invisible in a design file drawn without the bars and obvious on the first device.
+
+**Default.** Status bar transparent over the top surface, navigation bar continuing the bottom surface, icon brightness set for both.
+**Exception.** A product that hides the bars for an immersive surface (a game, a player in landscape, a reader in focus mode), restoring them on exit as `layout-insets` already says.
+**Reason required.** Which surface is immersive and how the person brings the bars back.
 
 ## `layout-grid` One spacing scale, and every gap sits on it
 
@@ -84,6 +108,12 @@ The padding is derived, not typed. Measure the bar, add the inset, and let the s
 
 Chrome is rationed as well as cleared. Besides the system bars, a phone screen carries at most two persistent bars, and each one earns its height by doing something on every screen it appears on. A third is the sign that navigation, a banner and a player are all claiming the same edge, and the one to cut is the one that does nothing on the screen currently in front of the user.
 
+What counts as one bar:
+
+- A mini player or an accessory docked to the tab bar is part of the tab bar, one block on one edge, because it is drawn and reported as one.
+- A chip or filter row that scrolls away with the content is content, not a bar. Pinned under the top bar it joins the top bar and they count as one.
+- A composer, a checkout action bar or a reply field on a pushed screen takes the bottom edge, and the tab bar steps aside on that screen rather than stacking under it (`button-tabs`). Stacking both is the third bar.
+
 ## `layout-overlays` A transient surface stacks above the pinned ones
 
 A snackbar, a toast or an undo bar arrives over a screen that already has a bottom bar, a floating button, and an inset under both. The stacking order is the whole rule: the transient surface sits above every pinned bar and above the bottom inset, and it pushes the floating button up rather than covering it.
@@ -131,6 +161,7 @@ Reflowing means the primary action stays visible without hunting for it, and the
 Review answers each of these against the code, pointing at the line:
 
 - The screen takes its insets from the framework's inset source rather than from a constant, and nothing readable or tappable sits outside them. Both the status bar and the navigation bar have a colour and icon brightness set against this screen's own background, a full-height sheet clears the top inset as well as the bottom one, and a screen that hides the bars keeps the cutout inset and restores the bars on exit. `layout-insets`
+- The wireframe labels both system bars as solid or transparent with their colour role and icon brightness, a solid band takes the colour of the surface it touches, no band carries a colour nothing else on the screen uses, no strip of another colour sits between a bar and the app's own surface, and icons are legible against what sits under them, scrim included. `layout-system-bars`
 - Every gap is a multiple of 4, and of 8 above 16, the text column starts at the same margin on every screen outside full-bleed content and the platform list containers, and the screen uses about five distinct vertical gaps rather than a new one per component. `layout-grid`
 - Grouping comes from space before containers, no container is nested inside another that already groups the same content, and the row height and section gap are the numbers this kind of screen uses everywhere else. `layout-grouping`
 - Radius comes from the shape language rather than per component, the screen holds at most three radius values, a nested surface curves less than the one around it, and depth arrives through one of shadow, outline or fill rather than all three. `layout-shape`
@@ -143,13 +174,13 @@ Review answers each of these against the code, pointing at the line:
 - Landscape reflows, with the action still visible and the measure still capped at the shorter height, or is locked by a decision of the user recorded in `STACK.md`, and the screen still holds where the platform ignores the lock. `layout-orientation`
 - A lone element meant to be centred between unequal groups sits on the screen's centre line, through equal flanks or an overlay across the full width. `layout-axis`
 
-`layout-insets`, `layout-width`, `layout-fold` and `layout-chrome` are answered on a rendered screen at the narrow end of the range, on a device using three-button navigation as well as gestures. The token table and the component tree both look correct while the bottom bar is sitting under the navigation bar. `layout-chrome` needs the screen scrolled to both ends with enough content to reach the pinned bars, because the collision is invisible until a row arrives under one of them, and the top bar hides the first row as readily as the bottom bar hides the last. `layout-short` needs the opposite render, the screen at its shortest content, which is the only length at which the action drifts into the middle.
+`layout-system-bars` is checked on a device in both appearances and both navigation modes, because gesture and three-button navigation draw different bands. `layout-insets`, `layout-width`, `layout-fold` and `layout-chrome` are answered on a rendered screen at the narrow end of the range, on a device using three-button navigation as well as gestures. The token table and the component tree both look correct while the bottom bar is sitting under the navigation bar. `layout-chrome` needs the screen scrolled to both ends with enough content to reach the pinned bars, because the collision is invisible until a row arrives under one of them, and the top bar hides the first row as readily as the bottom bar hides the last. `layout-short` needs the opposite render, the screen at its shortest content, which is the only length at which the action drifts into the middle.
 
 ## Reaches
 
 The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
 
-- `heuristics/buttons.md`: `button-fab`
+- `heuristics/buttons.md`: `button-fab`, `button-tabs`
 - `heuristics/forms.md`: `form-column`
 - `heuristics/lists.md`: `list-virtualise`, `list-end`
 - `heuristics/scrolling.md`: `scroll-nest`, `scroll-affordance`

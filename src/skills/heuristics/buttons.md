@@ -59,7 +59,7 @@ Write the verb of the action and the object it acts on: Send, Pay 42, Delete pho
 
 Rest and pressed are covered by the touch rules. The two that get skipped:
 
-**Disabled.** A primary that starts disabled at the top of an empty form gives the user nothing to act on and no reason why. Prefer leaving it enabled and answering on tap with what is still missing, pointed at the field that is missing it. Where disabled is genuinely right, the reason has to be visible next to it, not inferred.
+**Disabled.** A primary that starts disabled at the top of an empty form gives the user nothing to act on and no reason why. Prefer leaving it enabled and answering on tap with what is still missing, pointed at the field that is missing it. Where disabled is genuinely right, the reason has to be visible next to it, not inferred. A send control beside an empty composer is the case where disabled is right and the empty field is the visible reason; how a composer handles it is `chat-composer`.
 
 Disabled also promises that something the person can do will enable it. A control nothing on this screen can ever enable, in the configuration the person is in, is not disabled, it is absent: a pager over a single page, a sort control over one item, a next and previous pair with nowhere to go, a range the data source does not keep. Offering an option the system cannot answer is the same defect one step later, when the person picks it and gets an empty result that looks like no data.
 
@@ -87,10 +87,10 @@ Three to five destinations, and they are the top level of the app rather than a 
 
 - Every destination is labelled. Icon-only navigation asks the user to guess, and the guess is wrong often enough to matter.
 - The selected destination is obvious without relying on color alone: an indicator, a filled icon variant, a weight change. Selection changes how an item is drawn and never where it sits: the selected icon, label and indicator occupy the same box as the resting ones, so nothing in the bar moves when the selection does.
-- The set does not change from screen to screen, and it does not vanish when a screen is pushed. Tabs that come and go stop being a map.
+- The set does not change from screen to screen, and it stays on screens pushed inside a tab. Tabs that come and go stop being a map. The one exception is a pushed screen that owns the bottom edge itself: a conversation with its composer, a checkout with its pay bar, full-screen media, a camera. There the bar steps aside for that screen and comes back on the way out, because stacking a composer over a tab bar is the third bar `layout-chrome` forbids.
 - An action in the middle of the bar, a raised plus, a record button, a send or a scan, is the most common way this breaks. It is a primary action standing in a destination's place: it counts under `button-one-primary` on every screen the bar appears over, it has no stack to return to, and on the one screen where it is not wanted it is still the loudest control. It belongs on the screens it acts for. Where the job is big enough to be a place, it becomes a destination whose screen opens on that action.
 - A search button set apart at the trailing end of the bar is the system's own presentation of a search destination on current iOS, not an action, and it is one of the destinations (`search-placement`).
-- Top tabs and bottom tabs on the same screen is two navigation systems arguing. Pick one.
+- Top tabs and bottom tabs on the same screen is two navigation systems arguing. Pick one. Two or three views of the same destination switched at the top, Following and For you over a feed, is a segmented switch inside that destination rather than a second tab bar, and it follows the segmented control line below.
 - A segmented control is not a tab bar. It filters or switches the view in front of the user, it holds about three options, and past that it becomes a menu or a filter screen.
 
 <Check>
@@ -102,6 +102,6 @@ Three to five destinations, and they are the top level of the app rather than a 
 <Verify rule="button-state">Disabled states explain themselves, no control is shown that nothing on the screen can enable, no option is offered that the data source cannot answer, and every button that starts work becomes unpressable and shows it, without resizing.</Verify>
 <Verify rule="button-fab">At most one FAB, holding the screen's defining action, absent on iOS, with the list underneath padded to clear it.</Verify>
 <Verify rule="button-chips">Chip selection is visible without color, chip rows scroll instead of wrapping, and no chip is doing a tab's job.</Verify>
-<Verify rule="button-tabs">Three to five labelled destinations, a selected state that is not color alone and moves nothing, no action standing in the bar in a destination's place, and one navigation system per screen.</Verify>
+<Verify rule="button-tabs">Three to five labelled destinations, a selected state that is not color alone and moves nothing, no action standing in the bar in a destination's place, one navigation system per screen, and the bar present on every pushed screen except one that owns the bottom edge with a composer, a pay bar, full-screen media or a camera.</Verify>
 
 </Check>

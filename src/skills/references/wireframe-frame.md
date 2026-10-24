@@ -14,6 +14,8 @@ Two things are kept apart here that a drawing tends to merge.
 
 **System chrome and insets** belong to the device and are read at runtime, which is `layout-insets`. The canvas reserves a band at the top and a band at the bottom only to say that content cannot use those edges. Their heights in the skeleton are placeholders for "some system area", never the height of any real status bar, cutout, gesture area or navigation bar, and no number from this file goes into a layout. A screen that has to hold on a device with a larger cutout or a three-button bar is checked for that on the device in `flow/review.md`, not here.
 
+What the two bands look like is decided here, though, because it is a decision about the screen and not about the device. Each band says in its label whether it is solid or transparent, which surface's colour it continues, and whether its icons are light or dark (`layout-system-bars`). A solid band is drawn filled like the surface it continues; a transparent one is drawn with a dashed edge and the content showing under it. A wireframe whose bands just say "status bar" has left the one decision that most often ships wrong to whoever writes the theme.
+
 Everything is greyscale by construction: four greys, one ink, and nothing else. A wireframe that acquires a colour has stopped being a wireframe, and `flow/spec.md` says why.
 
 ## Shapes
@@ -103,6 +105,12 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
     border-radius: 3px;
     background: var(--line);
   }
+  /* A system band continuing a surface is filled like it; a transparent one lets the content show and is dashed. */
+  .status.solid, .indicator.solid { background: var(--paper); }
+  .status.clear { border-bottom: 1px dashed var(--line); }
+  .indicator.clear { border-top: 1px dashed var(--line); }
+  .indicator { position: relative; }
+  .indicator > span { position: absolute; left: 16px; top: 2px; font-size: 10px; }
   .content {
     flex: 1;
     min-height: 0;
@@ -187,7 +195,7 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
 <div class="shot">
 <div class="label">Memories, default</div>
 <div class="frame">
-  <div class="status">status bar</div>
+  <div class="status clear">status bar: transparent over the ground, dark icons</div>
   <div class="content">
     <div class="bar">Memories<span class="spacer"></span><span class="caption">menu</span></div>
     <div class="scroller">
@@ -224,7 +232,7 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
     <span>Home</span><span class="on">Memories</span><span>Create</span>
     <span>Profiles</span><span>Account</span>
   </div>
-  <div class="indicator"></div>
+  <div class="indicator solid"><span>nav bar: solid, tab bar surface, dark icons</span></div>
 </div>
 </div>
 ```
@@ -233,6 +241,8 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
 
 - **The frame clips.** `.content` sets `overflow: hidden`, so anything that does not fit is cut off exactly as it would be on the device. A wireframe that scrolls its own frame hides the collision the render exists to find, which is `layout-fold` and `layout-chrome`.
 - **Fixed chrome is a sibling, not an overlay.** The tab bar sits outside `.content`. When a real screen pins something over the content instead, draw it over, and then check what it covers at the end of the scroll.
+- **The system bars are labelled.** Both bands carry solid or transparent, the surface they continue and the icon brightness, in a few words. A full-bleed screen draws its content under a `clear` band; a screen with a tab bar, a composer or a pinned action continues that surface into a `solid` navigation band.
+- **Spacing is drawn as it will be built.** A button never touches the frame's edge, the tab bar, the navigation band or another control: the screen margin and the gaps from `layout-grid` are in the drawing, because a wireframe that glues the action to its neighbours gets approved that way and built that way.
 - **Real strings only.** Type the words the screen will actually show, including the longest name and the largest count. Lorem text passes every layout and proves none, which is `copy-budget` and `copy-sample-data`.
 - **A cross means an unchosen image**, a plain `.box` means a deliberate empty slot such as an add tile, and neither ever becomes a photograph.
 - **The label names the frame, not the thinking.** The screen and its state, in the fewest words that tell two frames apart. Which shape was picked, why it beat the runner-up, and anything else settled on the way here is reasoning that happened before this file existed. Written into the drawing it becomes part of what gets looked at, and a frame that explains itself is being defended rather than read.

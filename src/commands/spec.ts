@@ -715,17 +715,25 @@ async function checkBrief(cwd: string, file: string, against: Context): Promise<
 	if (action) {
 		const at = brief.offset + action.line
 		const none = /^none\b[\s,.:;-]*(.*)$/i.exec(action.value)
-		const labels = /^"[^"]+"(\s+or\s+"[^"]+")?$/.test(action.value)
-			? [...action.value.matchAll(/"([^"]+)"/g)].map((match) => match[1]!)
+		const gesture = /^gesture:\s*(.*)$/i.exec(action.value)
+		const when = /^"[^"]+"\s+when\s+(.*)$/i.exec(action.value)
+		const labels = /^"[^"]+"(\s+(or|then)\s+"[^"]+")?(\s+when\s+[^"]+)?$/i.test(action.value)
+			? [...action.value.replace(/(")\s+when\s+[^"]*$/i, '$1').matchAll(/"([^"]+)"/g)].map((match) => match[1]!)
 			: undefined
 		if (none) {
 			if (!none[1]) {
 				add('primary action', 'none with no reason, say what the screen is for when nothing on it is pressed', at)
 			}
+		} else if (gesture) {
+			if (!gesture[1]) {
+				add('primary action', 'gesture with nothing after it, say which gesture and what it does', at)
+			}
+		} else if (when && !when[1]!.trim()) {
+			add('primary action', 'when with no condition, say when the action exists', at)
 		} else if (!labels) {
 			add(
 				'primary action',
-				'must be the label the user reads in quotes, two labels joined by "or", or none with the reason',
+				'must be the label the user reads in quotes, two labels joined by "or" or "then", a label followed by when and its condition, gesture: and the gesture, or none with the reason',
 				at,
 			)
 		} else {

@@ -18,6 +18,7 @@ Coding agents are trained mostly on desktop web. Left alone, they produce mobile
 - One design for the case where the data arrived: no shape to load into, no sentence for the empty list, and a failure that does not say what failed (`state-set`).
 - A layout that holds at the default text size and falls apart two steps up the accessibility scale, which is where a lot of people already are (`type-scaling`).
 - A dark theme that is the light one with its colours inverted, so what was a shadow is now a glow (`color-dark-composed`).
+- A palette pulled toward grey until it offends nobody, sage and sand and graphite on a cream ground, next to apps people actually keep on their first page, which are vivid (`color-vivid`).
 - Seed data chosen to flatter the layout: three short names, no zero, no null, no long string, no empty list (`copy-sample-data`).
 - A hero image filling a third of the screen and depicting nothing anybody chose (`icon-depicts`).
 
@@ -116,7 +117,7 @@ The rules the skill enforces. Most are defaults: what is right unless the job or
 
 Ten files open on every screen, because every screen has colour, text, targets, a layout, states, at least one action, words, something that moves and something drawn.
 
-**Colour** is reached through a role, never as a hex at a call site (`color-roles`). One accent means touchable and nothing else (`color-one-accent`). Dark is a second design rather than an inverted switch (`color-dark-composed`), contrast is calculated rather than eyeballed (`color-contrast`), and nothing is said by colour alone (`color-not-alone`).
+**Colour** is reached through a role, never as a hex at a call site (`color-roles`). The palette is vivid, one saturated brand hue in real areas on a clean ground, never pastel or greyed (`color-vivid`). One accent means touchable and nothing else (`color-one-accent`). Dark is a second design rather than an inverted switch (`color-dark-composed`), contrast is calculated rather than eyeballed (`color-contrast`), and nothing is said by colour alone (`color-not-alone`).
 
 **Type** comes from the platform ramp, so no component carries a literal size (`type-scale`), and the screen is rendered at the largest accessibility step before anyone calls it done (`type-scaling`). Body copy stays at a readable measure (`type-measure`) and the longest translation still fits (`type-strings`).
 
@@ -124,7 +125,7 @@ Ten files open on every screen, because every screen has colour, text, targets, 
 
 **Buttons** allow exactly one primary action per screen (`button-one-primary`), with emphasis taken from the platform's own ladder (`button-ladder`) and labels that name what will happen (`button-label`).
 
-**Layout** takes its insets from the framework at runtime rather than from a constant (`layout-insets`), keeps one column and one scrolling axis (`layout-column`), and survives the narrow device (`layout-width`). The first screenful answers what the screen is and what to do (`layout-fold`).
+**Layout** takes its insets from the framework at runtime rather than from a constant (`layout-insets`), decides each system bar as solid or transparent in the colour of the surface beside it (`layout-system-bars`), keeps one column and one scrolling axis (`layout-column`), and survives the narrow device (`layout-width`). The first screenful answers what the screen is and what to do (`layout-fold`).
 
 **States** are named before the happy path is written, all six of them (`state-set`). Loading is a placeholder shaped like the content (`state-loading`), the three empties get three different sentences (`state-empty`), errors say what failed without inventing why (`state-error`), offline is four states rather than a boolean (`state-offline`), and work in progress survives the system killing the process (`state-interrupt`).
 
