@@ -17,7 +17,7 @@ Each platform publishes a complete role scale that is optically tuned, wired to 
 
 Material publishes fifteen roles and iOS eleven styles. A single screen usually needs four of them: what this screen is, what it says, what a control is called, and what qualifies the rest. Name each one after its job.
 
-A row that shows up on two screens carries the same style in both, or the product reads as though two teams built it without speaking. Seven distinct sizes on one screen is not hierarchy, it is seven unmade decisions.
+Counting sizes, a single display figure, the big number a screen is built around, is one of them, and the tab bar's labels, which belong to the system's chrome, are not. A row that shows up on two screens carries the same style in both, or the product reads as though two teams built it without speaking. Seven distinct sizes on one screen is not hierarchy, it is seven unmade decisions.
 
 Line height is a property of the role, not of the paragraph: near 1.2 where the type is display sized, 1.4 to 1.5 for body. The ratio has to widen as the type gets smaller, which is why one global multiplier comes out wrong at both ends.
 

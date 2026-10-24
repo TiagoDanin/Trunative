@@ -27,6 +27,7 @@ A single minute figure promises a precision no courier, driver or clearing syste
 The screen is updated by a feed the app does not control. A courier's phone in a lift, a tunnel or a basement stops reporting, and the dot on the map stays exactly where it was, looking live.
 
 - Every position and every status carries the instant it was reported, and the screen shows that age once it passes the feed's normal interval (`state-stale`).
+- The live update is the information, so it is the essential case `motion-loop` allows and owes no pause control; what it owes instead is that the update moves numbers and positions in place, never the layout, and that a screen reader hears changes only at the milestones `a11y-announce` names.
 - A moving marker whose last report is old stops looking live: no pulsing, no smooth interpolation toward a guess, and a label with the age. Following it on the map is `map-follow`'s mode, and that mode ends when the data does.
 - The person's own connection dropping is a different fact from the other side going quiet, and the two are said differently: one is "you are offline", the other is "no update from the driver for 6 minutes".
 - Refreshing does not need a pull. The screen updates itself while it is open, and a manual refresh, if offered, is a second route (`list-refresh`).
