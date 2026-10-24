@@ -74,11 +74,18 @@ A screen that ships in variants, for a test between arrangements or per audience
 
 **`context`** is the moment of use, in eight fixed keys: `environment`, `posture`, `hands`, `attention`, `session_length`, `frequency`, `interruption`, `urgency`. Plain words, no numbers with units. Take it from `PRODUCT.md` where that file says it and from the task where it does not, and write `unknown` for a key nobody knows, which is an honest answer and a different one from leaving it out. `flow/explore.md` reads this block before it writes a candidate, and `comp-context` grades the screen against it. The keys are fixed for the same reason the state keys are: a free list leaves out the one that would have argued with the layout already in mind.
 
-**`primary_action`** is the label the user reads, in quotes, not an identifier. `button-label`, `copy-first-word` and `copy-case` all judge the visible string, and the comparison against the code only works on the string. One by default, which is what `button-one-primary` protects. Three other forms exist, and nothing else:
+**`primary_action`** is the label the user reads, in quotes, not an identifier. `button-label`, `copy-first-word` and `copy-case` all judge the visible string, and the comparison against the code only works on the string. One by default, which is what `button-one-primary` protects. The other forms, and nothing else:
 
 - a choice between two outcomes of equal weight names both labels, each in its own quotes, joined by `or`, and owes the reason that rule asks for;
-- a primary that changes with the state of the thing, one label while it runs and another while it is stopped, takes the same form, `"Start" or "Stop"`, and the States section of the body says which state shows which;
+- a primary that changes with the state of the thing, one label while it runs and another while it is stopped, takes the form `"Start" then "Stop"`, and the States section of the body says which state shows which;
+- a label that carries a live value writes the value as a named slot in braces, `"Pay {total} with Pix"`, `"Delete {count}"`, so the brief names the words and the code supplies the number;
+- a primary that only exists under a condition, a selection, a state, a value the person picked, a measurement crossing a threshold, writes the label followed by `when` and the condition, `"Split" when a clip is selected`, `"Try again" when offline`, `"Save point" when accuracy is under 10 m`. The rest of the time it is `none`, or what the slot shows instead, a countdown, a disabled send, which the body says;
+- a screen whose job is done by a gesture rather than a control, a feed advanced by a swipe, a map moved by a drag, writes `gesture:` and the gesture with its result, `gesture: swipe up for the next video`, and owes the visible route to the same result that `a11y-gesture` asks for;
 - a screen with no primary action, one that is read, or whose rows each lead somewhere, writes `none` followed by the reason, the way a state writes `n/a`.
+
+The forms combine with `otherwise`: `"Join the live" when a followed live is ending, otherwise gesture: swipe up for the next video`.
+
+`or`, `then`, `when`, `otherwise`, `gesture:` and `none` are keywords and stay in English whatever language the brief is written in, the way the frontmatter keys do; the labels and the conditions are in the product's language.
 
 A label is the words on the control, a few of them. A sentence in quotes explaining where the action lives is a note about the screen, and it belongs in the body under Primary action.
 

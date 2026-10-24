@@ -52,11 +52,13 @@ Operates     one tap on the figure, horizontal swipe through later departures
 Write each one from the brief, not from the previous candidate. A candidate written with another one in view comes out as a revision of it.
 
 <If agent="claude">
-Spawn three sub-agents in one message, one per lens. Each receives the brief, the context line from step 2, the lens, and the two reference files, and nothing else: not the default line, not the other lenses, not the heuristics. Each returns its five lines.
+When the task is one screen or one flow and the Agent tool is available, spawn three sub-agents in one message, one per lens. Each receives the brief, the context line from step 2, the lens, and the two reference files, and nothing else: not the default line, not the other lenses, not the heuristics. Each returns its five lines.
+
+Write them yourself, one at a time, when no Agent tool is available (you are already a sub-agent, or the harness has none), or when the work is a batch of screens where three sub-agents per screen would cost more than the screens themselves. Re-read the brief before each candidate and never quote, compare against or refer to a candidate already written. Either path is legitimate; the one taken goes in the `Path` line of step 6.
 </If>
 
 <If agent="codex,antigravity,opencode,other">
-When this harness can spawn sub-agents at all, spawn one per lens: that is an instruction, not an option to weigh against speed. Each gets the brief, the context line, the lens and the two reference files, and nothing else. Only when it cannot, write the candidates one at a time, re-reading the brief before each and never quoting, comparing against or referring to a candidate already written. The comparison happens in step 4, and doing it earlier is how three candidates become one.
+When the task is one screen or one flow and this harness can spawn sub-agents, spawn one per lens. Each gets the brief, the context line, the lens and the two reference files, and nothing else. When it cannot, or when the work is a batch of screens where three sub-agents per screen would cost more than the screens themselves, write the candidates one at a time, re-reading the brief before each and never quoting, comparing against or referring to a candidate already written. The comparison happens in step 4, and doing it earlier is how three candidates become one. The path taken goes in the `Path` line of step 6.
 </If>
 
 Heuristics stay closed during this step. The one constraint a candidate carries while it is being written is the brief: the hierarchy line, the primary action, the six states and the context.
@@ -108,7 +110,9 @@ Now open the rules. Every base file, and the extra files in the brief's `scope`.
 
 Then look at what the project already has: `.trunative/screens/*.wireframe.html`. A composition that has already won twice in this project needs a reason to win a third time, which is `comp-repeat`. Screens of one product should be recognisably related and should not be the same screen with different content.
 
-Compare them as pictures, not only as lines. Draw the candidates as rough frames side by side in one page, using the canvas in `references/wireframe-frame.md`, one `.shot` per candidate labelled A, B and C, and render it the way `flow/spec.md` renders a wireframe. Rough means blocks and real words, a few minutes each: what is being compared is where the weight sits on the first screenful, and five lines of text hide that as well as code does. The page is scratch, so write it outside `.trunative/screens/` and do not keep it. When the harness cannot show an image, say so and judge on the lines.
+Compare them as pictures when the screen is being decided on its own. Draw the candidates as rough frames side by side in one page, using the canvas in `references/wireframe-frame.md`, one `.shot` per candidate labelled A, B and C, and render it the way `flow/spec.md` renders a wireframe. Rough means blocks and real words, a few minutes each: what is being compared is where the weight sits on the first screenful, and five lines of text hide that as well as code does. The page is scratch, so write it outside `.trunative/screens/` and do not keep it.
+
+Judge on the lines instead when the harness cannot show an image, or when the work is a batch of screens, several screens or several one-screen apps decided in one pass, and the rendered wireframe of the winner will be looked at anyway. Lines are enough to compare structure as long as each candidate's `Dominant` and `Action` are concrete; what they cannot show is weight, so the winner's wireframe is where weight gets checked, and a winner whose render contradicts its lines goes back to this step. Say which was used in the `Path` line.
 
 A candidate that breaks a rule is not dropped for that alone. Ask whether the break is in the composition or in a detail: a primary action out of reach is the composition, and a row that would need a taller hit area is a detail build settles.
 
@@ -126,8 +130,9 @@ Distance     A/B 5, A/C 4, B/C 3
 Default used no, it competed as A and lost
 Chosen       B, because the next departure is the whole job and A buries it in a list
 Lost         A reads as a schedule to study, C hides later departures behind a gesture
+Path         sub-agents, compared as pictures
 ```
 
-`Default`, `Context`, `Candidates`, `Distance`, `Chosen` and `Lost` are required, and `Distance` counts all three pairs as `A/B`, `A/C` and `B/C`. The gate in `flow/spec.md` adds a `Gate` line under them once it has been asked or skipped.
+`Default`, `Context`, `Candidates`, `Distance`, `Chosen` and `Lost` are required, and `Distance` counts all three pairs as `A/B`, `A/C` and `B/C`. `Path` says how the candidates were written, by sub-agents or sequentially, and how they were compared, as pictures or as lines, with the reason when it is not the first of each: a batch, no sub-agent tool, no image. The gate in `flow/spec.md` adds a `Gate` line under them once it has been asked or skipped.
 
 Then return to `flow/spec.md` and draw the chosen candidate. The hierarchy in the brief is updated when the winner reordered it, since the brief is the contract and this step is allowed to change its mind.

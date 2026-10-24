@@ -41,7 +41,7 @@ Where the subject has a shape, drawing it is a candidate for being the screen ra
 
 If the user needs the values themselves, a list beats a chart: the figures are exact and the reader can move through them. A chart is for a trend over time, a comparison across categories, or a part against a whole. One value inside a known range is a labelled number or a gauge, and a gauge states its current value and both endpoints.
 
-Use bar, line and point marks, which need no explanation. A chart shape the reader has to learn arrives with the sentence that teaches it, or it does not ship. Where several charts show the same data, keep one type, one set of colors and one layout across them, because a changed encoding reads as changed data.
+Use bar, line and point marks, which need no explanation. A unit chart, one mark per item, seats in a hemicycle, dots for votes, icons for people, is legitimate where the count is small and each unit is a real thing, and it owes three things the bar chart gets for free: every unit sits on one grid or one arc with equal spacing, filled, empty and each other state look different in shape as well as colour (a check, a cross, a hollow ring), and a legend gives the count of each state in words beside the marks. A chart shape the reader has to learn arrives with the sentence that teaches it, or it does not ship. Where several charts show the same data, keep one type, one set of colors and one layout across them, because a changed encoding reads as changed data.
 
 ## <Rule id="data-chart-scale" description="The chart carries its own axis, units and baseline" />
 

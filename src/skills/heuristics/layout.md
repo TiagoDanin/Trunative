@@ -48,6 +48,32 @@ A screen that hides the system bars, a player, a game, a camera, still keeps the
 
 Four edges, not one. The top holds the status bar and the cutout or Dynamic Island. The bottom holds the home indicator or the navigation bar. The side insets are zero in portrait and stop being zero once the phone is turned, where they are applied to both sides and the cutout is on one of them. Scrolling content may pass under any of them and often should, because the content ending in a hard line above the bar wastes the screen. Anything read or tapped may not, and that includes the last row of a list, the buttons inside a sheet, and a snackbar.
 
+## <Rule id="layout-system-bars" evidence="device" description="Each system bar is solid or transparent on purpose, and its colour continues the surface beside it" />
+
+`layout-insets` reads how tall the status bar and the navigation bar are. This rule decides what they look like, per screen, because the system draws them over whatever the app leaves there and the default is rarely what the screen needs.
+
+Each of the two bars gets three decisions, recorded in the wireframe in a comment beside the band it describes (the band itself is drawn as the real bar) and set in code per screen:
+
+- **Solid or transparent.** Solid means the band is filled with a colour role; transparent means the app's content or background runs underneath it.
+- **Which colour.** A solid band takes the role of the surface it touches: the status bar continues the top bar or the hero under it, the navigation bar continues the tab bar, the action bar, the composer or the sheet at the bottom. It never takes a colour of its own.
+- **Icon brightness.** Light icons on a dark band or dark media, dark icons on a light one, measured against what actually sits under them, scrim included.
+
+What it usually looks like on a phone:
+
+- A screen with a top bar or a coloured header: status bar transparent over that surface, so the header runs to the top edge in one piece. On a current device a transparent band over a header and a solid band in the header's colour look the same; declare it transparent, which is what edge to edge draws, and keep solid for a band that has a fill of its own.
+- A screen with a tab bar or a pinned bottom action: navigation bar in the same colour as that bar, so the bar and the system area read as one block. A bottom bar in one colour above a navigation area in another is the defect people notice first.
+- Full-bleed media, a camera, a video, a story, a map: status bar transparent over a scrim with light icons. The navigation bar stays transparent only when nothing is tapped at the bottom; when a reply field, a composer or controls sit there, it turns solid in their colour so the gesture strip does not cut through the media under the control.
+- A screen with nothing pinned at the bottom: the navigation bar is transparent over the screen's own ground, which reads as the same surface, and the last rows scroll under it with the inset as padding.
+- A sheet or a dialog that reaches the bottom becomes the surface the navigation bar continues while it is up, and the bar returns to the screen's colour when it closes.
+- A player or a media band at the top that is not full-bleed, a 16:9 video above a chat, a hero image: the status bar is transparent over it with light icons, so the media runs to the top edge the way a coloured header does.
+- A screen whose top is a different appearance from the one before it, a dark camera after a light list, switches the icon brightness on entry and back on exit.
+
+The defects are always one of three: a band in a colour nothing else on the screen uses, a black or white strip between the bar and the app's own surface, or icons that disappear into the ground. Each one is invisible in a design file drawn without the bars and obvious on the first device.
+
+**Default.** Status bar transparent over the top surface, navigation bar continuing the bottom surface, icon brightness set for both.
+**Exception.** A product that hides the bars for an immersive surface (a game, a player in landscape, a reader in focus mode), restoring them on exit as `layout-insets` already says.
+**Reason required.** Which surface is immersive and how the person brings the bars back.
+
 ## <Rule id="layout-grid" description="One spacing scale, and every gap sits on it" />
 
 Every value is a multiple of 4, and a multiple of 8 once it is above 16: 4, 8, 12, 16, then 24, 32, 40, 48, 56, 64. A 22 or a 35 landing between those steps is not a fine adjustment, it is a value that came from nudging one component until it looked right, and the next person has nothing to reuse.
@@ -108,6 +134,12 @@ The padding is derived, not typed. Measure the bar, add the inset, and let the s
 
 Chrome is rationed as well as cleared. Besides the system bars, a phone screen carries at most two persistent bars, and each one earns its height by doing something on every screen it appears on. A third is the sign that navigation, a banner and a player are all claiming the same edge, and the one to cut is the one that does nothing on the screen currently in front of the user.
 
+What counts as one bar:
+
+- A mini player or an accessory docked to the tab bar is part of the tab bar, one block on one edge, because it is drawn and reported as one.
+- A chip or filter row that scrolls away with the content is content, not a bar. Pinned under the top bar it joins the top bar and they count as one.
+- A composer, a checkout action bar or a reply field on a pushed screen takes the bottom edge, and the tab bar steps aside on that screen rather than stacking under it (`button-tabs`). Stacking both is the third bar.
+
 ## <Rule id="layout-overlays" description="A transient surface stacks above the pinned ones" />
 
 A snackbar, a toast or an undo bar arrives over a screen that already has a bottom bar, a floating button, and an inset under both. The stacking order is the whole rule: the transient surface sits above every pinned bar and above the bottom inset, and it pushes the floating button up rather than covering it.
@@ -122,7 +154,7 @@ A modal follows the same order with a scrim under it. The scrim sits on the topm
 
 A title, a selector or a figure placed between a group on the leading side and a group on the trailing side is centred on the screen, whatever the two groups hold. Put it in the space the groups leave and it sits wherever their difference in width pushes it: one icon on the left and three on the right drags it left, and it moves again the moment a group gains or loses an item. The eye reads the centre of the screen, and an element slightly off it reads as a mistake rather than as a choice.
 
-The platforms already do it this way. The iOS navigation bar centres its title on the bar, and Material's centre-aligned top app bar does the same, so a stock bar is correct and a hand-built row is where it breaks. Give both flanks the width of the wider one, or lay the centred element over the full width with the groups on either side of it, and let it truncate before it moves off the axis.
+The platforms already do it this way. The iOS navigation bar centres its title on the bar, and Material's centre-aligned top app bar does the same, so a stock bar is correct and a hand-built row is where it breaks. The most common hand-built case is the top bar itself: a back arrow on one side, one or two actions on the other, and a title laid out with `justify-content: space-between` that lands a few points off centre on every screen. Give both flanks the width of the wider one, or lay the centred element over the full width with the groups on either side of it, and let it truncate before it moves off the axis. Where a labelled back control would leave the title too little room, the label goes and the chevron stays, its destination kept in the control's accessible name, which is what iOS itself does with a long title. A title aligned to the start of the bar, Material's small top app bar, is not centred and owes nothing to this rule; it is a choice made for the whole app, not a way out on one screen.
 
 ## <Rule id="layout-fold" evidence="device" description="The first screenful answers what this is and what to do" />
 
@@ -153,6 +185,7 @@ Reflowing means the primary action stays visible without hunting for it, and the
 <Check>
 
 <Verify rule="layout-insets">The screen takes its insets from the framework's inset source rather than from a constant, and nothing readable or tappable sits outside them. Both the status bar and the navigation bar have a colour and icon brightness set against this screen's own background, a full-height sheet clears the top inset as well as the bottom one, and a screen that hides the bars keeps the cutout inset and restores the bars on exit.</Verify>
+<Verify rule="layout-system-bars">The wireframe draws both system bars as real bars and records each as solid or transparent, with its colour role and icon brightness, in a comment beside it rather than as visible text, a solid band takes the colour of the surface it touches, no band carries a colour nothing else on the screen uses, no strip of another colour sits between a bar and the app's own surface, and icons are legible against what sits under them, scrim included.</Verify>
 <Verify rule="layout-grid">Every gap is a multiple of 4, and of 8 above 16, the text column starts at the same margin on every screen outside full-bleed content and the platform list containers, and the screen uses about five distinct vertical gaps rather than a new one per component.</Verify>
 <Verify rule="layout-grouping">Grouping comes from space before containers, no container is nested inside another that already groups the same content, and the row height and section gap are the numbers this kind of screen uses everywhere else.</Verify>
 <Verify rule="layout-shape">Radius comes from the shape language rather than per component, the screen holds at most three radius values, a nested surface curves less than the one around it, and depth arrives through one of shadow, outline or fill rather than all three.</Verify>
@@ -165,6 +198,6 @@ Reflowing means the primary action stays visible without hunting for it, and the
 <Verify rule="layout-orientation">Landscape reflows, with the action still visible and the measure still capped at the shorter height, or is locked by a decision of the user recorded in `STACK.md`, and the screen still holds where the platform ignores the lock.</Verify>
 <Verify rule="layout-axis">A lone element meant to be centred between unequal groups sits on the screen's centre line, through equal flanks or an overlay across the full width.</Verify>
 
-<Device>`layout-insets`, `layout-width`, `layout-fold` and `layout-chrome` are answered on a rendered screen at the narrow end of the range, on a device using three-button navigation as well as gestures. The token table and the component tree both look correct while the bottom bar is sitting under the navigation bar. `layout-chrome` needs the screen scrolled to both ends with enough content to reach the pinned bars, because the collision is invisible until a row arrives under one of them, and the top bar hides the first row as readily as the bottom bar hides the last. `layout-short` needs the opposite render, the screen at its shortest content, which is the only length at which the action drifts into the middle.</Device>
+<Device>`layout-system-bars` is checked on a device in both appearances and both navigation modes, because gesture and three-button navigation draw different bands. `layout-insets`, `layout-width`, `layout-fold` and `layout-chrome` are answered on a rendered screen at the narrow end of the range, on a device using three-button navigation as well as gestures. The token table and the component tree both look correct while the bottom bar is sitting under the navigation bar. `layout-chrome` needs the screen scrolled to both ends with enough content to reach the pinned bars, because the collision is invisible until a row arrives under one of them, and the top bar hides the first row as readily as the bottom bar hides the last. `layout-short` needs the opposite render, the screen at its shortest content, which is the only length at which the action drifts into the middle.</Device>
 
 </Check>
