@@ -83,7 +83,9 @@ A screen that ships in variants, for a test between arrangements or per audience
 - a screen whose job is done by a gesture rather than a control, a feed advanced by a swipe, a map moved by a drag, writes `gesture:` and the gesture with its result, `gesture: swipe up for the next video`, and owes the visible route to the same result that `a11y-gesture` asks for;
 - a screen with no primary action, one that is read, or whose rows each lead somewhere, writes `none` followed by the reason, the way a state writes `n/a`.
 
-`or`, `then`, `when`, `gesture:` and `none` are keywords and stay in English whatever language the brief is written in, the way the frontmatter keys do; the labels and the conditions are in the product's language.
+The forms combine with `otherwise`: `"Join the live" when a followed live is ending, otherwise gesture: swipe up for the next video`.
+
+`or`, `then`, `when`, `otherwise`, `gesture:` and `none` are keywords and stay in English whatever language the brief is written in, the way the frontmatter keys do; the labels and the conditions are in the product's language.
 
 A label is the words on the control, a few of them. A sentence in quotes explaining where the action lives is a note about the screen, and it belongs in the body under Primary action.
 
