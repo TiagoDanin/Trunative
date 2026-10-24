@@ -11,7 +11,7 @@ Each platform publishes a complete role scale that is optically tuned, wired to 
 - Text reaches the screen through a style: `MaterialTheme.typography.bodyLarge`, `.font(.body)`, `Theme.of(context).textTheme`. A size typed into a component is a defect even when the value happens to be right.
 - The unit belongs to the platform as well. Android text is `sp`, and `dp` freezes it. On iOS, `.system(size:)` with no text style behind it is the identical failure in another language.
 - Body lands at 16sp or 17pt. Eleven is the floor, and it belongs to text at the margin of meaning, never to something a user has to read in order to act.
-- When the readers are older or the app lives outdoors, move the whole ramp up rather than granting one role an exception.
+- When the readers are older or the app lives outdoors, move the whole ramp up one step rather than granting one role an exception. Every role moves together, so a button label stays the label role of the moved ramp; title-size type inside a control is not the ramp moving, it is a control dressed as a headline.
 
 ## <Rule id="type-roles" description="About four jobs per screen" />
 
