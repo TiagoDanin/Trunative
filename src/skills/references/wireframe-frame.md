@@ -14,7 +14,7 @@ Two things are kept apart here that a drawing tends to merge.
 
 **System chrome and insets** belong to the device and are read at runtime, which is `layout-insets`. The canvas reserves a band at the top and a band at the bottom only to say that content cannot use those edges. Their heights in the skeleton are placeholders for "some system area", never the height of any real status bar, cutout, gesture area or navigation bar, and no number from this file goes into a layout. A screen that has to hold on a device with a larger cutout or a three-button bar is checked for that on the device in `flow/review.md`, not here.
 
-What the two bands look like is decided here, though, because it is a decision about the screen and not about the device. Each band says in its label whether it is solid or transparent, which surface's colour it continues, and whether its icons are light or dark (`layout-system-bars`). A solid band is drawn filled like the surface it continues; a transparent one is drawn with a dashed edge and the content showing under it. A wireframe whose bands just say "status bar" has left the one decision that most often ships wrong to whoever writes the theme.
+What the two bands look like is decided here, though, because it is a decision about the screen and not about the device. Both are drawn as the real bars, in the greys: the status bar with its time, signal, wifi and battery, the navigation area with its home indicator (or the three buttons, where the screen is checked against them). A solid band is filled like the surface it continues; a transparent one has no fill, sits over the content or inside the header that runs under it, and its icons take the brightness of what is beneath them, ink over light content and paper over dark. Nothing is written inside a band: the decision, solid or transparent, which surface's colour it continues and the icon brightness (`layout-system-bars`), goes in an HTML comment directly above each band, where the file records it and the render does not show it. A wireframe with a word written where the clock should be is a diagram of a phone, not a phone.
 
 Everything is greyscale by construction: four greys, one ink, and nothing else. A wireframe that acquires a colour has stopped being a wireframe, and `flow/spec.md` says why.
 
@@ -88,32 +88,31 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
     overflow: hidden;
     position: relative;
   }
+  /* The real system bars, in grey. Icons are ink by default and paper with .on-dark. */
   .status, .indicator {
     flex: none;
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: var(--mute);
-    font-size: 11px;
+    color: var(--ink);
   }
-  .status { height: 59px; }
-  .indicator { height: 34px; }
+  .status { height: 59px; justify-content: space-between; padding: 0 28px 0 40px; font-size: 15px; font-weight: 600; }
+  .status .sys { display: flex; gap: 6px; align-items: center; }
+  .status .sys i { display: block; height: 11px; border-radius: 2px; background: currentColor; }
+  .status .sys .sig { width: 17px; }
+  .status .sys .wifi { width: 15px; border-radius: 8px 8px 2px 2px; }
+  .status .sys .bat { width: 25px; border-radius: 3px; }
+  .indicator { height: 34px; justify-content: center; }
   .indicator::after {
     content: "";
     width: 140px;
     height: 5px;
     border-radius: 3px;
-    background: var(--line);
+    background: currentColor;
   }
-  /* A system band continuing a surface is filled like it; a transparent one lets the content show and is dashed. */
+  /* A solid band is filled like the surface it continues; a transparent one has no fill and sits over what runs under it. */
   .status.solid, .indicator.solid { background: var(--paper); }
-  /* A band continuing a dark surface (a story's reply strip, a camera) is drawn in ink. */
-  .status.solid.dark, .indicator.solid.dark { background: var(--ink); color: var(--fill); }
-  .status.clear { border-bottom: 1px dashed var(--line); }
-  .indicator.clear { border-top: 1px dashed var(--line); }
-  .indicator { position: relative; }
-  .indicator > span { position: absolute; left: 0; right: 0; top: 4px; line-height: 1; text-align: center; font-size: 10px; }
-  .indicator:has(> span) { align-items: flex-end; padding-bottom: 7px; }
+  .status.solid.dark, .indicator.solid.dark { background: var(--ink); }
+  .on-dark, .dark { color: var(--paper); }
   .content {
     flex: 1;
     min-height: 0;
@@ -197,7 +196,8 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
 <div class="shot">
 <div class="label">Memories, default</div>
 <div class="frame">
-  <div class="status clear">status bar: transparent over the ground, dark icons</div>
+  <!-- status: transparent over the ground, dark icons -->
+  <div class="status clear"><span>9:41</span><span class="sys"><i class="sig"></i><i class="wifi"></i><i class="bat"></i></span></div>
   <div class="content">
     <div class="bar">Memories<span class="spacer"></span><span class="caption">menu</span></div>
     <div class="scroller">
@@ -234,7 +234,8 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
     <span>Home</span><span class="on">Memories</span><span>Create</span>
     <span>Profiles</span><span>Account</span>
   </div>
-  <div class="indicator solid"><span>nav bar: solid, tab bar surface, dark icons</span></div>
+  <!-- nav: solid, continues the tab bar surface, dark indicator -->
+  <div class="indicator solid"></div>
 </div>
 </div>
 ```
@@ -243,7 +244,7 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
 
 - **The frame clips.** `.content` sets `overflow: hidden`, so anything that does not fit is cut off exactly as it would be on the device. A wireframe that scrolls its own frame hides the collision the render exists to find, which is `layout-fold` and `layout-chrome`.
 - **Fixed chrome is a sibling, not an overlay.** The tab bar sits outside `.content`. When a real screen pins something over the content instead, draw it over, and then check what it covers at the end of the scroll.
-- **The system bars are labelled.** Both bands carry solid or transparent, the surface they continue and the icon brightness, in a few words. A full-bleed screen draws its content under a `clear` band; a screen with a tab bar, a composer or a pinned action continues that surface into a `solid` navigation band, `solid dark` when that surface is dark. A transparent status band over a coloured header is drawn inside the header's own block, so the header visibly runs to the top edge.
+- **The system bars are drawn, not labelled.** Both bands are the real bars in grey: clock and status icons at the top, the home indicator at the bottom. The decision about each, solid or transparent, the surface it continues and the icon brightness, is an HTML comment directly above the band and never visible text. A full-bleed screen draws its content under a `clear` band, with `on-dark` icons where the content beneath is dark; a screen with a tab bar, a composer or a pinned action continues that surface into a `solid` navigation band, `solid dark` when that surface is dark. A transparent status band over a coloured header is drawn inside the header's own block, so the header visibly runs to the top edge.
 - **Spacing is drawn as it will be built.** A button never touches the frame's edge, the tab bar, the navigation band or another control: the screen margin and the gaps from `layout-grid` are in the drawing, because a wireframe that glues the action to its neighbours gets approved that way and built that way.
 - **Real strings only.** Type the words the screen will actually show, including the longest name and the largest count. Lorem text passes every layout and proves none, which is `copy-budget` and `copy-sample-data`.
 - **A cross means an unchosen image**, a plain `.box` means a deliberate empty slot such as an add tile, and neither ever becomes a photograph.

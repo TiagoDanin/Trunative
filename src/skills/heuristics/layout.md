@@ -52,7 +52,7 @@ Four edges, not one. The top holds the status bar and the cutout or Dynamic Isla
 
 `layout-insets` reads how tall the status bar and the navigation bar are. This rule decides what they look like, per screen, because the system draws them over whatever the app leaves there and the default is rarely what the screen needs.
 
-Each of the two bars gets three decisions, written in the wireframe beside the band it labels and set in code per screen:
+Each of the two bars gets three decisions, recorded in the wireframe in a comment beside the band it describes (the band itself is drawn as the real bar) and set in code per screen:
 
 - **Solid or transparent.** Solid means the band is filled with a colour role; transparent means the app's content or background runs underneath it.
 - **Which colour.** A solid band takes the role of the surface it touches: the status bar continues the top bar or the hero under it, the navigation bar continues the tab bar, the action bar, the composer or the sheet at the bottom. It never takes a colour of its own.
@@ -152,7 +152,7 @@ A modal follows the same order with a scrim under it. The scrim sits on the topm
 
 A title, a selector or a figure placed between a group on the leading side and a group on the trailing side is centred on the screen, whatever the two groups hold. Put it in the space the groups leave and it sits wherever their difference in width pushes it: one icon on the left and three on the right drags it left, and it moves again the moment a group gains or loses an item. The eye reads the centre of the screen, and an element slightly off it reads as a mistake rather than as a choice.
 
-The platforms already do it this way. The iOS navigation bar centres its title on the bar, and Material's centre-aligned top app bar does the same, so a stock bar is correct and a hand-built row is where it breaks. Give both flanks the width of the wider one, or lay the centred element over the full width with the groups on either side of it, and let it truncate before it moves off the axis.
+The platforms already do it this way. The iOS navigation bar centres its title on the bar, and Material's centre-aligned top app bar does the same, so a stock bar is correct and a hand-built row is where it breaks. The most common hand-built case is the top bar itself: a back arrow on one side, one or two actions on the other, and a title laid out with `justify-content: space-between` that lands a few points off centre on every screen. Give both flanks the width of the wider one, or lay the centred element over the full width with the groups on either side of it, and let it truncate before it moves off the axis.
 
 ## <Rule id="layout-fold" evidence="device" description="The first screenful answers what this is and what to do" />
 
@@ -183,7 +183,7 @@ Reflowing means the primary action stays visible without hunting for it, and the
 <Check>
 
 <Verify rule="layout-insets">The screen takes its insets from the framework's inset source rather than from a constant, and nothing readable or tappable sits outside them. Both the status bar and the navigation bar have a colour and icon brightness set against this screen's own background, a full-height sheet clears the top inset as well as the bottom one, and a screen that hides the bars keeps the cutout inset and restores the bars on exit.</Verify>
-<Verify rule="layout-system-bars">The wireframe labels both system bars as solid or transparent with their colour role and icon brightness, a solid band takes the colour of the surface it touches, no band carries a colour nothing else on the screen uses, no strip of another colour sits between a bar and the app's own surface, and icons are legible against what sits under them, scrim included.</Verify>
+<Verify rule="layout-system-bars">The wireframe draws both system bars as real bars and records each as solid or transparent, with its colour role and icon brightness, in a comment beside it rather than as visible text, a solid band takes the colour of the surface it touches, no band carries a colour nothing else on the screen uses, no strip of another colour sits between a bar and the app's own surface, and icons are legible against what sits under them, scrim included.</Verify>
 <Verify rule="layout-grid">Every gap is a multiple of 4, and of 8 above 16, the text column starts at the same margin on every screen outside full-bleed content and the platform list containers, and the screen uses about five distinct vertical gaps rather than a new one per component.</Verify>
 <Verify rule="layout-grouping">Grouping comes from space before containers, no container is nested inside another that already groups the same content, and the row height and section gap are the numbers this kind of screen uses everywhere else.</Verify>
 <Verify rule="layout-shape">Radius comes from the shape language rather than per component, the screen holds at most three radius values, a nested surface curves less than the one around it, and depth arrives through one of shadow, outline or fill rather than all three.</Verify>
