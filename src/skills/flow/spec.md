@@ -79,9 +79,11 @@ A screen that ships in variants, for a test between arrangements or per audience
 - a choice between two outcomes of equal weight names both labels, each in its own quotes, joined by `or`, and owes the reason that rule asks for;
 - a primary that changes with the state of the thing, one label while it runs and another while it is stopped, takes the form `"Start" then "Stop"`, and the States section of the body says which state shows which;
 - a label that carries a live value writes the value as a named slot in braces, `"Pay {total} with Pix"`, `"Delete {count}"`, so the brief names the words and the code supplies the number;
-- a primary that only exists under a condition, a selection, a state, a value the person picked, writes the label followed by `when` and the condition, `"Split" when a clip is selected`, `"Try again" when offline`, and is `none` the rest of the time, which the body says;
+- a primary that only exists under a condition, a selection, a state, a value the person picked, a measurement crossing a threshold, writes the label followed by `when` and the condition, `"Split" when a clip is selected`, `"Try again" when offline`, `"Save point" when accuracy is under 10 m`. The rest of the time it is `none`, or what the slot shows instead, a countdown, a disabled send, which the body says;
 - a screen whose job is done by a gesture rather than a control, a feed advanced by a swipe, a map moved by a drag, writes `gesture:` and the gesture with its result, `gesture: swipe up for the next video`, and owes the visible route to the same result that `a11y-gesture` asks for;
 - a screen with no primary action, one that is read, or whose rows each lead somewhere, writes `none` followed by the reason, the way a state writes `n/a`.
+
+`or`, `then`, `when`, `gesture:` and `none` are keywords and stay in English whatever language the brief is written in, the way the frontmatter keys do; the labels and the conditions are in the product's language.
 
 A label is the words on the control, a few of them. A sentence in quotes explaining where the action lives is a note about the screen, and it belongs in the body under Primary action.
 

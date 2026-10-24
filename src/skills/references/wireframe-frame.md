@@ -107,10 +107,13 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
   }
   /* A system band continuing a surface is filled like it; a transparent one lets the content show and is dashed. */
   .status.solid, .indicator.solid { background: var(--paper); }
+  /* A band continuing a dark surface (a story's reply strip, a camera) is drawn in ink. */
+  .status.solid.dark, .indicator.solid.dark { background: var(--ink); color: var(--fill); }
   .status.clear { border-bottom: 1px dashed var(--line); }
   .indicator.clear { border-top: 1px dashed var(--line); }
   .indicator { position: relative; }
-  .indicator > span { position: absolute; left: 16px; top: 2px; font-size: 10px; }
+  .indicator > span { position: absolute; left: 0; right: 0; top: 4px; line-height: 1; text-align: center; font-size: 10px; }
+  .indicator:has(> span) { align-items: flex-end; padding-bottom: 7px; }
   .content {
     flex: 1;
     min-height: 0;
@@ -176,16 +179,15 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
     justify-content: center;
     font-weight: 600;
   }
+  /* Docked full width, so it joins the solid navigation band under it as one block. A floating bar is drawn only where the system tab view floats it. */
   .tabbar {
     flex: none;
     display: flex;
     justify-content: space-around;
     align-items: center;
     height: 64px;
-    margin: 0 16px;
     background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 20px;
+    border-top: 1px solid var(--line);
     font-size: 11px;
     color: var(--mute);
   }
@@ -241,7 +243,7 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
 
 - **The frame clips.** `.content` sets `overflow: hidden`, so anything that does not fit is cut off exactly as it would be on the device. A wireframe that scrolls its own frame hides the collision the render exists to find, which is `layout-fold` and `layout-chrome`.
 - **Fixed chrome is a sibling, not an overlay.** The tab bar sits outside `.content`. When a real screen pins something over the content instead, draw it over, and then check what it covers at the end of the scroll.
-- **The system bars are labelled.** Both bands carry solid or transparent, the surface they continue and the icon brightness, in a few words. A full-bleed screen draws its content under a `clear` band; a screen with a tab bar, a composer or a pinned action continues that surface into a `solid` navigation band.
+- **The system bars are labelled.** Both bands carry solid or transparent, the surface they continue and the icon brightness, in a few words. A full-bleed screen draws its content under a `clear` band; a screen with a tab bar, a composer or a pinned action continues that surface into a `solid` navigation band, `solid dark` when that surface is dark. A transparent status band over a coloured header is drawn inside the header's own block, so the header visibly runs to the top edge.
 - **Spacing is drawn as it will be built.** A button never touches the frame's edge, the tab bar, the navigation band or another control: the screen margin and the gaps from `layout-grid` are in the drawing, because a wireframe that glues the action to its neighbours gets approved that way and built that way.
 - **Real strings only.** Type the words the screen will actually show, including the longest name and the largest count. Lorem text passes every layout and proves none, which is `copy-budget` and `copy-sample-data`.
 - **A cross means an unchosen image**, a plain `.box` means a deliberate empty slot such as an add tile, and neither ever becomes a photograph.

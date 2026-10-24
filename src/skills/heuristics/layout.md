@@ -60,7 +60,7 @@ Each of the two bars gets three decisions, written in the wireframe beside the b
 
 What it usually looks like on a phone:
 
-- A screen with a top bar or a coloured header: status bar transparent over that surface, so the header runs to the top edge in one piece.
+- A screen with a top bar or a coloured header: status bar transparent over that surface, so the header runs to the top edge in one piece. On a current device a transparent band over a header and a solid band in the header's colour look the same; declare it transparent, which is what edge to edge draws, and keep solid for a band that has a fill of its own.
 - A screen with a tab bar or a pinned bottom action: navigation bar in the same colour as that bar, so the bar and the system area read as one block. A bottom bar in one colour above a navigation area in another is the defect people notice first.
 - Full-bleed media, a camera, a video, a story, a map: status bar transparent over a scrim with light icons. The navigation bar stays transparent only when nothing is tapped at the bottom; when a reply field, a composer or controls sit there, it turns solid in their colour so the gesture strip does not cut through the media under the control.
 - A sheet or a dialog that reaches the bottom becomes the surface the navigation bar continues while it is up, and the bar returns to the screen's colour when it closes.

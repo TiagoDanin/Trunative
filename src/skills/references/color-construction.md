@@ -12,8 +12,9 @@ Work in OKLCH, or in LCH where OKLCH is unavailable. The reason is not novelty: 
 | surface | light: one step from ground, about 0.02 to 0.04 of L, either white raised on a near-white ground or a near-white raised on white; dark: lighter than ground by 0.04 to 0.08 | same as ground | Depth by lightness step, which is also what survives dark (`color-dark-composed`). |
 | ink | far from ground, at least 0.6 of L between them | 0 to 0.03 | Near black or near white. |
 | accent | light theme 0.45 to 0.75, set by contrast | **0.15 or more, usually 0.18 to 0.26** | The brand. Duolingo's green, Nubank's purple, Netflix's red and Google's blue all sit in this band. Under 0.12 it reads as dusty, under 0.06 as grey. Dark theme: about a tenth to a fifth less chroma, never under 0.13. |
-| accent, deep tone | about 0.15 to 0.25 lower than the accent | same hue, chroma held | Only for a light accent (lime, yellow, cyan): text, icons and outlines on a light ground, where the bright tone cannot reach contrast. |
-| status | set by contrast | 0.15 or more | Same floor. A muted danger colour is not restraint, it is a warning nobody sees. |
+| accent, deep tone | about 0.15 to 0.25 lower than the accent | same hue, as much chroma as sRGB allows there | Only for a light accent (lime, yellow, cyan): text, icons and outlines on a light ground, where the bright tone cannot reach contrast. Exempt from the 0.15 floor, which the gamut does not reach at this lightness. |
+| status | set by contrast | 0.15 or more for fills and icons | A muted danger colour is not restraint, it is a warning nobody sees. A status tone darkened to carry text at 4.5:1 keeps its hue and takes what chroma the gamut allows. |
+| brand region in dark | about 0.40 to 0.55 | 0.09 to 0.13 | A header band or hero filled with the brand in dark. Large saturated areas burn on black, so the region sits under the accent's floor while buttons keep it. |
 
 Status hue bands, as OKLCH hue: danger 15 to 40, warning 60 to 95, success 130 to 165, information 225 to 265.
 
@@ -31,7 +32,7 @@ The accent hue comes from the reference. Every other hue on the screen stands in
 Two rules of separation hold whatever the scheme:
 
 - Any two hues a reader has to tell apart sit at least 30 degrees apart, and 60 is comfortable. Under 30 they read as the same colour rendered twice.
-- Status colours keep the hue bands above and are not borrowed for the accent. Where the accent lands within 30 degrees of the band of a status the product shows, the accent moves, because the status meaning is the one that cannot be relearned. A status the product never shows reserves nothing, and an accent that means the same as its status (green for go and for done) may share the band while the status keeps its icon and word.
+- Status colours keep the hue bands above. Distance is measured to the status colour actually in use, and a status the product never shows reserves nothing. A brand may share a band, red brands with a red error, green brands with a green success, when the status keeps its icon, its word and its own surface treatment and the brand never fills an alert; where the two would still be confused, the accent moves 30 degrees from the status colour.
 
 ## Per item color
 
