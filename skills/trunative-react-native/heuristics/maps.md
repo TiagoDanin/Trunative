@@ -4,8 +4,6 @@ A map fills the phone's whole screen and takes the drag with it. It is also the 
 
 Here: the map surface and its gestures, the initial camera, markers and clusters, following the user, the route as text, tiles that did not arrive, the cost of holding a map, attribution, and the equivalent representation that has to exist beside it. The location ask is `perm-scope` and `perm-rationale`, the uncertainty circle drawn around the user is `sense-accuracy`, location switched off above the app is `sense-off-system`, a follow that keeps running once the user has left is `bg-location`, and how the result list beside the map reads is `list-a11y`. A map drawn by a web page inside the app takes `webview-surface-choice` for the surface it sits in and every rule below for what is on it.
 
-Not every map comes from a provider. A floor plan, a building facade, a seat map, a field sketch or an illustrated route the app draws itself carries no tiles, no provider and no contract, so `map-attribution`, `map-terms`, `map-cost`, the tile half of `map-offline` and the SDK clause of `map-steps` are `n/a` on it, with that reason. Everything about reading and touching it still holds: the first frame (`map-camera`), the drag (`map-gesture-owner`), markers as targets (`map-marker-target`), the equivalent list (`map-not-alone`), contrast of what is drawn on it (`map-legible`), and a route on it being text as well as a line. Labels inside a drawn map follow `data-chart-scale`: they grow with the text setting where the drawing has room and drop to the list beside it where it does not, never shrinking below the body size.
-
 Rules in this file, in order: `map-camera`, `map-gesture-owner`, `map-marker-target`, `map-cluster`, `map-not-alone`, `map-follow`, `map-legible`, `map-steps`, `map-offline`, `map-cost`, `map-attribution`, `map-terms`.
 
 ## `map-camera` The first frame is a decision: framed on the content, padded for the chrome, and bounded
@@ -138,7 +136,7 @@ The rules this file cites and the files that hold them. Open one when a citation
 
 - `heuristics/accessibility.md`: `a11y-name`, `a11y-hidden`, `a11y-collection`, `a11y-gesture`, `a11y-test`
 - `heuristics/colors.md`: `color-not-alone`, `color-contrast`, `color-dark-composed`
-- `heuristics/data-display.md`: `data-chart-scale`, `data-units`
+- `heuristics/data-display.md`: `data-units`, `data-chart-scale`
 - `heuristics/icons-and-imagery.md`: `icon-alt`
 - `heuristics/layout.md`: `layout-chrome`, `layout-overlays`, `layout-insets`
 - `heuristics/lists.md`: `list-a11y`, `list-virtualise`
