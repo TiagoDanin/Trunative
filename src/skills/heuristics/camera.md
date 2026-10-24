@@ -18,6 +18,7 @@ The subject is in the other hand, so the phone is held and fired one-handed. And
 
 - The shutter's hit rect meets the floor in `touch-floor` and is the largest target on the screen. Every capture control sits in the bottom third (`touch-reach`), spaced by `touch-spacing`, inside the safe area (`layout-insets`) and clear of the platform capture indicator's bounds (`sense-running`).
 - Each control carries its own opaque or scrimmed ground. `color-contrast` needs a measured pair and live video supplies none, so the pair is the glyph against the ground the app drew, not against whatever is being filmed.
+- A scanner has no shutter. Where the scan resolves by itself (`cam-scan-decides`), this rule is n/a for the shutter, and the frame, the torch and a manual entry fallback are the controls that remain, under the same reach and ground.
 - One press, one capture. The shutter is disabled for the duration of the capture rather than queueing a second frame behind the first.
 - On iPhone the hardware camera control draws a system overlay from the bezel, so app controls stay outside that strip in both portrait and landscape, no control appears in both the overlay and the screen, and any name shown there stays short because it follows Dynamic Type and a long one covers the viewfinder. The shutter, torch and lens controls are icon-only, so each carries a name (`a11y-name`).
 

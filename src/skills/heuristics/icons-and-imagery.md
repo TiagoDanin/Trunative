@@ -125,6 +125,7 @@ It works because a person has no subject to draw: an initial or a generated shap
 - The fallback fills the same box the photo would, so a list of people keeps its rhythm while photos load.
 - Never a broken image frame, an alt-text box, or the platform's missing-asset glyph. At the size an avatar is actually drawn that is a dark square with a question mark in it, repeated down the list.
 - Initials come from the display name as the locale orders it, one or two characters, and they are measured against their generated background like any other text: `l10n-personal`, `color-contrast`.
+- A photo that belongs to a document, the portrait on a licence or an ID card, is a photo of a person, so its stand-in is the same neutral silhouette inside the document's own frame, never a drawn face. Here the shared silhouette is correct, because the real photo is the subject and nothing else identifies it.
 - The missing name is a case too. Deleted accounts, invited users who never joined, and system actors all arrive at the same component.
 - Never a drawn human face. It puts an invented person on somebody's account, it is the same face every time the component renders, and a column of them is three strangers who look related. Initials, a generated shape, or the product's own mark.
 

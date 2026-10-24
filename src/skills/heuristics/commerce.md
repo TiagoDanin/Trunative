@@ -21,6 +21,7 @@ Size, colour, flavour, pack and date are choices the person makes on the product
 
 - Every variant is shown, including the ones that cannot be bought right now. An unavailable one stays in its place, drawn as unavailable with a word, and the reason sits with it or on tap: sold out, not sold in this area, back on a date. Hiding it makes the person wonder whether it exists; greying it with no word makes them tap it repeatedly.
 - The page follows the selection. The photograph, the price, the quantity line from `shop-price-unit` and the stock state all change to the chosen variant, and nothing on the page still describes the one before it.
+- A size guide answers first: the size that fits this person, from their measurements or their past orders, in one line at the top. The full measurement table has four or five columns by nature, so on a phone it sits one tap away or is drawn as one scale per measurement with the person's mark on it (`data-subject-shape`), never squeezed into the sheet.
 - A variant chosen on the list carries into the page, and back again. Opening an item in a size and landing on its default is a choice the person has to make twice.
 
 ## <Rule id="shop-stock" severity="p1" description="Stock is a state with words, and it is checked again before the person commits" />

@@ -83,6 +83,8 @@ One region failing does not take the screen down. Render what loaded, mark the r
 
 The phone shows one thing at a time, so replacing the whole screen because an avatar, a price chart or a recommendation strip failed costs the user everything that had already arrived, and the thing they came for is usually in the part that worked.
 
+- Content held back on purpose is partial too. A reply hidden by moderation, a post from a blocked account, a message removed by its author keeps its place in the sequence at the height of one row, with the reason in words and, where the person may still see it, a control to reveal it. Removing it silently renumbers the conversation and makes the replies to it read as non sequiturs.
+
 ## <Rule id="state-permission" description="Denied is a state with a way forward, never a dead end" />
 
 The ask itself, the reason shown before it and how many chances are left belong to `perm-rationale` and `perm-answers`. What this rule owns is the screen the user is left holding once the answer is no.
