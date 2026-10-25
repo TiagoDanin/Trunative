@@ -2,6 +2,8 @@
 
 Catalogues, product pages and carts for anything physical or consumed outside the app: food, groceries, retail, tickets, rentals. The person is comparing things on a narrow screen, one item at a time, usually in short sessions that get interrupted, and what they put together over those sessions is work. Every rule here is about the item meaning what it says, and the basket still being there.
 
+A deadline on an offer, a flash sale's countdown, a price that ends at a time, a stock count shown as urgency, follows `sub-honest` and `shop-stock` whatever is being sold: the deadline is real and stated as a time, and the count is read rather than invented.
+
 Paying is `heuristics/payments.md`: the rail, the total at the moment of commitment (`pay-total`), the four outcomes of a charge (`pay-outcome`). Where a price for store-billed goods comes from is `pay-price-source`. Counts the app spends on the person's behalf that are not money are the `econ-` prefix, and fields and choice groups are the `form-` prefix. Taking something back after a removal is `fb-undo`, and what the first screenful has to show is `layout-fold`.
 
 Rules in this file, in order: `shop-price-unit`, `shop-variant`, `shop-stock`, `shop-add`, `shop-quantity`, `shop-cart-life`, `shop-cart-scope`, `shop-upsell`, `shop-substitute`, `shop-reorder`.
@@ -124,4 +126,5 @@ The rules this file cites and the files that hold them. Open one when a citation
 - `heuristics/notifications.md`: `notify-earns-it`
 - `heuristics/payments.md`: `pay-total`, `pay-outcome`, `pay-price-source`
 - `heuristics/states.md`: `state-interrupt`
+- `heuristics/subscriptions.md`: `sub-honest`
 - `heuristics/touch.md`: `touch-nested`

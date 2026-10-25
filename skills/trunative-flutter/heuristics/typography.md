@@ -13,7 +13,7 @@ Each platform publishes a complete role scale that is optically tuned, wired to 
 - Text reaches the screen through a style: `MaterialTheme.typography.bodyLarge`, `.font(.body)`, `Theme.of(context).textTheme`. A size typed into a component is a defect even when the value happens to be right.
 - The unit belongs to the platform as well. Android text is `sp`, and `dp` freezes it. On iOS, `.system(size:)` with no text style behind it is the identical failure in another language.
 - Body lands at 16sp or 17pt. Eleven is the floor, and it belongs to text at the margin of meaning, never to something a user has to read in order to act.
-- When the readers are older or the app lives outdoors, move the whole ramp up rather than granting one role an exception.
+- When the readers are older or the app lives outdoors, move the whole ramp up one step rather than granting one role an exception. Every role moves together, so a button label stays the label role of the moved ramp; title-size type inside a control is not the ramp moving, it is a control dressed as a headline.
 
 ## `type-roles` About four jobs per screen
 
@@ -40,7 +40,7 @@ Both systems let someone ask for heavier text: Bold Text on iOS, `fontWeightAdju
 
 What the two scales actually do with weight runs against the web instinct:
 
-- Large text is not bold text. M3 holds titles at 400 up to 22sp, and iOS sets every title Regular. Size is the signal.
+- Large text is not bold text. M3 holds titles at 400 up to 22sp, and iOS sets every title Regular. Size is the signal. That line is about the system face. A brand display face chosen under `type-face` whose identity is its heavy cut, or a family that only ships 400 and 700, sets display and headline in that cut, and the 400 ground still holds for everything below the headline.
 - 500 and semibold are reserved for the small roles that name controls: buttons, tabs, chips, and iOS `headline`.
 - `headline` and `body` on iOS are both 17pt, and weight is the entire difference between them. Nothing demonstrates better that weight on its own can hold a hierarchy.
 
@@ -59,7 +59,7 @@ Build the hierarchy from weight and space before size. The reader has a slider f
 Inter turns up on its own for the same reason violet does: it is the most common interface face in the training data. Inter is a fine typeface, which is exactly why finding it there says nothing about this product.
 
 - Shipping the system face is a legitimate decision. SF Pro and Roboto are tuned for their own rendering stack, carry every weight, cover the scripts the product ships in, and load for free. Picking one deliberately is an answer; arriving at Inter by default is not.
-- A brand face gets themed into the scale, taking display and headline where the strings are short, while the system face keeps body, labels and controls. Applying a face component by component throws away the size setting and what the screen reader expects, in one move.
+- A brand face gets themed into the scale, taking display and headline where the strings are short, while the system face keeps body, labels and controls. Its weight in those roles is the weight the face was drawn to be seen at, which can be heavier than the scale's 400 (`type-weight`). Applying a face component by component throws away the size setting and what the screen reader expects, in one move.
 - Two families is the ceiling, and the second earns its place by doing something the first cannot.
 - A custom face ships only when it scales with the user's setting, carries every weight the roles call for, covers the languages, and has been subset and paid for out of the launch budget. One usable weight leaves size doing all the structural work by itself.
 

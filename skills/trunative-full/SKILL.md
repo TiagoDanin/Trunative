@@ -60,7 +60,7 @@ Opened on every screen, before writing. Every screen has colour, text, targets, 
 | `heuristics/colors.md` | `color-` | palette roles and tokens, the default palette, ramps, the accent, colour that varies per item, gradients, dark theme, contrast, color as state |
 | `heuristics/typography.md` | `type-` | the platform type scale, roles per screen, weight and its distribution, typeface choice, measure, text scaling, real strings |
 | `heuristics/touch.md` | `touch-` | hit areas and spacing, controls inside controls and pictures of controls, thumb reach, where destructive actions go, press feedback, gestures and system edges, the long press menu, the keyboard as layout |
-| `heuristics/buttons.md` | `button-` | one primary per screen, the emphasis ladder, labels, button states, the FAB, chips, tabs and segmented controls, an action standing in the tab bar |
+| `heuristics/buttons.md` | `button-` | one primary per screen, the emphasis ladder, button size, labels, button states, the FAB, chips, tabs and segmented controls, an action standing in the tab bar |
 | `heuristics/layout.md` | `layout-` | insets and safe areas, the spacing scale, grouping and density, radius and shape, one column, the width range, centring between unequal groups, fixed chrome, the floating tab bar and overlays, the first screenful, orientation |
 | `heuristics/composition.md` | `comp-` | a composition chosen between alternatives, how far apart candidates have to be, the moment of use deciding the arrangement, an arrangement that could only be this product's, sibling screens that are not one template |
 | `heuristics/states.md` | `state-` | the full state set, loading and skeletons, the three empties, error classes and retry, offline and queued work, stale and partial data, permission, interruption |
@@ -354,11 +354,18 @@ A screen that ships in variants, for a test between arrangements or per audience
 
 **`context`** is the moment of use, in eight fixed keys: `environment`, `posture`, `hands`, `attention`, `session_length`, `frequency`, `interruption`, `urgency`. Plain words, no numbers with units. Take it from `PRODUCT.md` where that file says it and from the task where it does not, and write `unknown` for a key nobody knows, which is an honest answer and a different one from leaving it out. `flow/explore.md` reads this block before it writes a candidate, and `comp-context` grades the screen against it. The keys are fixed for the same reason the state keys are: a free list leaves out the one that would have argued with the layout already in mind.
 
-**`primary_action`** is the label the user reads, in quotes, not an identifier. `button-label`, `copy-first-word` and `copy-case` all judge the visible string, and the comparison against the code only works on the string. One by default, which is what `button-one-primary` protects. Three other forms exist, and nothing else:
+**`primary_action`** is the label the user reads, in quotes, not an identifier. `button-label`, `copy-first-word` and `copy-case` all judge the visible string, and the comparison against the code only works on the string. One by default, which is what `button-one-primary` protects. The other forms, and nothing else:
 
 - a choice between two outcomes of equal weight names both labels, each in its own quotes, joined by `or`, and owes the reason that rule asks for;
-- a primary that changes with the state of the thing, one label while it runs and another while it is stopped, takes the same form, `"Start" or "Stop"`, and the States section of the body says which state shows which;
+- a primary that changes with the state of the thing, one label while it runs and another while it is stopped, takes the form `"Start" then "Stop"`, and the States section of the body says which state shows which;
+- a label that carries a live value writes the value as a named slot in braces, `"Pay {total} with Pix"`, `"Delete {count}"`, so the brief names the words and the code supplies the number;
+- a primary that only exists under a condition, a selection, a state, a value the person picked, a measurement crossing a threshold, writes the label followed by `when` and the condition, `"Split" when a clip is selected`, `"Try again" when offline`, `"Save point" when accuracy is under 10 m`. The rest of the time it is `none`, or what the slot shows instead, a countdown, a disabled send, which the body says;
+- a screen whose job is done by a gesture rather than a control, a feed advanced by a swipe, a map moved by a drag, writes `gesture:` and the gesture with its result, `gesture: swipe up for the next video`, and owes the visible route to the same result that `a11y-gesture` asks for;
 - a screen with no primary action, one that is read, or whose rows each lead somewhere, writes `none` followed by the reason, the way a state writes `n/a`.
+
+The forms combine with `otherwise`: `"Join the live" when a followed live is ending, otherwise gesture: swipe up for the next video`.
+
+`or`, `then`, `when`, `otherwise`, `gesture:` and `none` are keywords and stay in English whatever language the brief is written in, the way the frontmatter keys do; the labels and the conditions are in the product's language.
 
 A label is the words on the control, a few of them. A sentence in quotes explaining where the action lives is a note about the screen, and it belongs in the body under Primary action.
 
@@ -557,7 +564,7 @@ Operates     one tap on the figure, horizontal swipe through later departures
 
 Write each one from the brief, not from the previous candidate. A candidate written with another one in view comes out as a revision of it.
 
-When this harness can spawn sub-agents at all, spawn one per lens: that is an instruction, not an option to weigh against speed. Each gets the brief, the context line, the lens and the two reference files, and nothing else. Only when it cannot, write the candidates one at a time, re-reading the brief before each and never quoting, comparing against or referring to a candidate already written. The comparison happens in step 4, and doing it earlier is how three candidates become one.
+When the task is one screen or one flow and this harness can spawn sub-agents, spawn one per lens. Each gets the brief, the context line, the lens and the two reference files, and nothing else. When it cannot, or when the work is a batch of screens where three sub-agents per screen would cost more than the screens themselves, write the candidates one at a time, re-reading the brief before each and never quoting, comparing against or referring to a candidate already written. The comparison happens in step 4, and doing it earlier is how three candidates become one. The path taken goes in the `Path` line of step 6.
 
 Heuristics stay closed during this step. The one constraint a candidate carries while it is being written is the brief: the hierarchy line, the primary action, the six states and the context.
 
@@ -608,7 +615,9 @@ Now open the rules. Every base file, and the extra files in the brief's `scope`.
 
 Then look at what the project already has: `.trunative/screens/*.wireframe.html`. A composition that has already won twice in this project needs a reason to win a third time, which is `comp-repeat`. Screens of one product should be recognisably related and should not be the same screen with different content.
 
-Compare them as pictures, not only as lines. Draw the candidates as rough frames side by side in one page, using the canvas in `references/wireframe-frame.md`, one `.shot` per candidate labelled A, B and C, and render it the way `flow/spec.md` renders a wireframe. Rough means blocks and real words, a few minutes each: what is being compared is where the weight sits on the first screenful, and five lines of text hide that as well as code does. The page is scratch, so write it outside `.trunative/screens/` and do not keep it. When the harness cannot show an image, say so and judge on the lines.
+Compare them as pictures when the screen is being decided on its own. Draw the candidates as rough frames side by side in one page, using the canvas in `references/wireframe-frame.md`, one `.shot` per candidate labelled A, B and C, and render it the way `flow/spec.md` renders a wireframe. Rough means blocks and real words, a few minutes each: what is being compared is where the weight sits on the first screenful, and five lines of text hide that as well as code does. The page is scratch, so write it outside `.trunative/screens/` and do not keep it.
+
+Judge on the lines instead when the harness cannot show an image, or when the work is a batch of screens, several screens or several one-screen apps decided in one pass, and the rendered wireframe of the winner will be looked at anyway. Lines are enough to compare structure as long as each candidate's `Dominant` and `Action` are concrete; what they cannot show is weight, so the winner's wireframe is where weight gets checked, and a winner whose render contradicts its lines goes back to this step. Say which was used in the `Path` line.
 
 A candidate that breaks a rule is not dropped for that alone. Ask whether the break is in the composition or in a detail: a primary action out of reach is the composition, and a row that would need a taller hit area is a detail build settles.
 
@@ -626,9 +635,10 @@ Distance     A/B 5, A/C 4, B/C 3
 Default used no, it competed as A and lost
 Chosen       B, because the next departure is the whole job and A buries it in a list
 Lost         A reads as a schedule to study, C hides later departures behind a gesture
+Path         sub-agents, compared as pictures
 ```
 
-`Default`, `Context`, `Candidates`, `Distance`, `Chosen` and `Lost` are required, and `Distance` counts all three pairs as `A/B`, `A/C` and `B/C`. The gate in `flow/spec.md` adds a `Gate` line under them once it has been asked or skipped.
+`Default`, `Context`, `Candidates`, `Distance`, `Chosen` and `Lost` are required, and `Distance` counts all three pairs as `A/B`, `A/C` and `B/C`. `Path` says how the candidates were written, by sub-agents or sequentially, and how they were compared, as pictures or as lines, with the reason when it is not the first of each: a batch, no sub-agent tool, no image. The gate in `flow/spec.md` adds a `Gate` line under them once it has been asked or skipped.
 
 Then return to `flow/spec.md` and draw the chosen candidate. The hierarchy in the brief is updated when the winner reordered it, since the brief is the contract and this step is allowed to change its mind.
 
@@ -940,7 +950,7 @@ A device the user is working on is theirs. Before changing a setting on it, font
 
 How the two are kept apart depends on the harness you are running in:
 
-When this harness can spawn sub-agents at all, run them as two, spawned so that neither reads the other's output: that is an instruction, not an option to weigh against speed. Only when it cannot, finish the judging pass and record it, then measure.
+When this harness can spawn sub-agents and the review covers one screen or one flow, run them as two, spawned so that neither reads the other's output. When it cannot, or the review is one pass over a batch of screens, finish the judging pass and record it, then measure.
 
 Then reconcile: the judged score stands unless a measurement contradicts it, and every score a measurement moved is printed with both numbers. The report is one table, not one pass after the other. When they could not be kept apart, the report says so on its first line.
 
@@ -2157,7 +2167,7 @@ Everything a user taps to act or to choose: buttons, the floating action button,
 
 A phone shows one screen at a time to someone who is usually doing something else. The whole point of a control vocabulary here is that the answer to "what do I do now" arrives before any reading happens.
 
-Rules in this file, in order: `button-one-primary`, `button-ladder`, `button-target`, `button-label`, `button-state`, `button-fab`, `button-chips`, `button-tabs`.
+Rules in this file, in order: `button-one-primary`, `button-ladder`, `button-target`, `button-size`, `button-label`, `button-state`, `button-fab`, `button-chips`, `button-tabs`.
 
 ### `button-one-primary` One primary action per screen, and a second one owes a reason
 
@@ -2178,7 +2188,7 @@ A sheet, a dialog or a full-screen modal is its own decision point, so it gets i
 When two actions feel equal, the first reading is that the screen has two jobs. Split it, or pick the one the product wants and demote the other. Save and "save and add another" are not two primaries: one is the primary and the other is a secondary, a menu item, or a checkbox next to the first.
 
 **Default.** One primary, or none.
-**Exception.** A screen whose whole job is a choice between two outcomes the product has no preference between, where ranking them would be the product putting its thumb on the scale: answer or decline a call, approve or reject a request, keep mine or keep theirs in a conflict, pick one of two plans being compared. There the pair is the primary. Both carry the same weight, sit side by side at the same height, and nothing else on the screen competes with them.
+**Exception.** A screen whose whole job is a choice between two outcomes the product has no preference between, where ranking them would be the product putting its thumb on the scale: answer or decline a call, approve or reject a request, keep mine or keep theirs in a conflict, pick one of two plans being compared. There the pair is the primary. Both carry the same weight, sit side by side at the same height, and nothing else on the screen competes with them. The pair takes the rung the platform gives two equal choices, tonal or outlined for both, never filled for both, since two filled buttons read as the product recommending each, and the destructive answer of the two keeps its colour only on its label or icon. Where side by side does not fit, the longest label at the person's text size or a hand that needs the full width, they stack, same height, same treatment, with space between them rather than extra height (`button-size`), and the order is the one the platform uses for that pair.
 **Reason required.** The brief's `primary_action` names both labels and says in one line why neither is preferred. "Both seemed important" is not that line: if the product would rather the person chose one, that one is the primary.
 
 Cancel, Back, Skip and Dismiss are never the emphasized control. They are the exit, and the exit does not need to be sold. A destructive action is not the top of the ladder either: it is a role of its own, it keeps its distance from the frequent controls, and it is never the primary of a screen the user opened to do something else.
@@ -2192,6 +2202,8 @@ Below the primary there are two useful rungs, no more: a secondary for the alter
 
 The iOS convention worth knowing: the primary action there is frequently a navigation bar item or a plain tinted row of text, not a large filled block in the middle of the content. A full-width filled button dropped into an iOS settings screen is an Android accent, and it reads as one.
 
+Buttons offered together, a footer pair, a primary with its alternative, the choices in a sheet, share one shape, one height and one width rule, and emphasis is the only difference between them: a filled pill beside a square outlined block reads as two components that happened to land side by side.
+
 Three different button styles at the same rank on one screen is the composite look of a screen assembled from parts. Pick a style per rank and hold it, then style it once in the theme rather than at each call site, because twenty locally styled buttons are twenty future inconsistencies. The same action wears the same control everywhere in the app: if Save is filled on one screen and a text button on the next, one of them is wrong.
 
 Button labels sit at the label role of the type scale, which on Material is 14sp at weight 500. Not 400, and not bold.
@@ -2201,6 +2213,15 @@ Button labels sit at the label role of the type scale, which on Material is 14sp
 Material's default button is 36dp tall, with a size range that runs from 32dp to 56dp, and the framework component quietly extends its own touch area to reach the 48dp floor. Draw that button by hand at 36dp with no extended area and it is a target that fails, while looking identical to the one that passes.
 
 The whole control is tappable, not the text inside it. A full-width primary at the bottom of the screen is a good fit for a thumb, and it is also a large accidental target, so nothing destructive belongs beside it.
+
+### `button-size` A button is sized for the finger and the label, not for the emphasis
+
+Emphasis comes from the ladder (`button-ladder`), never from size. The target floor is `touch-floor`, and a primary sits at the platform's button height: about 48 to 56 tall, as wide as its label needs or the full width of the column when it is the screen's one action. Past that, extra height buys nothing a finger can use and costs the fold.
+
+- Who is holding the phone does not change the height. Older hands, low vision, a tremor, a glove: the answer is the platform height, the label at the label role of a ramp already moved up for them (`type-roles`), more space between controls (`touch-spacing`) and the person's own text size setting (`type-scaling`), which grows the button by itself. A button drawn taller than the platform's, at 64, 80 or 96, with title-size type inside, is not easier to hit, it is a panel that pushes the content off the screen and reads as broken or as an alarm. Testers rate it "surreal".
+- Two stacked full-width buttons are the same defect twice. Where both answers matter equally they sit side by side at the platform height, and they stack only when the person's text size makes the labels not fit side by side; stacked, they stay at the platform height and gain space between them, never height.
+- A tool that acts on one point of the content, a split at the playhead, a pin on a map, a handle on a crop, is an icon button attached to that point, with its name for the screen reader and a tooltip or a short label beside it. A wide pill riding the playhead covers what it is meant to cut.
+- The exception is a surface used without looking, a tap-anywhere alarm, a full-screen shutter, an eyes-free player, where the whole region is the target and is drawn as a region, not as a giant button.
 
 ### `button-label` The label says what will happen
 
@@ -2214,7 +2235,7 @@ Write the verb of the action and the object it acts on: Send, Pay 42, Delete pho
 
 Rest and pressed are covered by the touch rules. The two that get skipped:
 
-**Disabled.** A primary that starts disabled at the top of an empty form gives the user nothing to act on and no reason why. Prefer leaving it enabled and answering on tap with what is still missing, pointed at the field that is missing it. Where disabled is genuinely right, the reason has to be visible next to it, not inferred.
+**Disabled.** A primary that starts disabled at the top of an empty form gives the user nothing to act on and no reason why. Prefer leaving it enabled and answering on tap with what is still missing, pointed at the field that is missing it. Where disabled is genuinely right, the reason has to be visible next to it, not inferred. A send control beside an empty composer is the case where disabled is right and the empty field is the visible reason; how a composer handles it is `chat-composer`.
 
 Disabled also promises that something the person can do will enable it. A control nothing on this screen can ever enable, in the configuration the person is in, is not disabled, it is absent: a pager over a single page, a sort control over one item, a next and previous pair with nowhere to go, a range the data source does not keep. Offering an option the system cannot answer is the same defect one step later, when the person picks it and gets an empty result that looks like no data.
 
@@ -2242,10 +2263,10 @@ Three to five destinations, and they are the top level of the app rather than a 
 
 - Every destination is labelled. Icon-only navigation asks the user to guess, and the guess is wrong often enough to matter.
 - The selected destination is obvious without relying on color alone: an indicator, a filled icon variant, a weight change. Selection changes how an item is drawn and never where it sits: the selected icon, label and indicator occupy the same box as the resting ones, so nothing in the bar moves when the selection does.
-- The set does not change from screen to screen, and it does not vanish when a screen is pushed. Tabs that come and go stop being a map.
+- The set does not change from screen to screen, and it stays on screens pushed inside a tab. Tabs that come and go stop being a map. The one exception is a pushed screen that owns the bottom edge itself: a conversation with its composer, a checkout with its pay bar or any pinned action bar, full-screen media, a camera. There the bar steps aside for that screen and comes back on the way out, because stacking a composer over a tab bar is the third bar `layout-chrome` forbids. A camera that is itself a destination keeps the bar, which then continues the camera's dark surface under the capture controls as one block (`layout-system-bars`).
 - An action in the middle of the bar, a raised plus, a record button, a send or a scan, is the most common way this breaks. It is a primary action standing in a destination's place: it counts under `button-one-primary` on every screen the bar appears over, it has no stack to return to, and on the one screen where it is not wanted it is still the loudest control. It belongs on the screens it acts for. Where the job is big enough to be a place, it becomes a destination whose screen opens on that action.
 - A search button set apart at the trailing end of the bar is the system's own presentation of a search destination on current iOS, not an action, and it is one of the destinations (`search-placement`).
-- Top tabs and bottom tabs on the same screen is two navigation systems arguing. Pick one.
+- Top tabs and bottom tabs on the same screen is two navigation systems arguing. Pick one. Two or three views of the same destination switched at the top, Following and For you over a feed, is a segmented switch inside that destination rather than a second tab bar, and it follows the segmented control line below.
 - A segmented control is not a tab bar. It filters or switches the view in front of the user, it holds about three options, and past that it becomes a menu or a filter screen.
 
 ### Check
@@ -2255,17 +2276,21 @@ Review answers each of these against the code, pointing at the line:
 - At most one primary action is visible on the screen, counting the bottom bar, the top bar, the content and the FAB together, any sheet or dialog carries its own single primary, and a pair of equal primaries exists only where the brief names both and says why neither is preferred. `button-one-primary`
 - Emphasis comes from the platform's ladder, one style per rank, styled in the theme rather than per call site, and the same action looks the same across screens. `button-ladder`
 - Every button's touch area reaches the platform floor even where the drawn height is smaller. `button-target`
+- Every button sits at the platform height, about 48 to 56, whoever the person is, with its label at the label role, emphasis comes from the ladder rather than from size, an equal pair sits side by side unless the text size forces a stack, and a tool acting on one point of the content is an icon button attached to that point. `button-size`
 - Labels name the action and its object, are capitalised as `copy-case` requires, and survive the longest translation at the largest text size. `button-label`
 - Disabled states explain themselves, no control is shown that nothing on the screen can enable, no option is offered that the data source cannot answer, and every button that starts work becomes unpressable and shows it, without resizing. `button-state`
 - At most one FAB, holding the screen's defining action, absent on iOS, with the list underneath padded to clear it. `button-fab`
 - Chip selection is visible without color, chip rows scroll instead of wrapping, and no chip is doing a tab's job. `button-chips`
-- Three to five labelled destinations, a selected state that is not color alone and moves nothing, no action standing in the bar in a destination's place, and one navigation system per screen. `button-tabs`
+- Three to five labelled destinations, a selected state that is not color alone and moves nothing, no action standing in the bar in a destination's place, one navigation system per screen, and the bar present on every pushed screen except one that owns the bottom edge with a composer, a pay bar, full-screen media or a camera. `button-tabs`
 
 ### Reaches
 
+- `heuristics/chat.md`: `chat-composer`
 - `heuristics/copy.md`: `copy-case`
+- `heuristics/layout.md`: `layout-chrome`, `layout-system-bars`
 - `heuristics/search.md`: `search-placement`
-- `heuristics/typography.md`: `type-scaling`
+- `heuristics/touch.md`: `touch-floor`, `touch-spacing`
+- `heuristics/typography.md`: `type-roles`, `type-scaling`
 
 # heuristics/camera.md
 
@@ -2491,7 +2516,8 @@ The keyboard is half the screen. A composer with no ceiling plus a keyboard leav
 
 - A minimum and a maximum line count, both as numbers, and it scrolls past the maximum: Compose takes `lineLimits = TextFieldLineLimits.MultiLine(min, max)` (`minLines` and `maxLines` on the legacy overload), SwiftUI pairs `TextField(axis: .vertical)` with `lineLimit(1...n)` and a field past the limit becomes scrollable, Flutter grows without limit at `maxLines: null` and is bounded only by its parent, and React Native caps with `numberOfLines`, on iOS only under the New Architecture, and publishes nothing about the growth between the minimum and that maximum. Not one of the four bounds a multiline field on its own, so the ceiling is written on all four.
 - The composer's height is subtracted from the transcript rather than lying over its last row, through the platform's own inset and never a guessed spacer. `scroll-keyboard` owns the keyboard inset on the container, `touch-keyboard` the focused field staying visible, and `layout-chrome` the padding under anything pinned.
-- Send is a drawn control and never the return key, which on a multiline React Native field inserts a line break by default. It is disabled while the composer holds neither text nor an attachment, so a send with nothing in it is not possible. It takes `button-target`, `button-state`, `button-label` and `a11y-name`.
+- Send is a drawn control and never the return key, which on a multiline React Native field inserts a line break by default. While the composer holds neither text nor an attachment, the send slot either holds the composer's other action, a voice message or the camera, and turns into send with the first character, or shows send disabled, the empty field being the visible reason `button-state` asks for. Either way a send with nothing in it is not possible. It takes `button-target`, `button-label` and `a11y-name`.
+- The controls beside the field stay anchored to its last line as it grows. The field grows upward, the attach and send buttons stay at the bottom edge next to the line being typed, and nothing beside the field stretches to its height or leaves a gap above the keyboard. Seen at three lines and at the ceiling, the composer is one rounded field with its buttons at the baseline, not a column of buttons floating beside a tall box.
 - Unsent text survives leaving the conversation and coming back, by `form-persist` and `state-interrupt`.
 
 ### `chat-message-state` The state of one message lives on that message, and a failed one keeps its place
@@ -2540,7 +2566,7 @@ Review answers each of these against the code, pointing at the line:
 - A run of consecutive messages from one sender prints the sender's name and avatar at most once and a one-to-one thread prints neither, timestamps and day dividers are emitted on a written interval as section headers rather than rows, and every time value is formatted by the locale from a stored instant. `chat-grouping`
 - Every message row wraps rather than truncates, holds a written maximum bubble width, renders an attachment-only message without an empty text container, aligns by leading and trailing, and its text can be copied. `chat-row`
 - A conversation with no messages renders a sentence naming the other party and the first thing to send, and the composer takes focus on open only where the conversation has never held a message. `chat-empty`
-- The composer declares a minimum and a maximum line count as numbers and scrolls past the maximum, sits above the keyboard through the platform's inset mechanism, has its height subtracted from the transcript, sends from a drawn control rather than the return key with that control disabled while the composer holds neither text nor an attachment, and keeps unsent text across leaving the screen. `chat-composer`
+- The composer declares a minimum and a maximum line count as numbers and scrolls past the maximum, sits above the keyboard through the platform's inset mechanism, has its height subtracted from the transcript, sends from a drawn control rather than the return key, with the empty composer either swapping send for its other action or showing send disabled, keeps attach and send anchored to the last line as the field grows, and keeps unsent text across leaving the screen. `chat-composer`
 - Every message carries its own state from a written set covering at least sending, sent and failed; a failed one stays in place with a retry and does not block the queue; a send with no network becomes a queued row while the composer empties; and no state is carried by color alone. `chat-message-state`
 - One attach control opens the platform picker rather than a hand-assembled menu of sources, a camera source is scored under `cam-system-first` rather than here, and a pending attachment is a transcript row with its space reserved and a transfer that outlives the screen. `chat-attach`
 - One setting governs presence in both directions, the typing event is throttled to a written interval and expires on its own, and the indicator neither loops beside the transcript nor animates under reduced motion. `chat-presence`
@@ -2551,7 +2577,7 @@ Three of these are not settled by the file. On a device, page a conversation hol
 ### Reaches
 
 - `heuristics/accessibility.md`: `a11y-name`, `a11y-collection`, `a11y-order`, `a11y-announce`, `a11y-alt-input`, `a11y-test`
-- `heuristics/buttons.md`: `button-target`, `button-state`, `button-label`
+- `heuristics/buttons.md`: `button-state`, `button-target`, `button-label`
 - `heuristics/camera.md`: `cam-system-first`
 - `heuristics/colors.md`: `color-not-alone`
 - `heuristics/copy.md`: `copy-absence`
@@ -2588,7 +2614,7 @@ Colors already written into `DESIGN.md` are settled. This file covers how they a
 
 When the screen already exists, work out three things before touching a value: which colors someone chose on purpose, which are placeholders nobody ever defended, and whether the request is a color change or an identity change. The last one is an edit to `DESIGN.md` and needs the user, not a quiet rewrite inside a component. A screen built entirely from neutrals with one blue button is usually not restraint: it is hierarchy and state that never got assigned a color, which is `color-assigned`.
 
-Rules in this file, in order: `color-roles`, `color-derived`, `color-constructed`, `color-ramp-hsl`, `color-one-accent`, `color-assigned`, `color-variety`, `color-gradient`, `color-dark-composed`, `color-contrast`, `color-not-alone`, `color-dynamic`.
+Rules in this file, in order: `color-roles`, `color-derived`, `color-vivid`, `color-constructed`, `color-ramp-hsl`, `color-one-accent`, `color-assigned`, `color-variety`, `color-gradient`, `color-dark-composed`, `color-contrast`, `color-not-alone`, `color-dynamic`.
 
 ### `color-roles` Reach color through the role, not the value
 
@@ -2614,9 +2640,13 @@ A chart pairing blue with trust and red with urgency is not a derivation either,
 
 Look at the ground rather than at the accent. The accent is what gets swapped the moment the reflex is named, and the ground is what nobody looks at twice, so it survives the swap and gives the family away. One family is a near neutral ground whose small remaining chroma leans warm, under an almost black ink, and it stays that family whether the accent lands on terracotta, gold, olive or nothing at all. The other is an accent in the blue to violet band, on any ground. Judge the ground by chroma and not by saturation: a warm off-white reports as heavily saturated in HSL and is still an off-white. Quote the number when the verdict is written, because a family is something a palette measurably is rather than something its author reports feeling. The verdict that names no chroma is the one that finds its own candidate outside both families while shipping the ground of one, and it costs nothing to make: landing in a family is allowed and only ever asked for a reason, so the answer worth distrusting is the one that avoids owing it.
 
-Those two are instances and not the whole of it. What they have in common is the general case: a ground within a step or two of white, an ink near black, and one accent desaturated far enough that it would be acceptable in any other product. That combination is where a palette lands when the reference is consulted and then quietly overruled, and it passes a check written against the two families above because it is not quite either of them. Independent derivations that produce five different references and five interchangeable screens have not escaped the reflex, they have captioned it five times.
+There is a third, and it is the one people see first: the muted screen. Sage, dusty rose, sand, stone, graphite, slate, greige, terracotta, every accent pulled toward grey until it offends nobody, on a ground that is cream or a tinted grey instead of white. A model reaches for it because muted reads as tasteful in the images it learned from, and it arrives most often through this very file's advice, when the reference chosen is a texture (paper, linen, concrete, kraft, chalk, clay) and the screen takes the texture's dullness instead of a colour. Shipped phone apps do the opposite. Duolingo's green, Nubank's purple, iFood's and Netflix's red, Spotify's green, Google's blue: a saturated brand hue, spent in large confident areas, on a clean white or near-black ground. Nobody installs a pastel. `color-vivid` holds the numbers.
+
+Those are instances and not the whole of it. What they have in common is the general case: a ground within a step or two of white, an ink near black, and one accent desaturated far enough that it would be acceptable in any other product. That combination is where a palette lands when the reference is consulted and then quietly overruled, and it passes a check written against the two families above because it is not quite either of them. Independent derivations that produce five different references and five interchangeable screens have not escaped the reflex, they have captioned it five times.
 
 The check that catches it is the material. A reference is a thing with a lightness of its own: a printed slip is pale, a departure board is dark, cut rubber is nearly black, enamel is saturated. The ground takes that lightness rather than converting it. When the named reference is dark and the screen is light, or the reference is vivid and the screen is muted, the reference was decoration and the ground came from somewhere else, which is the reflex arriving under a name. Say what the material's own ground is, and where the screen's differs from it, say why in terms the material supports.
+
+The reference gives the hue, never the dullness. Take the colour from the most vivid thing in the product's world, the signal flag, the ripe fruit, the lit sign, the team shirt, the warning tape, and not from the surface it sits on. A reference picked for its texture (paper, concrete, linen, chalk, wood) supplies at most the ground's lightness; asked for a hue, it answers grey, and grey is not a palette. Where the reference is vivid and the ground cannot carry it, `color-constructed` keeps the ground neutral and the vividness goes into the regions `color-vivid` lists: the header, the hero, the primary fill, the artwork.
 
 Landing in either family is not a violation, it is a prompt to do the work twice. Derive a second full palette from the same reference, in a different key: what the reference looks like at night, in a different material, or lit differently. Put the two side by side and keep the one a stranger could tie back to this product without being told the reference. A reference that only ever yields the palette that was already there was a caption written after the fact, and the second pass is the only thing that tells a caption from a derivation. Record the comparison as one line per candidate, reference named, family it lands in, kept or not, and the reason: a table for review, not an essay for a reader, and the same fact either way.
 
@@ -2626,14 +2656,32 @@ That check runs once, on whichever appearance gets designed first, and it has to
 - Generate three candidate references before judging any of them, each from a different source: one from what the product's job actually involves handling, the object, the document or the surface it puts in front of someone; one from where it gets used, the room, the light, the material underfoot; one from what it replaces or descends from, the paper form, the printed ticket, the physical dial it moved off of. Three sources is what stops the first idea being the only one considered, the same reason a wireframe's shape gets picked from more than one candidate. Pick the one that could not be swapped for another app's without also swapping what it evokes. An adjective survives that swap every time, so modern, friendly and premium derive nothing.
 - Look at the neutrals alone before handing off. Greys that all lean toward the accent were generated from the accent instead of chosen.
 
+### `color-vivid` A phone app is vivid: a saturated brand hue in real areas, never pastel, never greyed [P1]
+
+Hold the screen next to the home screens of the apps people keep on their first page: Duolingo, Nubank, iFood, Spotify, Netflix, Google Maps, Mercado Livre. Each has one hue a person names in one word, saturated, sitting on a clean ground, spent in areas large enough to read at arm's length. A screen that looks dusty, chalky, grey-green or beige beside them is not restrained, it is unfinished, and the person who opens it reads it as cheap.
+
+- **The brand hue is saturated.** In OKLCH the accent carries 0.15 chroma or more in the light theme, and usually sits between 0.18 and 0.26: Duolingo's green, Nubank's purple, Netflix's red and Google's blue all live in that band. Under 0.12 it reads as dusty whatever its hue. The screen's gamut caps some hues lower: teal and cyan, around hue 180 to 210, peak near 0.12 to 0.14 at any lightness where a label still reads on them, and greens around 140 to 165 hit the same wall once they are dark enough to carry a white label (about 0.13 to 0.16); a green brand usually goes bright with a dark label instead. For those the floor is the most the gamut gives at that lightness, and anything visibly short of it is dusty.
+- **It occupies area.** On each main screen the brand hue fills at least one real region: the primary button, a header or hero band, the selected tab with its indicator, a progress bar, a filled card that leads the screen, the artwork. A hairline, a small icon and a text link do not make a screen coloured, and `color-assigned` already counts what four greys and a tinted button are.
+- **The ground is clean.** White, or a neutral within a step of it, in light; a dark neutral in dark. A surface that stays dark in both appearances, a story, a camera, a player (`color-dark-composed`), keeps its dark ground in light too, and the clean light ground applies to everything around it. Chroma under about 0.01 in light, so it never turns cream, beige, sand or greige. Colour lives on top of the ground, never in it.
+- **Status colours are vivid too.** A danger red at 0.18 or more, a success green the person can see in sunlight.
+- **Pastel is a tint, not a palette.** A pale tint of the brand hue is fine behind a chip, a selected row or an illustration, in small areas. Pastel fills as the screen's main surfaces, pastel buttons, or a set of pastel badges standing in for colour is the muted reflex `color-derived` names.
+
+The test is a thumbnail. Shrink the screenshot to the size of an app icon in a store listing: if a stranger cannot name the app's colour in one word, it does not have one.
+
+The floors are for the brand fill. Two tones of the same hue are exempt, because sRGB cannot hold that chroma at their lightness: the deep tone of a light accent used for text and outlines, and a status colour darkened to carry text at 4.5:1. Each keeps the hue and as much chroma as the gamut allows at its lightness. In dark, a large brand region of a mid or dark hue, blue, violet, red, green, may sit lower than the accent's floor, about 0.09 to 0.12, because a saturated area burns on black where a button does not. A light hue, yellow, lime, amber, orange, does not darken into its region: lowered it turns olive or brown, so it stays bright with a dark label in both appearances and keeps its region smaller instead.
+
+**Default.** One saturated brand hue, 0.15 chroma or more, spent on the primary action and at least one large region per main screen, over a clean neutral ground.
+**Exception.** An identity the user supplied that is deliberately quiet, and full-bleed content that should recede behind its own colour (a photo editor's canvas, a video player), where the chrome stays neutral and the accent stays vivid at small size.
+**Reason required.** Who supplied the quiet identity, or which surface recedes for which content.
+
 ### `color-constructed` A palette is built, not collected
 
 Naming a reference settles where the colours come from. It does not produce them, and a reference read straight off into hex values, one at a time, by eye, is how five products derived from five different references arrive at the same screen: a ground a step from white, an ink near black, one accent muted enough to be inoffensive anywhere. Every value below is a number somebody can check, and the construction is in `references/color-construction.md`.
 
-- **Chroma is the tell, and the accent is where it is missing.** An accent under roughly 0.06 chroma in OKLCH is a grey that happens to lean, and a screen built on one reads as uncoloured no matter how many roles were assigned. Ground and surface hold chroma low by design, around 0.02 and under; above about 0.03 a ground has become a pale wash of the accent, which is the pastel screen nobody chose.
+- **Chroma is the tell, and the accent is where it is missing.** An accent under 0.15 chroma in OKLCH reads as dusty, and under about 0.06 it is a grey that happens to lean; a screen built on either reads as uncoloured no matter how many roles were assigned. `color-vivid` holds the band. Ground and surface hold chroma near zero by design, about 0.01 and under in light and 0.02 in dark; above that a ground has become a pale wash of the accent, which is the pastel screen nobody chose.
 - **Every hue after the first stands in a stated relationship to it**, analogous, complementary, split complementary or triadic, written down as that word. Two hues a reader must tell apart sit at least 30 degrees from each other. A second colour that arrived because the screen needed one is the reflex under another name.
-- **Status hues keep their band and the accent moves.** Where an accent lands within 30 degrees of a status meaning, the accent is the one that changes, because a user can be taught a brand colour and cannot be taught that this red means something else.
-- **The neutral ramp holds one hue and walks lightness** (`color-ramp-hsl`), and it is checked on its own: greys leaning toward the accent by more than the ground's own chroma were generated from the accent rather than chosen.
+- **Status hues keep their meaning.** The bands, as OKLCH hue: danger 15 to 40, warning 60 to 95, success 130 to 165, information 225 to 265. Distance is measured between the accent and the status colour the product actually uses, not the edge of the band, and a status the product never shows reserves nothing. A brand inside a status band is allowed, and the vivid brands this file holds up prove it: Netflix and iFood are red and show errors, Duolingo is green and shows success. What it owes is that the status never relies on hue there: every status carries its icon and its word (`color-not-alone`), it sits on its own surface treatment (a tinted banner, an outlined field) rather than the brand's filled one, and the brand never fills an alert. A brand that cannot keep those apart, a red so close to the danger red that an error banner and a promo banner look the same, moves away from the status, by at least 30 degrees from the colour in use.
+- **The neutral ramp holds one hue and walks lightness** (`color-ramp-hsl`), and it is checked on its own: greys leaning toward the accent by more than the ground's own chroma were generated from the accent rather than chosen. Neutral means neutral: a ramp leaning warm reads as beige, and one leaning green or blue far enough reads as a tinted grey, which is the graphite look rather than a neutral.
 
 A palette that cannot state these numbers has not been constructed, it has been collected, and a collection is what the reflex looks like once it has a reference attached.
 
@@ -2652,13 +2700,15 @@ Where the stack supports OKLCH, work there: lightness moves without dragging col
 
 An accent works by being scarce. iOS gives the app a single tint and expects everything interactive to wear it; Material puts the action on `primary` and keeps `tertiary` for occasional contrast. Under both, the user learns one color and stops scanning for buttons.
 
-- Spend it on the action. A card border, an illustration or a section heading in the same color costs the user that shortcut.
+- Spend it on the action and on the state of what can be touched: the selected tab and its indicator, the active segment, a checked box, the progress of something the person started, a toggle that is on. Those are states of controls, so they belong to the same colour. A card border, a section heading, a small icon or a decorative shape in the same colour, scattered beside the controls, costs the user that shortcut.
+- A whole region is different, and `color-vivid` asks for one. A header band, a hero, a leading card or the artwork filled with the brand hue reads as the product's identity, not as a control, because of its size and because nothing inside it looks pressable; the controls inside it then take white, ink or the on-brand role. Size alone does not make the difference when the region is drawn like a control: a brand-filled card with the button's radius, inset from the margins, reads as a big button. A region runs to the edges or to the screen's own surface shape, and the controls keep the button shape. The brand hue and the accent are the same hue. What the shortcut cannot survive is the accent on small non-interactive marks among the controls, never the brand filling a region.
+- A light, very saturated accent (lime, yellow, chartreuse, cyan) has two tones of one hue: the bright one fills large areas and buttons with a dark label at 4.5:1 on it, and a deeper one, the same hue at lower lightness, draws text, icons and outlines on a light ground, where the bright tone cannot reach 3:1. A bright fill that does not reach 3:1 against the ground carries an edge in the deep tone, so the control's boundary is still seen. Both tones are the accent; neither is a second colour.
 - When a color has to be loud, give it a whole region or a whole role instead of sprinkling it in six places.
 - Secondary text on a colored surface comes from that surface's own hue, or from opacity over it. Grey dropped onto a color reads as a rendering fault.
 - Status colors keep their jobs. Error red used for branding spends the one color a user reads without thinking.
 
 **Default.** One accent, spent on what can be touched.
-**Exception.** A product whose content is colour coded by the person or by the domain: calendars the person coloured themselves, transit lines that have had their colours for decades, categories the person assigned. That colour is data, it sits on the content and never on a control, and the accent stays the only colour meaning "touch here". How a hue per item stays a palette is `color-variety`.
+**Exception.** A product whose content is colour coded by the person or by the domain: calendars the person coloured themselves, transit lines that have had their colours for decades, categories the person assigned, the red of a liked heart. That colour is data or convention, it sits on the content and never on a control's resting state, and the accent stays the only colour meaning "touch here". How a hue per item stays a palette is `color-variety`.
 **Reason required.** Where the colours come from, and that none of them is the accent or a status colour.
 
 ### `color-assigned` Restraint and absence are not the same screen
@@ -2689,7 +2739,7 @@ Three qualify on mobile:
 - the platform's own translucent material under sheets and fixed bars, at whatever thickness the OS decides;
 - depth, distance or light inside artwork that was actually drawn.
 
-The rest give the screen away: two hues blended in place of a logo, gradient-filled text, a gradient primary button, a gradient app background, a colored glow at zero offset standing in for elevation. A raised surface on Android steps up the tonal scale and takes a shadow where the spec gives it one. On iOS the system material exists for exactly this, and a blur rebuilt by hand renders without the vibrancy pass and ignores Reduce Transparency.
+The rest give the screen away: the soft aurora of two or three pastel hues blurred behind cards, which is the gradient people now recognise as generated, two hues blended in place of a logo, gradient-filled text, a gradient primary button, a gradient app background, a colored glow at zero offset standing in for elevation. A raised surface on Android steps up the tonal scale and takes a shadow where the spec gives it one. On iOS the system material exists for exactly this, and a blur rebuilt by hand renders without the vibrancy pass and ignores Reduce Transparency.
 
 A gradient that stays brings three constraints with it:
 
@@ -2704,9 +2754,11 @@ This is the part that gets done last and shows it.
 - **The ground is not `#000000`.** Full black flattens every elevation cue and smears while a list scrolls on OLED. Take the platform surface roles, or start at `#121212` and build real steps above it. Full black is the cheapest for battery and the most expensive for structure, so it is a decision per surface, never a starting point.
 - **Body text is not `#FFFFFF`.** Around `#E0E0E0`, with secondary a visible step below.
 - **Depth arrives as the surface getting lighter,** because a shadow has nothing left to darken once the background is already dark.
-- **Accents shed chroma.** A hue tuned against white burns against black. Take the colorfulness down and leave the hue alone.
+- **Accents shed some chroma, not all of it.** A hue tuned against white burns against black, so take the colorfulness down by about a tenth to a fifth and leave the hue alone. An accent that falls under about 0.13 in dark has turned grey, and the dark screen loses the brand the light one had.
 - **Every pair gets measured again.** Passing in light says nothing about dark.
 - **Neither appearance inherits the other's derivation.** `color-derived`'s reflex check runs again here, on whichever appearance was built from the other: shedding chroma from a hue that already escaped the reflex can still land that appearance back inside it.
+
+Some surfaces are dark in both appearances because of what they show, not because of a theme: full-bleed video, a camera, a story, a photo viewer, and a screen used in the dark on purpose, a sleep timer or a cinema mode. Those stay dark when the system is light, take light status and navigation bar icons (`layout-system-bars`), and are listed in `DESIGN.md` as surfaces rather than recorded as a second theme. Everything around them still follows the system.
 
 Following the system setting is the default, and both appearances get built. Shipping one appearance is a product decision the user takes, recorded in `DESIGN.md`, never one this rule leaves to whoever writes the theme. Once it is taken, the rule grades the other half of it: the app forces that appearance everywhere it draws, so a phone set to the other one never produces a half-themed screen. The status bar icons, the keyboard, date and time pickers, dialogs from the platform, web content and the launch surface all follow the forced appearance, and each is checked with the system set the opposite way. The window background and the night resource set count as well: a light-only app whose night window is black flashes it before the first frame and behind every transition. A single appearance carried through all of that passes this rule, and it is not an exception to record.
 
@@ -2738,13 +2790,14 @@ Review answers each of these against the code, pointing at the line:
 
 - No component holds a raw hex, and every color arrives through a token or a platform role. `color-roles`
 - Where the user supplied an identity, the palette is read off it, `DESIGN.md` names the source, and every departure from it was approved by the user. Otherwise the palette is derived from a named material or reference this product evokes, chosen among three candidates from three different sources rather than the first one considered, never from a color-emotion pairing or a category habit, and the same screen in a competitor's app would need a different one. The neutral ramp is not tinted toward the accent. A palette in either reflex family carries the second derivation it was compared against, recorded as a short table, and the reason this one survived, checked separately for whichever appearance was built from the other. Each family verdict quotes the ground's chroma and the ink's lightness rather than asserting a family from impression. `color-derived`
-- The palette states the lightness and chroma of each role, the accent carries at least about 0.10 chroma in OKLCH and never under 0.06, ground and surface stay under about 0.03, every hue past the first names its relationship to the accent, no two hues a reader must separate sit within 30 degrees, and the neutral ramp does not lean toward the accent. `color-constructed`
+- On every main screen the brand hue fills at least one real region besides the primary button, the accent carries 0.15 chroma or more in light, the ground is a clean neutral under about 0.01 chroma, no main surface is a pastel fill, and a thumbnail of the screen shows a colour a stranger can name in one word. `color-vivid`
+- The palette states the lightness and chroma of each role, the accent carries 0.15 chroma or more in OKLCH in light and 0.13 or more in dark, ground and surface stay under about 0.01 in light and 0.02 in dark, status hues sit in their stated bands, every hue past the first names its relationship to the accent, no two hues a reader must separate sit within 30 degrees, a brand sharing a status band keeps that status on its own treatment with icon and word, and the neutral ramp does not lean toward the accent. `color-constructed`
 - Ramp steps hold the hue and shed saturation toward both ends. `color-ramp-hsl`
-- The accent marks what is interactive and nothing else, and no grey sits on a colored surface. `color-one-accent`
+- Among the controls, the accent marks what is interactive and the selected or active state of those controls and nothing else, the brand hue fills whole regions rather than small decorative marks, a light accent draws text and outlines in its deep tone, and no grey sits on a colored surface. `color-one-accent`
 - Colour is assigned to the screen's states and surfaces rather than to the primary action alone, the neutral steps were chosen rather than inherited, and rendering the screen in greyscale loses something a reader can name. `color-assigned`
 - Hue that varies across repeated items encodes a difference the reader can name, the mapping is fixed rather than positional, and nothing carries a tint picked for variety. `color-variety`
 - Every gradient does work flat color cannot: no gradient-filled text, no gradient primary button, no gradient app background, and no colored glow at zero offset standing in for elevation. `color-gradient`
-- Dark has its own ground, its own accent values and its own measurements, and the ground is not full black. Whichever appearance was built from the other was checked against `color-derived`'s reflex families on its own, not assumed clean because the first one was. Where `DESIGN.md` records a single appearance, the app forces it on every surface it draws or hosts, with the system set to the other appearance. `color-dark-composed`
+- Dark has its own ground, its own accent values and its own measurements, the ground is not full black, and the dark accent keeps 0.13 chroma or more. Media, camera and night surfaces that stay dark in both appearances are listed as such. Whichever appearance was built from the other was checked against `color-derived`'s reflex families on its own, not assumed clean because the first one was. Where `DESIGN.md` records a single appearance, the app forces it on every surface it draws or hosts, with the system set to the other appearance. `color-dark-composed`
 - Contrast is calculated for every pair, including pressed, disabled and text over images, in both themes. `color-contrast`
 - Nothing is communicated by color alone. `color-not-alone`
 - Where Dynamic Color applies there is a static fallback, and the product still reads as itself under a wallpaper-derived scheme. `color-dynamic`
@@ -2754,12 +2807,15 @@ Check the last four on a rendered screen in both appearances rather than in the 
 ### Reaches
 
 - `heuristics/icons-and-imagery.md`: `icon-avatar`, `icon-depicts`
+- `heuristics/layout.md`: `layout-system-bars`
 
 # heuristics/commerce.md
 
 ## Commerce
 
 Catalogues, product pages and carts for anything physical or consumed outside the app: food, groceries, retail, tickets, rentals. The person is comparing things on a narrow screen, one item at a time, usually in short sessions that get interrupted, and what they put together over those sessions is work. Every rule here is about the item meaning what it says, and the basket still being there.
+
+A deadline on an offer, a flash sale's countdown, a price that ends at a time, a stock count shown as urgency, follows `sub-honest` and `shop-stock` whatever is being sold: the deadline is real and stated as a time, and the count is read rather than invented.
 
 Paying is `heuristics/payments.md`: the rail, the total at the moment of commitment (`pay-total`), the four outcomes of a charge (`pay-outcome`). Where a price for store-billed goods comes from is `pay-price-source`. Counts the app spends on the person's behalf that are not money are the `econ-` prefix, and fields and choice groups are the `form-` prefix. Taking something back after a removal is `fb-undo`, and what the first screenful has to show is `layout-fold`.
 
@@ -2881,6 +2937,7 @@ Review answers each of these against the code, pointing at the line:
 - `heuristics/notifications.md`: `notify-earns-it`
 - `heuristics/payments.md`: `pay-total`, `pay-outcome`, `pay-price-source`
 - `heuristics/states.md`: `state-interrupt`
+- `heuristics/subscriptions.md`: `sub-honest`
 - `heuristics/touch.md`: `touch-nested`
 
 # heuristics/composition.md
@@ -3197,7 +3254,7 @@ Where the subject has a shape, drawing it is a candidate for being the screen ra
 
 If the user needs the values themselves, a list beats a chart: the figures are exact and the reader can move through them. A chart is for a trend over time, a comparison across categories, or a part against a whole. One value inside a known range is a labelled number or a gauge, and a gauge states its current value and both endpoints.
 
-Use bar, line and point marks, which need no explanation. A chart shape the reader has to learn arrives with the sentence that teaches it, or it does not ship. Where several charts show the same data, keep one type, one set of colors and one layout across them, because a changed encoding reads as changed data.
+Use bar, line and point marks, which need no explanation. A unit chart, one mark per item, seats in a hemicycle, dots for votes, icons for people, is legitimate where the count is small and each unit is a real thing, and it owes three things the bar chart gets for free: every unit sits on one grid or one arc with equal spacing, filled, empty and each other state look different in shape as well as colour (a check, a cross, a hollow ring), and a legend gives the count of each state in words beside the marks. A chart shape the reader has to learn arrives with the sentence that teaches it, or it does not ship. Where several charts show the same data, keep one type, one set of colors and one layout across them, because a changed encoding reads as changed data.
 
 ### `data-chart-scale` The chart carries its own axis, units and baseline
 
@@ -3550,6 +3607,7 @@ Hold the message as state with a consumed flag, so it survives the rebuild once 
 ### `fb-blocking-shape` If it has to block, it is small, finite and escapable
 
 - Pick the surface before the wording. A yes or no about one irreversible thing is an alert. Anything offering choices about an action the user deliberately started is not: that is an action sheet (`confirmationDialog` in SwiftUI), whose stack puts the destructive choice at the top and the escape at the bottom, or, on Android, a dialog or a bottom sheet, where the choices are a row of roles rather than a stack: the confirming action, the dismissive one beside it, and a third only where a real third answer exists. Building every confirmation as an alert spends the loudest surface on the ordinary case.
+- The buttons in one dialog, sheet or action group share one shape, one height and one width rule, and emphasis is the only thing that differs between them. That is about a set of choices offered together; a screen whose main action is sized up for the person holding it (`comp-context`) keeps the shape and the width rule and may give that one action more height. A cancel drawn as a separate floating block in a different shape from the choices above it reads as belonging to another surface, even where the platform separates it with a gap.
 - At most 3 buttons. On Android the builder settles it: one positive, one negative, one neutral, and no fourth slot to fill. Nothing on iOS enforces the ceiling, so there it is a rule the code keeps by itself. A fourth choice on either platform means the surface is a sheet or a screen.
 - A cancel is present whenever one of the options destroys something, it is not the default, and it sits at the bottom of a stack or on the leading side of a row, away from the destructive one that `touch-destructive` keeps at a distance.
 - It does not scroll. A dialog with enough content to scroll is a screen, so build the screen: scrolling under a row of buttons is an accidental tap waiting to happen.
@@ -3601,6 +3659,7 @@ Review answers each of these against the code, pointing at the line:
 - `heuristics/ads.md`: `ads-placement`, `ads-close`, `ads-rewarded`
 - `heuristics/buttons.md`: `button-label`
 - `heuristics/colors.md`: `color-not-alone`
+- `heuristics/composition.md`: `comp-context`
 - `heuristics/forms.md`: `form-error`
 - `heuristics/layout.md`: `layout-overlays`
 - `heuristics/localization.md`: `l10n-strings`
@@ -4049,6 +4108,7 @@ The blurred oval behind the form, the glow under the logo tile, the three gradie
 - Where the real image does not exist yet, draw the subject, hold the frame it will occupy (`icon-reserve`), or leave the space. A placeholder that depicts nothing is worse than an honest gap, because it looks finished.
 - Texture is not subject. A pattern, a grain pass or a wash over artwork that already shows something is treatment. The same wash on its own is the defect.
 - Abstract is allowed where the product is abstract, and the test does not care about style: somebody who has not seen the app can say what the picture shows.
+- A drawing has to be good enough to be the thing. A trolley that reads as a tangle of lines, grass that reads as a smear, a jar that reads as a battery: each one is worse than the plain symbol from the icon set or a held photo frame, because it is the largest element on the screen and it looks broken. When the subject cannot be drawn well at that size, draw less of it, a silhouette or the one recognisable part, or use the photograph slot.
 
 ### `icon-stand-in` A domain with pictures in it gets pictures
 
@@ -4187,7 +4247,7 @@ Values already written into `DESIGN.md`, the spacing scale and the screen margin
 
 Neighbouring rules own the parts that are not geometry: thumb zones are `touch-reach`, the system gesture strips are `touch-gestures`, the keyboard is `touch-keyboard`, and long collections belong to `heuristics/lists.md`.
 
-Rules in this file, in order: `layout-insets`, `layout-grid`, `layout-grouping`, `layout-shape`, `layout-column`, `layout-width`, `layout-chrome`, `layout-overlays`, `layout-axis`, `layout-fold`, `layout-short`, `layout-orientation`.
+Rules in this file, in order: `layout-insets`, `layout-system-bars`, `layout-grid`, `layout-grouping`, `layout-shape`, `layout-column`, `layout-width`, `layout-chrome`, `layout-overlays`, `layout-axis`, `layout-fold`, `layout-short`, `layout-orientation`.
 
 ### `layout-insets` The safe area is geometry, not padding added at the end [P1]
 
@@ -4230,6 +4290,32 @@ A pinned bar carries the inset inside itself: its own height for the controls, p
 A screen that hides the system bars, a player, a game, a camera, still keeps the cutout inset for anything read or tapped, and it restores the bars when the person leaves it. Hidden bars that stay hidden on the next screen are a defect on a screen that never asked for them.
 
 Four edges, not one. The top holds the status bar and the cutout or Dynamic Island. The bottom holds the home indicator or the navigation bar. The side insets are zero in portrait and stop being zero once the phone is turned, where they are applied to both sides and the cutout is on one of them. Scrolling content may pass under any of them and often should, because the content ending in a hard line above the bar wastes the screen. Anything read or tapped may not, and that includes the last row of a list, the buttons inside a sheet, and a snackbar.
+
+### `layout-system-bars` Each system bar is solid or transparent on purpose, and its colour continues the surface beside it
+
+`layout-insets` reads how tall the status bar and the navigation bar are. This rule decides what they look like, per screen, because the system draws them over whatever the app leaves there and the default is rarely what the screen needs.
+
+Each of the two bars gets three decisions, recorded in the wireframe in a comment beside the band it describes (the band itself is drawn as the real bar) and set in code per screen:
+
+- **Solid or transparent.** Solid means the band is filled with a colour role; transparent means the app's content or background runs underneath it.
+- **Which colour.** A solid band takes the role of the surface it touches: the status bar continues the top bar or the hero under it, the navigation bar continues the tab bar, the action bar, the composer or the sheet at the bottom. It never takes a colour of its own.
+- **Icon brightness.** Light icons on a dark band or dark media, dark icons on a light one, measured against what actually sits under them, scrim included.
+
+What it usually looks like on a phone:
+
+- A screen with a top bar or a coloured header: status bar transparent over that surface, so the header runs to the top edge in one piece. On a current device a transparent band over a header and a solid band in the header's colour look the same; declare it transparent, which is what edge to edge draws, and keep solid for a band that has a fill of its own.
+- A screen with a tab bar or a pinned bottom action: navigation bar in the same colour as that bar, so the bar and the system area read as one block. A bottom bar in one colour above a navigation area in another is the defect people notice first.
+- Full-bleed media, a camera, a video, a story, a map: status bar transparent over a scrim with light icons. The navigation bar stays transparent only when nothing is tapped at the bottom; when a reply field, a composer or controls sit there, it turns solid in their colour so the gesture strip does not cut through the media under the control.
+- A screen with nothing pinned at the bottom: the navigation bar is transparent over the screen's own ground, which reads as the same surface, and the last rows scroll under it with the inset as padding.
+- A sheet or a dialog that reaches the bottom becomes the surface the navigation bar continues while it is up, and the bar returns to the screen's colour when it closes.
+- A player or a media band at the top that is not full-bleed, a 16:9 video above a chat, a hero image: the status bar is transparent over it with light icons, so the media runs to the top edge the way a coloured header does.
+- A screen whose top is a different appearance from the one before it, a dark camera after a light list, switches the icon brightness on entry and back on exit.
+
+The defects are always one of three: a band in a colour nothing else on the screen uses, a black or white strip between the bar and the app's own surface, or icons that disappear into the ground. Each one is invisible in a design file drawn without the bars and obvious on the first device.
+
+**Default.** Status bar transparent over the top surface, navigation bar continuing the bottom surface, icon brightness set for both.
+**Exception.** A product that hides the bars for an immersive surface (a game, a player in landscape, a reader in focus mode), restoring them on exit as `layout-insets` already says.
+**Reason required.** Which surface is immersive and how the person brings the bars back.
 
 ### `layout-grid` One spacing scale, and every gap sits on it
 
@@ -4291,6 +4377,12 @@ The padding is derived, not typed. Measure the bar, add the inset, and let the s
 
 Chrome is rationed as well as cleared. Besides the system bars, a phone screen carries at most two persistent bars, and each one earns its height by doing something on every screen it appears on. A third is the sign that navigation, a banner and a player are all claiming the same edge, and the one to cut is the one that does nothing on the screen currently in front of the user.
 
+What counts as one bar:
+
+- A mini player or an accessory docked to the tab bar is part of the tab bar, one block on one edge, because it is drawn and reported as one.
+- A chip or filter row that scrolls away with the content is content, not a bar. Pinned under the top bar it joins the top bar and they count as one.
+- A composer, a checkout action bar or a reply field on a pushed screen takes the bottom edge, and the tab bar steps aside on that screen rather than stacking under it (`button-tabs`). Stacking both is the third bar.
+
 ### `layout-overlays` A transient surface stacks above the pinned ones
 
 A snackbar, a toast or an undo bar arrives over a screen that already has a bottom bar, a floating button, and an inset under both. The stacking order is the whole rule: the transient surface sits above every pinned bar and above the bottom inset, and it pushes the floating button up rather than covering it.
@@ -4305,7 +4397,7 @@ A modal follows the same order with a scrim under it. The scrim sits on the topm
 
 A title, a selector or a figure placed between a group on the leading side and a group on the trailing side is centred on the screen, whatever the two groups hold. Put it in the space the groups leave and it sits wherever their difference in width pushes it: one icon on the left and three on the right drags it left, and it moves again the moment a group gains or loses an item. The eye reads the centre of the screen, and an element slightly off it reads as a mistake rather than as a choice.
 
-The platforms already do it this way. The iOS navigation bar centres its title on the bar, and Material's centre-aligned top app bar does the same, so a stock bar is correct and a hand-built row is where it breaks. Give both flanks the width of the wider one, or lay the centred element over the full width with the groups on either side of it, and let it truncate before it moves off the axis.
+The platforms already do it this way. The iOS navigation bar centres its title on the bar, and Material's centre-aligned top app bar does the same, so a stock bar is correct and a hand-built row is where it breaks. The most common hand-built case is the top bar itself: a back arrow on one side, one or two actions on the other, and a title laid out with `justify-content: space-between` that lands a few points off centre on every screen. Give both flanks the width of the wider one, or lay the centred element over the full width with the groups on either side of it, and let it truncate before it moves off the axis. Where a labelled back control would leave the title too little room, the label goes and the chevron stays, its destination kept in the control's accessible name, which is what iOS itself does with a long title. A title aligned to the start of the bar, Material's small top app bar, is not centred and owes nothing to this rule; it is a choice made for the whole app, not a way out on one screen.
 
 ### `layout-fold` The first screenful answers what this is and what to do
 
@@ -4338,6 +4430,7 @@ Reflowing means the primary action stays visible without hunting for it, and the
 Review answers each of these against the code, pointing at the line:
 
 - The screen takes its insets from the framework's inset source rather than from a constant, and nothing readable or tappable sits outside them. Both the status bar and the navigation bar have a colour and icon brightness set against this screen's own background, a full-height sheet clears the top inset as well as the bottom one, and a screen that hides the bars keeps the cutout inset and restores the bars on exit. `layout-insets`
+- The wireframe draws both system bars as real bars and records each as solid or transparent, with its colour role and icon brightness, in a comment beside it rather than as visible text, a solid band takes the colour of the surface it touches, no band carries a colour nothing else on the screen uses, no strip of another colour sits between a bar and the app's own surface, and icons are legible against what sits under them, scrim included. `layout-system-bars`
 - Every gap is a multiple of 4, and of 8 above 16, the text column starts at the same margin on every screen outside full-bleed content and the platform list containers, and the screen uses about five distinct vertical gaps rather than a new one per component. `layout-grid`
 - Grouping comes from space before containers, no container is nested inside another that already groups the same content, and the row height and section gap are the numbers this kind of screen uses everywhere else. `layout-grouping`
 - Radius comes from the shape language rather than per component, the screen holds at most three radius values, a nested surface curves less than the one around it, and depth arrives through one of shadow, outline or fill rather than all three. `layout-shape`
@@ -4350,11 +4443,11 @@ Review answers each of these against the code, pointing at the line:
 - Landscape reflows, with the action still visible and the measure still capped at the shorter height, or is locked by a decision of the user recorded in `STACK.md`, and the screen still holds where the platform ignores the lock. `layout-orientation`
 - A lone element meant to be centred between unequal groups sits on the screen's centre line, through equal flanks or an overlay across the full width. `layout-axis`
 
-`layout-insets`, `layout-width`, `layout-fold` and `layout-chrome` are answered on a rendered screen at the narrow end of the range, on a device using three-button navigation as well as gestures. The token table and the component tree both look correct while the bottom bar is sitting under the navigation bar. `layout-chrome` needs the screen scrolled to both ends with enough content to reach the pinned bars, because the collision is invisible until a row arrives under one of them, and the top bar hides the first row as readily as the bottom bar hides the last. `layout-short` needs the opposite render, the screen at its shortest content, which is the only length at which the action drifts into the middle.
+`layout-system-bars` is checked on a device in both appearances and both navigation modes, because gesture and three-button navigation draw different bands. `layout-insets`, `layout-width`, `layout-fold` and `layout-chrome` are answered on a rendered screen at the narrow end of the range, on a device using three-button navigation as well as gestures. The token table and the component tree both look correct while the bottom bar is sitting under the navigation bar. `layout-chrome` needs the screen scrolled to both ends with enough content to reach the pinned bars, because the collision is invisible until a row arrives under one of them, and the top bar hides the first row as readily as the bottom bar hides the last. `layout-short` needs the opposite render, the screen at its shortest content, which is the only length at which the action drifts into the middle.
 
 ### Reaches
 
-- `heuristics/buttons.md`: `button-fab`
+- `heuristics/buttons.md`: `button-fab`, `button-tabs`
 - `heuristics/forms.md`: `form-column`
 - `heuristics/lists.md`: `list-virtualise`, `list-end`
 - `heuristics/scrolling.md`: `scroll-nest`, `scroll-affordance`
@@ -4842,6 +4935,8 @@ A map fills the phone's whole screen and takes the drag with it. It is also the 
 
 Here: the map surface and its gestures, the initial camera, markers and clusters, following the user, the route as text, tiles that did not arrive, the cost of holding a map, attribution, and the equivalent representation that has to exist beside it. The location ask is `perm-scope` and `perm-rationale`, the uncertainty circle drawn around the user is `sense-accuracy`, location switched off above the app is `sense-off-system`, a follow that keeps running once the user has left is `bg-location`, and how the result list beside the map reads is `list-a11y`. A map drawn by a web page inside the app takes `webview-surface-choice` for the surface it sits in and every rule below for what is on it.
 
+Not every map comes from a provider. A floor plan, a building facade, a seat map, a field sketch or an illustrated route the app draws itself carries no tiles, no provider and no contract, so `map-attribution`, `map-terms`, `map-cost`, the tile half of `map-offline` and the SDK clause of `map-steps` are `n/a` on it, with that reason. Everything about reading and touching it still holds: the first frame (`map-camera`), the drag (`map-gesture-owner`), markers as targets (`map-marker-target`), the equivalent list (`map-not-alone`), contrast of what is drawn on it (`map-legible`), and a route on it being text as well as a line. Labels inside a drawn map follow `data-chart-scale`: they grow with the text setting where the drawing has room and drop to the list beside it where it does not, never shrinking below the body size.
+
 Rules in this file, in order: `map-camera`, `map-gesture-owner`, `map-marker-target`, `map-cluster`, `map-not-alone`, `map-follow`, `map-legible`, `map-steps`, `map-offline`, `map-cost`, `map-attribution`, `map-terms`.
 
 ### `map-camera` The first frame is a decision: framed on the content, padded for the chrome, and bounded
@@ -4972,7 +5067,7 @@ Four of these cannot be settled from a diff. On a device, raise the sheet to its
 
 - `heuristics/accessibility.md`: `a11y-name`, `a11y-hidden`, `a11y-collection`, `a11y-gesture`, `a11y-test`
 - `heuristics/colors.md`: `color-not-alone`, `color-contrast`, `color-dark-composed`
-- `heuristics/data-display.md`: `data-units`, `data-chart-scale`
+- `heuristics/data-display.md`: `data-chart-scale`, `data-units`
 - `heuristics/icons-and-imagery.md`: `icon-alt`
 - `heuristics/layout.md`: `layout-chrome`, `layout-overlays`, `layout-insets`
 - `heuristics/lists.md`: `list-a11y`, `list-virtualise`
@@ -7907,7 +8002,7 @@ Each platform publishes a complete role scale that is optically tuned, wired to 
 - Text reaches the screen through a style: `MaterialTheme.typography.bodyLarge`, `.font(.body)`, `Theme.of(context).textTheme`. A size typed into a component is a defect even when the value happens to be right.
 - The unit belongs to the platform as well. Android text is `sp`, and `dp` freezes it. On iOS, `.system(size:)` with no text style behind it is the identical failure in another language.
 - Body lands at 16sp or 17pt. Eleven is the floor, and it belongs to text at the margin of meaning, never to something a user has to read in order to act.
-- When the readers are older or the app lives outdoors, move the whole ramp up rather than granting one role an exception.
+- When the readers are older or the app lives outdoors, move the whole ramp up one step rather than granting one role an exception. Every role moves together, so a button label stays the label role of the moved ramp; title-size type inside a control is not the ramp moving, it is a control dressed as a headline.
 
 ### `type-roles` About four jobs per screen
 
@@ -7934,7 +8029,7 @@ Both systems let someone ask for heavier text: Bold Text on iOS, `fontWeightAdju
 
 What the two scales actually do with weight runs against the web instinct:
 
-- Large text is not bold text. M3 holds titles at 400 up to 22sp, and iOS sets every title Regular. Size is the signal.
+- Large text is not bold text. M3 holds titles at 400 up to 22sp, and iOS sets every title Regular. Size is the signal. That line is about the system face. A brand display face chosen under `type-face` whose identity is its heavy cut, or a family that only ships 400 and 700, sets display and headline in that cut, and the 400 ground still holds for everything below the headline.
 - 500 and semibold are reserved for the small roles that name controls: buttons, tabs, chips, and iOS `headline`.
 - `headline` and `body` on iOS are both 17pt, and weight is the entire difference between them. Nothing demonstrates better that weight on its own can hold a hierarchy.
 
@@ -7953,7 +8048,7 @@ Build the hierarchy from weight and space before size. The reader has a slider f
 Inter turns up on its own for the same reason violet does: it is the most common interface face in the training data. Inter is a fine typeface, which is exactly why finding it there says nothing about this product.
 
 - Shipping the system face is a legitimate decision. SF Pro and Roboto are tuned for their own rendering stack, carry every weight, cover the scripts the product ships in, and load for free. Picking one deliberately is an answer; arriving at Inter by default is not.
-- A brand face gets themed into the scale, taking display and headline where the strings are short, while the system face keeps body, labels and controls. Applying a face component by component throws away the size setting and what the screen reader expects, in one move.
+- A brand face gets themed into the scale, taking display and headline where the strings are short, while the system face keeps body, labels and controls. Its weight in those roles is the weight the face was drawn to be seen at, which can be heavier than the scale's 400 (`type-weight`). Applying a face component by component throws away the size setting and what the screen reader expects, in one move.
 - Two families is the ceiling, and the second earns its place by doing something the first cannot.
 - A custom face ships only when it scales with the user's setting, carries every weight the roles call for, covers the languages, and has been subset and paid for out of the launch budget. One usable weight leaves size doing all the structural work by itself.
 
@@ -9066,7 +9161,7 @@ On mobile web, `DeviceMotionEvent.requestPermission()` needs a secure context an
 
 ## Color construction
 
-How a palette is built once the reference is chosen. `color-derived` decides where the colors come from and `color-assigned` decides what they are spent on; this is the arithmetic in between, and it is arithmetic rather than taste. Open it when a palette is being written for the first time, or when one on screen reads washed out, two-toned or muddy and nobody can say why.
+How a palette is built once the reference is chosen. The output is vivid: one saturated hue on a clean ground (`color-vivid`), never a set of muted ones. `color-derived` decides where the colors come from and `color-assigned` decides what they are spent on; this is the arithmetic in between, and it is arithmetic rather than taste. Open it when a palette is being written for the first time, or when one on screen reads washed out, two-toned or muddy and nobody can say why.
 
 Work in OKLCH, or in LCH where OKLCH is unavailable. The reason is not novelty: in HSL a change to L drags apparent colorfulness with it, and S reports a warm off-white as heavily saturated, so neither number can be used as a test. In OKLCH, L is perceived lightness and C is perceived colorfulness, and both can be stated as a target somebody else can check.
 
@@ -9074,11 +9169,15 @@ Work in OKLCH, or in LCH where OKLCH is unavailable. The reason is not novelty: 
 
 | Role | Lightness (OKLCH L) | Chroma (OKLCH C) | What the number is for |
 |---|---|---|---|
-| ground | the end the reference dictates, light around 0.95 to 0.98, dark around 0.15 to 0.22 | 0.004 to 0.02 | A tinted neutral. Above about 0.03 it stops being a ground and starts being a pale version of the accent, which is the pastel screen. |
-| surface | one step toward the ink from ground, about 0.03 to 0.05 of L | same as ground | Depth by lightness step, which is also what survives dark (`color-dark-composed`). |
-| ink | far from ground, at least 0.6 of L between them | 0.01 to 0.04 | Near black or near white, carrying the ground's hue rather than a pure neutral. |
-| accent | wherever contrast puts it against its own ground | **0.10 or more** | Below about 0.06 an accent reads as a grey that happens to be slightly coloured, and the screen reads as uncoloured. This is the single number most often missing. |
-| status | set by contrast | 0.10 or more | Same floor. A muted danger colour is not restraint, it is a warning nobody sees. |
+| ground | light 0.97 to 1.0, dark 0.13 to 0.20 | 0 to 0.01 in light, up to 0.02 in dark | A clean neutral. White is a fine ground. Above about 0.01 in light it turns cream, beige or a tinted grey, which is the muted screen `color-vivid` rejects. |
+| surface | light: one step from ground, about 0.02 to 0.04 of L, either white raised on a near-white ground or a near-white raised on white; dark: lighter than ground by 0.04 to 0.08 | same as ground | Depth by lightness step, which is also what survives dark (`color-dark-composed`). |
+| ink | far from ground, at least 0.6 of L between them | 0 to 0.03 | Near black or near white. |
+| accent | light theme 0.45 to 0.75, set by contrast | **0.15 or more, usually 0.18 to 0.26**; teal and cyan, which sRGB caps near 0.12 to 0.14, take the gamut's maximum at that lightness | The brand. Duolingo's green, Nubank's purple, Netflix's red and Google's blue all sit in this band. Under 0.12 it reads as dusty, under 0.06 as grey. Dark theme: about a tenth to a fifth less chroma, never under 0.13. |
+| accent, deep tone | about 0.15 to 0.25 lower than the accent | same hue, as much chroma as sRGB allows there | Only for a light accent (lime, yellow, cyan): text, icons and outlines on a light ground, where the bright tone cannot reach contrast. Exempt from the 0.15 floor, which the gamut does not reach at this lightness. |
+| status | set by contrast | 0.15 or more for fills and icons | A muted danger colour is not restraint, it is a warning nobody sees. A status tone darkened to carry text at 4.5:1 keeps its hue and takes what chroma the gamut allows. |
+| brand region in dark | about 0.40 to 0.55 | 0.09 to 0.13 | A header band or hero filled with the brand in dark, for mid and dark hues (blue, violet, red, green). Large saturated areas burn on black, so the region sits under the accent's floor while buttons keep it. Light hues (yellow, lime, amber, orange) stay bright with a dark label instead, since lowering them gives olive or brown. |
+
+Status hue bands, as OKLCH hue: danger 15 to 40, warning 60 to 95, success 130 to 165, information 225 to 265.
 
 Numbers are a starting band, not a spec. What matters is that the palette states its own and can be checked against them.
 
@@ -9094,7 +9193,7 @@ The accent hue comes from the reference. Every other hue on the screen stands in
 Two rules of separation hold whatever the scheme:
 
 - Any two hues a reader has to tell apart sit at least 30 degrees apart, and 60 is comfortable. Under 30 they read as the same colour rendered twice.
-- Status colours keep their conventional hue bands and are not borrowed for the accent. Where the accent lands within 30 degrees of a status hue, the accent moves, because the status meaning is the one that cannot be relearned.
+- Status colours keep the hue bands above. Distance is measured to the status colour actually in use, and a status the product never shows reserves nothing. A brand may share a band, red brands with a red error, green brands with a green success, when the status keeps its icon, its word and its own surface treatment and the brand never fills an alert; where the two would still be confused, the accent moves 30 degrees from the status colour.
 
 ### Per item color
 
@@ -10265,6 +10364,8 @@ Two things are kept apart here that a drawing tends to merge.
 
 **System chrome and insets** belong to the device and are read at runtime, which is `layout-insets`. The canvas reserves a band at the top and a band at the bottom only to say that content cannot use those edges. Their heights in the skeleton are placeholders for "some system area", never the height of any real status bar, cutout, gesture area or navigation bar, and no number from this file goes into a layout. A screen that has to hold on a device with a larger cutout or a three-button bar is checked for that on the device in `flow/review.md`, not here.
 
+What the two bands look like is decided here, though, because it is a decision about the screen and not about the device. Both are drawn as the real bars, in the greys: the status bar with its time, signal, wifi and battery, the navigation area with its home indicator (or the three buttons, where the screen is checked against them). A solid band is filled like the surface it continues; a transparent one has no fill, sits over the content or inside the header that runs under it, and its icons take the brightness of what is beneath them, ink over light content and paper over dark. Nothing is written inside a band except what the real bar shows, the clock: the decision, solid or transparent, which surface's colour it continues and the icon brightness (`layout-system-bars`), goes in an HTML comment directly above each band, where the file records it and the render does not show it. A wireframe with a word written where the clock should be is a diagram of a phone, not a phone.
+
 Everything is greyscale by construction: four greys, one ink, and nothing else. A wireframe that acquires a colour has stopped being a wireframe, and `flow/spec.md` says why.
 
 ### Shapes
@@ -10337,23 +10438,31 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
     overflow: hidden;
     position: relative;
   }
+  /* The real system bars, in grey. Icons are ink by default and paper with .on-dark. */
   .status, .indicator {
     flex: none;
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: var(--mute);
-    font-size: 11px;
+    color: var(--ink);
   }
-  .status { height: 59px; }
-  .indicator { height: 34px; }
+  .status { height: 59px; justify-content: space-between; padding: 0 28px 0 40px; font-size: 15px; font-weight: 600; }
+  .status .sys { display: flex; gap: 6px; align-items: center; }
+  .status .sys i { display: block; height: 11px; border-radius: 2px; background: currentColor; }
+  .status .sys .sig { width: 17px; }
+  .status .sys .wifi { width: 15px; border-radius: 8px 8px 2px 2px; }
+  .status .sys .bat { width: 25px; border-radius: 3px; }
+  .indicator { height: 34px; justify-content: center; }
   .indicator::after {
     content: "";
     width: 140px;
     height: 5px;
     border-radius: 3px;
-    background: var(--line);
+    background: currentColor;
   }
+  /* A solid band is filled like the surface it continues; a transparent one has no fill and sits over what runs under it. */
+  .status.solid, .indicator.solid { background: var(--paper); }
+  .status.solid.dark, .indicator.solid.dark { background: var(--ink); }
+  .on-dark, .dark { color: var(--paper); }
   .content {
     flex: 1;
     min-height: 0;
@@ -10419,16 +10528,15 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
     justify-content: center;
     font-weight: 600;
   }
+  /* Docked full width, so it joins the solid navigation band under it as one block. A floating bar is drawn only where the system tab view floats it. */
   .tabbar {
     flex: none;
     display: flex;
     justify-content: space-around;
     align-items: center;
     height: 64px;
-    margin: 0 16px;
     background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 20px;
+    border-top: 1px solid var(--line);
     font-size: 11px;
     color: var(--mute);
   }
@@ -10438,7 +10546,8 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
 <div class="shot">
 <div class="label">Memories, default</div>
 <div class="frame">
-  <div class="status">status bar</div>
+  <!-- status: transparent over the ground, dark icons -->
+  <div class="status clear"><span>9:41</span><span class="sys"><i class="sig"></i><i class="wifi"></i><i class="bat"></i></span></div>
   <div class="content">
     <div class="bar">Memories<span class="spacer"></span><span class="caption">menu</span></div>
     <div class="scroller">
@@ -10475,7 +10584,8 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
     <span>Home</span><span class="on">Memories</span><span>Create</span>
     <span>Profiles</span><span>Account</span>
   </div>
-  <div class="indicator"></div>
+  <!-- nav: solid, continues the tab bar surface, dark indicator -->
+  <div class="indicator solid"></div>
 </div>
 </div>
 ```
@@ -10484,6 +10594,9 @@ What is copied from below is the canvas, the greys and the drawing conventions: 
 
 - **The frame clips.** `.content` sets `overflow: hidden`, so anything that does not fit is cut off exactly as it would be on the device. A wireframe that scrolls its own frame hides the collision the render exists to find, which is `layout-fold` and `layout-chrome`.
 - **Fixed chrome is a sibling, not an overlay.** The tab bar sits outside `.content`. When a real screen pins something over the content instead, draw it over, and then check what it covers at the end of the scroll.
+- **A coloured region is a grey, not a word.** A saturated header or band with light content on it is drawn in `--ink` with paper text and `on-dark` status icons; a light-tinted one in `--fill` with ink text. That keeps the light or dark relation the final will have, which is what the icon brightness depends on.
+- **The system bars are drawn, not labelled.** Both bands are the real bars in grey: clock and status icons at the top, the home indicator at the bottom. The decision about each, solid or transparent, the surface it continues and the icon brightness, is an HTML comment directly above the band and never visible text. A full-bleed screen draws its content under a `clear` band, with `on-dark` icons where the content beneath is dark; a screen with a tab bar, a composer or a pinned action continues that surface into a `solid` navigation band, `solid dark` when that surface is dark. A transparent status band over a coloured header is drawn inside the header's own block, so the header visibly runs to the top edge.
+- **Spacing is drawn as it will be built.** A button never touches the frame's edge, the tab bar, the navigation band or another control: the screen margin and the gaps from `layout-grid` are in the drawing, because a wireframe that glues the action to its neighbours gets approved that way and built that way.
 - **Real strings only.** Type the words the screen will actually show, including the longest name and the largest count. Lorem text passes every layout and proves none, which is `copy-budget` and `copy-sample-data`.
 - **A cross means an unchosen image**, a plain `.box` means a deliberate empty slot such as an add tile, and neither ever becomes a photograph.
 - **The label names the frame, not the thinking.** The screen and its state, in the fewest words that tell two frames apart. Which shape was picked, why it beat the runner-up, and anything else settled on the way here is reasoning that happened before this file existed. Written into the drawing it becomes part of what gets looked at, and a frame that explains itself is being defended rather than read.

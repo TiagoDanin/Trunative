@@ -4,7 +4,7 @@ Everything a user taps to act or to choose: buttons, the floating action button,
 
 A phone shows one screen at a time to someone who is usually doing something else. The whole point of a control vocabulary here is that the answer to "what do I do now" arrives before any reading happens.
 
-Rules in this file, in order: `button-one-primary`, `button-ladder`, `button-target`, `button-label`, `button-state`, `button-fab`, `button-chips`, `button-tabs`.
+Rules in this file, in order: `button-one-primary`, `button-ladder`, `button-target`, `button-size`, `button-label`, `button-state`, `button-fab`, `button-chips`, `button-tabs`.
 
 ## `button-one-primary` One primary action per screen, and a second one owes a reason
 
@@ -25,7 +25,7 @@ A sheet, a dialog or a full-screen modal is its own decision point, so it gets i
 When two actions feel equal, the first reading is that the screen has two jobs. Split it, or pick the one the product wants and demote the other. Save and "save and add another" are not two primaries: one is the primary and the other is a secondary, a menu item, or a checkbox next to the first.
 
 **Default.** One primary, or none.
-**Exception.** A screen whose whole job is a choice between two outcomes the product has no preference between, where ranking them would be the product putting its thumb on the scale: answer or decline a call, approve or reject a request, keep mine or keep theirs in a conflict, pick one of two plans being compared. There the pair is the primary. Both carry the same weight, sit side by side at the same height, and nothing else on the screen competes with them.
+**Exception.** A screen whose whole job is a choice between two outcomes the product has no preference between, where ranking them would be the product putting its thumb on the scale: answer or decline a call, approve or reject a request, keep mine or keep theirs in a conflict, pick one of two plans being compared. There the pair is the primary. Both carry the same weight, sit side by side at the same height, and nothing else on the screen competes with them. The pair takes the rung the platform gives two equal choices, tonal or outlined for both, never filled for both, since two filled buttons read as the product recommending each, and the destructive answer of the two keeps its colour only on its label or icon. Where side by side does not fit, the longest label at the person's text size or a hand that needs the full width, they stack, same height, same treatment, with space between them rather than extra height (`button-size`), and the order is the one the platform uses for that pair.
 **Reason required.** The brief's `primary_action` names both labels and says in one line why neither is preferred. "Both seemed important" is not that line: if the product would rather the person chose one, that one is the primary.
 
 Cancel, Back, Skip and Dismiss are never the emphasized control. They are the exit, and the exit does not need to be sold. A destructive action is not the top of the ladder either: it is a role of its own, it keeps its distance from the frequent controls, and it is never the primary of a screen the user opened to do something else.
@@ -39,6 +39,8 @@ Below the primary there are two useful rungs, no more: a secondary for the alter
 
 The iOS convention worth knowing: the primary action there is frequently a navigation bar item or a plain tinted row of text, not a large filled block in the middle of the content. A full-width filled button dropped into an iOS settings screen is an Android accent, and it reads as one.
 
+Buttons offered together, a footer pair, a primary with its alternative, the choices in a sheet, share one shape, one height and one width rule, and emphasis is the only difference between them: a filled pill beside a square outlined block reads as two components that happened to land side by side.
+
 Three different button styles at the same rank on one screen is the composite look of a screen assembled from parts. Pick a style per rank and hold it, then style it once in the theme rather than at each call site, because twenty locally styled buttons are twenty future inconsistencies. The same action wears the same control everywhere in the app: if Save is filled on one screen and a text button on the next, one of them is wrong.
 
 Button labels sit at the label role of the type scale, which on Material is 14sp at weight 500. Not 400, and not bold.
@@ -48,6 +50,15 @@ Button labels sit at the label role of the type scale, which on Material is 14sp
 Material's default button is 36dp tall, with a size range that runs from 32dp to 56dp, and the framework component quietly extends its own touch area to reach the 48dp floor. Draw that button by hand at 36dp with no extended area and it is a target that fails, while looking identical to the one that passes.
 
 The whole control is tappable, not the text inside it. A full-width primary at the bottom of the screen is a good fit for a thumb, and it is also a large accidental target, so nothing destructive belongs beside it.
+
+## `button-size` A button is sized for the finger and the label, not for the emphasis
+
+Emphasis comes from the ladder (`button-ladder`), never from size. The target floor is `touch-floor`, and a primary sits at the platform's button height: about 48 to 56 tall, as wide as its label needs or the full width of the column when it is the screen's one action. Past that, extra height buys nothing a finger can use and costs the fold.
+
+- Who is holding the phone does not change the height. Older hands, low vision, a tremor, a glove: the answer is the platform height, the label at the label role of a ramp already moved up for them (`type-roles`), more space between controls (`touch-spacing`) and the person's own text size setting (`type-scaling`), which grows the button by itself. A button drawn taller than the platform's, at 64, 80 or 96, with title-size type inside, is not easier to hit, it is a panel that pushes the content off the screen and reads as broken or as an alarm. Testers rate it "surreal".
+- Two stacked full-width buttons are the same defect twice. Where both answers matter equally they sit side by side at the platform height, and they stack only when the person's text size makes the labels not fit side by side; stacked, they stay at the platform height and gain space between them, never height.
+- A tool that acts on one point of the content, a split at the playhead, a pin on a map, a handle on a crop, is an icon button attached to that point, with its name for the screen reader and a tooltip or a short label beside it. A wide pill riding the playhead covers what it is meant to cut.
+- The exception is a surface used without looking, a tap-anywhere alarm, a full-screen shutter, an eyes-free player, where the whole region is the target and is drawn as a region, not as a giant button.
 
 ## `button-label` The label says what will happen
 
@@ -61,7 +72,7 @@ Write the verb of the action and the object it acts on: Send, Pay 42, Delete pho
 
 Rest and pressed are covered by the touch rules. The two that get skipped:
 
-**Disabled.** A primary that starts disabled at the top of an empty form gives the user nothing to act on and no reason why. Prefer leaving it enabled and answering on tap with what is still missing, pointed at the field that is missing it. Where disabled is genuinely right, the reason has to be visible next to it, not inferred.
+**Disabled.** A primary that starts disabled at the top of an empty form gives the user nothing to act on and no reason why. Prefer leaving it enabled and answering on tap with what is still missing, pointed at the field that is missing it. Where disabled is genuinely right, the reason has to be visible next to it, not inferred. A send control beside an empty composer is the case where disabled is right and the empty field is the visible reason; how a composer handles it is `chat-composer`.
 
 Disabled also promises that something the person can do will enable it. A control nothing on this screen can ever enable, in the configuration the person is in, is not disabled, it is absent: a pager over a single page, a sort control over one item, a next and previous pair with nowhere to go, a range the data source does not keep. Offering an option the system cannot answer is the same defect one step later, when the person picks it and gets an empty result that looks like no data.
 
@@ -89,10 +100,10 @@ Three to five destinations, and they are the top level of the app rather than a 
 
 - Every destination is labelled. Icon-only navigation asks the user to guess, and the guess is wrong often enough to matter.
 - The selected destination is obvious without relying on color alone: an indicator, a filled icon variant, a weight change. Selection changes how an item is drawn and never where it sits: the selected icon, label and indicator occupy the same box as the resting ones, so nothing in the bar moves when the selection does.
-- The set does not change from screen to screen, and it does not vanish when a screen is pushed. Tabs that come and go stop being a map.
+- The set does not change from screen to screen, and it stays on screens pushed inside a tab. Tabs that come and go stop being a map. The one exception is a pushed screen that owns the bottom edge itself: a conversation with its composer, a checkout with its pay bar or any pinned action bar, full-screen media, a camera. There the bar steps aside for that screen and comes back on the way out, because stacking a composer over a tab bar is the third bar `layout-chrome` forbids. A camera that is itself a destination keeps the bar, which then continues the camera's dark surface under the capture controls as one block (`layout-system-bars`).
 - An action in the middle of the bar, a raised plus, a record button, a send or a scan, is the most common way this breaks. It is a primary action standing in a destination's place: it counts under `button-one-primary` on every screen the bar appears over, it has no stack to return to, and on the one screen where it is not wanted it is still the loudest control. It belongs on the screens it acts for. Where the job is big enough to be a place, it becomes a destination whose screen opens on that action.
 - A search button set apart at the trailing end of the bar is the system's own presentation of a search destination on current iOS, not an action, and it is one of the destinations (`search-placement`).
-- Top tabs and bottom tabs on the same screen is two navigation systems arguing. Pick one.
+- Top tabs and bottom tabs on the same screen is two navigation systems arguing. Pick one. Two or three views of the same destination switched at the top, Following and For you over a feed, is a segmented switch inside that destination rather than a second tab bar, and it follows the segmented control line below.
 - A segmented control is not a tab bar. It filters or switches the view in front of the user, it holds about three options, and past that it becomes a menu or a filter screen.
 
 ## Check
@@ -102,16 +113,20 @@ Review answers each of these against the code, pointing at the line:
 - At most one primary action is visible on the screen, counting the bottom bar, the top bar, the content and the FAB together, any sheet or dialog carries its own single primary, and a pair of equal primaries exists only where the brief names both and says why neither is preferred. `button-one-primary`
 - Emphasis comes from the platform's ladder, one style per rank, styled in the theme rather than per call site, and the same action looks the same across screens. `button-ladder`
 - Every button's touch area reaches the platform floor even where the drawn height is smaller. `button-target`
+- Every button sits at the platform height, about 48 to 56, whoever the person is, with its label at the label role, emphasis comes from the ladder rather than from size, an equal pair sits side by side unless the text size forces a stack, and a tool acting on one point of the content is an icon button attached to that point. `button-size`
 - Labels name the action and its object, are capitalised as `copy-case` requires, and survive the longest translation at the largest text size. `button-label`
 - Disabled states explain themselves, no control is shown that nothing on the screen can enable, no option is offered that the data source cannot answer, and every button that starts work becomes unpressable and shows it, without resizing. `button-state`
 - At most one FAB, holding the screen's defining action, absent on iOS, with the list underneath padded to clear it. `button-fab`
 - Chip selection is visible without color, chip rows scroll instead of wrapping, and no chip is doing a tab's job. `button-chips`
-- Three to five labelled destinations, a selected state that is not color alone and moves nothing, no action standing in the bar in a destination's place, and one navigation system per screen. `button-tabs`
+- Three to five labelled destinations, a selected state that is not color alone and moves nothing, no action standing in the bar in a destination's place, one navigation system per screen, and the bar present on every pushed screen except one that owns the bottom edge with a composer, a pay bar, full-screen media or a camera. `button-tabs`
 
 ## Reaches
 
 The rules this file cites and the files that hold them. Open one when a citation above decides something this file does not.
 
+- `heuristics/chat.md`: `chat-composer`
 - `heuristics/copy.md`: `copy-case`
+- `heuristics/layout.md`: `layout-chrome`, `layout-system-bars`
 - `heuristics/search.md`: `search-placement`
-- `heuristics/typography.md`: `type-scaling`
+- `heuristics/touch.md`: `touch-floor`, `touch-spacing`
+- `heuristics/typography.md`: `type-roles`, `type-scaling`

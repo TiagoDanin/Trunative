@@ -174,7 +174,7 @@ A device the user is working on is theirs. Before changing a setting on it, font
 
 How the two are kept apart depends on the harness you are running in:
 
-When this harness can spawn sub-agents at all, run them as two, spawned so that neither reads the other's output: that is an instruction, not an option to weigh against speed. Only when it cannot, finish the judging pass and record it, then measure.
+When this harness can spawn sub-agents and the review covers one screen or one flow, run them as two, spawned so that neither reads the other's output. When it cannot, or the review is one pass over a batch of screens, finish the judging pass and record it, then measure.
 
 Then reconcile: the judged score stands unless a measurement contradicts it, and every score a measurement moved is printed with both numbers. The report is one table, not one pass after the other. When they could not be kept apart, the report says so on its first line.
 
